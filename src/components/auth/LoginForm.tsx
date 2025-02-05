@@ -42,12 +42,6 @@ export const LoginForm = () => {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Entrando..." : "Entrar"}
       </Button>
-      <p className="text-center text-sm text-muted-foreground">
-        Não tem uma conta?{" "}
-        <Link to="/register" className="text-primary hover:underline">
-          Cadastre-se
-        </Link>
-      </p>
     </form>
   );
 };
