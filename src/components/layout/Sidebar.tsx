@@ -7,9 +7,11 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
@@ -21,6 +23,7 @@ const menuItems = [
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { signOut } = useAuth();
 
   return (
     <div
@@ -60,6 +63,17 @@ export const Sidebar = () => {
             </Link>
           ))}
         </nav>
+        <Button
+          variant="ghost"
+          className={cn(
+            "w-full mt-8 text-red-600 hover:text-red-700 hover:bg-red-50",
+            collapsed && "px-0"
+          )}
+          onClick={signOut}
+        >
+          <LogOut size={20} />
+          {!collapsed && <span className="ml-3">Sair</span>}
+        </Button>
       </div>
     </div>
   );
