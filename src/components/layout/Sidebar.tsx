@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: Target, label: "Metas", path: "/metas" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
