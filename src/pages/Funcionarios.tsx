@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserPlus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { AddUserDialog } from "@/components/funcionarios/AddUserDialog";
 
 const Funcionarios = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,10 +35,7 @@ const Funcionarios = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Funcionários</h1>
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Adicionar Funcionário
-            </Button>
+            <AddUserDialog />
           </div>
 
           <div className="relative mb-6">
