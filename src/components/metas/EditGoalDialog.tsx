@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
+import { Database, Tables } from "@/integrations/supabase/types";
+
+type GoalTerm = Database["public"]["Enums"]["goal_term"];
+type GoalStatus = Database["public"]["Enums"]["goal_status"];
 
 interface EditGoalDialogProps {
   goal: Tables<"goals">;
@@ -19,8 +22,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
   const [formData, setFormData] = useState({
     title: goal.title,
     description: goal.description || "",
-    term: goal.term,
-    status: goal.status,
+    term: goal.term as GoalTerm,
+    status: goal.status as GoalStatus,
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -81,7 +84,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
           />
           <Select
             value={formData.term}
-            onValueChange={(value) => setFormData({ ...formData, term: value })}
+            onValueChange={(value: GoalTerm) => setFormData({ ...formData, term: value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Prazo" />
@@ -94,7 +97,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
           </Select>
           <Select
             value={formData.status}
-            onValueChange={(value) => setFormData({ ...formData, status: value })}
+            onValueChange={(value: GoalStatus) => setFormData({ ...formData, status: value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Status" />

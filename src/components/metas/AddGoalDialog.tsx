@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+
+type GoalTerm = Database["public"]["Enums"]["goal_term"];
+type GoalStatus = Database["public"]["Enums"]["goal_status"];
 
 interface AddGoalDialogProps {
   open: boolean;
@@ -17,8 +21,8 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    term: "short",
-    status: "pending",
+    term: "short" as GoalTerm,
+    status: "pending" as GoalStatus,
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -28,14 +32,16 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.from("goals").insert([
-        {
-          title: formData.title,
-          description: formData.description,
-          term: formData.term,
-          status: formData.status,
-        },
-      ]);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      const { error } = await supabase.from("goals").insert({
+        title: formData.title,
+        description: formData.description,
+        term: formData.term,
+        status: formData.status,
+        created_by: user.id,
+      });
 
       if (error) throw error;
 
@@ -49,8 +55,8 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
       setFormData({
         title: "",
         description: "",
-        term: "short",
-        status: "pending",
+        term: "short" as GoalTerm,
+        status: "pending" as GoalStatus,
       });
     } catch (error) {
       console.error("Error adding goal:", error);
@@ -84,7 +90,7 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
           />
           <Select
             value={formData.term}
-            onValueChange={(value) => setFormData({ ...formData, term: value })}
+            onValueChange={(value: GoalTerm) => setFormData({ ...formData, term: value })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Prazo" />
