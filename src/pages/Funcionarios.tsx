@@ -5,6 +5,9 @@ import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AddUserDialog } from "@/components/funcionarios/AddUserDialog";
+import { ViewUserDialog } from "@/components/funcionarios/ViewUserDialog";
+import { EditUserDialog } from "@/components/funcionarios/EditUserDialog";
+import { DeleteUserDialog } from "@/components/funcionarios/DeleteUserDialog";
 
 const Funcionarios = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,10 +25,21 @@ const Funcionarios = () => {
     },
   });
 
+  const getRoleDisplay = (role: string) => {
+    const roleMap: Record<string, string> = {
+      admin: "Administrador",
+      mayor: "Prefeito",
+      secretary: "Secretário",
+      employee: "Funcionário",
+    };
+    return roleMap[role] || role;
+  };
+
   const filteredProfiles = profiles?.filter(profile => 
     profile.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     profile.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.department?.toLowerCase().includes(searchTerm.toLowerCase())
+    profile.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getRoleDisplay(profile.role).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -65,11 +79,17 @@ const Funcionarios = () => {
                       <p className="text-sm text-gray-600">
                         {profile.department || "Departamento não definido"}
                       </p>
-                      <p className="text-sm text-gray-600 capitalize">
-                        {profile.role === "admin" ? "Administrador" :
-                         profile.role === "secretary" ? "Secretário" :
-                         "Funcionário"}
+                      <p className="text-sm text-gray-600">
+                        {getRoleDisplay(profile.role)}
                       </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <ViewUserDialog user={profile} />
+                      <EditUserDialog user={profile} />
+                      <DeleteUserDialog 
+                        userId={profile.id} 
+                        userName={`${profile.first_name} ${profile.last_name}`} 
+                      />
                     </div>
                   </div>
                 </div>

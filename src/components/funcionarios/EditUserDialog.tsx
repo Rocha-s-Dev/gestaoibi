@@ -3,21 +3,29 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const AddUserDialog = () => {
+interface EditUserDialogProps {
+  user: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    department: string | null;
+    role: string;
+  };
+}
+
+export const EditUserDialog = ({ user }: EditUserDialogProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    department: "",
-    role: "employee",
+    firstName: user.first_name || "",
+    lastName: user.last_name || "",
+    department: user.department || "",
+    role: user.role,
   });
 
   const queryClient = useQueryClient();
@@ -27,45 +35,24 @@ export const AddUserDialog = () => {
     setLoading(true);
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-          },
-        },
-      });
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          department: formData.department,
+          role: formData.role,
+        })
+        .eq("id", user.id);
 
-      if (authError) throw authError;
+      if (error) throw error;
 
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .update({
-            department: formData.department,
-            role: formData.role,
-          })
-          .eq("id", authData.user.id);
-
-        if (profileError) throw profileError;
-      }
-
-      toast.success("Usuário criado com sucesso!");
+      toast.success("Usuário atualizado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
       setOpen(false);
-      setFormData({
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-        department: "",
-        role: "employee",
-      });
     } catch (error) {
-      console.error("Erro ao criar usuário:", error);
-      toast.error("Erro ao criar usuário. Tente novamente.");
+      console.error("Erro ao atualizar usuário:", error);
+      toast.error("Erro ao atualizar usuário. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -74,14 +61,13 @@ export const AddUserDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Adicionar Funcionário
+        <Button variant="ghost" size="icon">
+          <Edit className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Adicionar Novo Funcionário</DialogTitle>
+          <DialogTitle>Editar Funcionário</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-4">
@@ -98,20 +84,6 @@ export const AddUserDialog = () => {
               required
             />
           </div>
-          <Input
-            type="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-          />
-          <Input
-            type="password"
-            placeholder="Senha"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-          />
           <Input
             placeholder="Departamento"
             value={formData.department}
@@ -133,7 +105,7 @@ export const AddUserDialog = () => {
             </SelectContent>
           </Select>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Criando..." : "Criar Funcionário"}
+            {loading ? "Atualizando..." : "Atualizar Funcionário"}
           </Button>
         </form>
       </DialogContent>
