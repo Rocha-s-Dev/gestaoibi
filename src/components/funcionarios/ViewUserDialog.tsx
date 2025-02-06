@@ -8,7 +8,7 @@ interface ViewUserDialogProps {
     id: string;
     first_name: string | null;
     last_name: string | null;
-    department: string | null;
+    department_id: string | null;
     role: string;
     email?: string;
   };
@@ -48,7 +48,7 @@ export const ViewUserDialog = ({ user }: ViewUserDialogProps) => {
           <div>
             <h4 className="text-sm font-medium mb-1">Departamento</h4>
             <p className="text-sm text-gray-600">
-              {user.department || "Não definido"}
+              {user.department_id || "Não definido"}
             </p>
           </div>
           <div>

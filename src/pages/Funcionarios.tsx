@@ -38,7 +38,7 @@ const Funcionarios = () => {
   const filteredProfiles = profiles?.filter(profile => 
     profile.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     profile.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.department_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     getRoleDisplay(profile.role).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -77,7 +77,7 @@ const Funcionarios = () => {
                         {profile.first_name} {profile.last_name}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        {profile.department || "Departamento não definido"}
+                        {profile.department_id || "Departamento não definido"}
                       </p>
                       <p className="text-sm text-gray-600">
                         {getRoleDisplay(profile.role)}

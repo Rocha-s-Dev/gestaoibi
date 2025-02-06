@@ -13,7 +13,7 @@ interface EditUserDialogProps {
     id: string;
     first_name: string | null;
     last_name: string | null;
-    department: string | null;
+    department_id: string | null;
     role: string;
   };
 }
@@ -24,7 +24,7 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
   const [formData, setFormData] = useState({
     firstName: user.first_name || "",
     lastName: user.last_name || "",
-    department: user.department || "",
+    department_id: user.department_id || "",
     role: user.role,
   });
 
@@ -40,7 +40,7 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
         .update({
           first_name: formData.firstName,
           last_name: formData.lastName,
-          department: formData.department,
+          department_id: formData.department_id,
           role: formData.role,
         })
         .eq("id", user.id);
@@ -85,9 +85,9 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
             />
           </div>
           <Input
-            placeholder="Departamento"
-            value={formData.department}
-            onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+            placeholder="ID do Departamento"
+            value={formData.department_id}
+            onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
             required
           />
           <Select
