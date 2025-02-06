@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Funcionarios from "./pages/Funcionarios";
+import Metas from "./pages/Metas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/funcionarios" element={<Funcionarios />} />
+            <Route path="/metas" element={<Metas />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
