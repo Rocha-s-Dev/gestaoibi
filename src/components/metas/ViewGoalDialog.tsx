@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tables } from "@/integrations/supabase/types";
+import { TaskList } from "./TaskList";
 
 interface ViewGoalDialogProps {
   goal: Tables<"goals">;
@@ -30,7 +31,7 @@ export function ViewGoalDialog({ goal, open, onOpenChange }: ViewGoalDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] bg-background">
         <DialogHeader>
           <DialogTitle>Detalhes da Meta</DialogTitle>
         </DialogHeader>
@@ -57,6 +58,8 @@ export function ViewGoalDialog({ goal, open, onOpenChange }: ViewGoalDialogProps
               {new Date(goal.created_at).toLocaleDateString("pt-BR")}
             </p>
           </div>
+          
+          <TaskList goalId={goal.id} />
         </div>
       </DialogContent>
     </Dialog>

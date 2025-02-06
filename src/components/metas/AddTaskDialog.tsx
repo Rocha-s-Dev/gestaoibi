@@ -1,0 +1,167 @@
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
+import { useQuery } from "@tanstack/react-query";
+
+type TaskPriority = Database["public"]["Enums"]["task_priority"];
+
+interface AddTaskDialogProps {
+  goalId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onTaskAdded: () => void;
+}
+
+export function AddTaskDialog({ goalId, open, onOpenChange, onTaskAdded }: AddTaskDialogProps) {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    priority: "medium" as TaskPriority,
+    assignedUsers: [] as string[],
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("first_name");
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Primeiro, criar a tarefa
+      const { data: task, error: taskError } = await supabase
+        .from("tasks")
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          priority: formData.priority,
+          goal_id: goalId,
+        })
+        .select()
+        .single();
+
+      if (taskError) throw taskError;
+
+      // Depois, criar as atribuições de usuários
+      if (formData.assignedUsers.length > 0 && task) {
+        const assignments = formData.assignedUsers.map((userId) => ({
+          task_id: task.id,
+          user_id: userId,
+        }));
+
+        const { error: assignmentError } = await supabase
+          .from("task_assignments")
+          .insert(assignments);
+
+        if (assignmentError) throw assignmentError;
+      }
+
+      toast({
+        title: "Tarefa criada com sucesso",
+        description: "A nova tarefa foi adicionada à meta.",
+      });
+
+      onTaskAdded();
+      onOpenChange(false);
+      setFormData({
+        title: "",
+        description: "",
+        priority: "medium" as TaskPriority,
+        assignedUsers: [],
+      });
+    } catch (error) {
+      console.error("Error adding task:", error);
+      toast({
+        title: "Erro ao criar tarefa",
+        description: "Não foi possível criar a tarefa. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px] bg-background">
+        <DialogHeader>
+          <DialogTitle>Nova Tarefa</DialogTitle>
+          <DialogDescription>
+            Adicione uma nova tarefa à meta.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            placeholder="Título"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            required
+          />
+          <Textarea
+            placeholder="Descrição"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+          <Select
+            value={formData.priority}
+            onValueChange={(value: TaskPriority) => setFormData({ ...formData, priority: value })}
+          >
+            <SelectTrigger className="bg-background">
+              <SelectValue placeholder="Prioridade" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">Baixa</SelectItem>
+              <SelectItem value="medium">Média</SelectItem>
+              <SelectItem value="high">Alta</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select
+            value={formData.assignedUsers[0] || ""}
+            onValueChange={(value) => setFormData({ ...formData, assignedUsers: [value] })}
+          >
+            <SelectTrigger className="bg-background">
+              <SelectValue placeholder="Responsável" />
+            </SelectTrigger>
+            <SelectContent>
+              {users?.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.first_name} {user.last_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex justify-end gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Criando..." : "Criar Tarefa"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
