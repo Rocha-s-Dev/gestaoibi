@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +13,15 @@ interface TaskListProps {
   goalId: string;
 }
 
-type Task = Tables<"tasks">;
+type Task = Tables<"tasks"> & {
+  task_assignments?: {
+    user_id: string;
+    profiles: {
+      first_name: string | null;
+      last_name: string | null;
+    } | null;
+  }[];
+};
 
 export function TaskList({ goalId }: TaskListProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -39,7 +48,7 @@ export function TaskList({ goalId }: TaskListProps) {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Task[];
     },
   });
 
