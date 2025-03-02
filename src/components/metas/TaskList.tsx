@@ -13,6 +13,7 @@ interface TaskListProps {
   goalId: string;
 }
 
+// Updated Task type to properly match Supabase's response structure
 type Task = Tables<"tasks"> & {
   task_assignments?: {
     user_id: string;
@@ -48,7 +49,9 @@ export function TaskList({ goalId }: TaskListProps) {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as Task[];
+      
+      // Cast the result as unknown first to satisfy TypeScript
+      return (data as unknown) as Task[];
     },
   });
 
