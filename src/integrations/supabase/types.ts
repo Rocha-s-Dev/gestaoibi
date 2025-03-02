@@ -140,8 +140,10 @@ export type Database = {
       }
       tasks: {
         Row: {
+          completed: boolean | null
           created_at: string
           description: string | null
+          due_date: string | null
           goal_id: string
           id: string
           priority: Database["public"]["Enums"]["task_priority"]
@@ -149,8 +151,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          completed?: boolean | null
           created_at?: string
           description?: string | null
+          due_date?: string | null
           goal_id: string
           id?: string
           priority?: Database["public"]["Enums"]["task_priority"]
@@ -158,8 +162,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          completed?: boolean | null
           created_at?: string
           description?: string | null
+          due_date?: string | null
           goal_id?: string
           id?: string
           priority?: Database["public"]["Enums"]["task_priority"]

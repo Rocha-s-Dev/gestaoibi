@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, CheckCircle, Circle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,8 @@ import { Tables } from "@/integrations/supabase/types";
 import { AddTaskDialog } from "./AddTaskDialog";
 import { EditTaskDialog } from "./EditTaskDialog";
 import { DeleteTaskDialog } from "./DeleteTaskDialog";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface TaskListProps {
   goalId: string;
@@ -22,6 +24,8 @@ type Task = Tables<"tasks"> & {
       last_name: string | null;
     } | null;
   }[];
+  due_date?: string | null;
+  completed?: boolean;
 };
 
 export function TaskList({ goalId }: TaskListProps) {
@@ -64,6 +68,31 @@ export function TaskList({ goalId }: TaskListProps) {
     return colorMap[priority] || "bg-gray-100 text-gray-800";
   };
 
+  const toggleTaskCompletion = async (task: Task) => {
+    try {
+      const { error } = await supabase
+        .from('tasks')
+        .update({ completed: !task.completed })
+        .eq('id', task.id);
+      
+      if (error) throw error;
+      
+      refetch();
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+    }
+  };
+
+  const formatDueDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "";
+    try {
+      return format(new Date(dateString), "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+    } catch (e) {
+      console.error("Error formatting date:", e);
+      return dateString;
+    }
+  };
+
   return (
     <div className="mt-6">
       <div className="flex justify-between items-center mb-4">
@@ -81,7 +110,24 @@ export function TaskList({ goalId }: TaskListProps) {
             className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
           >
             <div className="flex justify-between items-start mb-2">
-              <h4 className="font-medium">{task.title}</h4>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleTaskCompletion(task);
+                  }}
+                  className="text-gray-500 hover:text-green-600 transition-colors"
+                >
+                  {task.completed ? (
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <Circle className="h-5 w-5" />
+                  )}
+                </button>
+                <h4 className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}>
+                  {task.title}
+                </h4>
+              </div>
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
                   task.priority
@@ -94,7 +140,14 @@ export function TaskList({ goalId }: TaskListProps) {
                   : "Alta"}
               </span>
             </div>
-            <p className="text-sm text-gray-600 mb-4">{task.description}</p>
+            <p className="text-sm text-gray-600 mb-2">{task.description}</p>
+            
+            {task.due_date && (
+              <p className="text-sm text-gray-600 mb-2">
+                <span className="font-medium">Prazo:</span> {formatDueDate(task.due_date)}
+              </p>
+            )}
+            
             <div className="flex justify-between items-center">
               <div className="flex gap-2">
                 {task.task_assignments?.map((assignment) => (
