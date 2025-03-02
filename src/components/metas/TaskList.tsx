@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus, CheckCircle, Circle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +14,6 @@ interface TaskListProps {
   goalId: string;
 }
 
-// Updated Task type to properly match Supabase's response structure
 type Task = Tables<"tasks"> & {
   task_assignments?: {
     user_id: string;
@@ -37,6 +35,7 @@ export function TaskList({ goalId }: TaskListProps) {
   const { data: tasks, refetch } = useQuery({
     queryKey: ["tasks", goalId],
     queryFn: async () => {
+      console.log("Fetching tasks for goal ID:", goalId);
       const { data, error } = await supabase
         .from("tasks")
         .select(`
@@ -52,11 +51,15 @@ export function TaskList({ goalId }: TaskListProps) {
         .eq("goal_id", goalId)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching tasks:", error);
+        throw error;
+      }
       
-      // Cast the result as unknown first to satisfy TypeScript
+      console.log("Tasks fetched:", data);
       return (data as unknown) as Task[];
     },
+    enabled: !!goalId,
   });
 
   const getPriorityColor = (priority: string) => {
@@ -93,6 +96,8 @@ export function TaskList({ goalId }: TaskListProps) {
     }
   };
 
+  console.log("Current tasks:", tasks);
+
   return (
     <div className="mt-6">
       <div className="flex justify-between items-center mb-4">
@@ -104,86 +109,94 @@ export function TaskList({ goalId }: TaskListProps) {
       </div>
 
       <div className="space-y-4">
-        {tasks?.map((task) => (
-          <div
-            key={task.id}
-            className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
-          >
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleTaskCompletion(task);
-                  }}
-                  className="text-gray-500 hover:text-green-600 transition-colors"
-                >
-                  {task.completed ? (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <Circle className="h-5 w-5" />
-                  )}
-                </button>
-                <h4 className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}>
-                  {task.title}
-                </h4>
-              </div>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                  task.priority
-                )}`}
-              >
-                {task.priority === "low"
-                  ? "Baixa"
-                  : task.priority === "medium"
-                  ? "Média"
-                  : "Alta"}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600 mb-2">{task.description}</p>
-            
-            {task.due_date && (
-              <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Prazo:</span> {formatDueDate(task.due_date)}
-              </p>
-            )}
-            
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2">
-                {task.task_assignments?.map((assignment) => (
-                  <span
-                    key={assignment.user_id}
-                    className="text-xs bg-gray-100 px-2 py-1 rounded"
-                  >
-                    {assignment.profiles?.first_name} {assignment.profiles?.last_name}
-                  </span>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedTask(task);
-                    setIsEditDialogOpen(true);
-                  }}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedTask(task);
-                    setIsDeleteDialogOpen(true);
-                  }}
-                >
-                  Excluir
-                </Button>
-              </div>
-            </div>
+        {!tasks || tasks.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            Nenhuma tarefa encontrada. Clique em "Nova Tarefa" para adicionar.
           </div>
-        ))}
+        ) : (
+          tasks.map((task) => (
+            <div
+              key={task.id}
+              className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleTaskCompletion(task);
+                    }}
+                    className="text-gray-500 hover:text-green-600 transition-colors"
+                  >
+                    {task.completed ? (
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <Circle className="h-5 w-5" />
+                    )}
+                  </button>
+                  <h4 className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}>
+                    {task.title}
+                  </h4>
+                </div>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                    task.priority
+                  )}`}
+                >
+                  {task.priority === "low"
+                    ? "Baixa"
+                    : task.priority === "medium"
+                    ? "Média"
+                    : "Alta"}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">{task.description}</p>
+              
+              {task.due_date && (
+                <p className="text-sm text-gray-600 mb-2">
+                  <span className="font-medium">Prazo:</span> {formatDueDate(task.due_date)}
+                </p>
+              )}
+              
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  {task.task_assignments?.map((assignment) => (
+                    <span
+                      key={assignment.user_id}
+                      className="text-xs bg-gray-100 px-2 py-1 rounded"
+                    >
+                      {assignment.profiles?.first_name} {assignment.profiles?.last_name}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedTask(task);
+                      setIsEditDialogOpen(true);
+                    }}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedTask(task);
+                      setIsDeleteDialogOpen(true);
+                    }}
+                  >
+                    Excluir
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <AddTaskDialog
