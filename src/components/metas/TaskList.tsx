@@ -18,7 +18,7 @@ interface TaskListProps {
 type Task = Tables<"tasks"> & {
   task_assignments: {
     user_id: string;
-    profiles: {
+    profiles?: {
       first_name: string | null;
       last_name: string | null;
     } | null;
@@ -55,15 +55,10 @@ export function TaskList({ goalId }: TaskListProps) {
       // Para cada tarefa, vamos buscar as atribuições de usuários separadamente
       const tasksWithAssignments = await Promise.all(
         tasksData.map(async (task) => {
+          // Buscar todas as atribuições para esta tarefa
           const { data: assignmentsData, error: assignmentsError } = await supabase
             .from("task_assignments")
-            .select(`
-              user_id,
-              profiles:user_id (
-                first_name,
-                last_name
-              )
-            `)
+            .select("user_id")
             .eq("task_id", task.id);
             
           if (assignmentsError) {
@@ -74,11 +69,38 @@ export function TaskList({ goalId }: TaskListProps) {
             };
           }
           
-          console.log("Assignments for task", task.id, ":", assignmentsData);
+          // Se temos atribuições, buscar o perfil de cada usuário separadamente
+          let assignmentsWithProfiles = [];
+          if (assignmentsData && assignmentsData.length > 0) {
+            assignmentsWithProfiles = await Promise.all(
+              assignmentsData.map(async (assignment) => {
+                const { data: profileData, error: profileError } = await supabase
+                  .from("profiles")
+                  .select("first_name, last_name")
+                  .eq("id", assignment.user_id)
+                  .single();
+                
+                if (profileError) {
+                  console.error("Error fetching profile for user:", assignment.user_id, profileError);
+                  return {
+                    user_id: assignment.user_id,
+                    profiles: null
+                  };
+                }
+                
+                return {
+                  user_id: assignment.user_id,
+                  profiles: profileData
+                };
+              })
+            );
+          }
+          
+          console.log("Assignments with profiles for task", task.id, ":", assignmentsWithProfiles);
           
           return {
             ...task,
-            task_assignments: assignmentsData || []
+            task_assignments: assignmentsWithProfiles || []
           };
         })
       );
@@ -187,9 +209,9 @@ export function TaskList({ goalId }: TaskListProps) {
               
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                  {task.task_assignments?.map((assignment) => (
+                  {task.task_assignments?.map((assignment, index) => (
                     <span
-                      key={assignment.user_id}
+                      key={`${assignment.user_id}_${index}`}
                       className="text-xs bg-gray-100 px-2 py-1 rounded"
                     >
                       {assignment.profiles?.first_name} {assignment.profiles?.last_name}
