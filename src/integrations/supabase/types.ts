@@ -36,6 +36,7 @@ export type Database = {
           created_by: string
           department_id: string | null
           description: string | null
+          due_date: string | null
           id: string
           status: Database["public"]["Enums"]["goal_status"]
           term: Database["public"]["Enums"]["goal_term"]
@@ -47,6 +48,7 @@ export type Database = {
           created_by: string
           department_id?: string | null
           description?: string | null
+          due_date?: string | null
           id?: string
           status?: Database["public"]["Enums"]["goal_status"]
           term: Database["public"]["Enums"]["goal_term"]
@@ -58,6 +60,7 @@ export type Database = {
           created_by?: string
           department_id?: string | null
           description?: string | null
+          due_date?: string | null
           id?: string
           status?: Database["public"]["Enums"]["goal_status"]
           term?: Database["public"]["Enums"]["goal_term"]

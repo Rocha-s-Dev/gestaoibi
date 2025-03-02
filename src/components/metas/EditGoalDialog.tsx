@@ -41,7 +41,6 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
     setIsLoading(true);
 
     try {
-      // TypeScript doesn't know about the due_date column yet, but it will be added in the database
       const { error } = await supabase
         .from("goals")
         .update({
