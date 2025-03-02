@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Plus, CheckCircle, Circle } from "lucide-react";
+import { Plus, CheckCircle, Circle, CalendarIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -108,7 +108,6 @@ export function TaskList({ goalId }: TaskListProps) {
       console.log("Tasks with assignments:", tasksWithAssignments);
       return tasksWithAssignments as Task[];
     },
-    enabled: !!goalId,
   });
 
   const getPriorityColor = (priority: string) => {
@@ -202,7 +201,8 @@ export function TaskList({ goalId }: TaskListProps) {
               <p className="text-sm text-gray-600 mb-2">{task.description}</p>
               
               {task.due_date && (
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-gray-600 mb-2 flex items-center">
+                  <CalendarIcon className="h-4 w-4 mr-1 text-gray-400" />
                   <span className="font-medium">Prazo:</span> {formatDueDate(task.due_date)}
                 </p>
               )}

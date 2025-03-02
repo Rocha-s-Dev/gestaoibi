@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -7,6 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { Database, Tables } from "@/integrations/supabase/types";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type GoalTerm = Database["public"]["Enums"]["goal_term"];
 type GoalStatus = Database["public"]["Enums"]["goal_status"];
@@ -24,6 +31,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
     description: goal.description || "",
     term: goal.term as GoalTerm,
     status: goal.status as GoalStatus,
+    dueDate: goal.due_date ? new Date(goal.due_date) : undefined,
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -40,6 +48,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
           description: formData.description,
           term: formData.term,
           status: formData.status,
+          due_date: formData.dueDate ? formData.dueDate.toISOString() : null,
         })
         .eq("id", goal.id);
 
@@ -82,6 +91,35 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Data de vencimento</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !formData.dueDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formData.dueDate ? (
+                    format(formData.dueDate, "PPP", { locale: ptBR })
+                  ) : (
+                    <span>Selecione uma data</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.dueDate}
+                  onSelect={(date) => setFormData({ ...formData, dueDate: date })}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
           <Select
             value={formData.term}
             onValueChange={(value: GoalTerm) => setFormData({ ...formData, term: value })}

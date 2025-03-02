@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -8,6 +9,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { Database, Tables } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format, parse } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type TaskPriority = Database["public"]["Enums"]["task_priority"];
 type Task = Tables<"tasks">;
@@ -25,6 +32,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
     description: task.description || "",
     priority: task.priority as TaskPriority,
     assignedUsers: [] as string[],
+    dueDate: task.due_date ? new Date(task.due_date) : undefined,
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -53,6 +61,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
           title: formData.title,
           description: formData.description,
           priority: formData.priority,
+          due_date: formData.dueDate ? formData.dueDate.toISOString() : null,
         })
         .eq("id", task.id);
 
@@ -118,6 +127,35 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Data de vencimento</label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !formData.dueDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {formData.dueDate ? (
+                    format(formData.dueDate, "PPP", { locale: ptBR })
+                  ) : (
+                    <span>Selecione uma data</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={formData.dueDate}
+                  onSelect={(date) => setFormData({ ...formData, dueDate: date })}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
           <Select
             value={formData.priority}
             onValueChange={(value: TaskPriority) => setFormData({ ...formData, priority: value })}
