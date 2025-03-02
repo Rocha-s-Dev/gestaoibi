@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus, CheckCircle, Circle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ interface TaskListProps {
 }
 
 type Task = Tables<"tasks"> & {
-  task_assignments?: {
+  task_assignments: {
     user_id: string;
     profiles: {
       first_name: string | null;
@@ -36,28 +37,54 @@ export function TaskList({ goalId }: TaskListProps) {
     queryKey: ["tasks", goalId],
     queryFn: async () => {
       console.log("Fetching tasks for goal ID:", goalId);
-      const { data, error } = await supabase
+      
+      // Primeiro, vamos buscar as tarefas básicas
+      const { data: tasksData, error: tasksError } = await supabase
         .from("tasks")
-        .select(`
-          *,
-          task_assignments(
-            user_id,
-            profiles(
-              first_name,
-              last_name
-            )
-          )
-        `)
+        .select("*")
         .eq("goal_id", goalId)
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching tasks:", error);
-        throw error;
+      if (tasksError) {
+        console.error("Error fetching tasks:", tasksError);
+        throw tasksError;
       }
       
-      console.log("Tasks fetched:", data);
-      return (data as unknown) as Task[];
+      console.log("Basic tasks fetched:", tasksData);
+      
+      // Para cada tarefa, vamos buscar as atribuições de usuários separadamente
+      const tasksWithAssignments = await Promise.all(
+        tasksData.map(async (task) => {
+          const { data: assignmentsData, error: assignmentsError } = await supabase
+            .from("task_assignments")
+            .select(`
+              user_id,
+              profiles:user_id (
+                first_name,
+                last_name
+              )
+            `)
+            .eq("task_id", task.id);
+            
+          if (assignmentsError) {
+            console.error("Error fetching assignments for task:", task.id, assignmentsError);
+            return {
+              ...task,
+              task_assignments: []
+            };
+          }
+          
+          console.log("Assignments for task", task.id, ":", assignmentsData);
+          
+          return {
+            ...task,
+            task_assignments: assignmentsData || []
+          };
+        })
+      );
+      
+      console.log("Tasks with assignments:", tasksWithAssignments);
+      return tasksWithAssignments as Task[];
     },
     enabled: !!goalId,
   });
