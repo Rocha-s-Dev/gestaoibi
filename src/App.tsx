@@ -1,37 +1,58 @@
+
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Funcionarios from "./pages/Funcionarios";
-import Metas from "./pages/Metas";
-import NotFound from "./pages/NotFound";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import Dashboard from "@/pages/Dashboard";
+import NotFound from "@/pages/NotFound";
+import Funcionarios from "@/pages/Funcionarios";
+import Metas from "@/pages/Metas";
+import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
+import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
+import "./App.css";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+export default function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/funcionarios"
+          element={
+            <RequireAuth>
+              <Funcionarios />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/metas"
+          element={
+            <RequireAuth>
+              <Metas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/acompanhamento-metas"
+          element={
+            <RequireAuth>
+              <AcompanhamentoMetas />
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/funcionarios" element={<Funcionarios />} />
-            <Route path="/metas" element={<Metas />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+    </AuthProvider>
+  );
+}

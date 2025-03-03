@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -9,6 +10,7 @@ import {
   ChevronRight,
   LogOut,
   Users,
+  BarChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: Target, label: "Metas", path: "/metas" },
+  { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
