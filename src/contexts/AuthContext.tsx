@@ -25,11 +25,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
-      
-      // If user is logged in and on login page, redirect to dashboard
-      if (session && window.location.pathname === "/login") {
-        navigate("/dashboard");
-      }
     });
 
     // Listen for auth changes
@@ -39,8 +34,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       if (session && window.location.pathname === "/login") {
         navigate("/dashboard");
-      } else if (!session && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
-        navigate("/login");
       }
     });
 
@@ -91,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       toast.success("Logout realizado com sucesso!");
+      navigate("/login");
     } catch (error) {
       toast.error("Erro ao fazer logout.");
       console.error("Error signing out:", error);
