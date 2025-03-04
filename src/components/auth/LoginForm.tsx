@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,12 @@ export const LoginForm = () => {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Entrando..." : "Entrar"}
       </Button>
+      <p className="text-center text-sm text-gray-500 mt-4">
+        Não tem uma conta?{" "}
+        <Link to="/register" className="text-primary font-medium hover:underline">
+          Registre-se
+        </Link>
+      </p>
     </form>
   );
 };

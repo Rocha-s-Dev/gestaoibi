@@ -25,6 +25,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
+      
+      // If user is logged in and on login page, redirect to dashboard
+      if (session && window.location.pathname === "/login") {
+        navigate("/dashboard");
+      }
     });
 
     // Listen for auth changes
@@ -32,8 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      if (!session) {
-        navigate("/");
+      if (session && window.location.pathname === "/login") {
+        navigate("/dashboard");
+      } else if (!session && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
+        navigate("/login");
       }
     });
 
@@ -107,7 +114,6 @@ export function useAuth() {
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading } = useAuth();
-  const navigate = useNavigate();
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Carregando...</div>;
