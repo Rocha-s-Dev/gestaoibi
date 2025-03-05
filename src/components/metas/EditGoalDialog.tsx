@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,10 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
 
 type GoalTerm = Database["public"]["Enums"]["goal_term"];
 type GoalStatus = Database["public"]["Enums"]["goal_status"];
@@ -33,15 +37,64 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
     status: goal.status as GoalStatus,
     dueDate: goal.due_date ? new Date(goal.due_date) : undefined,
   });
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("departments")
+        .select("*")
+        .order("name");
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (open && goal) {
+      // Fetch the departments associated with this goal
+      const fetchGoalDepartments = async () => {
+        const { data, error } = await supabase
+          .from("goal_departments")
+          .select("department_id")
+          .eq("goal_id", goal.id);
+        
+        if (error) {
+          console.error("Error fetching goal departments:", error);
+          return;
+        }
+        
+        if (data) {
+          const departmentIds = data.map(item => item.department_id);
+          setSelectedDepartments(departmentIds);
+        }
+      };
+      
+      fetchGoalDepartments();
+    }
+  }, [open, goal]);
+
+  const handleToggleDepartment = (departmentId: string) => {
+    setSelectedDepartments(prev => {
+      if (prev.includes(departmentId)) {
+        return prev.filter(id => id !== departmentId);
+      } else {
+        return [...prev, departmentId];
+      }
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
+      // Update the goal information
+      const { error: goalError } = await supabase
         .from("goals")
         .update({
           title: formData.title,
@@ -52,7 +105,29 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
         })
         .eq("id", goal.id);
 
-      if (error) throw error;
+      if (goalError) throw goalError;
+
+      // Remove all existing department associations
+      const { error: deleteError } = await supabase
+        .from("goal_departments")
+        .delete()
+        .eq("goal_id", goal.id);
+
+      if (deleteError) throw deleteError;
+
+      // Create new department associations if any departments are selected
+      if (selectedDepartments.length > 0) {
+        const departmentAssociations = selectedDepartments.map(departmentId => ({
+          goal_id: goal.id,
+          department_id: departmentId
+        }));
+
+        const { error: insertError } = await supabase
+          .from("goal_departments")
+          .insert(departmentAssociations);
+
+        if (insertError) throw insertError;
+      }
 
       toast({
         title: "Meta atualizada com sucesso",
@@ -75,7 +150,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Meta</DialogTitle>
         </DialogHeader>
@@ -91,6 +166,30 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
+          
+          <div className="space-y-2">
+            <Label htmlFor="departments">Secretarias (selecione uma ou mais)</Label>
+            <ScrollArea className="h-[200px] border rounded-md p-2">
+              <div className="space-y-2">
+                {departments?.map((department) => (
+                  <div key={department.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`department-${department.id}`}
+                      checked={selectedDepartments.includes(department.id)}
+                      onCheckedChange={() => handleToggleDepartment(department.id)}
+                    />
+                    <Label
+                      htmlFor={`department-${department.id}`}
+                      className="cursor-pointer"
+                    >
+                      {department.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          
           <div className="space-y-2">
             <label className="text-sm font-medium">Data de vencimento</label>
             <Popover>

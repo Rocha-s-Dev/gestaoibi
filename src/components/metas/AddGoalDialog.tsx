@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -8,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type GoalTerm = Database["public"]["Enums"]["goal_term"];
 type GoalStatus = Database["public"]["Enums"]["goal_status"];
@@ -24,8 +28,8 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
     description: "",
     term: "short" as GoalTerm,
     status: "pending" as GoalStatus,
-    department_id: "",
   });
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -42,6 +46,16 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
     },
   });
 
+  const handleToggleDepartment = (departmentId: string) => {
+    setSelectedDepartments(prev => {
+      if (prev.includes(departmentId)) {
+        return prev.filter(id => id !== departmentId);
+      } else {
+        return [...prev, departmentId];
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -50,16 +64,34 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
-      const { error } = await supabase.from("goals").insert({
-        title: formData.title,
-        description: formData.description,
-        term: formData.term,
-        status: formData.status,
-        department_id: formData.department_id || null,
-        created_by: user.id,
-      });
+      // First, insert the goal
+      const { data: goalData, error: goalError } = await supabase
+        .from("goals")
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          term: formData.term,
+          status: formData.status,
+          created_by: user.id,
+        })
+        .select('id')
+        .single();
 
-      if (error) throw error;
+      if (goalError) throw goalError;
+
+      // Then, create the department associations
+      if (selectedDepartments.length > 0 && goalData) {
+        const departmentAssociations = selectedDepartments.map(departmentId => ({
+          goal_id: goalData.id,
+          department_id: departmentId
+        }));
+
+        const { error: departmentError } = await supabase
+          .from("goal_departments")
+          .insert(departmentAssociations);
+
+        if (departmentError) throw departmentError;
+      }
 
       toast({
         title: "Meta criada com sucesso",
@@ -73,8 +105,8 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
         description: "",
         term: "short" as GoalTerm,
         status: "pending" as GoalStatus,
-        department_id: "",
       });
+      setSelectedDepartments([]);
     } catch (error) {
       console.error("Error adding goal:", error);
       toast({
@@ -89,7 +121,7 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-background">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto bg-background">
         <DialogHeader>
           <DialogTitle>Nova Meta</DialogTitle>
           <DialogDescription>
@@ -108,21 +140,30 @@ export function AddGoalDialog({ open, onOpenChange, onGoalAdded }: AddGoalDialog
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           />
-          <Select
-            value={formData.department_id}
-            onValueChange={(value) => setFormData({ ...formData, department_id: value })}
-          >
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Selecione a secretaria" />
-            </SelectTrigger>
-            <SelectContent>
-              {departments?.map((department) => (
-                <SelectItem key={department.id} value={department.id}>
-                  {department.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          
+          <div className="space-y-2">
+            <Label htmlFor="departments">Secretarias (selecione uma ou mais)</Label>
+            <ScrollArea className="h-[200px] border rounded-md p-2">
+              <div className="space-y-2">
+                {departments?.map((department) => (
+                  <div key={department.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`department-${department.id}`}
+                      checked={selectedDepartments.includes(department.id)}
+                      onCheckedChange={() => handleToggleDepartment(department.id)}
+                    />
+                    <Label
+                      htmlFor={`department-${department.id}`}
+                      className="cursor-pointer"
+                    >
+                      {department.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          
           <Select
             value={formData.term}
             onValueChange={(value: GoalTerm) => setFormData({ ...formData, term: value })}

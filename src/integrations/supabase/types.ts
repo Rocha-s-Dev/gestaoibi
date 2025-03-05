@@ -30,11 +30,49 @@ export type Database = {
         }
         Relationships: []
       }
+      goal_departments: {
+        Row: {
+          created_at: string
+          department_id: string
+          goal_id: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          goal_id: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          goal_id?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_departments_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "goal_departments_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goals: {
         Row: {
           created_at: string
           created_by: string
-          department_id: string | null
           description: string | null
           due_date: string | null
           id: string
@@ -46,7 +84,6 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by: string
-          department_id?: string | null
           description?: string | null
           due_date?: string | null
           id?: string
@@ -58,7 +95,6 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string
-          department_id?: string | null
           description?: string | null
           due_date?: string | null
           id?: string
@@ -67,15 +103,7 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "goals_department_id_fkey"
-            columns: ["department_id"]
-            isOneToOne: false
-            referencedRelation: "departments"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
