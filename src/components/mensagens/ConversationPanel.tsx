@@ -9,16 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Tables } from "@/integrations/supabase/types";
-
-type Message = Tables<"messages">;
-type Conversation = Tables<"conversations"> & {
-  profiles: {
-    first_name: string | null;
-    last_name: string | null;
-    role: string;
-  } | null;
-};
+import { Message, Conversation } from "@/types/messaging";
 
 interface ConversationPanelProps {
   conversationId: string;
@@ -74,10 +65,7 @@ export const ConversationPanel = ({
     try {
       const { data, error } = await supabase
         .from("conversations")
-        .select(`
-          *,
-          profiles:receiver_id(first_name, last_name, role)
-        `)
+        .select("*, profiles:receiver_id(first_name, last_name, role)")
         .eq("id", conversationId)
         .single();
 

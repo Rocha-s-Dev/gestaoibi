@@ -6,14 +6,7 @@ import { ConversationPanel } from "@/components/mensagens/ConversationPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
-import { Tables } from "@/integrations/supabase/types";
-
-type Conversation = Tables<"conversations"> & {
-  profiles: {
-    first_name: string;
-    last_name: string;
-  } | null;
-};
+import { Conversation } from "@/types/messaging";
 
 const Mensagens = () => {
   const { session } = useAuth();
@@ -32,10 +25,7 @@ const Mensagens = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("conversations")
-        .select(`
-          *,
-          profiles:receiver_id(first_name, last_name)
-        `)
+        .select("*, profiles:receiver_id(first_name, last_name, role)")
         .or(`sender_id.eq.${session?.user?.id},receiver_id.eq.${session?.user?.id}`)
         .order("updated_at", { ascending: false });
 

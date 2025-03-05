@@ -1,16 +1,14 @@
 
-import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { Search } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tables } from "@/integrations/supabase/types";
-
-type Profile = Tables<"profiles">;
 
 interface NewConversationDialogProps {
   open: boolean;
@@ -18,68 +16,53 @@ interface NewConversationDialogProps {
   onSelectUser: (userId: string) => void;
 }
 
-export const NewConversationDialog = ({
+type UserProfile = Tables<"profiles"> & {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: string;
+};
+
+export function NewConversationDialog({
   open,
   onOpenChange,
   onSelectUser,
-}: NewConversationDialogProps) => {
-  const { session } = useAuth();
+}: NewConversationDialogProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [users, setUsers] = useState<Profile[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      fetchUsers();
-    }
-  }, [open, searchTerm]);
-
-  const fetchUsers = async () => {
-    if (!session?.user?.id) return;
-    
-    try {
-      setLoading(true);
-      const query = supabase
+  const { session } = useAuth();
+  
+  const { data: users, isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .neq("id", session.user.id);
-      
-      if (searchTerm) {
-        query.or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%`);
-      }
-      
-      const { data, error } = await query;
+        .neq("id", session?.user?.id || "")
+        .order("first_name");
       
       if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return data as UserProfile[];
+    },
+    enabled: open, // Only fetch when dialog is open
+  });
+
+  const filteredUsers = users?.filter((user) => {
+    const fullName = `${user.first_name || ""} ${user.last_name || ""}`.toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase());
+  });
 
   const handleSelectUser = (userId: string) => {
     onSelectUser(userId);
     onOpenChange(false);
   };
 
-  const getRoleDisplay = (role: string) => {
-    switch (role) {
-      case "admin": return "Administrador";
-      case "secretary": return "Secretário";
-      case "mayor": return "Prefeito";
-      default: return "Funcionário";
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nova Mensagem</DialogTitle>
+          <DialogTitle>Nova Conversa</DialogTitle>
         </DialogHeader>
-        <div className="relative mb-4 mt-2">
+        <div className="relative mb-4">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Buscar usuário..."
@@ -88,22 +71,15 @@ export const NewConversationDialog = ({
             className="pl-10"
           />
         </div>
-        
-        <ScrollArea className="h-[300px] pr-4">
-          {loading ? (
-            <div className="flex justify-center p-4">
-              <p>Carregando usuários...</p>
-            </div>
-          ) : users.length === 0 ? (
-            <div className="flex justify-center p-4 text-gray-500">
-              <p>Nenhum usuário encontrado</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {users.map((user) => (
+        <ScrollArea className="h-80">
+          <div className="space-y-2">
+            {isLoading ? (
+              <div className="text-center py-4">Carregando usuários...</div>
+            ) : filteredUsers?.length ? (
+              filteredUsers.map((user) => (
                 <button
                   key={user.id}
-                  className="w-full text-left p-3 hover:bg-gray-50 rounded-md transition-colors flex items-center"
+                  className="w-full p-3 flex items-center hover:bg-gray-50 rounded-md transition-colors"
                   onClick={() => handleSelectUser(user.id)}
                 >
                   <Avatar className="h-10 w-10 mr-3">
@@ -111,20 +87,25 @@ export const NewConversationDialog = ({
                       {user.first_name?.charAt(0) || "U"}
                     </div>
                   </Avatar>
-                  <div>
+                  <div className="text-left">
                     <p className="font-medium">
                       {user.first_name} {user.last_name}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {getRoleDisplay(user.role)}
+                      {user.role === "secretary" ? "Secretário" : 
+                       user.role === "admin" ? "Administrador" : "Funcionário"}
                     </p>
                   </div>
                 </button>
-              ))}
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="text-center py-4 text-gray-500">
+                {searchTerm ? "Nenhum usuário encontrado" : "Nenhum usuário disponível"}
+              </div>
+            )}
+          </div>
         </ScrollArea>
       </DialogContent>
     </Dialog>
   );
-};
+}

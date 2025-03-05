@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Search, Plus, Users } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,18 +8,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { NewConversationDialog } from "./NewConversationDialog";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-
-type Conversation = {
-  id: string;
-  sender_id: string;
-  receiver_id: string;
-  last_message?: string | null;
-  updated_at: string;
-  profiles: {
-    first_name: string | null;
-    last_name: string | null;
-  } | null;
-};
+import { Conversation } from "@/types/messaging";
 
 interface MessageListProps {
   conversations: Conversation[];
