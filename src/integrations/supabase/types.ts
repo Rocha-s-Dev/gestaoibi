@@ -169,29 +169,59 @@ export type Database = {
       }
       profiles: {
         Row: {
+          bairro: string | null
+          cidade: string | null
+          cpf: string | null
           created_at: string
+          data_nascimento: string | null
           department_id: string | null
+          email: string | null
+          endereco: string | null
+          estado: string | null
           first_name: string | null
           id: string
           last_name: string | null
+          numero_endereco: string | null
+          pais: string | null
+          rg: string | null
           role: string
           updated_at: string
         }
         Insert: {
+          bairro?: string | null
+          cidade?: string | null
+          cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           department_id?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
           first_name?: string | null
           id: string
           last_name?: string | null
+          numero_endereco?: string | null
+          pais?: string | null
+          rg?: string | null
           role?: string
           updated_at?: string
         }
         Update: {
+          bairro?: string | null
+          cidade?: string | null
+          cpf?: string | null
           created_at?: string
+          data_nascimento?: string | null
           department_id?: string | null
+          email?: string | null
+          endereco?: string | null
+          estado?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
+          numero_endereco?: string | null
+          pais?: string | null
+          rg?: string | null
           role?: string
           updated_at?: string
         }

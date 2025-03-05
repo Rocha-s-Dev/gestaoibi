@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Input } from "@/components/ui/input";
@@ -39,7 +40,11 @@ const Funcionarios = () => {
     profile.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     profile.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     profile.department_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getRoleDisplay(profile.role).toLowerCase().includes(searchTerm.toLowerCase())
+    getRoleDisplay(profile.role).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.cidade?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.estado?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.cpf?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -55,7 +60,7 @@ const Funcionarios = () => {
           <div className="relative mb-6">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar funcionários..."
+              placeholder="Buscar funcionários por nome, cargo, departamento, email, cidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -82,6 +87,14 @@ const Funcionarios = () => {
                       <p className="text-sm text-gray-600">
                         {getRoleDisplay(profile.role)}
                       </p>
+                      {profile.email && (
+                        <p className="text-sm text-gray-600">{profile.email}</p>
+                      )}
+                      {profile.cidade && profile.estado && (
+                        <p className="text-sm text-gray-600">
+                          {profile.cidade}, {profile.estado}
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-2">
                       <ViewUserDialog user={profile} />
