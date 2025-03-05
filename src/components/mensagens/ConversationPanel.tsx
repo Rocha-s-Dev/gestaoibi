@@ -63,29 +63,43 @@ export const ConversationPanel = ({
 
   const fetchConversation = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch the conversation
+      const { data: convData, error: convError } = await supabase
         .from("conversations")
-        .select(`
-          *,
-          receiver_profile:profiles!receiver_id(first_name, last_name, role)
-        `)
+        .select("*")
         .eq("id", conversationId)
         .single();
 
-      if (error) throw error;
+      if (convError) throw convError;
       
-      // Transform to match our Conversation type
-      const formattedData: Conversation = {
-        id: data.id,
-        sender_id: data.sender_id,
-        receiver_id: data.receiver_id,
-        last_message: data.last_message,
-        created_at: data.created_at,
-        updated_at: data.updated_at,
-        receiver_profile: data.receiver_profile
+      // Determine which user is the other person in the conversation
+      const otherUserId = convData.sender_id === session?.user?.id 
+        ? convData.receiver_id 
+        : convData.sender_id;
+      
+      // Fetch that user's profile
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("first_name, last_name, role")
+        .eq("id", otherUserId)
+        .single();
+      
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error("Error fetching profile:", profileError);
+      }
+      
+      // Combine the conversation data with the profile
+      const fullConversation: Conversation = {
+        id: convData.id,
+        sender_id: convData.sender_id,
+        receiver_id: convData.receiver_id,
+        last_message: convData.last_message,
+        created_at: convData.created_at,
+        updated_at: convData.updated_at,
+        receiver_profile: profileData || null
       };
       
-      setConversation(formattedData);
+      setConversation(fullConversation);
     } catch (error) {
       console.error("Error fetching conversation:", error);
     }

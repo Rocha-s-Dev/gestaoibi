@@ -23,33 +23,53 @@ const Mensagens = () => {
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      const { data: rawData, error } = await supabase
+      
+      // First fetch all conversations the user is part of
+      const { data: conversationsData, error: conversationsError } = await supabase
         .from("conversations")
-        .select(`
-          *,
-          receiver_profile:profiles!receiver_id(first_name, last_name, role)
-        `)
+        .select("*")
         .or(`sender_id.eq.${session?.user?.id},receiver_id.eq.${session?.user?.id}`)
         .order("updated_at", { ascending: false });
 
-      if (error) throw error;
+      if (conversationsError) throw conversationsError;
       
-      // Transform the data to match our Conversation type
-      const formattedData: Conversation[] = rawData?.map(conv => ({
-        id: conv.id,
-        sender_id: conv.sender_id,
-        receiver_id: conv.receiver_id,
-        last_message: conv.last_message,
-        created_at: conv.created_at,
-        updated_at: conv.updated_at,
-        receiver_profile: conv.receiver_profile
-      })) || [];
+      // For each conversation, get the profile of the other user
+      const conversationsWithProfiles: Conversation[] = [];
       
-      setConversations(formattedData);
+      for (const conversation of conversationsData || []) {
+        // Determine which user is the receiver (the other person in the conversation)
+        const otherUserId = conversation.sender_id === session?.user?.id 
+          ? conversation.receiver_id 
+          : conversation.sender_id;
+        
+        // Fetch the profile for that user
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("first_name, last_name, role")
+          .eq("id", otherUserId)
+          .single();
+        
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error("Error fetching profile:", profileError);
+        }
+        
+        // Add to our conversations array with the profile information
+        conversationsWithProfiles.push({
+          id: conversation.id,
+          sender_id: conversation.sender_id,
+          receiver_id: conversation.receiver_id,
+          last_message: conversation.last_message,
+          created_at: conversation.created_at,
+          updated_at: conversation.updated_at,
+          receiver_profile: profileData || null
+        });
+      }
+      
+      setConversations(conversationsWithProfiles);
       
       // Select the first conversation by default if there are any
-      if (formattedData.length > 0 && !selectedConversation) {
-        setSelectedConversation(formattedData[0].id);
+      if (conversationsWithProfiles.length > 0 && !selectedConversation) {
+        setSelectedConversation(conversationsWithProfiles[0].id);
       }
     } catch (error) {
       console.error("Error fetching conversations:", error);
