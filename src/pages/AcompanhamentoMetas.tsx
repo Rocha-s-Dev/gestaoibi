@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 type Goal = Tables<"goals">;
 type Department = Tables<"departments">;
+type GoalDepartment = Tables<"goal_departments">;
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 const STATUS_COLORS = {
@@ -34,6 +34,7 @@ const STATUS_LABELS = {
 export default function AcompanhamentoMetas() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [goalDepartments, setGoalDepartments] = useState<GoalDepartment[]>([]);
   const [selectedDepartment, setSelectedDepartment] = useState<string>("all");
   const [statusData, setStatusData] = useState<any[]>([]);
   const [termData, setTermData] = useState<any[]>([]);
@@ -44,17 +45,18 @@ export default function AcompanhamentoMetas() {
   useEffect(() => {
     fetchDepartments();
     checkUserRole();
+    fetchGoalDepartments();
   }, []);
 
   useEffect(() => {
     fetchGoals();
-  }, [selectedDepartment]);
+  }, [selectedDepartment, goalDepartments]);
 
   useEffect(() => {
     if (goals.length > 0) {
       prepareChartData();
     }
-  }, [goals]);
+  }, [goals, departments, goalDepartments]);
 
   const checkUserRole = async () => {
     try {
@@ -96,6 +98,19 @@ export default function AcompanhamentoMetas() {
     }
   };
 
+  const fetchGoalDepartments = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("goal_departments")
+        .select("*");
+
+      if (error) throw error;
+      setGoalDepartments(data || []);
+    } catch (error) {
+      console.error("Erro ao carregar relações de metas e departamentos:", error);
+    }
+  };
+
   const fetchGoals = async () => {
     try {
       let query = supabase.from("goals").select("*");
@@ -106,15 +121,23 @@ export default function AcompanhamentoMetas() {
         if (user) {
           query = query.eq("created_by", user.id);
         }
-      } else if (selectedDepartment !== "all") {
-        // Admin pode filtrar por departamento
-        query = query.eq("department_id", selectedDepartment);
       }
       
-      const { data, error } = await query;
-
+      const { data: allGoals, error } = await query;
+      
       if (error) throw error;
-      setGoals(data || []);
+      
+      if (selectedDepartment !== "all" && allGoals) {
+        // Filter goals by department using the goal_departments join table
+        const filteredGoals = allGoals.filter(goal => 
+          goalDepartments.some(gd => 
+            gd.goal_id === goal.id && gd.department_id === selectedDepartment
+          )
+        );
+        setGoals(filteredGoals || []);
+      } else {
+        setGoals(allGoals || []);
+      }
     } catch (error) {
       console.error("Erro ao carregar metas:", error);
       toast({
@@ -155,7 +178,14 @@ export default function AcompanhamentoMetas() {
     // Dados para o gráfico de barras por departamento
     if (isAdmin && departments.length > 0) {
       const deptGoalCounts = departments.map(dept => {
-        const deptGoals = goals.filter(goal => goal.department_id === dept.id);
+        // Find all goal_departments entries for this department
+        const deptGoalRelations = goalDepartments.filter(gd => gd.department_id === dept.id);
+        
+        // Get all goals for this department
+        const deptGoals = goals.filter(goal => 
+          deptGoalRelations.some(relation => relation.goal_id === goal.id)
+        );
+        
         const completed = deptGoals.filter(g => g.status === "completed").length;
         const total = deptGoals.length;
         
