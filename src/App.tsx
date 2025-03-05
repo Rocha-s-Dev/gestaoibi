@@ -8,6 +8,7 @@ import NotFound from "@/pages/NotFound";
 import Funcionarios from "@/pages/Funcionarios";
 import Metas from "@/pages/Metas";
 import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
+import Mensagens from "@/pages/Mensagens";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -47,6 +48,14 @@ export default function App() {
           element={
             <RequireAuth>
               <AcompanhamentoMetas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/mensagens"
+          element={
+            <RequireAuth>
+              <Mensagens />
             </RequireAuth>
           }
         />

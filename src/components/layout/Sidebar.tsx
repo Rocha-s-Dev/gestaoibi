@@ -11,6 +11,7 @@ import {
   LogOut,
   Users,
   BarChart,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ const menuItems = [
   { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: Target, label: "Metas", path: "/metas" },
   { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
+  { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
