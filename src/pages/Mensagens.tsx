@@ -23,18 +23,33 @@ const Mensagens = () => {
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data: rawData, error } = await supabase
         .from("conversations")
-        .select("*, profiles:receiver_id(first_name, last_name, role)")
+        .select(`
+          *,
+          receiver_profile:profiles!receiver_id(first_name, last_name, role)
+        `)
         .or(`sender_id.eq.${session?.user?.id},receiver_id.eq.${session?.user?.id}`)
         .order("updated_at", { ascending: false });
 
       if (error) throw error;
-      setConversations(data || []);
+      
+      // Transform the data to match our Conversation type
+      const formattedData: Conversation[] = rawData?.map(conv => ({
+        id: conv.id,
+        sender_id: conv.sender_id,
+        receiver_id: conv.receiver_id,
+        last_message: conv.last_message,
+        created_at: conv.created_at,
+        updated_at: conv.updated_at,
+        receiver_profile: conv.receiver_profile
+      })) || [];
+      
+      setConversations(formattedData);
       
       // Select the first conversation by default if there are any
-      if (data && data.length > 0 && !selectedConversation) {
-        setSelectedConversation(data[0].id);
+      if (formattedData.length > 0 && !selectedConversation) {
+        setSelectedConversation(formattedData[0].id);
       }
     } catch (error) {
       console.error("Error fetching conversations:", error);

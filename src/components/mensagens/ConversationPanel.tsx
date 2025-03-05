@@ -65,12 +65,27 @@ export const ConversationPanel = ({
     try {
       const { data, error } = await supabase
         .from("conversations")
-        .select("*, profiles:receiver_id(first_name, last_name, role)")
+        .select(`
+          *,
+          receiver_profile:profiles!receiver_id(first_name, last_name, role)
+        `)
         .eq("id", conversationId)
         .single();
 
       if (error) throw error;
-      setConversation(data);
+      
+      // Transform to match our Conversation type
+      const formattedData: Conversation = {
+        id: data.id,
+        sender_id: data.sender_id,
+        receiver_id: data.receiver_id,
+        last_message: data.last_message,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        receiver_profile: data.receiver_profile
+      };
+      
+      setConversation(formattedData);
     } catch (error) {
       console.error("Error fetching conversation:", error);
     }
@@ -163,16 +178,16 @@ export const ConversationPanel = ({
         <div className="flex items-center">
           <Avatar className="h-10 w-10 mr-3">
             <div className="bg-primary text-primary-foreground h-full w-full flex items-center justify-center text-lg">
-              {conversation.profiles?.first_name?.charAt(0) || "U"}
+              {conversation.receiver_profile?.first_name?.charAt(0) || "U"}
             </div>
           </Avatar>
           <div>
             <h3 className="font-medium">
-              {conversation.profiles?.first_name} {conversation.profiles?.last_name}
+              {conversation.receiver_profile?.first_name} {conversation.receiver_profile?.last_name}
             </h3>
             <p className="text-sm text-gray-500">
-              {conversation.profiles?.role === "secretary" ? "Secretário" : 
-               conversation.profiles?.role === "admin" ? "Administrador" : "Funcionário"}
+              {conversation.receiver_profile?.role === "secretary" ? "Secretário" : 
+               conversation.receiver_profile?.role === "admin" ? "Administrador" : "Funcionário"}
             </p>
           </div>
         </div>

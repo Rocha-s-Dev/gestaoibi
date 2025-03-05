@@ -28,7 +28,7 @@ export const MessageList = ({
 
   const filteredConversations = conversations.filter(
     (conversation) => {
-      const fullName = `${conversation.profiles?.first_name || ''} ${conversation.profiles?.last_name || ''}`.toLowerCase();
+      const fullName = `${conversation.receiver_profile?.first_name || ''} ${conversation.receiver_profile?.last_name || ''}`.toLowerCase();
       return fullName.includes(searchTerm.toLowerCase());
     }
   );
@@ -72,13 +72,13 @@ export const MessageList = ({
                 <div className="flex items-start">
                   <Avatar className="h-10 w-10 mr-3">
                     <div className="bg-primary text-primary-foreground h-full w-full flex items-center justify-center text-lg">
-                      {conversation.profiles?.first_name?.charAt(0) || "U"}
+                      {conversation.receiver_profile?.first_name?.charAt(0) || "U"}
                     </div>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between">
                       <p className="font-medium truncate">
-                        {conversation.profiles?.first_name} {conversation.profiles?.last_name}
+                        {conversation.receiver_profile?.first_name} {conversation.receiver_profile?.last_name}
                       </p>
                       <span className="text-xs text-gray-500">
                         {formatMessageDate(conversation.updated_at)}

@@ -17,7 +17,7 @@ export type Conversation = {
   last_message?: string | null;
   created_at: string;
   updated_at: string;
-  profiles?: {
+  receiver_profile?: {
     first_name: string | null;
     last_name: string | null;
     role: string;
