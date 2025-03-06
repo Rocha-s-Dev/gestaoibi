@@ -9,6 +9,7 @@ import { Edit } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 interface EditUserDialogProps {
   user: {
@@ -50,6 +51,21 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
     data_nascimento: user.data_nascimento ? user.data_nascimento.split('T')[0] : "",
   });
 
+  // Buscar departamentos para exibir em um select
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("departments")
+        .select("*")
+        .order("name");
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: open, // Só busca quando o modal estiver aberto
+  });
+
   const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,11 +73,16 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
     setLoading(true);
 
     try {
-      // Prepare data for update, ensuring proper date formatting
+      // Validar se department_id é um UUID válido ou deixar como null
+      const isValidUUID = 
+        formData.department_id && 
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(formData.department_id);
+      
+      // Prepare data for update, ensuring proper data formatting
       const updateData = {
         first_name: formData.firstName,
         last_name: formData.lastName,
-        department_id: formData.department_id || null,
+        department_id: isValidUUID ? formData.department_id : null,
         role: formData.role,
         email: formData.email || null,
         endereco: formData.endereco || null,
@@ -172,12 +193,21 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
             <h4 className="text-sm font-semibold">Informações Profissionais</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="department_id">ID do Departamento</Label>
-                <Input
-                  id="department_id"
+                <Label htmlFor="department_id">Departamento</Label>
+                <Select
                   value={formData.department_id}
-                  onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
-                />
+                  onValueChange={(value) => setFormData({ ...formData, department_id: value })}
+                >
+                  <SelectTrigger id="department_id">
+                    <SelectValue placeholder="Selecione o departamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Nenhum departamento</SelectItem>
+                    {departments?.map(dept => (
+                      <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Cargo</Label>
