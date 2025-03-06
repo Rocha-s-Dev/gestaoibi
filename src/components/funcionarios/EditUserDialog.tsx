@@ -49,7 +49,11 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
     cpf: user.cpf || "",
     rg: user.rg || "",
     data_nascimento: user.data_nascimento ? user.data_nascimento.split('T')[0] : "",
+    password: "", // New password field
+    confirmPassword: "", // Confirm password field
   });
+  
+  const [passwordError, setPasswordError] = useState("");
 
   // Buscar departamentos para exibir em um select
   const { data: departments } = useQuery({
@@ -68,8 +72,38 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
 
   const queryClient = useQueryClient();
 
+  const validatePasswords = () => {
+    // Reset previous error
+    setPasswordError("");
+    
+    // If both password fields are empty, we're not changing the password
+    if (!formData.password && !formData.confirmPassword) {
+      return true;
+    }
+    
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("As senhas não coincidem");
+      return false;
+    }
+    
+    // Check password length
+    if (formData.password.length < 6) {
+      setPasswordError("A senha deve ter pelo menos 6 caracteres");
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate passwords before proceeding
+    if (!validatePasswords()) {
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -107,10 +141,39 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
         console.error("Erro detalhado:", error);
         throw error;
       }
+      
+      // Handle password update if a new password was provided
+      if (formData.password) {
+        // Using the admin API to update the user's password
+        // Note: This requires proper permissions and would typically be handled by a server-side function
+        if (formData.email) {
+          const { error: passwordError } = await supabase.auth.admin.updateUserById(
+            user.id,
+            { password: formData.password }
+          );
+          
+          if (passwordError) {
+            console.error("Erro ao atualizar senha:", passwordError);
+            throw passwordError;
+          }
+        } else {
+          toast.error("É necessário um email para atualizar a senha");
+          setLoading(false);
+          return;
+        }
+      }
 
       toast.success("Usuário atualizado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
       setOpen(false);
+      
+      // Reset password fields
+      setFormData({
+        ...formData,
+        password: "",
+        confirmPassword: ""
+      });
+      
     } catch (error) {
       console.error("Erro ao atualizar usuário:", error);
       toast.error("Erro ao atualizar usuário. Tente novamente.");
@@ -227,6 +290,38 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
                 </Select>
               </div>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="text-sm font-semibold">Alterar Senha</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">Nova Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Deixe em branco para manter a senha atual"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmar Nova Senha</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  placeholder="Confirme a nova senha"
+                />
+              </div>
+            </div>
+            {passwordError && (
+              <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              A senha deve ter pelo menos 6 caracteres. Deixe em branco para manter a senha atual.
+            </p>
           </div>
 
           <div className="space-y-2">
