@@ -1,1 +1,6 @@
+
 project_id = "rdxrwxjypqsyasunupqs"
+[api]
+enabled_apis = ["storage", "auth", "postgresql", "functions", "realtime"]
+[functions.update-user-password]
+verify_jwt = true

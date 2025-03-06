@@ -96,6 +96,23 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
     return true;
   };
 
+  const updateUserPassword = async (userId: string, password: string) => {
+    try {
+      const response = await supabase.functions.invoke('update-user-password', {
+        body: { userId, password }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || "Erro ao atualizar senha");
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Erro ao chamar a função de atualização de senha:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -144,18 +161,9 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
       
       // Handle password update if a new password was provided
       if (formData.password) {
-        // Using the admin API to update the user's password
-        // Note: This requires proper permissions and would typically be handled by a server-side function
         if (formData.email) {
-          const { error: passwordError } = await supabase.auth.admin.updateUserById(
-            user.id,
-            { password: formData.password }
-          );
-          
-          if (passwordError) {
-            console.error("Erro ao atualizar senha:", passwordError);
-            throw passwordError;
-          }
+          // Use our edge function instead of direct admin API call
+          await updateUserPassword(user.id, formData.password);
         } else {
           toast.error("É necessário um email para atualizar a senha");
           setLoading(false);
