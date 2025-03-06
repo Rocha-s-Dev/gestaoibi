@@ -57,27 +57,35 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
     setLoading(true);
 
     try {
+      // Prepare data for update, ensuring proper date formatting
+      const updateData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        department_id: formData.department_id || null,
+        role: formData.role,
+        email: formData.email || null,
+        endereco: formData.endereco || null,
+        numero_endereco: formData.numero_endereco || null,
+        bairro: formData.bairro || null,
+        cidade: formData.cidade || null,
+        estado: formData.estado || null,
+        pais: formData.pais || "Brasil",
+        cpf: formData.cpf || null,
+        rg: formData.rg || null,
+        data_nascimento: formData.data_nascimento || null,
+      };
+      
+      console.log("Atualizando usuário com os dados:", updateData);
+      
       const { error } = await supabase
         .from("profiles")
-        .update({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          department_id: formData.department_id,
-          role: formData.role,
-          email: formData.email,
-          endereco: formData.endereco,
-          numero_endereco: formData.numero_endereco,
-          bairro: formData.bairro,
-          cidade: formData.cidade,
-          estado: formData.estado,
-          pais: formData.pais,
-          cpf: formData.cpf,
-          rg: formData.rg,
-          data_nascimento: formData.data_nascimento || null,
-        })
+        .update(updateData)
         .eq("id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro detalhado:", error);
+        throw error;
+      }
 
       toast.success("Usuário atualizado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
