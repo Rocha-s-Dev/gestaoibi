@@ -21,7 +21,12 @@ const Funcionarios = () => {
         .select("*")
         .order("first_name");
       
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar perfis:", error);
+        throw error;
+      }
+      
+      console.log("Perfis carregados:", data);
       return data;
     },
   });
@@ -69,9 +74,9 @@ const Funcionarios = () => {
 
           {isLoading ? (
             <div className="text-center py-8">Carregando...</div>
-          ) : (
+          ) : filteredProfiles && filteredProfiles.length > 0 ? (
             <div className="grid gap-4">
-              {filteredProfiles?.map((profile) => (
+              {filteredProfiles.map((profile) => (
                 <div
                   key={profile.id}
                   className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow"
@@ -107,6 +112,10 @@ const Funcionarios = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              Nenhum funcionário encontrado
             </div>
           )}
         </div>

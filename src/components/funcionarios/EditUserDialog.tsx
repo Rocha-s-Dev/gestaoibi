@@ -202,7 +202,7 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
                     <SelectValue placeholder="Selecione o departamento" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhum departamento</SelectItem>
+                    <SelectItem value="none">Nenhum departamento</SelectItem>
                     {departments?.map(dept => (
                       <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
                     ))}
