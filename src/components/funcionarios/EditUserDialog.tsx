@@ -98,12 +98,20 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
 
   const updateUserPassword = async (userId: string, password: string) => {
     try {
-      const response = await supabase.functions.invoke('update-user-password', {
+      // Use .invoke and add specific error handling
+      const { data, error } = await supabase.functions.invoke('update-user-password', {
         body: { userId, password }
       });
 
-      if (response.error) {
-        throw new Error(response.error.message || "Erro ao atualizar senha");
+      if (error) {
+        console.error("Error details:", error);
+        throw new Error(error.message || "Erro ao atualizar senha");
+      }
+
+      // Check for application-level errors in the response
+      if (data && data.error) {
+        console.error("Application error:", data.error);
+        throw new Error(data.error);
       }
 
       return { success: true };
@@ -161,11 +169,12 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
       
       // Handle password update if a new password was provided
       if (formData.password) {
-        if (formData.email) {
-          // Use our edge function instead of direct admin API call
+        try {
           await updateUserPassword(user.id, formData.password);
-        } else {
-          toast.error("É necessário um email para atualizar a senha");
+          // Only show success message if password update succeeds
+        } catch (error) {
+          console.error("Password update failed:", error);
+          toast.error("Erro ao atualizar senha: " + (error.message || "Tente novamente"));
           setLoading(false);
           return;
         }
