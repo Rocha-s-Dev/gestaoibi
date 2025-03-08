@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   AlertDialog,
@@ -28,8 +29,13 @@ export const DeleteUserDialog = ({ userId, userName }: DeleteUserDialogProps) =>
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      // Call the Supabase Edge Function instead of directly using the client
+      const { data, error } = await supabase.functions.invoke('delete-user', {
+        body: { userId },
+      });
+
       if (error) throw error;
+      if (data.error) throw new Error(data.error);
 
       toast.success("Usuário excluído com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
