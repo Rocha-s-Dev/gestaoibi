@@ -38,6 +38,12 @@ export const AddUserDialog = () => {
     setLoading(true);
 
     try {
+      // Validate department_id - if it's not a valid UUID, set to null
+      const departmentId = formData.department_id ? 
+        (formData.department_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i) ? 
+          formData.department_id : null) : null;
+      
+      // First create the auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -49,13 +55,19 @@ export const AddUserDialog = () => {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        console.error("Auth error:", authError);
+        throw authError;
+      }
+
+      console.log("User created:", authData);
 
       if (authData.user) {
+        // Then update the profile with additional data
         const { error: profileError } = await supabase
           .from("profiles")
           .update({
-            department_id: formData.department_id,
+            department_id: departmentId, // Use the validated department_id
             role: formData.role,
             email: formData.email,
             endereco: formData.endereco,
@@ -70,7 +82,10 @@ export const AddUserDialog = () => {
           })
           .eq("id", authData.user.id);
 
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.error("Profile update error:", profileError);
+          throw profileError;
+        }
       }
 
       toast.success("Usuário criado com sucesso!");
