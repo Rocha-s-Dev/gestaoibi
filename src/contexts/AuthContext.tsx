@@ -8,7 +8,7 @@ import { toast } from "sonner";
 interface AuthContextType {
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error?: Error } | undefined>;
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -42,18 +42,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("Attempting login with:", email); // Debug log
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase auth error:", error);
+        return { error };
+      }
       
       toast.success("Login realizado com sucesso!");
       navigate("/dashboard");
+      return { data };
     } catch (error) {
-      toast.error("Erro ao fazer login. Verifique suas credenciais.");
       console.error("Error signing in:", error);
+      return { error: error as Error };
     }
   };
 

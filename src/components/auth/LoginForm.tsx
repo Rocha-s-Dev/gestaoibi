@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,8 +15,28 @@ export const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await signIn(email, password);
-    setLoading(false);
+    
+    try {
+      const result = await signIn(email, password);
+      if (result?.error) {
+        const errorMessage = result.error.message || "Erro ao fazer login";
+        console.error("Login error:", errorMessage);
+        
+        // Provide more user-friendly error messages based on error code
+        if (errorMessage.includes("Invalid login credentials")) {
+          toast.error("Email ou senha incorretos. Por favor, verifique suas credenciais.");
+        } else if (errorMessage.includes("Email not confirmed")) {
+          toast.error("Email não confirmado. Por favor, verifique sua caixa de entrada.");
+        } else {
+          toast.error("Erro ao fazer login: " + errorMessage);
+        }
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Erro ao fazer login. Por favor, tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
