@@ -9,6 +9,7 @@ import { UserPlus } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 export const AddUserDialog = () => {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ export const AddUserDialog = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     firstName: "",
     lastName: "",
     department_id: "",
@@ -30,18 +32,62 @@ export const AddUserDialog = () => {
     rg: "",
     data_nascimento: "",
   });
+  
+  const [passwordError, setPasswordError] = useState("");
+
+  // Buscar departamentos para exibir em um select
+  const { data: departments } = useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("departments")
+        .select("*")
+        .order("name");
+      
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: open, // Só busca quando o modal estiver aberto
+  });
 
   const queryClient = useQueryClient();
 
+  const validatePasswords = () => {
+    // Reset previous error
+    setPasswordError("");
+    
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("As senhas não coincidem");
+      return false;
+    }
+    
+    // Check password length
+    if (formData.password.length < 6) {
+      setPasswordError("A senha deve ter pelo menos 6 caracteres");
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate passwords before proceeding
+    if (!validatePasswords()) {
+      return;
+    }
+    
     setLoading(true);
 
     try {
-      // Validate department_id - if it's not a valid UUID, set to null
-      const departmentId = formData.department_id ? 
-        (formData.department_id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i) ? 
-          formData.department_id : null) : null;
+      // Validar se department_id é um UUID válido ou deixar como null
+      const isValidUUID = 
+        formData.department_id && 
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(formData.department_id);
+      
+      const departmentId = isValidUUID ? formData.department_id : null;
       
       // First create the auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -67,17 +113,17 @@ export const AddUserDialog = () => {
         const { error: profileError } = await supabase
           .from("profiles")
           .update({
-            department_id: departmentId, // Use the validated department_id
+            department_id: departmentId,
             role: formData.role,
             email: formData.email,
-            endereco: formData.endereco,
-            numero_endereco: formData.numero_endereco,
-            bairro: formData.bairro,
-            cidade: formData.cidade,
-            estado: formData.estado,
-            pais: formData.pais,
-            cpf: formData.cpf,
-            rg: formData.rg,
+            endereco: formData.endereco || null,
+            numero_endereco: formData.numero_endereco || null,
+            bairro: formData.bairro || null,
+            cidade: formData.cidade || null,
+            estado: formData.estado || null,
+            pais: formData.pais || "Brasil",
+            cpf: formData.cpf || null,
+            rg: formData.rg || null,
             data_nascimento: formData.data_nascimento || null,
           })
           .eq("id", authData.user.id);
@@ -94,6 +140,7 @@ export const AddUserDialog = () => {
       setFormData({
         email: "",
         password: "",
+        confirmPassword: "",
         firstName: "",
         lastName: "",
         department_id: "",
@@ -108,6 +155,7 @@ export const AddUserDialog = () => {
         rg: "",
         data_nascimento: "",
       });
+      setPasswordError("");
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
       toast.error("Erro ao criar usuário. Tente novamente.");
@@ -130,32 +178,6 @@ export const AddUserDialog = () => {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold">Conta</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
             <h4 className="text-sm font-semibold">Informações Pessoais</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -177,6 +199,25 @@ export const AddUserDialog = () => {
                 />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="data_nascimento">Data de Nascimento</Label>
+                <Input
+                  id="data_nascimento"
+                  type="date"
+                  value={formData.data_nascimento}
+                  onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
                   id="cpf"
@@ -192,29 +233,60 @@ export const AddUserDialog = () => {
                   onChange={(e) => setFormData({ ...formData, rg: e.target.value })}
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h4 className="text-sm font-semibold">Informações de Acesso</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="data_nascimento">Data de Nascimento</Label>
+                <Label htmlFor="password">Senha</Label>
                 <Input
-                  id="data_nascimento"
-                  type="date"
-                  value={formData.data_nascimento}
-                  onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmar Senha</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  required
                 />
               </div>
             </div>
+            {passwordError && (
+              <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              A senha deve ter pelo menos 6 caracteres.
+            </p>
           </div>
 
           <div className="space-y-2">
             <h4 className="text-sm font-semibold">Informações Profissionais</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="department_id">ID do Departamento</Label>
-                <Input
-                  id="department_id"
+                <Label htmlFor="department_id">Departamento</Label>
+                <Select
                   value={formData.department_id}
-                  onChange={(e) => setFormData({ ...formData, department_id: e.target.value })}
-                  required
-                />
+                  onValueChange={(value) => setFormData({ ...formData, department_id: value })}
+                >
+                  <SelectTrigger id="department_id">
+                    <SelectValue placeholder="Selecione o departamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Nenhum departamento</SelectItem>
+                    {departments?.map(dept => (
+                      <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Cargo</Label>
