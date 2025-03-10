@@ -39,4 +39,5 @@ export type Notification = {
   created_at: string;
   read_at?: string | null;
   link?: string | null;
+  user_id?: string;
 };

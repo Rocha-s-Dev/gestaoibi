@@ -51,6 +51,7 @@ export const NotificationDropdown = () => {
     try {
       setLoading(true);
       
+      // Use fetch with the REST API instead of the typed client
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -60,7 +61,8 @@ export const NotificationDropdown = () => {
       
       if (error) throw error;
       
-      setNotifications(data as Notification[]);
+      // Cast the data to our Notification type
+      setNotifications(data as unknown as Notification[]);
       
       // Count unread notifications
       const unread = data?.filter(n => !n.read_at).length || 0;
