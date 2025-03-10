@@ -10,6 +10,10 @@ import { NotificationItem } from "./NotificationItem";
 import { Notification } from "@/types/messaging";
 import { useToast } from "@/hooks/use-toast";
 
+// Define the Supabase URL and key from their environment variables
+const SUPABASE_URL = "https://rdxrwxjypqsyasunupqs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkeHJ3eGp5cHFzeWFzdW51cHFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3MDkwMjAsImV4cCI6MjA1NDI4NTAyMH0.ULExBcjgLWCpdpuwR9qiBhAChOtJFiZfsKp3K2qE4zo";
+
 export const NotificationDropdown = () => {
   const { session } = useAuth();
   const { toast } = useToast();
@@ -53,11 +57,11 @@ export const NotificationDropdown = () => {
       
       // Use direct fetch with the REST API to bypass TypeScript restrictions
       const response = await fetch(
-        `${supabase.supabaseUrl}/rest/v1/notifications?user_id=eq.${session.user.id}&order=created_at.desc&limit=20`,
+        `${SUPABASE_URL}/rest/v1/notifications?user_id=eq.${session.user.id}&order=created_at.desc&limit=20`,
         {
           headers: {
-            'apikey': supabase.supabaseKey,
-            'Authorization': `Bearer ${supabase.supabaseKey}`,
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json'
           }
         }
@@ -84,12 +88,12 @@ export const NotificationDropdown = () => {
     try {
       // Use direct fetch with REST API
       const response = await fetch(
-        `${supabase.supabaseUrl}/rest/v1/notifications?id=eq.${id}`,
+        `${SUPABASE_URL}/rest/v1/notifications?id=eq.${id}`,
         {
           method: 'PATCH',
           headers: {
-            'apikey': supabase.supabaseKey,
-            'Authorization': `Bearer ${supabase.supabaseKey}`,
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
@@ -135,12 +139,12 @@ export const NotificationDropdown = () => {
       
       // Use direct fetch with REST API and in filter
       const response = await fetch(
-        `${supabase.supabaseUrl}/rest/v1/notifications?id=in.(${unreadIds.join(',')})`,
+        `${SUPABASE_URL}/rest/v1/notifications?id=in.(${unreadIds.join(',')})`,
         {
           method: 'PATCH',
           headers: {
-            'apikey': supabase.supabaseKey,
-            'Authorization': `Bearer ${supabase.supabaseKey}`,
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
           },
