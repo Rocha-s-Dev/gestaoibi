@@ -8,6 +8,12 @@ export type Message = {
   content: string;
   created_at: string;
   read_at?: string | null;
+  attachment?: {
+    path: string;
+    type: string;
+    name: string;
+    size: number;
+  } | null;
 };
 
 export type Conversation = {

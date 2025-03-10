@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useRef } from "react";
-import { Send } from "lucide-react";
+import { Send, Paperclip, X, FileText, Image, File } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Message, Conversation } from "@/types/messaging";
+import { useToast } from "@/hooks/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ConversationPanelProps {
   conversationId: string;
@@ -21,11 +23,16 @@ export const ConversationPanel = ({
   onConversationUpdated
 }: ConversationPanelProps) => {
   const { session } = useAuth();
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageText, setMessageText] = useState("");
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (conversationId) {
@@ -123,14 +130,94 @@ export const ConversationPanel = ({
     }
   };
 
-  const handleSendMessage = async () => {
-    if (!messageText.trim() || !session?.user) return;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setSelectedFile(file);
+    
+    // Create a preview for images
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFilePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setFilePreview(null);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    setFilePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const uploadFile = async (): Promise<{ path: string; fileType: string; fileName: string } | null> => {
+    if (!selectedFile || !session?.user?.id) return null;
     
     try {
+      setUploading(true);
+      
+      // Create a folder structure with user ID to enforce RLS
+      const folderPath = `${session.user.id}/${conversationId}`;
+      const fileName = `${Date.now()}_${selectedFile.name}`;
+      const filePath = `${folderPath}/${fileName}`;
+      
+      const { data, error } = await supabase.storage
+        .from('chat_attachments')
+        .upload(filePath, selectedFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+      
+      if (error) throw error;
+      
+      return {
+        path: data.path,
+        fileType: selectedFile.type,
+        fileName: selectedFile.name
+      };
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast({
+        title: "Erro no upload",
+        description: "Não foi possível fazer o upload do arquivo. Tente novamente.",
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if ((!messageText.trim() && !selectedFile) || !session?.user) return;
+    
+    try {
+      let attachmentData = null;
+      
+      // If there's a file selected, upload it first
+      if (selectedFile) {
+        const fileData = await uploadFile();
+        if (fileData) {
+          attachmentData = {
+            path: fileData.path,
+            type: fileData.fileType,
+            name: fileData.fileName,
+            size: selectedFile.size
+          };
+        }
+      }
+      
       const newMessage = {
         conversation_id: conversationId,
         sender_id: session.user.id,
-        content: messageText.trim(),
+        content: messageText.trim() || (attachmentData ? "Enviou um arquivo" : ""),
+        attachment: attachmentData
       };
       
       // Insert the message
@@ -140,19 +227,24 @@ export const ConversationPanel = ({
 
       if (messageError) throw messageError;
       
-      // Update conversation with last message
+      // Update conversation with last message text
       const { error: convError } = await supabase
         .from("conversations")
         .update({ 
-          last_message: messageText.trim(),
+          last_message: messageText.trim() || (attachmentData ? "Enviou um arquivo" : ""),
           updated_at: new Date().toISOString()
         })
         .eq("id", conversationId);
 
       if (convError) throw convError;
       
-      // Clear input field
+      // Clear input field and selected file
       setMessageText("");
+      setSelectedFile(null);
+      setFilePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
       
       // Notify parent component that conversation was updated
       if (onConversationUpdated) {
@@ -160,7 +252,68 @@ export const ConversationPanel = ({
       }
     } catch (error) {
       console.error("Error sending message:", error);
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: "Não foi possível enviar a mensagem. Tente novamente.",
+        variant: "destructive",
+      });
     }
+  };
+
+  const getFileUrl = (filePath: string) => {
+    const { data } = supabase.storage
+      .from('chat_attachments')
+      .getPublicUrl(filePath);
+    
+    return data.publicUrl;
+  };
+
+  const getFileIcon = (fileType: string) => {
+    if (fileType.startsWith('image/')) {
+      return <Image className="h-4 w-4" />;
+    } else if (fileType.startsWith('application/pdf') || 
+               fileType.includes('document') || 
+               fileType.includes('text/')) {
+      return <FileText className="h-4 w-4" />;
+    } else {
+      return <File className="h-4 w-4" />;
+    }
+  };
+
+  const renderAttachment = (attachment: any) => {
+    if (!attachment) return null;
+    
+    const fileUrl = getFileUrl(attachment.path);
+    
+    if (attachment.type.startsWith('image/')) {
+      return (
+        <a 
+          href={fileUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="block mt-2 max-w-sm"
+        >
+          <img 
+            src={fileUrl} 
+            alt="Anexo" 
+            className="max-w-full rounded-md border border-gray-200"
+            style={{ maxHeight: '200px' }}
+          />
+        </a>
+      );
+    }
+    
+    return (
+      <a 
+        href={fileUrl} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="flex items-center gap-2 mt-2 text-sm text-blue-600 hover:underline"
+      >
+        {getFileIcon(attachment.type)}
+        <span className="truncate max-w-[200px]">{attachment.name}</span>
+      </a>
+    );
   };
 
   const scrollToBottom = () => {
@@ -233,9 +386,14 @@ export const ConversationPanel = ({
                         : 'bg-white border border-gray-200'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap break-words">
-                      {message.content}
-                    </p>
+                    {message.content && (
+                      <p className="whitespace-pre-wrap break-words">
+                        {message.content}
+                      </p>
+                    )}
+                    
+                    {message.attachment && renderAttachment(message.attachment)}
+                    
                     <p 
                       className={`text-xs mt-1 ${
                         isSender ? 'text-primary-foreground/80' : 'text-gray-500'
@@ -252,6 +410,41 @@ export const ConversationPanel = ({
         )}
       </ScrollArea>
       
+      {selectedFile && (
+        <div className="px-4 pt-2 bg-white border-t">
+          <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-md">
+            {filePreview ? (
+              <div className="relative">
+                <img 
+                  src={filePreview} 
+                  alt="Preview" 
+                  className="h-16 w-16 object-cover rounded-md" 
+                />
+                <button 
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"
+                  onClick={handleRemoveFile}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center bg-white p-2 rounded-md">
+                  {getFileIcon(selectedFile.type)}
+                  <span className="ml-2 text-sm truncate max-w-[150px]">{selectedFile.name}</span>
+                </div>
+                <button 
+                  className="text-red-500 hover:text-red-700"
+                  onClick={handleRemoveFile}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      
       <div className="p-4 border-t bg-white">
         <form 
           onSubmit={(e) => {
@@ -260,13 +453,34 @@ export const ConversationPanel = ({
           }}
           className="flex items-center gap-2"
         >
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            id="file-upload"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => fileInputRef.current?.click()}
+            title="Anexar arquivo"
+          >
+            <Paperclip className="h-4 w-4" />
+          </Button>
+          
           <Input
             placeholder="Digite sua mensagem..."
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             className="flex-1"
           />
-          <Button type="submit" disabled={!messageText.trim()}>
+          
+          <Button 
+            type="submit" 
+            disabled={(uploading || (!messageText.trim() && !selectedFile))}
+          >
             <Send className="h-4 w-4" />
           </Button>
         </form>
