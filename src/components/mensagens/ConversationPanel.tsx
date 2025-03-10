@@ -122,7 +122,24 @@ export const ConversationPanel = ({
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      setMessages(data || []);
+      
+      // Transform the data to match the Message type
+      const typedMessages: Message[] = data?.map(msg => ({
+        id: msg.id,
+        conversation_id: msg.conversation_id,
+        sender_id: msg.sender_id,
+        content: msg.content,
+        created_at: msg.created_at,
+        read_at: msg.read_at,
+        attachment: msg.attachment ? msg.attachment as {
+          path: string;
+          type: string;
+          name: string;
+          size: number;
+        } : null
+      })) || [];
+      
+      setMessages(typedMessages);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
