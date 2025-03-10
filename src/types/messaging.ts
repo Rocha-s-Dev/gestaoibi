@@ -29,3 +29,14 @@ export type Conversation = {
     role: string;
   } | null;
 };
+
+export type Notification = {
+  id: string;
+  title: string;
+  content: string;
+  type: 'deadline' | 'message' | 'goal_alert' | 'event';
+  related_id?: string | null;
+  created_at: string;
+  read_at?: string | null;
+  link?: string | null;
+};

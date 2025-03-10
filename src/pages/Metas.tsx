@@ -25,6 +25,34 @@ export default function Metas() {
 
   useEffect(() => {
     fetchGoals();
+    
+    // Subscribe to notifications for goal status updates
+    const subscription = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'goals',
+          filter: `status=eq.delayed`
+        },
+        (payload) => {
+          // Show toast notification for delayed goals
+          if (payload.new && payload.old && payload.new.status === 'delayed' && payload.old.status !== 'delayed') {
+            toast({
+              title: "Meta em Risco",
+              description: `A meta "${payload.new.title}" está em risco de não ser alcançada.`,
+              variant: "destructive",
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
 
   const fetchGoals = async () => {

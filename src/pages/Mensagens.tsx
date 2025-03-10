@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MessageList } from "@/components/mensagens/MessageList";
@@ -17,6 +16,46 @@ const Mensagens = () => {
   useEffect(() => {
     if (session?.user) {
       fetchConversations();
+      
+      // Subscribe to real-time updates for new messages
+      const messagesSubscription = supabase
+        .channel('schema-db-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'messages'
+          },
+          (payload) => {
+            // Update conversations list when a new message is sent or received
+            fetchConversations();
+          }
+        )
+        .subscribe();
+        
+      // Subscribe to real-time updates for new notifications
+      const notificationsSubscription = supabase
+        .channel('schema-db-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${session.user.id} AND type=eq.message`
+          },
+          () => {
+            // Just updated for real-time, no action needed as notification
+            // component will handle the display
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(messagesSubscription);
+        supabase.removeChannel(notificationsSubscription);
+      };
     }
   }, [session]);
 
