@@ -9,6 +9,7 @@ import Funcionarios from "@/pages/Funcionarios";
 import Metas from "@/pages/Metas";
 import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
 import Mensagens from "@/pages/Mensagens";
+import Notificacoes from "@/pages/Notificacoes";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -56,6 +57,14 @@ export default function App() {
           element={
             <RequireAuth>
               <Mensagens />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/notificacoes"
+          element={
+            <RequireAuth>
+              <Notificacoes />
             </RequireAuth>
           }
         />
