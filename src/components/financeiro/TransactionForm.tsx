@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CalendarIcon, Upload } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -110,12 +110,15 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
 
     setIsSubmitting(true);
 
+    // Formatando a data para string (YYYY-MM-DD)
+    const formattedDate = format(values.transaction_date, 'yyyy-MM-dd');
+
     // Preparar dados para inserção
     const transactionData = {
       description: values.description,
       amount: parseFloat(values.amount),
       category_id: values.category_id,
-      transaction_date: values.transaction_date,
+      transaction_date: formattedDate,
       type: transactionType,
       department_id: values.department_id || null,
       created_by: session.user.id,
