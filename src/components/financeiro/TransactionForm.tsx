@@ -183,6 +183,7 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
               <FormLabel>Categoria</FormLabel>
               <Select 
                 onValueChange={field.onChange} 
+                value={field.value}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -272,6 +273,7 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
               <FormLabel>Departamento/Secretaria (opcional)</FormLabel>
               <Select
                 onValueChange={field.onChange}
+                value={field.value}
                 defaultValue={field.value}
               >
                 <FormControl>
