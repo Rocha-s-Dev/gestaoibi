@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -11,6 +12,7 @@ import {
   Users,
   BarChart,
   MessageSquare,
+  DollarSign
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,7 @@ const menuItems = [
   { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
+  { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
