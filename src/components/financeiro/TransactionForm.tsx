@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -59,7 +59,7 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
   const [departments, setDepartments] = useState<any[]>([]);
 
   // Buscar categorias e departamentos
-  useState(() => {
+  useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase
         .from("financial_categories")
