@@ -143,14 +143,14 @@ export function ReportFilters({ filters, onFilterChange }: ReportFiltersProps) {
           <div className="space-y-2">
             <Label htmlFor="category">Categoria</Label>
             <Select
-              value={filters.categoryId || ""}
-              onValueChange={(value) => onFilterChange({ categoryId: value })}
+              value={filters.categoryId || "all-categories"}
+              onValueChange={(value) => onFilterChange({ categoryId: value === "all-categories" ? "" : value })}
             >
               <SelectTrigger id="category">
                 <SelectValue placeholder="Todas as categorias" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas as categorias</SelectItem>
+                <SelectItem value="all-categories">Todas as categorias</SelectItem>
                 {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.name}
@@ -164,14 +164,14 @@ export function ReportFilters({ filters, onFilterChange }: ReportFiltersProps) {
           <div className="space-y-2">
             <Label htmlFor="department">Departamento</Label>
             <Select
-              value={filters.departmentId || ""}
-              onValueChange={(value) => onFilterChange({ departmentId: value })}
+              value={filters.departmentId || "all-departments"}
+              onValueChange={(value) => onFilterChange({ departmentId: value === "all-departments" ? "" : value })}
             >
               <SelectTrigger id="department">
                 <SelectValue placeholder="Todos os departamentos" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos os departamentos</SelectItem>
+                <SelectItem value="all-departments">Todos os departamentos</SelectItem>
                 {departments.map((dept) => (
                   <SelectItem key={dept.id} value={dept.id}>
                     {dept.name}
