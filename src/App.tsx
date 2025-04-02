@@ -11,6 +11,7 @@ import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
 import Mensagens from "@/pages/Mensagens";
 import Notificacoes from "@/pages/Notificacoes";
 import Financeiro from "@/pages/Financeiro";
+import RelatoriosFinanceiros from "@/pages/RelatoriosFinanceiros";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -74,6 +75,14 @@ export default function App() {
           element={
             <RequireAuth>
               <Financeiro />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/relatorios-financeiros"
+          element={
+            <RequireAuth>
+              <RelatoriosFinanceiros />
             </RequireAuth>
           }
         />

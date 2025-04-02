@@ -12,7 +12,8 @@ import {
   Users,
   BarChart,
   MessageSquare,
-  DollarSign
+  DollarSign,
+  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const menuItems = [
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
+  { icon: FileText, label: "Relatórios", path: "/relatorios-financeiros" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
