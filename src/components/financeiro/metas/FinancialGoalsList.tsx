@@ -1,26 +1,16 @@
 
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Trash2, AlertTriangle, CheckCircle2, BellRing, BellOff, TrendingUp, TrendingDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  AlertCircle, 
+  CheckCircle2, 
+  XCircle 
+} from "lucide-react";
 
-interface FinancialGoal {
+type FinancialGoal = {
   id: string;
   type: "revenue" | "expense";
   description: string;
@@ -31,77 +21,36 @@ interface FinancialGoal {
   enable_alerts: boolean;
   alert_threshold: number;
   created_at: string;
-}
+  updated_at: string;
+};
 
 export function FinancialGoalsList() {
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchGoals();
-  }, []);
-
-  const fetchGoals = async () => {
-    setLoading(true);
-    
-    try {
+    const fetchGoals = async () => {
+      setLoading(true);
+      
       const { data, error } = await supabase
         .from("financial_goals")
         .select("*")
         .order("created_at", { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Erro ao buscar metas financeiras:", error);
+        setLoading(false);
+        return;
+      }
       
-      // Simulando alguns valores atuais para demonstração
-      // Em uma implementação completa, estes valores viriam de cálculos baseados em transações reais
-      const goalsWithProgress = data.map(goal => ({
-        ...goal,
-        current_value: goal.type === "revenue" 
-          ? (goal.target_value * (Math.random() * 0.8 + 0.2)) // 20% a 100% da meta para receitas
-          : (goal.target_value * (Math.random() * 1.2 + 0.4))  // 40% a 160% da meta para despesas
-      }));
-      
-      setGoals(goalsWithProgress);
-    } catch (error) {
-      console.error("Erro ao buscar metas financeiras:", error);
-      toast.error("Erro ao carregar metas financeiras");
-    } finally {
+      setGoals(data as FinancialGoal[]);
       setLoading(false);
-    }
-  };
+    };
 
-  const handleDeleteGoal = async (id: string) => {
-    setDeleteLoading(id);
-    
-    try {
-      const { error } = await supabase
-        .from("financial_goals")
-        .delete()
-        .eq("id", id);
-      
-      if (error) throw error;
-      
-      toast.success("Meta financeira excluída com sucesso");
-      setGoals(goals.filter(goal => goal.id !== id));
-    } catch (error) {
-      console.error("Erro ao excluir meta financeira:", error);
-      toast.error("Erro ao excluir meta financeira");
-    } finally {
-      setDeleteLoading(null);
-    }
-  };
+    fetchGoals();
+  }, []);
 
-  const calculateProgress = (goal: FinancialGoal) => {
-    if (goal.type === "revenue") {
-      const targetWithIncrease = goal.target_value * (1 + goal.percentage_increase / 100);
-      return Math.min(100, (goal.current_value / targetWithIncrease) * 100);
-    } else {
-      // Para despesas, queremos mostrar quanto do limite já foi consumido
-      return Math.min(100, (goal.current_value / goal.target_value) * 100);
-    }
-  };
-
+  // Formatador de moeda
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -109,166 +58,136 @@ export function FinancialGoalsList() {
     }).format(value);
   };
 
+  // Calcular a porcentagem de progresso
+  const calculateProgress = (current: number, target: number) => {
+    if (target === 0) return 0;
+    const progress = (current / target) * 100;
+    return Math.min(progress, 100); // Limitar a 100%
+  };
+
+  // Verificar se deve mostrar alerta
   const shouldShowAlert = (goal: FinancialGoal) => {
     if (!goal.enable_alerts) return false;
     
-    const progress = calculateProgress(goal);
+    const progress = calculateProgress(goal.current_value, goal.target_value);
     
-    if (goal.type === "revenue") {
-      return progress < goal.alert_threshold;
-    } else {
-      return progress > goal.alert_threshold;
-    }
+    return goal.type === "revenue" 
+      ? progress < goal.alert_threshold // Alerta para receita abaixo do threshold
+      : progress > goal.alert_threshold; // Alerta para despesa acima do threshold
   };
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex justify-center">
-            <p className="text-muted-foreground">Carregando metas financeiras...</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="py-4 text-center">
+        <p className="text-muted-foreground">Carregando metas financeiras...</p>
+      </div>
     );
   }
 
-  if (goals.length === 0) {
+  if (!goals.length) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex justify-center">
-            <p className="text-muted-foreground">Nenhuma meta financeira cadastrada</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="py-4 text-center">
+        <p className="text-muted-foreground">Nenhuma meta financeira encontrada.</p>
+        <p className="text-sm mt-2">Use a aba "Criar Nova Meta" para estabelecer metas de receita ou limites de despesa.</p>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {goals.map((goal) => {
-        const progress = calculateProgress(goal);
-        const showAlert = shouldShowAlert(goal);
-
-        return (
-          <Card key={goal.id} className={showAlert ? "border-yellow-500" : ""}>
-            <CardHeader className="pb-2">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center space-x-2">
-                  {goal.type === "revenue" ? (
-                    <TrendingUp className="h-5 w-5 text-green-500" />
-                  ) : (
-                    <TrendingDown className="h-5 w-5 text-red-500" />
-                  )}
-                  <CardTitle className="text-lg">
-                    {goal.description}
-                  </CardTitle>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {goal.enable_alerts ? (
-                    <BellRing className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <BellOff className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Excluir Meta Financeira</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDeleteGoal(goal.id)}
-                          disabled={deleteLoading === goal.id}
-                        >
-                          {deleteLoading === goal.id ? "Excluindo..." : "Excluir"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
+    <div className="space-y-6">
+      {goals.map((goal) => (
+        <div 
+          key={goal.id} 
+          className="border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center gap-2">
+              {goal.type === "revenue" ? (
+                <TrendingUp className="h-5 w-5 text-green-500" />
+              ) : (
+                <TrendingDown className="h-5 w-5 text-red-500" />
+              )}
+              <h3 className="font-semibold">
+                {goal.type === "revenue" ? "Meta de Receita" : "Limite de Despesa"}
+              </h3>
+              {goal.status === "active" && shouldShowAlert(goal) && (
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+              )}
+              {goal.status === "completed" && (
+                <CheckCircle2 className="h-5 w-5 text-green-500" />
+              )}
+              {goal.status === "failed" && (
+                <XCircle className="h-5 w-5 text-red-500" />
+              )}
+            </div>
+            <div className="text-right">
+              <span 
+                className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  goal.status === "active" ? "bg-blue-100 text-blue-800" :
+                  goal.status === "completed" ? "bg-green-100 text-green-800" :
+                  "bg-red-100 text-red-800"
+                }`}
+              >
+                {goal.status === "active" ? "Em andamento" : 
+                 goal.status === "completed" ? "Concluída" : "Não atingida"}
+              </span>
+            </div>
+          </div>
+          
+          <p className="text-sm text-muted-foreground mb-4">{goal.description}</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>Valor Atual:</span>
+                <span className={goal.type === "revenue" ? "text-green-600" : "text-red-600"}>
+                  {formatCurrency(goal.current_value)}
+                </span>
               </div>
-              <div className="text-sm text-muted-foreground">
-                Criada em {format(new Date(goal.created_at), "dd/MM/yyyy", { locale: ptBR })}
+              <div className="flex justify-between text-sm">
+                <span>{goal.type === "revenue" ? "Meta:" : "Limite:"}</span>
+                <span className="font-medium">
+                  {formatCurrency(goal.target_value)}
+                </span>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {showAlert && (
-                  <div className="flex items-center space-x-2 text-yellow-600 bg-yellow-50 p-2 rounded-md">
-                    <AlertTriangle className="h-4 w-4" />
-                    <span className="text-sm">
-                      {goal.type === "revenue"
-                        ? "Meta de receita abaixo do esperado para o período"
-                        : "Despesas se aproximando do limite máximo estabelecido"}
-                    </span>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  {goal.type === "revenue" ? (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-sm">
-                          Meta: aumento de {goal.percentage_increase}%
-                        </span>
-                        <span className="text-sm font-medium">
-                          {progress.toFixed(1)}% alcançado
-                        </span>
-                      </div>
-                      <Progress value={progress} className="h-2" />
-                      <div className="flex justify-between text-sm">
-                        <span>Valor atual: {formatCurrency(goal.current_value)}</span>
-                        <span>
-                          Meta: {formatCurrency(goal.target_value * (1 + goal.percentage_increase / 100))}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-sm">
-                          Limite máximo: {formatCurrency(goal.target_value)}
-                        </span>
-                        <span className={`text-sm font-medium ${progress > 100 ? "text-red-600" : ""}`}>
-                          {progress.toFixed(1)}% utilizado
-                        </span>
-                      </div>
-                      <Progress 
-                        value={progress} 
-                        className={`h-2 ${
-                          progress > 100 
-                            ? "bg-red-200 [&>div]:bg-red-600" 
-                            : progress > goal.alert_threshold 
-                              ? "bg-yellow-200 [&>div]:bg-yellow-600" 
-                              : ""
-                        }`} 
-                      />
-                      <div className="flex justify-between text-sm">
-                        <span>Despesa atual: {formatCurrency(goal.current_value)}</span>
-                        <span className={progress > 100 ? "text-red-600 font-medium" : ""}>
-                          {progress > 100 
-                            ? `Excedido em ${formatCurrency(goal.current_value - goal.target_value)}` 
-                            : `Restante: ${formatCurrency(goal.target_value - goal.current_value)}`}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>{goal.type === "revenue" ? "Aumento Desejado:" : "Proporção do Orçamento:"}</span>
+                <span>{goal.percentage_increase}%</span>
               </div>
-            </CardContent>
-          </Card>
-        );
-      })}
+              <div className="flex justify-between text-sm">
+                <span>Alerta em:</span>
+                <span>
+                  {goal.enable_alerts ? `${goal.alert_threshold}%` : "Desativado"}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex justify-between text-sm">
+              <span>Progresso</span>
+              <span>
+                {Math.round(calculateProgress(goal.current_value, goal.target_value))}%
+              </span>
+            </div>
+            <Progress 
+              value={calculateProgress(goal.current_value, goal.target_value)} 
+              className={`h-2 ${
+                goal.type === "revenue" ? "bg-green-100" : "bg-red-100"
+              }`}
+              indicatorClassName={
+                goal.type === "revenue" 
+                  ? "bg-green-500" 
+                  : shouldShowAlert(goal) && goal.status === "active"
+                    ? "bg-red-500"
+                    : "bg-amber-500"
+              }
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

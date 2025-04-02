@@ -1,196 +1,283 @@
 
 import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 
-type GoalType = "revenue" | "expense";
+// Schema de validação
+const formSchema = z.object({
+  type: z.enum(["revenue", "expense"], {
+    required_error: "Selecione o tipo de meta",
+  }),
+  description: z.string().min(5, "A descrição deve ter pelo menos 5 caracteres"),
+  target_value: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+    message: "O valor alvo deve ser um número positivo",
+  }),
+  percentage_increase: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
+    message: "O percentual deve ser um número positivo",
+  }),
+  enable_alerts: z.boolean().default(true),
+  alert_threshold: z.number().min(1).max(100).default(90),
+});
 
-interface FinancialGoalFormProps {
+type FinancialGoalFormProps = {
   onGoalAdded: () => void;
-}
+};
 
 export function FinancialGoalForm({ onGoalAdded }: FinancialGoalFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    type: "revenue" as GoalType,
-    description: "",
-    targetValue: 0,
-    percentageIncrease: 0,
-    enableAlerts: true,
-    alertThreshold: 90, // Percentual do valor da meta para disparar alertas
+  const { session } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      type: "revenue",
+      description: "",
+      target_value: "",
+      percentage_increase: "",
+      enable_alerts: true,
+      alert_threshold: 90,
+    },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "targetValue" || name === "percentageIncrease" || name === "alertThreshold" 
-        ? parseFloat(value) || 0 
-        : value,
-    }));
-  };
-
-  const handleSwitchChange = (checked: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      enableAlerts: checked,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { error } = await supabase
-        .from("financial_goals")
-        .insert({
-          type: formData.type,
-          description: formData.description,
-          target_value: formData.targetValue,
-          percentage_increase: formData.percentageIncrease,
-          enable_alerts: formData.enableAlerts,
-          alert_threshold: formData.alertThreshold,
-          created_at: new Date().toISOString(),
-          status: "active",
-        });
-
-      if (error) throw error;
-
-      toast.success(
-        formData.type === "revenue"
-          ? "Meta de receita criada com sucesso"
-          : "Meta de despesa criada com sucesso"
-      );
-
-      // Limpar o formulário
-      setFormData({
-        type: "revenue",
-        description: "",
-        targetValue: 0,
-        percentageIncrease: 0,
-        enableAlerts: true,
-        alertThreshold: 90,
-      });
-
-      // Notificar que uma meta foi adicionada
-      onGoalAdded();
-    } catch (error) {
-      console.error("Erro ao criar meta financeira:", error);
-      toast.error("Erro ao criar meta financeira. Tente novamente.");
-    } finally {
-      setIsLoading(false);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!session?.user) {
+      toast.error("Você precisa estar logado para criar metas financeiras");
+      return;
     }
+
+    setIsSubmitting(true);
+
+    // Preparar dados para inserção
+    const goalData = {
+      type: values.type,
+      description: values.description,
+      target_value: parseFloat(values.target_value),
+      percentage_increase: parseFloat(values.percentage_increase),
+      current_value: 0,
+      status: "active",
+      enable_alerts: values.enable_alerts,
+      alert_threshold: values.alert_threshold,
+    };
+
+    // Inserir no Supabase
+    const { error } = await supabase
+      .from("financial_goals")
+      .insert(goalData);
+
+    setIsSubmitting(false);
+
+    if (error) {
+      console.error("Erro ao criar meta financeira:", error);
+      toast.error(`Erro ao salvar: ${error.message}`);
+      return;
+    }
+
+    toast.success("Meta financeira criada com sucesso!");
+    
+    // Resetar formulário
+    form.reset({
+      type: "revenue",
+      description: "",
+      target_value: "",
+      percentage_increase: "",
+      enable_alerts: true,
+      alert_threshold: 90,
+    });
+    
+    onGoalAdded();
   };
+
+  // Determinar o label baseado no tipo selecionado
+  const goalTypeLabel = form.watch("type") === "revenue" 
+    ? "Aumentar receitas em" 
+    : "Limitar despesas a";
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle>Nova Meta Financeira</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="type">Tipo de Meta</Label>
-            <Select
-              value={formData.type}
-              onValueChange={(value: GoalType) => setFormData({ ...formData, type: value })}
-            >
-              <SelectTrigger id="type">
-                <SelectValue placeholder="Selecione o tipo de meta" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="revenue">Meta de Receita</SelectItem>
-                <SelectItem value="expense">Limite de Despesa</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Descrição</Label>
-            <Input
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Descrição da meta financeira"
-              required
-            />
-          </div>
-
-          {formData.type === "revenue" ? (
-            <div className="space-y-2">
-              <Label htmlFor="percentageIncrease">Aumento percentual desejado (%)</Label>
-              <Input
-                id="percentageIncrease"
-                name="percentageIncrease"
-                type="number"
-                min="0"
-                step="0.1"
-                value={formData.percentageIncrease || ""}
-                onChange={handleInputChange}
-                placeholder="Ex: 10"
-                required
-              />
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <Label htmlFor="targetValue">Valor Limite (R$)</Label>
-              <Input
-                id="targetValue"
-                name="targetValue"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.targetValue || ""}
-                onChange={handleInputChange}
-                placeholder="Ex: 5000"
-                required
-              />
-            </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tipo de Meta</FormLabel>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo de meta" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="revenue">Meta de Receita</SelectItem>
+                  <SelectItem value="expense">Limite de Despesa</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                Defina se deseja estabelecer uma meta de aumento de receitas ou um limite para despesas.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
+        />
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="enableAlerts"
-              checked={formData.enableAlerts}
-              onCheckedChange={handleSwitchChange}
-            />
-            <Label htmlFor="enableAlerts">Ativar alertas</Label>
-          </div>
-
-          {formData.enableAlerts && (
-            <div className="space-y-2">
-              <Label htmlFor="alertThreshold">
-                Limiar de alerta (%)
-                {formData.type === "expense" 
-                  ? " - Percentual do limite máximo para alertar" 
-                  : " - Percentual da meta para alertar"}
-              </Label>
-              <Input
-                id="alertThreshold"
-                name="alertThreshold"
-                type="number"
-                min="1"
-                max="100"
-                value={formData.alertThreshold || ""}
-                onChange={handleInputChange}
-                placeholder="Ex: 90"
-              />
-            </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Descrição da Meta</FormLabel>
+              <FormControl>
+                <Textarea 
+                  placeholder="Descreva o objetivo desta meta financeira" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                Uma descrição clara ajuda a entender o propósito da meta.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
+        />
 
-          <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? "Criando..." : "Criar Meta Financeira"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <FormField
+          control={form.control}
+          name="target_value"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Valor Alvo (R$)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  placeholder="0,00" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                {form.watch("type") === "revenue" 
+                  ? "Valor total de receita que deseja alcançar" 
+                  : "Valor máximo permitido para despesas"}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="percentage_increase"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{goalTypeLabel} (%)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number" 
+                  placeholder="0" 
+                  {...field} 
+                />
+              </FormControl>
+              <FormDescription>
+                {form.watch("type") === "revenue" 
+                  ? "Percentual de aumento em relação ao período anterior" 
+                  : "Percentual em relação ao orçamento total"}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="enable_alerts"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Ativar Alertas</FormLabel>
+                <FormDescription>
+                  Receba alertas quando se aproximar da meta ou limite.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        {form.watch("enable_alerts") && (
+          <FormField
+            control={form.control}
+            name="alert_threshold"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Limite para Alerta (%)</FormLabel>
+                <FormControl>
+                  <div className="space-y-2">
+                    <Slider
+                      min={1}
+                      max={100}
+                      step={1}
+                      defaultValue={[field.value]}
+                      onValueChange={(values) => field.onChange(values[0])}
+                    />
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">1%</span>
+                      <span className="text-sm font-medium">{field.value}%</span>
+                      <span className="text-sm text-muted-foreground">100%</span>
+                    </div>
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  {form.watch("type") === "revenue" 
+                    ? `Alerta quando atingir ${field.value}% da meta de receita` 
+                    : `Alerta quando atingir ${field.value}% do limite de despesa`}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Salvando..." : "Salvar Meta Financeira"}
+        </Button>
+      </form>
+    </Form>
   );
 }

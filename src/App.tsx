@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Cadastro from "./pages/Cadastro";
 import { ContextContainer } from "@/contexts/ContextContainer";
 import RelatoriosFinanceiros from "./pages/RelatoriosFinanceiros";
+import MetasFinanceiras from "./pages/MetasFinanceiras";
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
               },
               {
                 path: "/metas-financeiras",
-                element: <React.lazy(() => import("./pages/MetasFinanceiras")) />,
+                element: <MetasFinanceiras />,
               },
             ],
           },

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { FinancialGoalForm } from "@/components/financeiro/metas/FinancialGoalForm";
 import { FinancialGoalsList } from "@/components/financeiro/metas/FinancialGoalsList";
+import { FinancialGoalProgress } from "@/components/financeiro/metas/FinancialGoalProgress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -25,6 +26,8 @@ export default function MetasFinanceiras() {
         </header>
 
         <Separator />
+
+        <FinancialGoalProgress />
 
         <Tabs defaultValue="metas" className="space-y-4">
           <TabsList className="grid w-full md:w-[400px] grid-cols-2">
