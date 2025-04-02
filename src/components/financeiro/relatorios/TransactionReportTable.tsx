@@ -1,7 +1,5 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { ArrowUpDown, Download, FileText, FileSpreadsheet } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -12,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import * as XLSX from "xlsx";
 
 type TransactionReportTableProps = {
@@ -24,7 +22,6 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
   const [sortColumn, setSortColumn] = useState("transaction_date");
   const [sortDirection, setSortDirection] = useState("desc");
 
-  // Formatador de moeda
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -32,7 +29,6 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
     }).format(value);
   };
 
-  // Função para ordenar os dados
   const sortedTransactions = [...transactions].sort((a, b) => {
     if (sortColumn === "transaction_date") {
       const dateA = new Date(a.transaction_date).getTime();
@@ -55,7 +51,6 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
     return 0;
   });
 
-  // Função para alternar a ordenação
   const toggleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -65,17 +60,14 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
     }
   };
 
-  // Função para exportar para PDF
   const exportToPDF = () => {
     const doc = new jsPDF();
     
-    // Adicionar título
     doc.setFontSize(18);
     doc.text("Relatório de Transações Financeiras", 14, 22);
     doc.setFontSize(12);
     doc.text(`Data de geração: ${format(new Date(), "dd/MM/yyyy")}`, 14, 30);
     
-    // Adicionar cabeçalho da tabela
     doc.setFontSize(10);
     doc.text("Data", 14, 45);
     doc.text("Descrição", 40, 45);
@@ -83,14 +75,11 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
     doc.text("Departamento", 140, 45);
     doc.text("Valor", 185, 45);
     
-    // Adicionar linha horizontal
     doc.line(14, 48, 196, 48);
     
-    // Adicionar dados da tabela
     let y = 55;
     
     sortedTransactions.forEach((transaction, index) => {
-      // Verificar se precisa adicionar uma nova página
       if (y > 280) {
         doc.addPage();
         y = 20;
@@ -102,23 +91,20 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
       const department = transaction.department?.name || "N/A";
       const amount = formatCurrency(Number(transaction.amount));
       
-      // Definir cor com base no tipo
       if (transaction.type === "receita") {
-        doc.setTextColor(34, 197, 94); // Verde
+        doc.setTextColor(34, 197, 94);
       } else {
-        doc.setTextColor(239, 68, 68); // Vermelho
+        doc.setTextColor(239, 68, 68);
       }
       
       doc.text(date, 14, y);
       
-      // Voltar para cor padrão para os outros campos
       doc.setTextColor(0, 0, 0);
       
       doc.text(description, 40, y);
       doc.text(category, 100, y);
       doc.text(department, 140, y);
       
-      // Definir cor novamente para o valor
       if (transaction.type === "receita") {
         doc.setTextColor(34, 197, 94);
       } else {
@@ -127,19 +113,16 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
       
       doc.text(amount, 185, y, { align: "right" });
       
-      // Resetar cor
       doc.setTextColor(0, 0, 0);
       
       y += 8;
       
-      // Adicionar linha horizontal leve entre as linhas
       if (index < sortedTransactions.length - 1) {
         doc.setDrawColor(220, 220, 220);
         doc.line(14, y - 4, 196, y - 4);
       }
     });
     
-    // Adicionar rodapé com totais
     const totalReceitas = sortedTransactions
       .filter(t => t.type === "receita")
       .reduce((sum, t) => sum + Number(t.amount), 0);
@@ -174,13 +157,10 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
     
     doc.text(formatCurrency(saldo), 185, y + 21, { align: "right" });
     
-    // Salvar o PDF
     doc.save("relatorio-financeiro.pdf");
   };
 
-  // Função para exportar para Excel
   const exportToExcel = () => {
-    // Preparar dados para o Excel
     const worksheetData = sortedTransactions.map(transaction => ({
       Data: format(new Date(transaction.transaction_date), "dd/MM/yyyy"),
       Tipo: transaction.type === "receita" ? "Receita" : "Despesa",
@@ -190,23 +170,19 @@ export function TransactionReportTable({ transactions, loading }: TransactionRep
       Valor: Number(transaction.amount)
     }));
     
-    // Criar planilha
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
     
-    // Aplicar formatação de moeda à coluna de valor
     const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1");
     for (let row = range.s.r + 1; row <= range.e.r; row++) {
-      const cell = worksheet[XLSX.utils.encode_cell({ r: row, c: 5 })]; // Coluna Valor (F)
+      const cell = worksheet[XLSX.utils.encode_cell({ r: row, c: 5 })];
       if (cell && cell.v) {
         cell.z = '"R$"#,##0.00';
       }
     }
     
-    // Criar workbook e adicionar a planilha
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Transações");
     
-    // Gerar arquivo e fazer download
     XLSX.writeFile(workbook, "relatorio-financeiro.xlsx");
   };
 
