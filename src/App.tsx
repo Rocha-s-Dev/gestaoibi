@@ -1,5 +1,5 @@
+
 import { AuthProvider } from "@/contexts/AuthContext";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Index from "./pages";
 import Profile from "./pages/Profile";
@@ -11,47 +11,43 @@ import { ContextContainer } from "@/contexts/ContextContainer";
 import RelatoriosFinanceiros from "./pages/RelatoriosFinanceiros";
 
 function App() {
-  const queryClient = new QueryClient();
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider
-          router={createBrowserRouter([
-            {
-              element: <ContextContainer />,
-              children: [
-                {
-                  path: "/",
-                  element: <Index />,
-                },
-                {
-                  path: "/profile",
-                  element: <Profile />,
-                },
-                {
-                  path: "/cadastro",
-                  element: <Cadastro />,
-                },
-                {
-                  path: "*",
-                  element: <NotFound />,
-                },
-                {
-                  path: "/relatorios-financeiros",
-                  element: <RelatoriosFinanceiros />,
-                },
-                {
-                  path: "/metas-financeiras",
-                  element: <React.lazy(() => import("./pages/MetasFinanceiras")) />,
-                },
-              ],
-            },
-          ])}
-        />
-        <Toaster />
-      </AuthProvider>
-    </QueryClientProvider>
+    <AuthProvider>
+      <RouterProvider
+        router={createBrowserRouter([
+          {
+            element: <ContextContainer />,
+            children: [
+              {
+                path: "/",
+                element: <Index />,
+              },
+              {
+                path: "/profile",
+                element: <Profile />,
+              },
+              {
+                path: "/cadastro",
+                element: <Cadastro />,
+              },
+              {
+                path: "*",
+                element: <NotFound />,
+              },
+              {
+                path: "/relatorios-financeiros",
+                element: <RelatoriosFinanceiros />,
+              },
+              {
+                path: "/metas-financeiras",
+                element: <React.lazy(() => import("./pages/MetasFinanceiras")) />,
+              },
+            ],
+          },
+        ])}
+      />
+      <Toaster />
+    </AuthProvider>
   );
 }
 
