@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -12,7 +13,10 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === 'development' &&
-    componentTagger(),
+    componentTagger({
+      enableClick: true,  // Enable click-to-edit feature
+      enableHover: true,  // Enable hover information
+    }),
   ].filter(Boolean),
   resolve: {
     alias: {
