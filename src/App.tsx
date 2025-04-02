@@ -1,94 +1,58 @@
+import { AuthProvider } from "@/contexts/AuthContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Index from "./pages";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+import React from "react";
+import { Toaster } from "@/components/ui/toaster";
+import Cadastro from "./pages/Cadastro";
+import { ContextContainer } from "@/contexts/ContextContainer";
+import RelatoriosFinanceiros from "./pages/RelatoriosFinanceiros";
 
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "sonner";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import Dashboard from "@/pages/Dashboard";
-import NotFound from "@/pages/NotFound";
-import Funcionarios from "@/pages/Funcionarios";
-import Metas from "@/pages/Metas";
-import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
-import Mensagens from "@/pages/Mensagens";
-import Notificacoes from "@/pages/Notificacoes";
-import Financeiro from "@/pages/Financeiro";
-import RelatoriosFinanceiros from "@/pages/RelatoriosFinanceiros";
-import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
-import "./App.css";
+function App() {
+  const queryClient = new QueryClient();
 
-export default function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          }
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider
+          router={createBrowserRouter([
+            {
+              element: <ContextContainer />,
+              children: [
+                {
+                  path: "/",
+                  element: <Index />,
+                },
+                {
+                  path: "/profile",
+                  element: <Profile />,
+                },
+                {
+                  path: "/cadastro",
+                  element: <Cadastro />,
+                },
+                {
+                  path: "*",
+                  element: <NotFound />,
+                },
+                {
+                  path: "/relatorios-financeiros",
+                  element: <RelatoriosFinanceiros />,
+                },
+                {
+                  path: "/metas-financeiras",
+                  element: <React.lazy(() => import("./pages/MetasFinanceiras")) />,
+                },
+              ],
+            },
+          ])}
         />
-        <Route
-          path="/funcionarios"
-          element={
-            <RequireAuth>
-              <Funcionarios />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/metas"
-          element={
-            <RequireAuth>
-              <Metas />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/acompanhamento-metas"
-          element={
-            <RequireAuth>
-              <AcompanhamentoMetas />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/mensagens"
-          element={
-            <RequireAuth>
-              <Mensagens />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/notificacoes"
-          element={
-            <RequireAuth>
-              <Notificacoes />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/financeiro"
-          element={
-            <RequireAuth>
-              <Financeiro />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/relatorios-financeiros"
-          element={
-            <RequireAuth>
-              <RelatoriosFinanceiros />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster />
-    </AuthProvider>
+        <Toaster />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
+
+export default App;
