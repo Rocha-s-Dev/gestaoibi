@@ -81,48 +81,6 @@ export type Database = {
         }
         Relationships: []
       }
-      financial_goals: {
-        Row: {
-          alert_threshold: number
-          created_at: string
-          current_value: number | null
-          description: string
-          enable_alerts: boolean
-          id: string
-          percentage_increase: number
-          status: string
-          target_value: number
-          type: string
-          updated_at: string
-        }
-        Insert: {
-          alert_threshold?: number
-          created_at?: string
-          current_value?: number | null
-          description: string
-          enable_alerts?: boolean
-          id?: string
-          percentage_increase?: number
-          status?: string
-          target_value?: number
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          alert_threshold?: number
-          created_at?: string
-          current_value?: number | null
-          description?: string
-          enable_alerts?: boolean
-          id?: string
-          percentage_increase?: number
-          status?: string
-          target_value?: number
-          type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       financial_transactions: {
         Row: {
           amount: number

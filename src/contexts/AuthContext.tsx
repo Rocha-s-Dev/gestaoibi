@@ -5,17 +5,8 @@ import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-interface User {
-  id: string;
-  email: string;
-  role: "admin" | "gestor" | "colaborador" | "financeiro";
-  first_name?: string;
-  last_name?: string;
-}
-
 interface AuthContextType {
   session: Session | null;
-  user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: Error } | undefined>;
   signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
@@ -26,7 +17,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -34,18 +24,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      
-      // For demo purposes, set a mock user until real user data is fetched
-      if (session) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          role: "admin", // Default role for testing
-          first_name: session.user.user_metadata?.first_name,
-          last_name: session.user.user_metadata?.last_name,
-        });
-      }
-      
       setLoading(false);
     });
 
@@ -54,22 +32,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      
-      // Update user when auth state changes
-      if (session) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || '',
-          role: "admin", // Default role for testing
-          first_name: session.user.user_metadata?.first_name,
-          last_name: session.user.user_metadata?.last_name,
-        });
-      } else {
-        setUser(null);
-      }
-      
       if (session && window.location.pathname === "/login") {
-        navigate("/");
+        navigate("/dashboard");
       }
     });
 
@@ -91,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       toast.success("Login realizado com sucesso!");
-      navigate("/");
+      navigate("/dashboard");
       return { data };
     } catch (error) {
       console.error("Error signing in:", error);
@@ -134,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ session, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

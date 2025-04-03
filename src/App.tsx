@@ -1,76 +1,85 @@
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Index from "./pages/index";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
-import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import Cadastro from "./pages/Cadastro";
-import { ContextContainer } from "@/contexts/ContextContainer";
-import RelatoriosFinanceiros from "./pages/RelatoriosFinanceiros";
-import MetasFinanceiras from "./pages/MetasFinanceiras";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Funcionarios from "./pages/Funcionarios";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import Dashboard from "@/pages/Dashboard";
+import NotFound from "@/pages/NotFound";
+import Funcionarios from "@/pages/Funcionarios";
+import Metas from "@/pages/Metas";
+import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
+import Mensagens from "@/pages/Mensagens";
+import Notificacoes from "@/pages/Notificacoes";
+import Financeiro from "@/pages/Financeiro";
+import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
+import "./App.css";
 
-// Create the router outside of the component
-const router = createBrowserRouter([
-  {
-    element: <ContextContainer />,
-    children: [
-      {
-        path: "/",
-        element: <Index />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/cadastro",
-        element: <Cadastro />,
-      },
-      {
-        path: "/funcionarios",
-        element: <Funcionarios />,
-      },
-      {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path: "/relatorios-financeiros",
-        element: <RelatoriosFinanceiros />,
-      },
-      {
-        path: "/metas-financeiras",
-        element: <MetasFinanceiras />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "*",
-        element: <NotFound />,
-      },
-    ],
-  },
-]);
-
-function App() {
+export default function App() {
   return (
-    <>
-      <RouterProvider router={router} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/funcionarios"
+          element={
+            <RequireAuth>
+              <Funcionarios />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/metas"
+          element={
+            <RequireAuth>
+              <Metas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/acompanhamento-metas"
+          element={
+            <RequireAuth>
+              <AcompanhamentoMetas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/mensagens"
+          element={
+            <RequireAuth>
+              <Mensagens />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/notificacoes"
+          element={
+            <RequireAuth>
+              <Notificacoes />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/financeiro"
+          element={
+            <RequireAuth>
+              <Financeiro />
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Toaster />
-    </>
+    </AuthProvider>
   );
 }
-
-export default App;
