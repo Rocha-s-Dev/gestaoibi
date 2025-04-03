@@ -1,3 +1,4 @@
+
 import {
   LayoutDashboard,
   Settings,
@@ -10,11 +11,13 @@ import {
   BadgeInfo,
   Mailbox,
   LucideIcon,
+  LogOut,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 interface NavLinkProps {
   href: string;
@@ -24,7 +27,7 @@ interface NavLinkProps {
 }
 
 export function Sidebar() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
@@ -48,8 +51,8 @@ export function Sidebar() {
       category: "geral",
     },
     {
-      href: "/usuarios",
-      label: "Usuários",
+      href: "/funcionarios",
+      label: "Funcionários",
       icon: Users,
       category: "geral",
     },
@@ -57,6 +60,12 @@ export function Sidebar() {
       href: "/secretarias",
       label: "Secretarias",
       icon: BadgeInfo,
+      category: "geral",
+    },
+    {
+      href: "/cadastro",
+      label: "Cadastro",
+      icon: Users,
       category: "geral",
     },
     {
@@ -107,9 +116,14 @@ export function Sidebar() {
     <aside className="border-r flex flex-col h-screen w-64 bg-gray-50">
       <div className="p-4">
         <h1 className="text-2xl font-bold">Painel Admin</h1>
+        {user && (
+          <p className="text-sm text-gray-500 mt-1">
+            Olá, {user.first_name || user.email}
+          </p>
+        )}
       </div>
       <Separator />
-      <nav className="flex-1 py-4">
+      <nav className="flex-1 py-4 overflow-y-auto">
         {links.map((link) => (
           <div key={link.href}>
             {link.category === "geral" && user?.role === "admin" && (
@@ -185,6 +199,18 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
+      {user && (
+        <div className="p-4 border-t">
+          <Button 
+            variant="outline" 
+            className="w-full flex items-center justify-center" 
+            onClick={signOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sair
+          </Button>
+        </div>
+      )}
     </aside>
   );
 }

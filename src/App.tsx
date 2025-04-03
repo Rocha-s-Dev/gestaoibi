@@ -12,6 +12,8 @@ import MetasFinanceiras from "./pages/MetasFinanceiras";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Funcionarios from "./pages/Funcionarios";
 
 // Create the router outside of the component
 const router = createBrowserRouter([
@@ -31,8 +33,12 @@ const router = createBrowserRouter([
         element: <Cadastro />,
       },
       {
-        path: "*",
-        element: <NotFound />,
+        path: "/funcionarios",
+        element: <Funcionarios />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
       },
       {
         path: "/relatorios-financeiros",
@@ -49,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
