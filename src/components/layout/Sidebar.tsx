@@ -14,7 +14,9 @@ import {
   MessageSquare,
   DollarSign,
   ChevronDown,
-  Building2
+  Building2,
+  CreditCard,
+  PieChart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -41,7 +43,14 @@ const secretariasItems = [
   { 
     label: "Secretaria de Administração e Finanças", 
     path: "/financeiro",
-    icon: DollarSign
+    icon: DollarSign,
+    submenus: [
+      {
+        label: "Gestão Financeira",
+        path: "/financeiro",
+        icon: PieChart
+      }
+    ]
   },
   // Outras secretarias podem ser adicionadas aqui posteriormente
 ];
@@ -102,20 +111,42 @@ export const Sidebar = () => {
                 <AccordionContent>
                   <div className="pl-7 space-y-1">
                     {secretariasItems.map((secretaria) => (
-                      <Link
-                        key={secretaria.path}
-                        to={secretaria.path}
-                        className={cn(
-                          "flex items-center px-4 py-2 rounded-lg transition-colors text-sm",
-                          "hover:bg-muted",
-                          location.pathname === secretaria.path
-                            ? "bg-primary text-primary-foreground"
-                            : "text-gray-700"
+                      <div key={secretaria.path}>
+                        <Link
+                          to={secretaria.path}
+                          className={cn(
+                            "flex items-center px-4 py-2 rounded-lg transition-colors text-sm",
+                            "hover:bg-muted",
+                            location.pathname === secretaria.path
+                              ? "bg-primary text-primary-foreground"
+                              : "text-gray-700"
+                          )}
+                        >
+                          <secretaria.icon size={16} />
+                          <span className="ml-3">{secretaria.label}</span>
+                        </Link>
+                        
+                        {secretaria.submenus && secretaria.submenus.length > 0 && (
+                          <div className="pl-6 space-y-1 mt-1">
+                            {secretaria.submenus.map((submenu) => (
+                              <Link
+                                key={submenu.path}
+                                to={submenu.path}
+                                className={cn(
+                                  "flex items-center px-4 py-2 rounded-lg transition-colors text-sm",
+                                  "hover:bg-muted",
+                                  location.pathname === submenu.path && location.pathname !== secretaria.path
+                                    ? "bg-accent text-accent-foreground font-medium"
+                                    : "text-gray-600"
+                                )}
+                              >
+                                <submenu.icon size={14} />
+                                <span className="ml-3">{submenu.label}</span>
+                              </Link>
+                            ))}
+                          </div>
                         )}
-                      >
-                        <secretaria.icon size={16} />
-                        <span className="ml-3">{secretaria.label}</span>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                 </AccordionContent>
