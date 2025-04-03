@@ -1,7 +1,7 @@
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Index from "./pages";
+import Index from "./pages/index";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import React from "react";
