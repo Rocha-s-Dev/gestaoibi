@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (session && window.location.pathname === "/login") {
-        navigate("/dashboard");
+        navigate("/");
       }
     });
 
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       toast.success("Login realizado com sucesso!");
-      navigate("/dashboard");
+      navigate("/");
       return { data };
     } catch (error) {
       console.error("Error signing in:", error);
