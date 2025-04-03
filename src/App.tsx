@@ -1,85 +1,50 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
-import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "sonner";
+import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
-import NotFound from "@/pages/NotFound";
+import Financeiro from "@/pages/Financeiro";
+import RelatoriosFinanceiros from "@/pages/RelatoriosFinanceiros";
 import Funcionarios from "@/pages/Funcionarios";
 import Metas from "@/pages/Metas";
 import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
 import Mensagens from "@/pages/Mensagens";
 import Notificacoes from "@/pages/Notificacoes";
-import Financeiro from "@/pages/Financeiro";
-import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
-import "./App.css";
+import Configuracoes from "@/pages/Configuracoes";
+import NotFound from "@/pages/NotFound";
 
-export default function App() {
+function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/funcionarios"
-          element={
-            <RequireAuth>
-              <Funcionarios />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/metas"
-          element={
-            <RequireAuth>
-              <Metas />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/acompanhamento-metas"
-          element={
-            <RequireAuth>
-              <AcompanhamentoMetas />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/mensagens"
-          element={
-            <RequireAuth>
-              <Mensagens />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/notificacoes"
-          element={
-            <RequireAuth>
-              <Notificacoes />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/financeiro"
-          element={
-            <RequireAuth>
-              <Financeiro />
-            </RequireAuth>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster />
-    </AuthProvider>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/financeiro" element={<Financeiro />} />
+              <Route path="/relatorios-financeiros" element={<RelatoriosFinanceiros />} />
+              <Route path="/funcionarios" element={<Funcionarios />} />
+              <Route path="/metas" element={<Metas />} />
+              <Route path="/acompanhamento-metas" element={<AcompanhamentoMetas />} />
+              <Route path="/mensagens" element={<Mensagens />} />
+              <Route path="/notificacoes" element={<Notificacoes />} />
+              <Route path="/configuracoes" element={<Configuracoes />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+        <Toaster />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
+
+export default App;
