@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -22,25 +23,23 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/financeiro" element={<Financeiro />} />
-              <Route path="/relatorios-financeiros" element={<RelatoriosFinanceiros />} />
-              <Route path="/funcionarios" element={<Funcionarios />} />
-              <Route path="/metas" element={<Metas />} />
-              <Route path="/acompanhamento-metas" element={<AcompanhamentoMetas />} />
-              <Route path="/mensagens" element={<Mensagens />} />
-              <Route path="/notificacoes" element={<Notificacoes />} />
-              <Route path="/configuracoes" element={<Configuracoes />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/financeiro" element={<Financeiro />} />
+            <Route path="/relatorios-financeiros" element={<RelatoriosFinanceiros />} />
+            <Route path="/funcionarios" element={<Funcionarios />} />
+            <Route path="/metas" element={<Metas />} />
+            <Route path="/acompanhamento-metas" element={<AcompanhamentoMetas />} />
+            <Route path="/mensagens" element={<Mensagens />} />
+            <Route path="/notificacoes" element={<Notificacoes />} />
+            <Route path="/configuracoes" element={<Configuracoes />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
         <Toaster />
       </AuthProvider>
     </ThemeProvider>
