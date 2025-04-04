@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -53,73 +52,70 @@ const Funcionarios = () => {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Funcionários</h1>
-            <AddUserDialog />
-          </div>
+    <div className="flex-1 p-8 overflow-auto">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Funcionários</h1>
+          <AddUserDialog />
+        </div>
 
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Buscar funcionários por nome, cargo, departamento, email, cidade..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Buscar funcionários por nome, cargo, departamento, email, cidade..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
 
-          {isLoading ? (
-            <div className="text-center py-8">Carregando...</div>
-          ) : filteredProfiles && filteredProfiles.length > 0 ? (
-            <div className="grid gap-4">
-              {filteredProfiles.map((profile) => (
-                <div
-                  key={profile.id}
-                  className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        {profile.first_name} {profile.last_name}
-                      </h3>
+        {isLoading ? (
+          <div className="text-center py-8">Carregando...</div>
+        ) : filteredProfiles && filteredProfiles.length > 0 ? (
+          <div className="grid gap-4">
+            {filteredProfiles.map((profile) => (
+              <div
+                key={profile.id}
+                className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      {profile.first_name} {profile.last_name}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {profile.department_id || "Departamento não definido"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {getRoleDisplay(profile.role)}
+                    </p>
+                    {profile.email && (
+                      <p className="text-sm text-gray-600">{profile.email}</p>
+                    )}
+                    {profile.cidade && profile.estado && (
                       <p className="text-sm text-gray-600">
-                        {profile.department_id || "Departamento não definido"}
+                        {profile.cidade}, {profile.estado}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {getRoleDisplay(profile.role)}
-                      </p>
-                      {profile.email && (
-                        <p className="text-sm text-gray-600">{profile.email}</p>
-                      )}
-                      {profile.cidade && profile.estado && (
-                        <p className="text-sm text-gray-600">
-                          {profile.cidade}, {profile.estado}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      <ViewUserDialog user={profile} />
-                      <EditUserDialog user={profile} />
-                      <DeleteUserDialog 
-                        userId={profile.id} 
-                        userName={`${profile.first_name} ${profile.last_name}`} 
-                      />
-                    </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <ViewUserDialog user={profile} />
+                    <EditUserDialog user={profile} />
+                    <DeleteUserDialog 
+                      userId={profile.id} 
+                      userName={`${profile.first_name} ${profile.last_name}`} 
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              Nenhum funcionário encontrado
-            </div>
-          )}
-        </div>
-      </main>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            Nenhum funcionário encontrado
+          </div>
+        )}
+      </div>
     </div>
   );
 };
