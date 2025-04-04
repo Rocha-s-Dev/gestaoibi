@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +9,7 @@ import { AddGoalDialog } from "@/components/metas/AddGoalDialog";
 import { ViewGoalDialog } from "@/components/metas/ViewGoalDialog";
 import { EditGoalDialog } from "@/components/metas/EditGoalDialog";
 import { DeleteGoalDialog } from "@/components/metas/DeleteGoalDialog";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Layout } from "@/components/layout/Layout";
 import { Tables } from "@/integrations/supabase/types";
 
 type Goal = Tables<"goals">;
@@ -113,9 +114,8 @@ export default function Metas() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 p-8 overflow-auto">
+    <Layout>
+      <main className="p-8 overflow-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-gray-900">Metas</h1>
@@ -221,6 +221,6 @@ export default function Metas() {
           />
         </>
       )}
-    </div>
+    </Layout>
   );
 }
