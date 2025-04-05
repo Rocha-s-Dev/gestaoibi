@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Layout } from "@/components/layout/Layout";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NotificationsList } from "@/components/notifications/NotificationsList";
 import { useAuth } from "@/contexts/AuthContext";
@@ -152,8 +153,9 @@ const Notificacoes = () => {
   };
 
   return (
-    <Layout>
-      <div className="p-6 overflow-auto">
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <div className="flex-1 overflow-auto p-6">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold mb-6">Notificações</h1>
           
@@ -179,7 +181,7 @@ const Notificacoes = () => {
           </Card>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

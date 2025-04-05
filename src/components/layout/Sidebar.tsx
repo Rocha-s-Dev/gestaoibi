@@ -16,8 +16,7 @@ import {
   ChevronDown,
   Building2,
   CreditCard,
-  PieChart,
-  FileText
+  PieChart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -50,11 +49,6 @@ const secretariasItems = [
         label: "Gestão Financeira",
         path: "/financeiro",
         icon: PieChart
-      },
-      {
-        label: "Relatórios Financeiros",
-        path: "/relatorios-financeiros",
-        icon: FileText
       }
     ]
   },

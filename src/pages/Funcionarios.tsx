@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Layout } from "@/components/layout/Layout";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -53,8 +53,9 @@ const Funcionarios = () => {
   );
 
   return (
-    <Layout>
-      <div className="p-8 overflow-auto">
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <main className="flex-1 p-8 overflow-auto">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Funcionários</h1>
@@ -118,8 +119,8 @@ const Funcionarios = () => {
             </div>
           )}
         </div>
-      </div>
-    </Layout>
+      </main>
+    </div>
   );
 };
 

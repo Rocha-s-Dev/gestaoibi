@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { Layout } from "@/components/layout/Layout";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { MessageList } from "@/components/mensagens/MessageList";
 import { ConversationPanel } from "@/components/mensagens/ConversationPanel";
 import { supabase } from "@/integrations/supabase/client";
@@ -170,8 +169,9 @@ const Mensagens = () => {
   };
 
   return (
-    <Layout>
-      <main className="flex overflow-hidden">
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <main className="flex-1 flex overflow-hidden">
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -197,7 +197,7 @@ const Mensagens = () => {
           </>
         )}
       </main>
-    </Layout>
+    </div>
   );
 };
 
