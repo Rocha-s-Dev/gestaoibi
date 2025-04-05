@@ -1,12 +1,12 @@
+
 import { useState } from "react";
+import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Download, Calendar, Filter, PieChart, BarChart as BarChartIcon, TrendingUp, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { FileText, Download, Filter, PieChart, BarChart as BarChartIcon, TrendingUp, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart as RechartPieChart, Pie, Cell } from "recharts";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
@@ -45,117 +45,118 @@ export default function RelatoriosFinanceiros() {
   };
 
   return (
-    <div className="space-y-6 p-6 max-w-7xl mx-auto">
-      <header className="space-y-2">
-        <div className="flex items-center space-x-2">
-          <div className="bg-primary/10 p-2 rounded-full">
-            <FileText className="h-6 w-6 text-primary" />
+    <Layout>
+      <div className="p-6 max-w-7xl mx-auto">
+        <header className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <div className="bg-primary/10 p-2 rounded-full">
+              <FileText className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">Relatórios Financeiros</h1>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Relatórios Financeiros</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Acesse e exporte relatórios financeiros detalhados da Secretaria Municipal de Administração e Finanças
-        </p>
-      </header>
+          <p className="text-muted-foreground">
+            Acesse e exporte relatórios financeiros detalhados da Secretaria Municipal de Administração e Finanças
+          </p>
+        </header>
 
-      <div className="grid gap-6">
-        <Card className="border-l-4 border-l-primary shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center text-xl">
-              <Filter className="mr-2 h-5 w-5 text-primary" />
-              Filtros e Exportação
-            </CardTitle>
-            <CardDescription>
-              Selecione o período e as categorias para gerar seus relatórios
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="start-date">Data Inicial</label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  value={dateRange.start}
-                  onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="end-date">Data Final</label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  value={dateRange.end}
-                  onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="category">Categoria</label>
-                <Select
-                  value={category}
-                  onValueChange={setCategory}
-                >
-                  <SelectTrigger id="category">
-                    <SelectValue placeholder="Selecione uma categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas as categorias</SelectItem>
-                    <SelectItem value="pessoal">Pessoal</SelectItem>
-                    <SelectItem value="material">Material</SelectItem>
-                    <SelectItem value="servicos">Serviços</SelectItem>
-                    <SelectItem value="equipamentos">Equipamentos</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="report-type">Tipo de Relatório</label>
-                <Select
-                  value={reportType}
-                  onValueChange={setReportType}
-                >
-                  <SelectTrigger id="report-type">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="summary">Resumo Financeiro</SelectItem>
-                    <SelectItem value="detailed">Detalhado por Categoria</SelectItem>
-                    <SelectItem value="comparative">Comparativo Mensal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+        <div className="grid gap-6 mt-6">
+          <Card className="border-l-4 border-l-primary shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl">
+                <Filter className="mr-2 h-5 w-5 text-primary" />
+                Filtros e Exportação
+              </CardTitle>
+              <CardDescription>
+                Selecione o período e as categorias para gerar seus relatórios
+              </CardDescription>
+            </CardHeader>
             
-            <div className="flex justify-end space-x-2 mt-6">
-              <Button onClick={handleExportPDF} variant="outline" className="flex items-center">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar PDF
-              </Button>
-              <Button onClick={handleExportExcel} variant="outline" className="flex items-center">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar Excel
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="start-date">Data Inicial</label>
+                  <Input
+                    id="start-date"
+                    type="date"
+                    value={dateRange.start}
+                    onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="end-date">Data Final</label>
+                  <Input
+                    id="end-date"
+                    type="date"
+                    value={dateRange.end}
+                    onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="category">Categoria</label>
+                  <Select
+                    value={category}
+                    onValueChange={setCategory}
+                  >
+                    <SelectTrigger id="category">
+                      <SelectValue placeholder="Selecione uma categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as categorias</SelectItem>
+                      <SelectItem value="pessoal">Pessoal</SelectItem>
+                      <SelectItem value="material">Material</SelectItem>
+                      <SelectItem value="servicos">Serviços</SelectItem>
+                      <SelectItem value="equipamentos">Equipamentos</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium" htmlFor="report-type">Tipo de Relatório</label>
+                  <Select
+                    value={reportType}
+                    onValueChange={setReportType}
+                  >
+                    <SelectTrigger id="report-type">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="summary">Resumo Financeiro</SelectItem>
+                      <SelectItem value="detailed">Detalhado por Categoria</SelectItem>
+                      <SelectItem value="comparative">Comparativo Mensal</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button onClick={handleExportPDF} variant="outline" className="flex items-center">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exportar PDF
+                </Button>
+                <Button onClick={handleExportExcel} variant="outline" className="flex items-center">
+                  <Download className="mr-2 h-4 w-4" />
+                  Exportar Excel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full md:w-[500px] grid-cols-3 mb-6">
-            <TabsTrigger value="overview" className="text-sm">
-              <PieChart className="mr-2 h-4 w-4" />
-              Visão Geral
-            </TabsTrigger>
-            <TabsTrigger value="monthly" className="text-sm">
-              <BarChartIcon className="mr-2 h-4 w-4" />
-              Evolução Mensal
-            </TabsTrigger>
-            <TabsTrigger value="categories" className="text-sm">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              Por Categoria
-            </TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full md:w-[500px] grid-cols-3 mb-6">
+              <TabsTrigger value="overview" className="text-sm">
+                <PieChart className="mr-2 h-4 w-4" />
+                Visão Geral
+              </TabsTrigger>
+              <TabsTrigger value="monthly" className="text-sm">
+                <BarChartIcon className="mr-2 h-4 w-4" />
+                Evolução Mensal
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="text-sm">
+                <TrendingUp className="mr-2 h-4 w-4" />
+                Por Categoria
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6">
               <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200">
                   <CardHeader className="pb-2">
@@ -390,6 +391,6 @@ export default function RelatoriosFinanceiros() {
           </Tabs>
         </div>
       </div>
-    
+    </Layout>
   );
 }
