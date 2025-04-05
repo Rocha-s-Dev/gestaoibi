@@ -12,28 +12,50 @@ import {
   Users,
   BarChart,
   MessageSquare,
-  DollarSign
+  DollarSign,
+  Building2,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotificationDropdown } from "@/components/notifications/NotificationDropdown";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-const menuItems = [
+// Lista principal de itens do menu
+const mainMenuItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-  { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: Target, label: "Metas", path: "/metas" },
   { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
+];
+
+// Lista de secretarias
+const secretariasItems = [
+  { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [secretariasOpen, setSecretariasOpen] = useState(false);
   const location = useLocation();
   const { signOut } = useAuth();
+
+  // Verificar se alguma rota das secretarias está ativa para expandir automaticamente
+  const isSecretariaRouteActive = secretariasItems.some(
+    item => location.pathname === item.path
+  );
+
+  // Expandir automaticamente o menu de secretarias se uma rota de secretaria estiver ativa
+  useState(() => {
+    if (isSecretariaRouteActive) {
+      setSecretariasOpen(true);
+    }
+  });
 
   return (
     <div
@@ -55,7 +77,8 @@ export const Sidebar = () => {
           </Button>
         </div>
         <nav className="space-y-2">
-          {menuItems.map((item) => (
+          {/* Menu principal */}
+          {mainMenuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -72,6 +95,68 @@ export const Sidebar = () => {
               {!collapsed && <span className="ml-3">{item.label}</span>}
             </Link>
           ))}
+
+          {/* Submenu de Secretarias */}
+          <Collapsible
+            open={secretariasOpen && !collapsed}
+            onOpenChange={setSecretariasOpen}
+            className={cn(
+              "w-full",
+              collapsed && "hidden" // Esconde o componente quando colapsado
+            )}
+          >
+            <CollapsibleTrigger
+              className={cn(
+                "flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors text-left",
+                "hover:bg-muted",
+                isSecretariaRouteActive ? "text-primary font-medium" : "text-gray-700",
+              )}
+            >
+              <div className="flex items-center">
+                <Building2 size={20} />
+                <span className="ml-3">Secretarias</span>
+              </div>
+              {secretariasOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pl-6 space-y-1 mt-1">
+              {secretariasItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    "flex items-center px-4 py-2 rounded-lg transition-colors",
+                    "hover:bg-muted",
+                    location.pathname === item.path
+                      ? "bg-primary text-primary-foreground"
+                      : "text-gray-700"
+                  )}
+                >
+                  <item.icon size={18} />
+                  <span className="ml-3">{item.label}</span>
+                </Link>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* Versão com ícones quando a sidebar estiver colapsada */}
+          {collapsed && (
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "w-full flex justify-center py-3 rounded-lg transition-colors",
+                  isSecretariaRouteActive ? "bg-primary text-primary-foreground" : "text-gray-700 hover:bg-muted"
+                )}
+                onClick={() => {
+                  setCollapsed(false);
+                  setSecretariasOpen(true);
+                }}
+              >
+                <Building2 size={20} />
+              </Button>
+            </div>
+          )}
         </nav>
         <div className="flex items-center space-x-2">
           <NotificationDropdown />
