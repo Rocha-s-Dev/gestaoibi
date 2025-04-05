@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -30,13 +29,13 @@ const mainMenuItems = [
   { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
+  { icon: Users, label: "Funcionários", path: "/funcionarios" },
+  { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 // Lista de secretarias
 const secretariasItems = [
-  { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
-  { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
 export const Sidebar = () => {
