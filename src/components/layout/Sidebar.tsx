@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -14,7 +15,8 @@ import {
   DollarSign,
   Building2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +38,7 @@ const mainMenuItems = [
 // Lista de secretarias
 const secretariasItems = [
   { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
+  { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
 ];
 
 export const Sidebar = () => {
@@ -46,7 +49,7 @@ export const Sidebar = () => {
 
   // Verificar se alguma rota das secretarias está ativa para expandir automaticamente
   const isSecretariaRouteActive = secretariasItems.some(
-    item => location.pathname === item.path
+    item => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
   );
 
   // Expandir automaticamente o menu de secretarias se uma rota de secretaria estiver ativa
