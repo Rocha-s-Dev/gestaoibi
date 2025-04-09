@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,47 +32,37 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
-const formSchema = z.object({
-  description: z.string().min(3, {
-    message: "A descrição deve ter pelo menos 3 caracteres",
-  }),
-  contract_number: z.string().min(1, {
-    message: "O número do contrato é obrigatório",
-  }),
-  contractor: z.string().min(1, {
-    message: "O contratante é obrigatório",
-  }),
-  contracted: z.string().min(1, {
-    message: "O contratado é obrigatório",
-  }),
-  value: z.coerce.number().positive({
-    message: "O valor deve ser maior que zero",
-  }),
-  start_date: z.date({
-    required_error: "A data de início é obrigatória",
-  }),
-  end_date: z.date({
-    required_error: "A data de término é obrigatória",
-  }).refine(
-    (date, ctx) => {
-      // Access start_date from the parent context if available
-      const data = ctx.path ? ctx.path[0] && ctx.path[0].data : undefined;
-      const startDate = data && data.start_date;
-      if (startDate instanceof Date && date <= startDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "A data de término deve ser posterior à data de início",
-        });
-        return false;
-      }
-      return true;
-    },
-    {
-      message: "A data de término deve ser posterior à data de início",
-    }
-  ),
-  notes: z.string().optional(),
-});
+const formSchema = z
+  .object({
+    description: z.string().min(3, {
+      message: "A descrição deve ter pelo menos 3 caracteres",
+    }),
+    contract_number: z.string().min(1, {
+      message: "O número do contrato é obrigatório",
+    }),
+    contractor: z.string().min(1, {
+      message: "O contratante é obrigatório",
+    }),
+    contracted: z.string().min(1, {
+      message: "O contratado é obrigatório",
+    }),
+    value: z.coerce.number().positive({
+      message: "O valor deve ser maior que zero",
+    }),
+    start_date: z.date({
+      required_error: "A data de início é obrigatória",
+    }),
+    end_date: z.date({
+      required_error: "A data de término é obrigatória",
+    }),
+    notes: z.string().optional(),
+  })
+  .refine((data) => {
+    return data.end_date > data.start_date;
+  }, {
+    message: "A data de término deve ser posterior à data de início",
+    path: ["end_date"],
+  });
 
 export function ContractForm({ onContractAdded }: { onContractAdded: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -94,7 +83,6 @@ export function ContractForm({ onContractAdded }: { onContractAdded: () => void 
     try {
       setIsLoading(true);
 
-      // Format dates for storage
       const contractData = {
         description: values.description,
         contract_number: values.contract_number,
@@ -108,7 +96,6 @@ export function ContractForm({ onContractAdded }: { onContractAdded: () => void 
         document_urls: [],
       };
 
-      // Store contract in database using type assertion to work around missing types
       const { data: contract, error } = await supabase
         .from('contracts' as any)
         .insert(contractData as any)
