@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { TransactionForm } from "@/components/financeiro/TransactionForm";
 import { TransactionList } from "@/components/financeiro/TransactionList";
+import { ContractManagement } from "@/components/financeiro/contracts/ContractManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
@@ -25,40 +26,47 @@ export default function Financeiro() {
         </header>
 
         <Tabs defaultValue="receitas" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
             <TabsTrigger value="receitas">Receitas</TabsTrigger>
             <TabsTrigger value="despesas">Despesas</TabsTrigger>
+            <TabsTrigger value="contratos">Contratos</TabsTrigger>
           </TabsList>
 
-          <div className="grid gap-6 mt-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Cadastrar {activeTab === "receitas" ? "Receita" : "Despesa"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TransactionForm 
-                  transactionType={activeTab}
-                  onTransactionAdded={handleTransactionAdded}
-                />
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Últimas {activeTab === "receitas" ? "Receitas" : "Despesas"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TransactionList 
-                  type={activeTab} 
-                  refreshTrigger={refreshTrigger}
-                />
-              </CardContent>
-            </Card>
-          </div>
+          {activeTab !== "contratos" ? (
+            <div className="grid gap-6 mt-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    Cadastrar {activeTab === "receitas" ? "Receita" : "Despesa"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TransactionForm 
+                    transactionType={activeTab}
+                    onTransactionAdded={handleTransactionAdded}
+                  />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    Últimas {activeTab === "receitas" ? "Receitas" : "Despesas"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TransactionList 
+                    type={activeTab} 
+                    refreshTrigger={refreshTrigger}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+            <div className="mt-6">
+              <ContractManagement />
+            </div>
+          )}
         </Tabs>
       </div>
     </Layout>
