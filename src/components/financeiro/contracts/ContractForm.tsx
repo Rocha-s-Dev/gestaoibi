@@ -55,17 +55,16 @@ const contractFormSchema = z.object({
   }),
   end_date: z.date({
     required_error: "A data de término é obrigatória",
-  }).refine(
-    (date, ctx) => {
-      if (ctx.parent.start_date) {
-        return date > ctx.parent.start_date;
-      }
-      return true;
-    }, 
-    {
-      message: "A data de término deve ser posterior à data de início",
+  }).superRefine((endDate, ctx) => {
+    if (ctx.data.start_date && endDate <= ctx.data.start_date) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "A data de término deve ser posterior à data de início",
+      });
+      return false;
     }
-  ),
+    return true;
+  }),
   notes: z.string().optional(),
 });
 
@@ -116,9 +115,9 @@ export function ContractForm({ onContractAdded }: { onContractAdded: () => void 
         document_urls: [],
       };
 
-      // Store contract in database
-      const { data: contract, error } = await supabase
-        .from("contracts")
+      // Store contract in database using type assertion to work around missing types
+      const { data: contract, error } = await (supabase
+        .from('contracts') as any)
         .insert(contractData)
         .select()
         .single();
@@ -156,10 +155,10 @@ export function ContractForm({ onContractAdded }: { onContractAdded: () => void 
           });
         }
         
-        // Update contract with document URLs
+        // Update contract with document URLs using type assertion
         if (documentUrls.length > 0) {
-          await supabase
-            .from("contracts")
+          await (supabase
+            .from("contracts") as any)
             .update({ document_urls: documentUrls })
             .eq('id', contract.id);
         }

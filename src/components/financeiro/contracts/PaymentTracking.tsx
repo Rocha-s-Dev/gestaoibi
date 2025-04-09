@@ -78,15 +78,14 @@ export function PaymentTracking() {
     queryFn: async () => {
       // Start with base query
       let query = supabase
-        .from("contract_payments")
+        .from("contract_payments" as any)
         .select(`
           *,
           contract:contracts(
             description,
             contract_number
           )
-        `)
-        .order('due_date', { ascending: true });
+        `);
 
       // If we're filtering by month, add that condition
       if (currentDate) {
@@ -103,6 +102,9 @@ export function PaymentTracking() {
         query = query.eq('status', statusFilter);
       }
 
+      // Order by due date
+      query = query.order('due_date', { ascending: true });
+
       const { data, error } = await query;
       
       if (error) {
@@ -114,14 +116,14 @@ export function PaymentTracking() {
         return [];
       }
       
-      return data as Payment[];
+      return data as unknown as Payment[];
     },
   });
 
   const markAsPaidMutation = useMutation({
     mutationFn: async (paymentId: string) => {
-      const { error } = await supabase
-        .from("contract_payments")
+      const { error } = await (supabase
+        .from("contract_payments") as any)
         .update({
           status: 'paid',
           payment_date: new Date().toISOString().split('T')[0]

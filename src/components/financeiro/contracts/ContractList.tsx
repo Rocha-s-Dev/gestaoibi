@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   CalendarClock, 
@@ -83,8 +83,8 @@ export function ContractList({ refreshTrigger }: { refreshTrigger: number }) {
   const { data: contracts, isLoading } = useQuery({
     queryKey: ['contracts', refreshTrigger],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("contracts")
+      const { data, error } = await (supabase
+        .from("contracts") as any)
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -106,8 +106,8 @@ export function ContractList({ refreshTrigger }: { refreshTrigger: number }) {
     queryFn: async () => {
       if (!selectedContract?.id) return [];
       
-      const { data, error } = await supabase
-        .from("contract_payments")
+      const { data, error } = await (supabase
+        .from("contract_payments") as any)
         .select('*')
         .eq('contract_id', selectedContract.id)
         .order('due_date', { ascending: true });
