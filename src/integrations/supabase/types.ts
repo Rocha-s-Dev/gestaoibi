@@ -9,6 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      contract_payments: {
+        Row: {
+          amount: number
+          contract_id: string
+          created_at: string
+          description: string
+          due_date: string
+          id: string
+          payment_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          contract_id: string
+          created_at?: string
+          description: string
+          due_date: string
+          id?: string
+          payment_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          contract_id?: string
+          created_at?: string
+          description?: string
+          due_date?: string
+          id?: string
+          payment_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_payments_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracts: {
+        Row: {
+          contract_number: string
+          contracted: string
+          contractor: string
+          created_at: string
+          description: string
+          document_urls: Json | null
+          end_date: string
+          id: string
+          notes: string | null
+          start_date: string
+          status: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          contract_number: string
+          contracted: string
+          contractor: string
+          created_at?: string
+          description: string
+          document_urls?: Json | null
+          end_date: string
+          id?: string
+          notes?: string | null
+          start_date: string
+          status?: string
+          updated_at?: string
+          value?: number
+        }
+        Update: {
+          contract_number?: string
+          contracted?: string
+          contractor?: string
+          created_at?: string
+          description?: string
+          document_urls?: Json | null
+          end_date?: string
+          id?: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string

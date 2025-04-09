@@ -78,10 +78,10 @@ export function PaymentTracking() {
     queryFn: async () => {
       // Start with base query
       let query = supabase
-        .from('contract_payments')
+        .from("contract_payments")
         .select(`
           *,
-          contract:contract_id (
+          contract:contracts(
             description,
             contract_number
           )
@@ -121,7 +121,7 @@ export function PaymentTracking() {
   const markAsPaidMutation = useMutation({
     mutationFn: async (paymentId: string) => {
       const { error } = await supabase
-        .from('contract_payments')
+        .from("contract_payments")
         .update({
           status: 'paid',
           payment_date: new Date().toISOString().split('T')[0]
