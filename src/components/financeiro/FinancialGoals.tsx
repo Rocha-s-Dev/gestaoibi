@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,12 +8,15 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { AddFinancialGoalDialog } from "./AddFinancialGoalDialog";
 import { EditFinancialGoalDialog } from "./EditFinancialGoalDialog";
-import { Pencil, AlertTriangle, Check, Ban } from "lucide-react";
+import { DeleteFinancialGoalDialog } from "./DeleteFinancialGoalDialog";
+import { Pencil, Trash2, Check } from "lucide-react";
 
 export function FinancialGoals() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editGoal, setEditGoal] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [deleteGoal, setDeleteGoal] = useState<any>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -70,9 +72,13 @@ export function FinancialGoals() {
     setIsEditDialogOpen(true);
   };
 
+  const handleDeleteGoal = (goal: any) => {
+    setDeleteGoal(goal);
+    setIsDeleteDialogOpen(true);
+  };
+
   const renderGoalProgress = (goal: any) => {
     if (goal.type === "expense") {
-      // For expenses, lower is better (staying below target)
       const percentage = goal.current_value ? (goal.current_value / goal.target_value) * 100 : 0;
       const isOverBudget = percentage > 100;
       const isNearThreshold = percentage >= goal.alert_threshold && percentage <= 100;
@@ -108,7 +114,6 @@ export function FinancialGoals() {
         </div>
       );
     } else {
-      // For revenue, higher is better (exceeding target)
       const percentage = goal.current_value ? (goal.current_value / goal.target_value) * 100 : 0;
       const isExceeded = percentage > 100;
       
@@ -180,12 +185,9 @@ export function FinancialGoals() {
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    onClick={() => handleStatusChange(
-                      goal.id, 
-                      goal.status === "active" ? "inactive" : "active"
-                    )}
+                    onClick={() => handleDeleteGoal(goal)}
                   >
-                    {goal.status === "active" ? <Ban size={16} /> : <Check size={16} />}
+                    <Trash2 size={16} />
                   </Button>
                 </div>
               </div>
@@ -214,6 +216,15 @@ export function FinancialGoals() {
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           onGoalUpdated={handleGoalAdded}
+        />
+      )}
+
+      {deleteGoal && (
+        <DeleteFinancialGoalDialog 
+          goal={deleteGoal}
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          onGoalDeleted={handleGoalAdded}
         />
       )}
     </div>
