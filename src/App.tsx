@@ -12,6 +12,7 @@ import Mensagens from "@/pages/Mensagens";
 import Notificacoes from "@/pages/Notificacoes";
 import Financeiro from "@/pages/Financeiro";
 import FinanceiroRelatorios from "@/pages/FinanceiroRelatorios";
+import ContratosPagamentos from "@/pages/ContratosPagamentos";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -83,6 +84,14 @@ export default function App() {
           element={
             <RequireAuth>
               <FinanceiroRelatorios />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/contratos/pagamentos"
+          element={
+            <RequireAuth>
+              <ContratosPagamentos />
             </RequireAuth>
           }
         />

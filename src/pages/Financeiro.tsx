@@ -6,6 +6,9 @@ import { TransactionList } from "@/components/financeiro/TransactionList";
 import { ContractManagement } from "@/components/financeiro/contracts/ContractManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Link } from "react-router-dom";
+import { CalendarClock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Financeiro() {
   const [activeTab, setActiveTab] = useState("receitas");
@@ -64,6 +67,14 @@ export default function Financeiro() {
             </div>
           ) : (
             <div className="mt-6">
+              <div className="mb-4">
+                <Button variant="outline" asChild>
+                  <Link to="/contratos/pagamentos" className="flex items-center">
+                    <CalendarClock className="mr-2 h-4 w-4" /> 
+                    Ver Acompanhamento de Pagamentos
+                  </Link>
+                </Button>
+              </div>
               <ContractManagement />
             </div>
           )}
