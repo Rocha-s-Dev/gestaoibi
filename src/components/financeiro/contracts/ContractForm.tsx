@@ -54,17 +54,24 @@ const formSchema = z.object({
   }),
   end_date: z.date({
     required_error: "A data de término é obrigatória",
-  }).superRefine((endDate, ctx) => {
-    const startDate = ctx.parent.start_date;
-    if (startDate instanceof Date && endDate <= startDate) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "A data de término deve ser posterior à data de início",
-      });
-      return false;
+  }).refine(
+    (date, ctx) => {
+      // Access start_date from the parent context if available
+      const data = ctx.path ? ctx.path[0] && ctx.path[0].data : undefined;
+      const startDate = data && data.start_date;
+      if (startDate instanceof Date && date <= startDate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "A data de término deve ser posterior à data de início",
+        });
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "A data de término deve ser posterior à data de início",
     }
-    return true;
-  }),
+  ),
   notes: z.string().optional(),
 });
 
@@ -102,9 +109,9 @@ export function ContractForm({ onContractAdded }: { onContractAdded: () => void 
       };
 
       // Store contract in database using type assertion to work around missing types
-      const { data: contract, error } = await (supabase
-        .from('contracts') as any)
-        .insert(contractData)
+      const { data: contract, error } = await supabase
+        .from('contracts' as any)
+        .insert(contractData as any)
         .select()
         .single();
 
