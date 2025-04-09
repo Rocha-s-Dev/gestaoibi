@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AddFinancialGoalDialog } from "./AddFinancialGoalDialog";
 import { EditFinancialGoalDialog } from "./EditFinancialGoalDialog";
 import { DeleteFinancialGoalDialog } from "./DeleteFinancialGoalDialog";
-import { Pencil, Trash2, Check } from "lucide-react";
+import { Pencil, Trash2, Check, AlertTriangle } from "lucide-react";
 
 export function FinancialGoals() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
