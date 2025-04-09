@@ -6,7 +6,8 @@ import {
   Calendar,
   BarChart2,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Plus
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format, parseISO } from "date-fns";
@@ -14,6 +15,7 @@ import { ptBR } from "date-fns/locale";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AddContractGoalDialog } from "./AddContractGoalDialog";
 
 const contractGoals = [
   {
@@ -55,6 +58,9 @@ const complianceData = [
 ];
 
 export function ContractGoals() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
   const { data: paymentStats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['contract-payment-stats'],
     queryFn: async () => {
@@ -83,8 +89,25 @@ export function ContractGoals() {
     }
   };
 
+  const handleGoalAdded = () => {
+    setRefreshTrigger(prev => prev + 1);
+    // In a real app, you would refetch the goals here
+  };
+
   return (
     <div className="space-y-6">
+      {/* Header with Add Button */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Metas de Contratos</h2>
+        <Button 
+          onClick={() => setDialogOpen(true)}
+          className="flex items-center gap-1"
+        >
+          <Plus className="h-4 w-4" />
+          Nova Meta
+        </Button>
+      </div>
+
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -205,6 +228,13 @@ export function ContractGoals() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Add Goal Dialog */}
+      <AddContractGoalDialog 
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onGoalAdded={handleGoalAdded}
+      />
     </div>
   );
 }
