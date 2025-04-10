@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -16,7 +17,8 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
-  CalendarClock
+  CalendarClock,
+  ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -40,6 +42,7 @@ const secretariasItems = [
   { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
   { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
   { icon: CalendarClock, label: "Pagamentos de Contratos", path: "/contratos/pagamentos" },
+  { icon: ShoppingCart, label: "Compras e Licitações", path: "/compras/licitacoes" },
 ];
 
 export const Sidebar = () => {

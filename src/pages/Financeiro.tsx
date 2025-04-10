@@ -7,8 +7,9 @@ import { ContractManagement } from "@/components/financeiro/contracts/ContractMa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SupplierRegistration } from "@/components/financeiro/compras/SupplierRegistration";
 
 export default function Financeiro() {
   const [activeTab, setActiveTab] = useState("receitas");
@@ -29,13 +30,14 @@ export default function Financeiro() {
         </header>
 
         <Tabs defaultValue="receitas" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
+          <TabsList className="grid w-full md:w-[600px] grid-cols-4">
             <TabsTrigger value="receitas">Receitas</TabsTrigger>
             <TabsTrigger value="despesas">Despesas</TabsTrigger>
             <TabsTrigger value="contratos">Contratos</TabsTrigger>
+            <TabsTrigger value="compras">Compras e Licitações</TabsTrigger>
           </TabsList>
 
-          {activeTab !== "contratos" ? (
+          {activeTab !== "contratos" && activeTab !== "compras" ? (
             <div className="grid gap-6 mt-6 md:grid-cols-2">
               <Card>
                 <CardHeader>
@@ -65,7 +67,7 @@ export default function Financeiro() {
                 </CardContent>
               </Card>
             </div>
-          ) : (
+          ) : activeTab === "contratos" ? (
             <div className="mt-6">
               <div className="mb-4">
                 <Button variant="outline" asChild>
@@ -76,6 +78,18 @@ export default function Financeiro() {
                 </Button>
               </div>
               <ContractManagement />
+            </div>
+          ) : (
+            <div className="mt-6">
+              <div className="mb-4">
+                <Button variant="outline" asChild>
+                  <Link to="/compras/licitacoes" className="flex items-center">
+                    <ShoppingCart className="mr-2 h-4 w-4" /> 
+                    Ver Licitações Abertas
+                  </Link>
+                </Button>
+              </div>
+              <SupplierRegistration />
             </div>
           )}
         </Tabs>
