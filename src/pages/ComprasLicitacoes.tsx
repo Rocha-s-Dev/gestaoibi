@@ -1,17 +1,50 @@
 
+import { useState } from "react";
+import { toast } from "sonner";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, FileSearch, FilePlus, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FileText, FileSearch, FilePlus, Calendar, Plus } from "lucide-react";
+import { BidList } from "@/components/financeiro/compras/BidList";
+import { BidDialog } from "@/components/financeiro/compras/BidDialog";
+import { BidFormValues } from "@/components/financeiro/compras/BidForm";
 
 export default function ComprasLicitacoes() {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentBid, setCurrentBid] = useState<any>(null);
+
+  const handleAddBid = (data: BidFormValues) => {
+    console.log("Nova licitação:", data);
+    toast.success("Licitação cadastrada com sucesso!");
+    setIsAddDialogOpen(false);
+  };
+
+  const handleEditBid = (data: BidFormValues) => {
+    console.log("Licitação atualizada:", data);
+    toast.success("Licitação atualizada com sucesso!");
+    setIsEditDialogOpen(false);
+  };
+
+  const handleOpenEditDialog = (bid: any) => {
+    setCurrentBid(bid);
+    setIsEditDialogOpen(true);
+  };
+
   return (
     <Layout>
       <div className="space-y-6 p-6">
-        <header>
-          <h1 className="text-3xl font-bold tracking-tight">Compras e Licitações</h1>
-          <p className="text-muted-foreground mt-2">
-            Gestão de processos licitatórios e compras governamentais
-          </p>
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Compras e Licitações</h1>
+            <p className="text-muted-foreground mt-2">
+              Gestão de processos licitatórios e compras governamentais
+            </p>
+          </div>
+          <Button onClick={() => setIsAddDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nova Licitação
+          </Button>
         </header>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -76,92 +109,31 @@ export default function ComprasLicitacoes() {
           </Card>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Licitações em Andamento</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/50">
-                    <tr>
-                      <th className="px-4 py-3 text-left">Modalidade</th>
-                      <th className="px-4 py-3 text-left">Número</th>
-                      <th className="px-4 py-3 text-left">Objeto</th>
-                      <th className="px-4 py-3 text-left">Abertura</th>
-                      <th className="px-4 py-3 text-right">Valor Est.</th>
-                      <th className="px-4 py-3 text-center">Situação</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b">
-                      <td className="px-4 py-3">Pregão Eletrônico</td>
-                      <td className="px-4 py-3">045/2025</td>
-                      <td className="px-4 py-3">Aquisição de materiais de escritório</td>
-                      <td className="px-4 py-3">15/04/2025</td>
-                      <td className="px-4 py-3 text-right">R$ 75.000,00</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
-                          Em andamento
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="px-4 py-3">Tomada de Preços</td>
-                      <td className="px-4 py-3">021/2025</td>
-                      <td className="px-4 py-3">Reforma da Escola Municipal João Silva</td>
-                      <td className="px-4 py-3">20/04/2025</td>
-                      <td className="px-4 py-3 text-right">R$ 950.000,00</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-                          Documentação
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="px-4 py-3">Concorrência</td>
-                      <td className="px-4 py-3">008/2025</td>
-                      <td className="px-4 py-3">Pavimentação da Av. Principal</td>
-                      <td className="px-4 py-3">05/05/2025</td>
-                      <td className="px-4 py-3 text-right">R$ 2.450.000,00</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                          Publicada
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="px-4 py-3">Pregão Eletrônico</td>
-                      <td className="px-4 py-3">046/2025</td>
-                      <td className="px-4 py-3">Aquisição de equipamentos de informática</td>
-                      <td className="px-4 py-3">22/04/2025</td>
-                      <td className="px-4 py-3 text-right">R$ 120.000,00</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
-                          Impugnação
-                        </span>
-                      </td>
-                    </tr>
-                    <tr className="border-b">
-                      <td className="px-4 py-3">Convite</td>
-                      <td className="px-4 py-3">015/2025</td>
-                      <td className="px-4 py-3">Serviços de manutenção predial</td>
-                      <td className="px-4 py-3">12/04/2025</td>
-                      <td className="px-4 py-3 text-right">R$ 45.000,00</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
-                          Suspensa
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Licitações em Andamento</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BidList onEdit={handleOpenEditDialog} />
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Dialog for adding new bids */}
+      <BidDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onSubmit={handleAddBid}
+      />
+
+      {/* Dialog for editing existing bids */}
+      <BidDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSubmit={handleEditBid}
+        defaultValues={currentBid}
+        isEditing
+      />
     </Layout>
   );
 }

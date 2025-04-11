@@ -7,7 +7,7 @@ import { ContractManagement } from "@/components/financeiro/contracts/ContractMa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { CalendarClock, ShoppingCart } from "lucide-react";
+import { CalendarClock, ShoppingCart, FileText, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SupplierRegistration } from "@/components/financeiro/compras/SupplierRegistration";
 
@@ -81,11 +81,17 @@ export default function Financeiro() {
             </div>
           ) : (
             <div className="mt-6">
-              <div className="mb-4">
+              <div className="flex flex-wrap gap-2 mb-4">
                 <Button variant="outline" asChild>
                   <Link to="/compras/licitacoes" className="flex items-center">
-                    <ShoppingCart className="mr-2 h-4 w-4" /> 
-                    Ver Licitações Abertas
+                    <FileText className="mr-2 h-4 w-4" /> 
+                    Gerenciar Licitações
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/financeiro" className="flex items-center">
+                    <Building className="mr-2 h-4 w-4" /> 
+                    Cadastro de Fornecedores
                   </Link>
                 </Button>
               </div>
