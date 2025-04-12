@@ -4,11 +4,16 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgramasSustentabilidade } from "@/components/ambiental/ProgramasSustentabilidade";
+import { MetasAmbientais } from "@/components/ambiental/MetasAmbientais";
 
 export default function GestaoAmbiental() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleProgramaAdded = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleMetaAdded = () => {
     setRefreshTrigger((prev) => prev + 1);
   };
 
@@ -23,8 +28,9 @@ export default function GestaoAmbiental() {
         </header>
 
         <Tabs defaultValue="programas">
-          <TabsList className="grid w-full md:w-[800px] grid-cols-1">
+          <TabsList className="grid w-full md:w-[800px] grid-cols-2">
             <TabsTrigger value="programas">Programas de Sustentabilidade</TabsTrigger>
+            <TabsTrigger value="metas">Metas Ambientais</TabsTrigger>
           </TabsList>
 
           <TabsContent value="programas" className="mt-6">
@@ -34,6 +40,17 @@ export default function GestaoAmbiental() {
               </CardHeader>
               <CardContent>
                 <ProgramasSustentabilidade refreshTrigger={refreshTrigger} onProgramaAdded={handleProgramaAdded} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas Ambientais</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasAmbientais refreshTrigger={refreshTrigger} onMetaAdded={handleMetaAdded} />
               </CardContent>
             </Card>
           </TabsContent>
