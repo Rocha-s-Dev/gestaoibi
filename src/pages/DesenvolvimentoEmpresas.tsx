@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BusinessRegistration } from "@/components/desenvolvimento/BusinessRegistration";
 import { BusinessList } from "@/components/desenvolvimento/BusinessList";
 import { DevelopmentProjectList } from "@/components/desenvolvimento/DevelopmentProjectList";
+import { EconomicGoalsList } from "@/components/desenvolvimento/EconomicGoalsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function DesenvolvimentoEmpresas() {
@@ -15,6 +16,10 @@ export default function DesenvolvimentoEmpresas() {
   };
 
   const handleProjectAdded = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+  
+  const handleGoalAdded = () => {
     setRefreshTrigger((prev) => prev + 1);
   };
 
@@ -29,10 +34,11 @@ export default function DesenvolvimentoEmpresas() {
         </header>
 
         <Tabs defaultValue="cadastro">
-          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
+          <TabsList className="grid w-full md:w-[800px] grid-cols-4">
             <TabsTrigger value="cadastro">Cadastro de Empresas</TabsTrigger>
             <TabsTrigger value="lista">Empresas Registradas</TabsTrigger>
             <TabsTrigger value="projetos">Projetos de Desenvolvimento</TabsTrigger>
+            <TabsTrigger value="metas">Metas Econômicas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cadastro" className="mt-6">
@@ -66,6 +72,20 @@ export default function DesenvolvimentoEmpresas() {
                 <DevelopmentProjectList 
                   refreshTrigger={refreshTrigger} 
                   onProjectAdded={handleProjectAdded}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas de Desenvolvimento Econômico</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <EconomicGoalsList
+                  refreshTrigger={refreshTrigger} 
+                  onGoalAdded={handleGoalAdded}
                 />
               </CardContent>
             </Card>
