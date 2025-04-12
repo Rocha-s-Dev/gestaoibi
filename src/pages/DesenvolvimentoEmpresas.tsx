@@ -4,12 +4,17 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BusinessRegistration } from "@/components/desenvolvimento/BusinessRegistration";
 import { BusinessList } from "@/components/desenvolvimento/BusinessList";
+import { DevelopmentProjectList } from "@/components/desenvolvimento/DevelopmentProjectList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function DesenvolvimentoEmpresas() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleBusinessAdded = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleProjectAdded = () => {
     setRefreshTrigger((prev) => prev + 1);
   };
 
@@ -24,9 +29,10 @@ export default function DesenvolvimentoEmpresas() {
         </header>
 
         <Tabs defaultValue="cadastro">
-          <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+          <TabsList className="grid w-full md:w-[600px] grid-cols-3">
             <TabsTrigger value="cadastro">Cadastro de Empresas</TabsTrigger>
             <TabsTrigger value="lista">Empresas Registradas</TabsTrigger>
+            <TabsTrigger value="projetos">Projetos de Desenvolvimento</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cadastro" className="mt-6">
@@ -47,6 +53,20 @@ export default function DesenvolvimentoEmpresas() {
               </CardHeader>
               <CardContent>
                 <BusinessList refreshTrigger={refreshTrigger} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="projetos" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Projetos de Desenvolvimento</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DevelopmentProjectList 
+                  refreshTrigger={refreshTrigger} 
+                  onProjectAdded={handleProjectAdded}
+                />
               </CardContent>
             </Card>
           </TabsContent>
