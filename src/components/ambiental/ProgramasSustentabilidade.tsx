@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Leaf, Edit, Trash2 } from "lucide-react";
@@ -56,8 +55,8 @@ interface Props {
 export function ProgramasSustentabilidade({ refreshTrigger, onProgramaAdded }: Props) {
   const [programas, setProgramas] = useState<Programa[]>(programasIniciais);
   const [searchTerm, setSearchTerm] = useState("");
-  const [tipoFiltro, setTipoFiltro] = useState<string>("");
-  const [statusFiltro, setStatusFiltro] = useState<string>("");
+  const [tipoFiltro, setTipoFiltro] = useState<string>("todos");
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [showDialog, setShowDialog] = useState(false);
   const [currentPrograma, setCurrentPrograma] = useState<Programa | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -65,8 +64,8 @@ export function ProgramasSustentabilidade({ refreshTrigger, onProgramaAdded }: P
   const filteredProgramas = programas.filter((programa) => {
     const matchesSearch = programa.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           programa.descricao.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTipo = !tipoFiltro || programa.tipo === tipoFiltro;
-    const matchesStatus = !statusFiltro || programa.status === statusFiltro;
+    const matchesTipo = tipoFiltro === "todos" || programa.tipo === tipoFiltro;
+    const matchesStatus = statusFiltro === "todos" || programa.status === statusFiltro;
     
     return matchesSearch && matchesTipo && matchesStatus;
   });
@@ -148,7 +147,7 @@ export function ProgramasSustentabilidade({ refreshTrigger, onProgramaAdded }: P
               <SelectValue placeholder="Todos os tipos" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos os tipos</SelectItem>
+              <SelectItem value="todos">Todos os tipos</SelectItem>
               <SelectItem value="Resíduos">Resíduos</SelectItem>
               <SelectItem value="Educação">Educação</SelectItem>
               <SelectItem value="Preservação">Preservação</SelectItem>
@@ -165,7 +164,7 @@ export function ProgramasSustentabilidade({ refreshTrigger, onProgramaAdded }: P
               <SelectValue placeholder="Todos os status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos os status</SelectItem>
+              <SelectItem value="todos">Todos os status</SelectItem>
               <SelectItem value="ativo">Ativos</SelectItem>
               <SelectItem value="concluido">Concluídos</SelectItem>
               <SelectItem value="planejado">Planejados</SelectItem>
