@@ -167,8 +167,8 @@ export function DevelopmentProjectList({ refreshTrigger, onProjectAdded }: Devel
                   <TableCell className="hidden lg:table-cell">
                     <Badge 
                       variant={project.status === "Em andamento" ? "default" : 
-                              project.status === "Concluído" ? "success" : 
-                              "secondary"}
+                              project.status === "Concluído" ? "secondary" : 
+                              "outline"}
                     >
                       {project.status}
                     </Badge>
