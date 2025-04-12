@@ -18,7 +18,9 @@ import {
   ChevronUp,
   FileText,
   CalendarClock,
-  ShoppingCart
+  ShoppingCart,
+  Factory,
+  Building
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -39,29 +41,64 @@ const mainMenuItems = [
 
 // Lista de secretarias
 const secretariasItems = [
-  { icon: DollarSign, label: "Financeiro", path: "/financeiro" },
-  { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
-  { icon: CalendarClock, label: "Pagamentos de Contratos", path: "/contratos/pagamentos" },
-  { icon: ShoppingCart, label: "Compras e Licitações", path: "/compras/licitacoes" },
+  // Secretaria de Administração e Finanças
+  { 
+    icon: DollarSign, 
+    label: "Financeiro", 
+    path: "/financeiro",
+    submenu: [
+      { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
+      { icon: CalendarClock, label: "Pagamentos de Contratos", path: "/contratos/pagamentos" },
+      { icon: ShoppingCart, label: "Compras e Licitações", path: "/compras/licitacoes" },
+    ]
+  },
+  // Secretaria de Desenvolvimento Econômico e Meio Ambiente
+  {
+    icon: Factory,
+    label: "Desenvolvimento Econômico",
+    path: "/desenvolvimento",
+    submenu: [
+      { icon: Building, label: "Gestão de Empreendimentos", path: "/desenvolvimento/empresas" },
+    ]
+  },
 ];
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [secretariasOpen, setSecretariasOpen] = useState(false);
+  const [openSecretarias, setOpenSecretarias] = useState(false);
+  const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const { signOut } = useAuth();
 
   // Verificar se alguma rota das secretarias está ativa para expandir automaticamente
   const isSecretariaRouteActive = secretariasItems.some(
-    item => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+    item => location.pathname === item.path || 
+    location.pathname.startsWith(`${item.path}/`) || 
+    (item.submenu && item.submenu.some(subItem => location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)))
   );
 
   // Expandir automaticamente o menu de secretarias se uma rota de secretaria estiver ativa
   useState(() => {
     if (isSecretariaRouteActive) {
-      setSecretariasOpen(true);
+      setOpenSecretarias(true);
+      
+      // Check which submenu should be open
+      secretariasItems.forEach(item => {
+        if (item.submenu) {
+          const isActive = item.submenu.some(
+            subItem => location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)
+          );
+          if (isActive) {
+            setOpenSubmenus(prev => ({ ...prev, [item.label]: true }));
+          }
+        }
+      });
     }
   });
+
+  const toggleSubmenu = (label: string) => {
+    setOpenSubmenus(prev => ({ ...prev, [label]: !prev[label] }));
+  };
 
   return (
     <div
@@ -104,8 +141,8 @@ export const Sidebar = () => {
 
           {/* Submenu de Secretarias */}
           <Collapsible
-            open={secretariasOpen && !collapsed}
-            onOpenChange={setSecretariasOpen}
+            open={openSecretarias && !collapsed}
+            onOpenChange={setOpenSecretarias}
             className={cn(
               "w-full",
               collapsed && "hidden" // Esconde o componente quando colapsado
@@ -122,24 +159,68 @@ export const Sidebar = () => {
                 <Building2 size={20} />
                 <span className="ml-3">Secretarias</span>
               </div>
-              {secretariasOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {openSecretarias ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </CollapsibleTrigger>
             <CollapsibleContent className="pl-6 space-y-1 mt-1">
               {secretariasItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "flex items-center px-4 py-2 rounded-lg transition-colors",
-                    "hover:bg-muted",
-                    location.pathname === item.path
-                      ? "bg-primary text-primary-foreground"
-                      : "text-gray-700"
+                <div key={item.path} className="mb-1">
+                  {/* Secretaria com submenu */}
+                  {item.submenu ? (
+                    <Collapsible
+                      open={openSubmenus[item.label]}
+                      onOpenChange={() => toggleSubmenu(item.label)}
+                    >
+                      <CollapsibleTrigger
+                        className={cn(
+                          "flex items-center justify-between w-full px-4 py-2 rounded-lg transition-colors text-left",
+                          "hover:bg-muted",
+                          item.submenu.some(subItem => location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`))
+                            ? "text-primary font-medium"
+                            : "text-gray-700"
+                        )}
+                      >
+                        <div className="flex items-center">
+                          <item.icon size={18} />
+                          <span className="ml-3">{item.label}</span>
+                        </div>
+                        {openSubmenus[item.label] ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pl-6 space-y-1 mt-1">
+                        {item.submenu.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            className={cn(
+                              "flex items-center px-4 py-2 rounded-lg transition-colors",
+                              "hover:bg-muted",
+                              location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)
+                                ? "bg-primary text-primary-foreground"
+                                : "text-gray-700"
+                            )}
+                          >
+                            <subItem.icon size={16} />
+                            <span className="ml-3">{subItem.label}</span>
+                          </Link>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    /* Secretaria sem submenu */
+                    <Link
+                      to={item.path}
+                      className={cn(
+                        "flex items-center px-4 py-2 rounded-lg transition-colors",
+                        "hover:bg-muted",
+                        location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                          ? "bg-primary text-primary-foreground"
+                          : "text-gray-700"
+                      )}
+                    >
+                      <item.icon size={18} />
+                      <span className="ml-3">{item.label}</span>
+                    </Link>
                   )}
-                >
-                  <item.icon size={18} />
-                  <span className="ml-3">{item.label}</span>
-                </Link>
+                </div>
               ))}
             </CollapsibleContent>
           </Collapsible>
@@ -156,7 +237,7 @@ export const Sidebar = () => {
                 )}
                 onClick={() => {
                   setCollapsed(false);
-                  setSecretariasOpen(true);
+                  setOpenSecretarias(true);
                 }}
               >
                 <Building2 size={20} />

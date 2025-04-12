@@ -14,6 +14,7 @@ import Financeiro from "@/pages/Financeiro";
 import FinanceiroRelatorios from "@/pages/FinanceiroRelatorios";
 import ContratosPagamentos from "@/pages/ContratosPagamentos";
 import ComprasLicitacoes from "@/pages/ComprasLicitacoes";
+import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -101,6 +102,14 @@ export default function App() {
           element={
             <RequireAuth>
               <ComprasLicitacoes />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/desenvolvimento/empresas"
+          element={
+            <RequireAuth>
+              <DesenvolvimentoEmpresas />
             </RequireAuth>
           }
         />
