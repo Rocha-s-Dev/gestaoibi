@@ -15,6 +15,7 @@ import FinanceiroRelatorios from "@/pages/FinanceiroRelatorios";
 import ContratosPagamentos from "@/pages/ContratosPagamentos";
 import ComprasLicitacoes from "@/pages/ComprasLicitacoes";
 import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
+import GestaoAmbiental from "@/pages/GestaoAmbiental";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -110,6 +111,14 @@ export default function App() {
           element={
             <RequireAuth>
               <DesenvolvimentoEmpresas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/desenvolvimento/ambiental"
+          element={
+            <RequireAuth>
+              <GestaoAmbiental />
             </RequireAuth>
           }
         />

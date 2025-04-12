@@ -20,7 +20,8 @@ import {
   CalendarClock,
   ShoppingCart,
   Factory,
-  Building
+  Building,
+  Leaf
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -55,10 +56,11 @@ const secretariasItems = [
   // Secretaria de Desenvolvimento Econômico e Meio Ambiente
   {
     icon: Factory,
-    label: "Desenvolvimento Econômico",
+    label: "Meio Ambiente",
     path: "/desenvolvimento",
     submenu: [
       { icon: Building, label: "Gestão de Empreendimentos", path: "/desenvolvimento/empresas" },
+      { icon: Leaf, label: "Gestão Ambiental", path: "/desenvolvimento/ambiental" },
     ]
   },
 ];
