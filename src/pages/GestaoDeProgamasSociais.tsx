@@ -4,6 +4,8 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BeneficiariosList } from "@/components/social/BeneficiariosList";
+import { AcompanhamentoProgramas } from "@/components/social/AcompanhamentoProgramas";
+import { MetasBeneficiarios } from "@/components/social/MetasBeneficiarios";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -23,8 +25,10 @@ export default function GestaoDeProgramasSociais() {
         </header>
 
         <Tabs defaultValue="beneficiarios">
-          <TabsList className="grid w-full md:w-[800px] grid-cols-1">
+          <TabsList className="grid w-full md:w-[800px] grid-cols-3">
             <TabsTrigger value="beneficiarios">Cadastro de Beneficiários</TabsTrigger>
+            <TabsTrigger value="acompanhamento">Acompanhamento de Programas</TabsTrigger>
+            <TabsTrigger value="metas">Metas de Beneficiários</TabsTrigger>
           </TabsList>
 
           <TabsContent value="beneficiarios" className="mt-6">
@@ -34,6 +38,28 @@ export default function GestaoDeProgramasSociais() {
               </CardHeader>
               <CardContent>
                 <BeneficiariosList refreshTrigger={refreshTrigger} onBeneficiarioAdded={handleBeneficiarioAdded} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="acompanhamento" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Acompanhamento de Programas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AcompanhamentoProgramas />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas de Beneficiários</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasBeneficiarios />
               </CardContent>
             </Card>
           </TabsContent>
