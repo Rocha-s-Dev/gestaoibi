@@ -21,7 +21,8 @@ import {
   ShoppingCart,
   Factory,
   Building,
-  Leaf
+  Leaf,
+  Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,6 +62,15 @@ const secretariasItems = [
     submenu: [
       { icon: Building, label: "Gestão de Empreendimentos", path: "/desenvolvimento/empresas" },
       { icon: Leaf, label: "Gestão Ambiental", path: "/desenvolvimento/ambiental" },
+    ]
+  },
+  // Secretaria de Desenvolvimento Social
+  {
+    icon: Heart,
+    label: "Desenvolvimento Social",
+    path: "/social",
+    submenu: [
+      { icon: Users, label: "Gestão de Programas Sociais", path: "/social/programas" },
     ]
   },
 ];
