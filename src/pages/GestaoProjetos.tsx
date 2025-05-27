@@ -4,6 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjetosList } from "@/components/cultura/ProjetosList";
+import { CalendarioEventos } from "@/components/cultura/CalendarioEventos";
 
 export default function GestaoProjetos() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -23,8 +24,9 @@ export default function GestaoProjetos() {
         </header>
 
         <Tabs defaultValue="projetos">
-          <TabsList className="grid w-full md:w-[600px] grid-cols-1">
+          <TabsList className="grid w-full md:w-[800px] grid-cols-2">
             <TabsTrigger value="projetos">Cadastro e Acompanhamento de Projetos</TabsTrigger>
+            <TabsTrigger value="calendario">Calendário de Eventos</TabsTrigger>
           </TabsList>
 
           <TabsContent value="projetos" className="mt-6">
@@ -36,6 +38,10 @@ export default function GestaoProjetos() {
                 <ProjetosList refreshTrigger={refreshTrigger} onProjetoAdded={handleProjetoAdded} />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="calendario" className="mt-6">
+            <CalendarioEventos />
           </TabsContent>
         </Tabs>
       </div>

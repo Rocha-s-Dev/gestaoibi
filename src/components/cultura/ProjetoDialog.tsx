@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -114,9 +113,9 @@ export function ProjetoDialog({ open, onOpenChange, onSubmit, projeto }: Projeto
     setIsLoading(true);
     try {
       if (projeto) {
-        onSubmit({ ...data, id: projeto.id });
+        onSubmit({ ...data, id: projeto.id } as Projeto);
       } else {
-        onSubmit(data);
+        onSubmit(data as Omit<Projeto, "id">);
       }
       onOpenChange(false);
     } catch (error) {
