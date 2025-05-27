@@ -22,7 +22,8 @@ import {
   Factory,
   Building,
   Leaf,
-  Heart
+  Heart,
+  Palette
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,15 @@ const secretariasItems = [
     path: "/social",
     submenu: [
       { icon: Users, label: "Gestão de Programas Sociais", path: "/social/programas" },
+    ]
+  },
+  // Secretaria de Cultura, Esporte e Lazer
+  {
+    icon: Palette,
+    label: "Cultura, Esporte e Lazer",
+    path: "/cultura",
+    submenu: [
+      { icon: FileText, label: "Gestão de Projetos e Eventos", path: "/cultura/projetos" },
     ]
   },
 ];

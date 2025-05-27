@@ -17,6 +17,7 @@ import ComprasLicitacoes from "@/pages/ComprasLicitacoes";
 import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
 import GestaoAmbiental from "@/pages/GestaoAmbiental";
 import GestaoDeProgramasSociais from "@/pages/GestaoDeProgamasSociais";
+import GestaoProjetos from "@/pages/GestaoProjetos";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -128,6 +129,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoDeProgramasSociais />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/cultura/projetos"
+          element={
+            <RequireAuth>
+              <GestaoProjetos />
             </RequireAuth>
           }
         />
