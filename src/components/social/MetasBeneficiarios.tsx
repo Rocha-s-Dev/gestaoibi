@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Line } from "recharts";
-import { Chart } from "@/components/ui/chart";
+import { Line, LineChart, XAxis, YAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
   Card,
   CardContent,
@@ -73,6 +72,20 @@ export function MetasBeneficiarios() {
   const [metricas, setMetricas] = useState<"atendimento" | "satisfacao">("atendimento");
 
   const porcentagemAtendimento = Math.round((metasData.atendimento.atual / metasData.atendimento.metaAnual) * 100);
+
+  const atendimentoConfig = {
+    valor: {
+      label: "Beneficiários",
+      color: "#10b981",
+    },
+  };
+
+  const satisfacaoConfig = {
+    valor: {
+      label: "Satisfação (%)",
+      color: "#f59e0b",
+    },
+  };
   
   return (
     <div className="space-y-6">
@@ -128,18 +141,14 @@ export function MetasBeneficiarios() {
                 <CardDescription>Quantidade de novos beneficiários por mês</CardDescription>
               </CardHeader>
               <CardContent>
-                <Chart
-                  type="line"
-                  height={350}
-                  data={metasData.atendimento.historico}
-                  index="mes"
-                  categories={["valor"]}
-                  colors={["#10b981"]}
-                  valueFormatter={(value) => `${value} beneficiários`}
-                  yAxisWidth={48}
-                >
-                  <Line dataKey="valor" />
-                </Chart>
+                <ChartContainer config={atendimentoConfig} className="h-[350px]">
+                  <LineChart data={metasData.atendimento.historico}>
+                    <XAxis dataKey="mes" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line dataKey="valor" stroke="var(--color-valor)" strokeWidth={2} />
+                  </LineChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
@@ -149,18 +158,14 @@ export function MetasBeneficiarios() {
                 <CardDescription>Rumo à meta anual de {metasData.atendimento.metaAnual.toLocaleString()} beneficiários</CardDescription>
               </CardHeader>
               <CardContent>
-                <Chart
-                  type="line"
-                  height={350}
-                  data={metasData.atendimento.acumulado}
-                  index="mes"
-                  categories={["valor"]}
-                  colors={["#6366f1"]}
-                  valueFormatter={(value) => `${value} beneficiários`}
-                  yAxisWidth={48}
-                >
-                  <Line dataKey="valor" />
-                </Chart>
+                <ChartContainer config={{ valor: { label: "Beneficiários", color: "#6366f1" } }} className="h-[350px]">
+                  <LineChart data={metasData.atendimento.acumulado}>
+                    <XAxis dataKey="mes" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line dataKey="valor" stroke="var(--color-valor)" strokeWidth={2} />
+                  </LineChart>
+                </ChartContainer>
               </CardContent>
             </Card>
           </div>
@@ -236,18 +241,14 @@ export function MetasBeneficiarios() {
               <CardDescription>Pesquisas mensais de satisfação dos usuários (%)</CardDescription>
             </CardHeader>
             <CardContent>
-              <Chart
-                type="line"
-                height={350}
-                data={metasData.satisfacao.historico}
-                index="mes"
-                categories={["valor"]}
-                colors={["#f59e0b"]}
-                valueFormatter={(value) => `${value}%`}
-                yAxisWidth={40}
-              >
-                <Line dataKey="valor" />
-              </Chart>
+              <ChartContainer config={satisfacaoConfig} className="h-[350px]">
+                <LineChart data={metasData.satisfacao.historico}>
+                  <XAxis dataKey="mes" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Line dataKey="valor" stroke="var(--color-valor)" strokeWidth={2} />
+                </LineChart>
+              </ChartContainer>
             </CardContent>
           </Card>
 

@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Bar } from "recharts";
+import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { 
   Card, 
   CardContent, 
@@ -15,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Chart } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 // Dados simulados para os programas sociais
 const programasData = [
@@ -72,6 +71,13 @@ export function AcompanhamentoProgramas() {
   const programaSelecionado = programasData.find(
     (programa) => programa.nome === selectedPrograma
   );
+
+  const chartConfig = {
+    valor: {
+      label: "Eficácia (%)",
+      color: "#4C9AFF",
+    },
+  };
   
   return (
     <div className="space-y-6">
@@ -147,18 +153,14 @@ export function AcompanhamentoProgramas() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Chart
-                  type="bar"
-                  height={350}
-                  data={programaSelecionado.eficacia}
-                  index="mes"
-                  categories={["valor"]}
-                  colors={["#4C9AFF"]}
-                  valueFormatter={(value) => `${value}%`}
-                  yAxisWidth={40}
-                >
-                  <Bar dataKey="valor" />
-                </Chart>
+                <ChartContainer config={chartConfig} className="h-[350px]">
+                  <BarChart data={programaSelecionado.eficacia}>
+                    <XAxis dataKey="mes" />
+                    <YAxis />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="valor" fill="var(--color-valor)" />
+                  </BarChart>
+                </ChartContainer>
               </CardContent>
             </Card>
 
