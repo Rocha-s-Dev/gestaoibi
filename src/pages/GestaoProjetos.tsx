@@ -25,10 +25,16 @@ export default function GestaoProjetos() {
         </header>
 
         <Tabs defaultValue="projetos">
-          <TabsList className="grid w-full md:w-[1200px] grid-cols-3">
-            <TabsTrigger value="projetos">Cadastro e Acompanhamento de Projetos</TabsTrigger>
-            <TabsTrigger value="calendario">Calendário de Eventos</TabsTrigger>
-            <TabsTrigger value="metas">Metas de Projetos Culturais</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+            <TabsTrigger value="projetos" className="text-xs sm:text-sm p-2 sm:p-3">
+              Cadastro e Acompanhamento
+            </TabsTrigger>
+            <TabsTrigger value="calendario" className="text-xs sm:text-sm p-2 sm:p-3">
+              Calendário de Eventos
+            </TabsTrigger>
+            <TabsTrigger value="metas" className="text-xs sm:text-sm p-2 sm:p-3">
+              Metas de Projetos
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="projetos" className="mt-6">
