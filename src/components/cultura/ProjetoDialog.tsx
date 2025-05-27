@@ -113,9 +113,34 @@ export function ProjetoDialog({ open, onOpenChange, onSubmit, projeto }: Projeto
     setIsLoading(true);
     try {
       if (projeto) {
-        onSubmit({ ...data, id: projeto.id } as Projeto);
+        // For editing, create a complete Projeto object
+        const projetoCompleto: Projeto = {
+          id: projeto.id,
+          nome: data.nome,
+          descricao: data.descricao,
+          objetivos: data.objetivos,
+          orcamento: data.orcamento,
+          dataInicio: data.dataInicio,
+          dataFim: data.dataFim,
+          responsavel: data.responsavel,
+          categoria: data.categoria,
+          status: data.status,
+        };
+        onSubmit(projetoCompleto);
       } else {
-        onSubmit(data as Omit<Projeto, "id">);
+        // For creating, create a complete object without id
+        const novoProjeto: Omit<Projeto, "id"> = {
+          nome: data.nome,
+          descricao: data.descricao,
+          objetivos: data.objetivos,
+          orcamento: data.orcamento,
+          dataInicio: data.dataInicio,
+          dataFim: data.dataFim,
+          responsavel: data.responsavel,
+          categoria: data.categoria,
+          status: data.status,
+        };
+        onSubmit(novoProjeto);
       }
       onOpenChange(false);
     } catch (error) {
