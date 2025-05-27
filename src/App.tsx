@@ -18,6 +18,7 @@ import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
 import GestaoAmbiental from "@/pages/GestaoAmbiental";
 import GestaoDeProgramasSociais from "@/pages/GestaoDeProgamasSociais";
 import GestaoProjetos from "@/pages/GestaoProjetos";
+import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -137,6 +138,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoProjetos />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/cultura/incentivos"
+          element={
+            <RequireAuth>
+              <ProgramasIncentivo />
             </RequireAuth>
           }
         />

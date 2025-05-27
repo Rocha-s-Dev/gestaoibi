@@ -81,6 +81,7 @@ const secretariasItems = [
     path: "/cultura",
     submenu: [
       { icon: FileText, label: "Gestão de Projetos e Eventos", path: "/cultura/projetos" },
+      { icon: Target, label: "Programas de Incentivo", path: "/cultura/incentivos" },
     ]
   },
 ];
