@@ -24,7 +24,8 @@ import {
   Leaf,
   Heart,
   Palette,
-  MapPin
+  MapPin,
+  HardHat
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -84,6 +85,15 @@ const secretariasItems = [
       { icon: FileText, label: "Gestão de Projetos e Eventos", path: "/cultura/projetos" },
       { icon: Target, label: "Programas de Incentivo", path: "/cultura/incentivos" },
       { icon: MapPin, label: "Infraestrutura Cultural", path: "/cultura/infraestrutura" },
+    ]
+  },
+  // Secretaria Municipal de Infraestrutura e Serviços Públicos
+  {
+    icon: HardHat,
+    label: "Infraestrutura e Serviços",
+    path: "/infraestrutura",
+    submenu: [
+      { icon: Building, label: "Gestão de Obras", path: "/infraestrutura/obras" },
     ]
   },
 ];

@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import Login from "@/pages/Login";
@@ -20,6 +19,7 @@ import GestaoDeProgramasSociais from "@/pages/GestaoDeProgamasSociais";
 import GestaoProjetos from "@/pages/GestaoProjetos";
 import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
 import InfraestruturaCultural from "@/pages/InfraestruturaCultural";
+import GestaoObras from "@/pages/GestaoObras";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -155,6 +155,14 @@ export default function App() {
           element={
             <RequireAuth>
               <InfraestruturaCultural />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/infraestrutura/obras"
+          element={
+            <RequireAuth>
+              <GestaoObras />
             </RequireAuth>
           }
         />
