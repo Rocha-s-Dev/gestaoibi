@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EspacosCulturais } from "@/components/cultura/EspacosCulturais";
+import { ReservasAgendamentos } from "@/components/cultura/ReservasAgendamentos";
 
 export default function InfraestruturaCultural() {
   return (
@@ -16,9 +17,12 @@ export default function InfraestruturaCultural() {
         </header>
 
         <Tabs defaultValue="espacos">
-          <TabsList className="grid w-full grid-cols-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
             <TabsTrigger value="espacos" className="text-sm p-3">
               Espaços Culturais e Esportivos
+            </TabsTrigger>
+            <TabsTrigger value="reservas" className="text-sm p-3">
+              Reservas e Agendamentos
             </TabsTrigger>
           </TabsList>
 
@@ -29,6 +33,17 @@ export default function InfraestruturaCultural() {
               </CardHeader>
               <CardContent>
                 <EspacosCulturais />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reservas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Sistema de Reservas e Agendamentos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ReservasAgendamentos />
               </CardContent>
             </Card>
           </TabsContent>
