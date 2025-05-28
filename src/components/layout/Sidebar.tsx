@@ -23,7 +23,8 @@ import {
   Building,
   Leaf,
   Heart,
-  Palette
+  Palette,
+  MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,7 @@ const secretariasItems = [
     submenu: [
       { icon: FileText, label: "Gestão de Projetos e Eventos", path: "/cultura/projetos" },
       { icon: Target, label: "Programas de Incentivo", path: "/cultura/incentivos" },
+      { icon: MapPin, label: "Infraestrutura Cultural", path: "/cultura/infraestrutura" },
     ]
   },
 ];

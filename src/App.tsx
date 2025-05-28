@@ -19,6 +19,7 @@ import GestaoAmbiental from "@/pages/GestaoAmbiental";
 import GestaoDeProgramasSociais from "@/pages/GestaoDeProgamasSociais";
 import GestaoProjetos from "@/pages/GestaoProjetos";
 import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
+import InfraestruturaCultural from "@/pages/InfraestruturaCultural";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -146,6 +147,14 @@ export default function App() {
           element={
             <RequireAuth>
               <ProgramasIncentivo />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/cultura/infraestrutura"
+          element={
+            <RequireAuth>
+              <InfraestruturaCultural />
             </RequireAuth>
           }
         />
