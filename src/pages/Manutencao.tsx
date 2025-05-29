@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SistemaChamadas } from "@/components/infraestrutura/SistemaChamadas";
+import { MetasManutencao } from "@/components/infraestrutura/MetasManutencao";
 
 export default function Manutencao() {
   return (
@@ -16,9 +17,12 @@ export default function Manutencao() {
         </header>
 
         <Tabs defaultValue="chamadas">
-          <TabsList className="grid w-full grid-cols-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
             <TabsTrigger value="chamadas" className="text-sm p-3">
               Sistema de Chamadas
+            </TabsTrigger>
+            <TabsTrigger value="metas" className="text-sm p-3">
+              Metas de Manutenção
             </TabsTrigger>
           </TabsList>
 
@@ -29,6 +33,17 @@ export default function Manutencao() {
               </CardHeader>
               <CardContent>
                 <SistemaChamadas />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas de Tempo de Resposta</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasManutencao />
               </CardContent>
             </Card>
           </TabsContent>
