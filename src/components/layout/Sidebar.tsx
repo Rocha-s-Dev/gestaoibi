@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -26,7 +25,9 @@ import {
   Palette,
   MapPin,
   HardHat,
-  Wrench
+  Wrench,
+  Stethoscope,
+  Hospital
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,15 @@ const secretariasItems = [
     submenu: [
       { icon: Building, label: "Gestão de Obras", path: "/infraestrutura/obras" },
       { icon: Wrench, label: "Manutenção", path: "/infraestrutura/manutencao" },
+    ]
+  },
+  // Secretaria Municipal de Saúde
+  {
+    icon: Stethoscope,
+    label: "Saúde",
+    path: "/saude",
+    submenu: [
+      { icon: Hospital, label: "Gestão de Saúde Pública", path: "/saude/gestao" },
     ]
   },
 ];
