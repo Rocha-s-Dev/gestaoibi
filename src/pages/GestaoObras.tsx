@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroObras } from "@/components/infraestrutura/CadastroObras";
 import { AcompanhamentoObras } from "@/components/infraestrutura/AcompanhamentoObras";
+import { MetasObras } from "@/components/infraestrutura/MetasObras";
 
 export default function GestaoObras() {
   return (
@@ -17,12 +18,15 @@ export default function GestaoObras() {
         </header>
 
         <Tabs defaultValue="cadastro">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="cadastro" className="text-sm p-3">
               Cadastro de Obras
             </TabsTrigger>
             <TabsTrigger value="acompanhamento" className="text-sm p-3">
               Acompanhamento de Obras
+            </TabsTrigger>
+            <TabsTrigger value="metas" className="text-sm p-3">
+              Metas de Obras
             </TabsTrigger>
           </TabsList>
 
@@ -44,6 +48,17 @@ export default function GestaoObras() {
               </CardHeader>
               <CardContent>
                 <AcompanhamentoObras />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas de Conclusão de Obras</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasObras />
               </CardContent>
             </Card>
           </TabsContent>
