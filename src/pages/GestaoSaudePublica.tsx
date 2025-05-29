@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroUnidadesSaude } from "@/components/saude/CadastroUnidadesSaude";
+import { MonitoramentoIndicadores } from "@/components/saude/MonitoramentoIndicadores";
 
 export default function GestaoSaudePublica() {
   return (
@@ -16,9 +17,12 @@ export default function GestaoSaudePublica() {
         </header>
 
         <Tabs defaultValue="unidades">
-          <TabsList className="grid w-full grid-cols-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
             <TabsTrigger value="unidades" className="text-sm p-3">
               Cadastro de Unidades de Saúde
+            </TabsTrigger>
+            <TabsTrigger value="indicadores" className="text-sm p-3">
+              Monitoramento de Indicadores de Saúde
             </TabsTrigger>
           </TabsList>
 
@@ -29,6 +33,17 @@ export default function GestaoSaudePublica() {
               </CardHeader>
               <CardContent>
                 <CadastroUnidadesSaude />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="indicadores" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Acompanhamento de Indicadores de Saúde Pública</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MonitoramentoIndicadores />
               </CardContent>
             </Card>
           </TabsContent>
