@@ -25,7 +25,8 @@ import {
   Heart,
   Palette,
   MapPin,
-  HardHat
+  HardHat,
+  Wrench
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -94,6 +95,7 @@ const secretariasItems = [
     path: "/infraestrutura",
     submenu: [
       { icon: Building, label: "Gestão de Obras", path: "/infraestrutura/obras" },
+      { icon: Wrench, label: "Manutenção", path: "/infraestrutura/manutencao" },
     ]
   },
 ];
