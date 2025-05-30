@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroUnidadesSaude } from "@/components/saude/CadastroUnidadesSaude";
 import { MonitoramentoIndicadores } from "@/components/saude/MonitoramentoIndicadores";
+import { MetasSaudePublica } from "@/components/saude/MetasSaudePublica";
 
 export default function GestaoSaudePublica() {
   return (
@@ -17,12 +18,15 @@ export default function GestaoSaudePublica() {
         </header>
 
         <Tabs defaultValue="unidades">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="unidades" className="text-sm p-3">
               Cadastro de Unidades de Saúde
             </TabsTrigger>
             <TabsTrigger value="indicadores" className="text-sm p-3">
               Monitoramento de Indicadores de Saúde
+            </TabsTrigger>
+            <TabsTrigger value="metas" className="text-sm p-3">
+              Metas de Saúde Pública
             </TabsTrigger>
           </TabsList>
 
@@ -44,6 +48,17 @@ export default function GestaoSaudePublica() {
               </CardHeader>
               <CardContent>
                 <MonitoramentoIndicadores />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Metas de Saúde Pública</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasSaudePublica />
               </CardContent>
             </Card>
           </TabsContent>
