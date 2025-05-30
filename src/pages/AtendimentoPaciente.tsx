@@ -3,6 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SatisfacaoPaciente } from "@/components/saude/SatisfacaoPaciente";
+import { AcompanhamentoTratamentos } from "@/components/saude/AcompanhamentoTratamentos";
 
 export default function AtendimentoPaciente() {
   return (
@@ -16,9 +17,12 @@ export default function AtendimentoPaciente() {
         </header>
 
         <Tabs defaultValue="satisfacao">
-          <TabsList className="grid w-full grid-cols-1 h-auto">
+          <TabsList className="grid w-full grid-cols-2 h-auto">
             <TabsTrigger value="satisfacao" className="text-sm p-3">
               Satisfação do Paciente
+            </TabsTrigger>
+            <TabsTrigger value="tratamentos" className="text-sm p-3">
+              Acompanhamento de Tratamentos
             </TabsTrigger>
           </TabsList>
 
@@ -29,6 +33,17 @@ export default function AtendimentoPaciente() {
               </CardHeader>
               <CardContent>
                 <SatisfacaoPaciente />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tratamentos" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Acompanhamento de Tratamentos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AcompanhamentoTratamentos />
               </CardContent>
             </Card>
           </TabsContent>
