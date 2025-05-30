@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -27,7 +28,8 @@ import {
   HardHat,
   Wrench,
   Stethoscope,
-  Hospital
+  Hospital,
+  UserCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -106,6 +108,7 @@ const secretariasItems = [
     path: "/saude",
     submenu: [
       { icon: Hospital, label: "Gestão de Saúde Pública", path: "/saude/gestao" },
+      { icon: UserCheck, label: "Atendimento ao Paciente", path: "/saude/atendimento" },
     ]
   },
 ];
