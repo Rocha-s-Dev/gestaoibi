@@ -29,7 +29,8 @@ import {
   Wrench,
   Stethoscope,
   Hospital,
-  UserCheck
+  UserCheck,
+  Scale
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -109,6 +110,15 @@ const secretariasItems = [
     submenu: [
       { icon: Hospital, label: "Gestão de Saúde Pública", path: "/saude/gestao" },
       { icon: UserCheck, label: "Atendimento ao Paciente", path: "/saude/atendimento" },
+    ]
+  },
+  // Secretaria de Governo
+  {
+    icon: Scale,
+    label: "Governo",
+    path: "/governo",
+    submenu: [
+      { icon: FileText, label: "Gestão de Políticas Públicas", path: "/governo/politicas" },
     ]
   },
 ];

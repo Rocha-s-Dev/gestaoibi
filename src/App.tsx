@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import Login from "@/pages/Login";
@@ -16,7 +15,7 @@ import ContratosPagamentos from "@/pages/ContratosPagamentos";
 import ComprasLicitacoes from "@/pages/ComprasLicitacoes";
 import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
 import GestaoAmbiental from "@/pages/GestaoAmbiental";
-import GestaoDeProgramasSociais from "@/pages/GestaoDeProgamasSociais";
+import GestaoDeProgramasSociais from "@/pages/GestaoDeProgramasSociais";
 import GestaoProjetos from "@/pages/GestaoProjetos";
 import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
 import InfraestruturaCultural from "@/pages/InfraestruturaCultural";
@@ -24,6 +23,7 @@ import GestaoObras from "@/pages/GestaoObras";
 import Manutencao from "@/pages/Manutencao";
 import GestaoSaudePublica from "@/pages/GestaoSaudePublica";
 import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
+import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -191,6 +191,14 @@ export default function App() {
           element={
             <RequireAuth>
               <AtendimentoPaciente />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/governo/politicas"
+          element={
+            <RequireAuth>
+              <GestaoPoliticasPublicas />
             </RequireAuth>
           }
         />
