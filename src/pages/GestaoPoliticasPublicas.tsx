@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroPoliticas } from "@/components/governo/CadastroPoliticas";
 import { AcompanhamentoPoliticas } from "@/components/governo/AcompanhamentoPoliticas";
+import { MetasPoliticasPublicas } from "@/components/governo/MetasPoliticasPublicas";
 
 export default function GestaoPoliticasPublicas() {
   return (
@@ -17,12 +18,15 @@ export default function GestaoPoliticasPublicas() {
         </header>
 
         <Tabs defaultValue="cadastro">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="cadastro" className="text-sm p-3">
               Cadastro de Políticas
             </TabsTrigger>
             <TabsTrigger value="acompanhamento" className="text-sm p-3">
               Acompanhamento de Políticas
+            </TabsTrigger>
+            <TabsTrigger value="metas" className="text-sm p-3">
+              Metas de Políticas Públicas
             </TabsTrigger>
           </TabsList>
 
@@ -44,6 +48,17 @@ export default function GestaoPoliticasPublicas() {
               </CardHeader>
               <CardContent>
                 <AcompanhamentoPoliticas />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Metas de Políticas Públicas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasPoliticasPublicas />
               </CardContent>
             </Card>
           </TabsContent>
