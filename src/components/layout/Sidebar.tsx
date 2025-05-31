@@ -30,7 +30,8 @@ import {
   Stethoscope,
   Hospital,
   UserCheck,
-  Scale
+  Scale,
+  Eye
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -119,6 +120,7 @@ const secretariasItems = [
     path: "/governo",
     submenu: [
       { icon: FileText, label: "Gestão de Políticas Públicas", path: "/governo/politicas" },
+      { icon: Eye, label: "Transparência", path: "/governo/transparencia" },
     ]
   },
 ];

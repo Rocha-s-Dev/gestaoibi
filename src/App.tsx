@@ -24,7 +24,7 @@ import Manutencao from "@/pages/Manutencao";
 import GestaoSaudePublica from "@/pages/GestaoSaudePublica";
 import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
 import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
-import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
+import Transparencia from "@/pages/Transparencia";
 import "./App.css";
 
 export default function App() {
@@ -199,6 +199,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoPoliticasPublicas />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/governo/transparencia"
+          element={
+            <RequireAuth>
+              <Transparencia />
             </RequireAuth>
           }
         />
