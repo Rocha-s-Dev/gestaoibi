@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,7 @@ export function PoliticaDialog({ open, onOpenChange, onSubmit, politica }: Polit
     publicoAlvo: "",
     indicadoresSuccesso: [] as string[],
     dataInicio: "",
-    status: "em_desenvolvimento" as const,
+    status: "em_desenvolvimento" as "ativa" | "inativa" | "em_desenvolvimento",
     responsavel: "",
     orcamento: ""
   });
