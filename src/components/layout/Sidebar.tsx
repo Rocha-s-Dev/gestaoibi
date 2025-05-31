@@ -31,7 +31,8 @@ import {
   Hospital,
   UserCheck,
   Scale,
-  Eye
+  Eye,
+  GraduationCap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,15 @@ const secretariasItems = [
     submenu: [
       { icon: Hospital, label: "Gestão de Saúde Pública", path: "/saude/gestao" },
       { icon: UserCheck, label: "Atendimento ao Paciente", path: "/saude/atendimento" },
+    ]
+  },
+  // Secretaria Municipal de Educação
+  {
+    icon: GraduationCap,
+    label: "Educação",
+    path: "/educacao",
+    submenu: [
+      { icon: Users, label: "Gestão Administrativa", path: "/educacao/gestao" },
     ]
   },
   // Secretaria de Governo
