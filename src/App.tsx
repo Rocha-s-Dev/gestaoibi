@@ -15,7 +15,7 @@ import ContratosPagamentos from "@/pages/ContratosPagamentos";
 import ComprasLicitacoes from "@/pages/ComprasLicitacoes";
 import DesenvolvimentoEmpresas from "@/pages/DesenvolvimentoEmpresas";
 import GestaoAmbiental from "@/pages/GestaoAmbiental";
-import GestaoDeProgramasSociais from "@/pages/GestaoDeProgramasSociais";
+import GestaoDeProgamasSociais from "@/pages/GestaoDeProgamasSociais";
 import GestaoProjetos from "@/pages/GestaoProjetos";
 import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
 import InfraestruturaCultural from "@/pages/InfraestruturaCultural";
@@ -134,7 +134,7 @@ export default function App() {
           path="/social/programas"
           element={
             <RequireAuth>
-              <GestaoDeProgramasSociais />
+              <GestaoDeProgamasSociais />
             </RequireAuth>
           }
         />
