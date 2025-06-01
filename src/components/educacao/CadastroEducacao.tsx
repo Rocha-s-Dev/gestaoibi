@@ -5,10 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, Edit, Trash2, Users, School, UserCheck } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Users, School, UserCheck, User } from "lucide-react";
+import { toast } from "sonner";
 import { SecretarioEducacaoDialog } from "./SecretarioEducacaoDialog";
 import { FuncionarioEducacaoDialog } from "./FuncionarioEducacaoDialog";
-import { EscolaDialog } from "./EscolaDialog";
+import { NovaEscolaDialog } from "./NovaEscolaDialog";
+import { ProfessorDialog } from "./ProfessorDialog";
+import { useEscolas } from "@/hooks/useEscolas";
+import { useProfessores } from "@/hooks/useProfessores";
 
 type SecretarioEducacao = {
   id: string;
@@ -31,25 +35,16 @@ type FuncionarioEducacao = {
   status: "ativo" | "inativo" | "afastado";
 };
 
-type Escola = {
-  id: string;
-  nome: string;
-  endereco: string;
-  diretor: string;
-  telefone: string;
-  email: string;
-  numeroAlunos: number;
-  modalidade: "infantil" | "fundamental" | "eja" | "creche";
-  status: "ativa" | "inativa" | "em_reforma";
-};
-
 export function CadastroEducacao() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [activeDialog, setActiveDialog] = useState<"secretario" | "funcionario" | "escola" | null>(null);
+  const [activeDialog, setActiveDialog] = useState<"secretario" | "funcionario" | "escola" | "professor" | null>(null);
 
-  // Mock data
+  const { escolas, loading: loadingEscolas, createEscola, updateEscola, deleteEscola } = useEscolas();
+  const { professores, loading: loadingProfessores, createProfessor, updateProfessor, deleteProfessor } = useProfessores();
+
+  // Mock data para secretários e funcionários (mantido temporariamente)
   const [secretarios] = useState<SecretarioEducacao[]>([
     {
       id: "1",
@@ -85,35 +80,66 @@ export function CadastroEducacao() {
     }
   ]);
 
-  const [escolas] = useState<Escola[]>([
-    {
-      id: "1",
-      nome: "EMEI Pequeno Príncipe",
-      endereco: "Rua das Flores, 123 - Centro",
-      diretor: "Carla Mendes",
-      telefone: "(11) 3456-7893",
-      email: "emei.pequenoprincipe@educacao.gov.br",
-      numeroAlunos: 180,
-      modalidade: "infantil",
-      status: "ativa"
-    },
-    {
-      id: "2",
-      nome: "EMEF Dom Pedro II",
-      endereco: "Av. Principal, 456 - Jardim das Acácias",
-      diretor: "Roberto Silva",
-      telefone: "(11) 3456-7894",
-      email: "emef.dompedro@educacao.gov.br",
-      numeroAlunos: 350,
-      modalidade: "fundamental",
-      status: "ativa"
-    }
-  ]);
-
-  const openDialog = (type: "secretario" | "funcionario" | "escola", item?: any) => {
+  const openDialog = (type: "secretario" | "funcionario" | "escola" | "professor", item?: any) => {
     setActiveDialog(type);
     setSelectedItem(item || null);
     setDialogOpen(true);
+  };
+
+  const handleEscolaSubmit = async (escolaData: any) => {
+    try {
+      if (selectedItem) {
+        await updateEscola(selectedItem.id, escolaData);
+        toast.success("Escola atualizada com sucesso!");
+      } else {
+        await createEscola(escolaData);
+        toast.success("Escola cadastrada com sucesso!");
+      }
+      setDialogOpen(false);
+    } catch (error) {
+      console.error('Erro ao salvar escola:', error);
+      toast.error("Erro ao salvar escola. Tente novamente.");
+    }
+  };
+
+  const handleProfessorSubmit = async (professorData: any) => {
+    try {
+      if (selectedItem) {
+        await updateProfessor(selectedItem.id, professorData);
+        toast.success("Professor atualizado com sucesso!");
+      } else {
+        await createProfessor(professorData);
+        toast.success("Professor cadastrado com sucesso!");
+      }
+      setDialogOpen(false);
+    } catch (error) {
+      console.error('Erro ao salvar professor:', error);
+      toast.error("Erro ao salvar professor. Tente novamente.");
+    }
+  };
+
+  const handleDeleteEscola = async (id: string) => {
+    if (confirm("Tem certeza que deseja excluir esta escola?")) {
+      try {
+        await deleteEscola(id);
+        toast.success("Escola excluída com sucesso!");
+      } catch (error) {
+        console.error('Erro ao excluir escola:', error);
+        toast.error("Erro ao excluir escola. Tente novamente.");
+      }
+    }
+  };
+
+  const handleDeleteProfessor = async (id: string) => {
+    if (confirm("Tem certeza que deseja excluir este professor?")) {
+      try {
+        await deleteProfessor(id);
+        toast.success("Professor excluído com sucesso!");
+      } catch (error) {
+        console.error('Erro ao excluir professor:', error);
+        toast.error("Erro ao excluir professor. Tente novamente.");
+      }
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -123,11 +149,14 @@ export function CadastroEducacao() {
       inativo: { color: "bg-red-100 text-red-800", label: "Inativo" },
       inativa: { color: "bg-red-100 text-red-800", label: "Inativa" },
       afastado: { color: "bg-yellow-100 text-yellow-800", label: "Afastado" },
-      em_reforma: { color: "bg-blue-100 text-blue-800", label: "Em Reforma" }
+      em_reforma: { color: "bg-blue-100 text-blue-800", label: "Em Reforma" },
+      em_construcao: { color: "bg-orange-100 text-orange-800", label: "Em Construção" },
+      licenca: { color: "bg-yellow-100 text-yellow-800", label: "Em Licença" },
+      aposentado: { color: "bg-gray-100 text-gray-800", label: "Aposentado" }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig];
-    return <Badge className={config.color}>{config.label}</Badge>;
+    return config ? <Badge className={config.color}>{config.label}</Badge> : <Badge>{status}</Badge>;
   };
 
   return (
@@ -147,10 +176,11 @@ export function CadastroEducacao() {
       </div>
 
       <Tabs defaultValue="secretario">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="secretario">Secretário(a)</TabsTrigger>
           <TabsTrigger value="funcionarios">Funcionários</TabsTrigger>
           <TabsTrigger value="escolas">Escolas</TabsTrigger>
+          <TabsTrigger value="professores">Professores</TabsTrigger>
         </TabsList>
 
         <TabsContent value="secretario">
@@ -271,46 +301,108 @@ export function CadastroEducacao() {
               </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {escolas.map((escola) => (
-                  <div key={escola.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold">{escola.nome}</h3>
-                          {getStatusBadge(escola.status)}
-                          <Badge variant="outline">
-                            {escola.modalidade === "infantil" ? "Ed. Infantil" :
-                             escola.modalidade === "fundamental" ? "Ed. Fundamental" :
-                             escola.modalidade === "eja" ? "EJA" : "Creche"}
-                          </Badge>
+              {loadingEscolas ? (
+                <div className="text-center py-4">Carregando escolas...</div>
+              ) : (
+                <div className="space-y-4">
+                  {escolas.map((escola) => (
+                    <div key={escola.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <h3 className="font-semibold">{escola.nome}</h3>
+                            {getStatusBadge(escola.status)}
+                          </div>
+                          <p className="text-sm text-gray-600">{escola.endereco}</p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Diretor(a):</strong> {escola.diretor}
+                          </p>
+                          <p className="text-sm text-gray-600">{escola.telefone}</p>
+                          <p className="text-sm text-gray-600">{escola.email}</p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Capacidade:</strong> {escola.capacidade_total} alunos
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600">{escola.endereco}</p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Diretor(a):</strong> {escola.diretor}
-                        </p>
-                        <p className="text-sm text-gray-600">{escola.telefone}</p>
-                        <p className="text-sm text-gray-600">{escola.email}</p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Número de Alunos:</strong> {escola.numeroAlunos}
-                        </p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openDialog("escola", escola)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openDialog("escola", escola)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleDeleteEscola(escola.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="professores">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="flex items-center">
+                <User className="mr-2 h-5 w-5" />
+                Professores
+              </CardTitle>
+              <Button onClick={() => openDialog("professor")}>
+                <Plus className="mr-2 h-4 w-4" />
+                Novo Professor
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {loadingProfessores ? (
+                <div className="text-center py-4">Carregando professores...</div>
+              ) : (
+                <div className="space-y-4">
+                  {professores.map((professor) => (
+                    <div key={professor.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <h3 className="font-semibold">{professor.nome}</h3>
+                            {getStatusBadge(professor.status)}
+                          </div>
+                          <p className="text-sm text-gray-600">{professor.email}</p>
+                          <p className="text-sm text-gray-600">{professor.telefone}</p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Formação:</strong> {professor.formacao}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Admissão:</strong> {new Date(professor.data_admissao).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openDialog("professor", professor)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleDeleteProfessor(professor.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -335,11 +427,20 @@ export function CadastroEducacao() {
       )}
 
       {activeDialog === "escola" && (
-        <EscolaDialog
+        <NovaEscolaDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
-          onSubmit={() => setDialogOpen(false)}
+          onSubmit={handleEscolaSubmit}
           escola={selectedItem}
+        />
+      )}
+
+      {activeDialog === "professor" && (
+        <ProfessorDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          onSubmit={handleProfessorSubmit}
+          professor={selectedItem}
         />
       )}
     </div>

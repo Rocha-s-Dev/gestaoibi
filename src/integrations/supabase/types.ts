@@ -149,6 +149,129 @@ export type Database = {
         }
         Relationships: []
       }
+      disciplinas: {
+        Row: {
+          carga_horaria: number | null
+          codigo: string | null
+          created_at: string | null
+          descricao: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          carga_horaria?: number | null
+          codigo?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          carga_horaria?: number | null
+          codigo?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      escolas: {
+        Row: {
+          acessibilidade_cadeirante: boolean | null
+          agua_potavel: boolean | null
+          bairro: string | null
+          capacidade_total: number | null
+          cep: string | null
+          cidade: string | null
+          cnpj: string | null
+          codigo_mec: string | null
+          created_at: string | null
+          diretor: string | null
+          email: string | null
+          endereco: string | null
+          energia_eletrica: boolean | null
+          esgoto_sanitario: boolean | null
+          estado: string | null
+          id: string
+          internet_banda_larga: boolean | null
+          nome: string
+          status: string | null
+          telefone: string | null
+          tem_biblioteca: boolean | null
+          tem_cozinha: boolean | null
+          tem_laboratorio_informatica: boolean | null
+          tem_quadra_esportes: boolean | null
+          tem_refeitorio: boolean | null
+          tem_sala_diretoria: boolean | null
+          tem_sala_professores: boolean | null
+          tem_secretaria: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          acessibilidade_cadeirante?: boolean | null
+          agua_potavel?: boolean | null
+          bairro?: string | null
+          capacidade_total?: number | null
+          cep?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          codigo_mec?: string | null
+          created_at?: string | null
+          diretor?: string | null
+          email?: string | null
+          endereco?: string | null
+          energia_eletrica?: boolean | null
+          esgoto_sanitario?: boolean | null
+          estado?: string | null
+          id?: string
+          internet_banda_larga?: boolean | null
+          nome: string
+          status?: string | null
+          telefone?: string | null
+          tem_biblioteca?: boolean | null
+          tem_cozinha?: boolean | null
+          tem_laboratorio_informatica?: boolean | null
+          tem_quadra_esportes?: boolean | null
+          tem_refeitorio?: boolean | null
+          tem_sala_diretoria?: boolean | null
+          tem_sala_professores?: boolean | null
+          tem_secretaria?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          acessibilidade_cadeirante?: boolean | null
+          agua_potavel?: boolean | null
+          bairro?: string | null
+          capacidade_total?: number | null
+          cep?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          codigo_mec?: string | null
+          created_at?: string | null
+          diretor?: string | null
+          email?: string | null
+          endereco?: string | null
+          energia_eletrica?: boolean | null
+          esgoto_sanitario?: boolean | null
+          estado?: string | null
+          id?: string
+          internet_banda_larga?: boolean | null
+          nome?: string
+          status?: string | null
+          telefone?: string | null
+          tem_biblioteca?: boolean | null
+          tem_cozinha?: boolean | null
+          tem_laboratorio_informatica?: boolean | null
+          tem_quadra_esportes?: boolean | null
+          tem_refeitorio?: boolean | null
+          tem_sala_diretoria?: boolean | null
+          tem_sala_professores?: boolean | null
+          tem_secretaria?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       financial_categories: {
         Row: {
           created_at: string
@@ -421,6 +544,71 @@ export type Database = {
         }
         Relationships: []
       }
+      professores: {
+        Row: {
+          cpf: string
+          created_at: string | null
+          data_admissao: string
+          data_nascimento: string | null
+          email: string | null
+          endereco: string | null
+          escola_principal_id: string | null
+          especializacao: string | null
+          formacao: string | null
+          id: string
+          nome: string
+          registro_profissional: string | null
+          rg: string | null
+          status: string | null
+          telefone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cpf: string
+          created_at?: string | null
+          data_admissao: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          escola_principal_id?: string | null
+          especializacao?: string | null
+          formacao?: string | null
+          id?: string
+          nome: string
+          registro_profissional?: string | null
+          rg?: string | null
+          status?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cpf?: string
+          created_at?: string | null
+          data_admissao?: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          escola_principal_id?: string | null
+          especializacao?: string | null
+          formacao?: string | null
+          id?: string
+          nome?: string
+          registro_profissional?: string | null
+          rg?: string | null
+          status?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professores_escola_principal_id_fkey"
+            columns: ["escola_principal_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           bairro: string | null
@@ -559,6 +747,69 @@ export type Database = {
           },
         ]
       }
+      turmas: {
+        Row: {
+          ano_letivo: number
+          capacidade: number | null
+          created_at: string | null
+          escola_id: string
+          id: string
+          modalidade: Database["public"]["Enums"]["modalidade_ensino"]
+          nome: string
+          professor_responsavel_id: string | null
+          sala: string | null
+          serie: string
+          status: string | null
+          turno: Database["public"]["Enums"]["turno_escolar"]
+          updated_at: string | null
+        }
+        Insert: {
+          ano_letivo: number
+          capacidade?: number | null
+          created_at?: string | null
+          escola_id: string
+          id?: string
+          modalidade: Database["public"]["Enums"]["modalidade_ensino"]
+          nome: string
+          professor_responsavel_id?: string | null
+          sala?: string | null
+          serie: string
+          status?: string | null
+          turno: Database["public"]["Enums"]["turno_escolar"]
+          updated_at?: string | null
+        }
+        Update: {
+          ano_letivo?: number
+          capacidade?: number | null
+          created_at?: string | null
+          escola_id?: string
+          id?: string
+          modalidade?: Database["public"]["Enums"]["modalidade_ensino"]
+          nome?: string
+          professor_responsavel_id?: string | null
+          sala?: string | null
+          serie?: string
+          status?: string | null
+          turno?: Database["public"]["Enums"]["turno_escolar"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "turmas_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "turmas_professor_responsavel_id_fkey"
+            columns: ["professor_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -574,7 +825,25 @@ export type Database = {
         | "completed"
         | "cancelled"
       goal_term: "short" | "medium" | "long"
+      modalidade_ensino:
+        | "infantil"
+        | "fundamental_i"
+        | "fundamental_ii"
+        | "eja"
+        | "creche"
+      perfil_usuario:
+        | "admin_secretaria"
+        | "gestor_escolar"
+        | "professor"
+        | "aluno"
+        | "responsavel"
+      prioridade_chamado: "baixa" | "media" | "alta" | "urgente"
+      status_aluno: "matriculado" | "transferido" | "evadido" | "concluido"
+      status_chamado: "aberto" | "em_andamento" | "resolvido" | "cancelado"
+      status_escola: "ativa" | "inativa" | "em_reforma" | "em_construcao"
       task_priority: "low" | "medium" | "high"
+      tipo_falta: "justificada" | "injustificada"
+      turno_escolar: "matutino" | "vespertino" | "noturno" | "integral"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -698,7 +967,27 @@ export const Constants = {
         "cancelled",
       ],
       goal_term: ["short", "medium", "long"],
+      modalidade_ensino: [
+        "infantil",
+        "fundamental_i",
+        "fundamental_ii",
+        "eja",
+        "creche",
+      ],
+      perfil_usuario: [
+        "admin_secretaria",
+        "gestor_escolar",
+        "professor",
+        "aluno",
+        "responsavel",
+      ],
+      prioridade_chamado: ["baixa", "media", "alta", "urgente"],
+      status_aluno: ["matriculado", "transferido", "evadido", "concluido"],
+      status_chamado: ["aberto", "em_andamento", "resolvido", "cancelado"],
+      status_escola: ["ativa", "inativa", "em_reforma", "em_construcao"],
       task_priority: ["low", "medium", "high"],
+      tipo_falta: ["justificada", "injustificada"],
+      turno_escolar: ["matutino", "vespertino", "noturno", "integral"],
     },
   },
 } as const
