@@ -37,7 +37,7 @@ export function AlunoDialog({ open, onOpenChange, onSubmit, aluno }: AlunoDialog
     data_matricula: new Date().toISOString().split('T')[0],
     escola_id: "",
     turma_atual_id: "",
-    status: "matriculado" as const,
+    status: "matriculado" as 'matriculado' | 'transferido' | 'evadido' | 'concluido',
     observacoes: "",
     necessidades_especiais: ""
   });
@@ -330,8 +330,8 @@ export function AlunoDialog({ open, onOpenChange, onSubmit, aluno }: AlunoDialog
                 <Label htmlFor="status">Status *</Label>
                 <Select
                   value={formData.status}
-                  onValueChange={(value) => 
-                    setFormData(prev => ({ ...prev, status: value as any }))
+                  onValueChange={(value: 'matriculado' | 'transferido' | 'evadido' | 'concluido') => 
+                    setFormData(prev => ({ ...prev, status: value }))
                   }
                 >
                   <SelectTrigger>

@@ -23,8 +23,8 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
     nome: "",
     serie: "",
     ano_letivo: new Date().getFullYear(),
-    turno: "matutino" as const,
-    modalidade: "fundamental_i" as const,
+    turno: "matutino" as 'matutino' | 'vespertino' | 'noturno' | 'integral',
+    modalidade: "fundamental_i" as 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche',
     capacidade: 30,
     sala: "",
     status: "ativa",
@@ -144,8 +144,8 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
               <Label htmlFor="turno">Turno *</Label>
               <Select
                 value={formData.turno}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, turno: value as any }))
+                onValueChange={(value: 'matutino' | 'vespertino' | 'noturno' | 'integral') => 
+                  setFormData(prev => ({ ...prev, turno: value }))
                 }
               >
                 <SelectTrigger>
@@ -164,8 +164,8 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
               <Label htmlFor="modalidade">Modalidade *</Label>
               <Select
                 value={formData.modalidade}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, modalidade: value as any }))
+                onValueChange={(value: 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche') => 
+                  setFormData(prev => ({ ...prev, modalidade: value }))
                 }
               >
                 <SelectTrigger>
