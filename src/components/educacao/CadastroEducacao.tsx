@@ -10,6 +10,7 @@ import { NovaEscolaDialog } from "./NovaEscolaDialog";
 import { ProfessorDialog } from "./ProfessorDialog";
 import { TurmaDialog } from "./TurmaDialog";
 import { AlunoDialog } from "./AlunoDialog";
+import { SistemaAcademico } from "./SistemaAcademico";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useProfessores } from "@/hooks/useProfessores";
 import { useTurmas } from "@/hooks/useTurmas";
@@ -150,7 +151,7 @@ export function CadastroEducacao() {
       </div>
 
       <Tabs defaultValue="escolas" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="escolas" className="flex items-center gap-2">
             <School className="h-4 w-4" />
             Escolas
@@ -166,6 +167,10 @@ export function CadastroEducacao() {
           <TabsTrigger value="alunos" className="flex items-center gap-2">
             <GraduationCap className="h-4 w-4" />
             Alunos
+          </TabsTrigger>
+          <TabsTrigger value="sistema" className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            Sistema Acadêmico
           </TabsTrigger>
         </TabsList>
 
@@ -422,6 +427,10 @@ export function CadastroEducacao() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="sistema">
+          <SistemaAcademico />
         </TabsContent>
       </Tabs>
 
