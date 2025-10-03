@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroEducacao } from "@/components/educacao/CadastroEducacao";
 import { RelatoriosEducacao } from "@/components/educacao/RelatoriosEducacao";
 import { PlanejamentoEducacao } from "@/components/educacao/PlanejamentoEducacao";
+import { SistemaAcademico } from "@/components/educacao/SistemaAcademico";
+import { DashboardEducacional } from "@/components/educacao/DashboardEducacional";
 
 export default function GestaoEducacao() {
   return (
@@ -17,18 +19,28 @@ export default function GestaoEducacao() {
           </p>
         </header>
 
-        <Tabs defaultValue="cadastro">
-          <TabsList className="grid w-full grid-cols-3 h-auto">
+        <Tabs defaultValue="dashboard">
+          <TabsList className="grid w-full grid-cols-5 h-auto">
+            <TabsTrigger value="dashboard" className="text-sm p-3">
+              Dashboard
+            </TabsTrigger>
             <TabsTrigger value="cadastro" className="text-sm p-3">
-              Cadastro e Gerenciamento
+              Cadastro
+            </TabsTrigger>
+            <TabsTrigger value="academico" className="text-sm p-3">
+              Sistema Acadêmico
             </TabsTrigger>
             <TabsTrigger value="relatorios" className="text-sm p-3">
-              Relatórios de Desempenho
+              Relatórios
             </TabsTrigger>
             <TabsTrigger value="planejamento" className="text-sm p-3">
-              Planejamento Estratégico
+              Planejamento
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="dashboard" className="mt-6">
+            <DashboardEducacional />
+          </TabsContent>
 
           <TabsContent value="cadastro" className="mt-6">
             <Card>
@@ -41,15 +53,19 @@ export default function GestaoEducacao() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="relatorios" className="mt-6">
+          <TabsContent value="academico" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Relatórios de Desempenho</CardTitle>
+                <CardTitle>Sistema Acadêmico</CardTitle>
               </CardHeader>
               <CardContent>
-                <RelatoriosEducacao />
+                <SistemaAcademico />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="relatorios" className="mt-6">
+            <RelatoriosEducacao />
           </TabsContent>
 
           <TabsContent value="planejamento" className="mt-6">

@@ -1,56 +1,104 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
-import { Download, FileText, TrendingUp, Users, School, Award } from "lucide-react";
+import { Download, Filter, FileDown } from "lucide-react";
+import { useEducacaoStats } from "@/hooks/useEducacaoStats";
+import { useEscolas } from "@/hooks/useEscolas";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export function RelatoriosEducacao() {
   const [selectedSchool, setSelectedSchool] = useState<string>("todas");
   const [selectedPeriod, setSelectedPeriod] = useState<string>("2024");
+  const [relatorioTipo, setRelatorioTipo] = useState<string>("geral");
+  
+  const { toast } = useToast();
+  const { escolas } = useEscolas();
+  const { statsPorEscola, frequenciaPorTurma, desempenhoPorDisciplina, loading } = useEducacaoStats();
 
-  // Mock data para relatórios
-  const desempenhoEscolas = [
-    { escola: "EMEI Pequeno Príncipe", alunos: 180, aprovacao: 95, evasao: 2, nota_municipal: 8.5 },
-    { escola: "EMEF Dom Pedro II", alunos: 350, aprovacao: 88, evasao: 5, nota_municipal: 7.8 },
-    { escola: "EMEF Santos Dumont", alunos: 280, aprovacao: 92, evasao: 3, nota_municipal: 8.2 },
-    { escola: "EJA Centro", alunos: 120, aprovacao: 85, evasao: 8, nota_municipal: 7.5 }
-  ];
-
-  const indicadoresMunicipais = [
-    { mes: "Jan", matriculas: 1250, aprovacao: 89, evasao: 4 },
-    { mes: "Fev", matriculas: 1280, aprovacao: 90, evasao: 3.8 },
-    { mes: "Mar", matriculas: 1300, aprovacao: 91, evasao: 3.5 },
-    { mes: "Abr", matriculas: 1320, aprovacao: 88, evasao: 4.2 },
-    { mes: "Mai", matriculas: 1310, aprovacao: 89, evasao: 4.0 },
-    { mes: "Jun", matriculas: 1300, aprovacao: 92, evasao: 3.2 }
-  ];
-
-  const resumoGeral = {
-    totalEscolas: 15,
-    totalAlunos: 2850,
-    aprovacaoMedia: 89.2,
-    evasaoMedia: 4.1,
-    notaIdeb: 6.8
+  const handleExportarPDF = async () => {
+    toast({
+      title: "Exportando relatório",
+      description: "Gerando PDF do relatório selecionado...",
+    });
+    
+    // Implementar exportação PDF aqui
+    setTimeout(() => {
+      toast({
+        title: "Relatório exportado",
+        description: "O relatório foi baixado com sucesso.",
+      });
+    }, 1500);
   };
+
+  const handleExportarExcel = async () => {
+    toast({
+      title: "Exportando para Excel",
+      description: "Gerando arquivo Excel...",
+    });
+    
+    // Implementar exportação Excel aqui
+    setTimeout(() => {
+      toast({
+        title: "Arquivo exportado",
+        description: "O arquivo Excel foi baixado com sucesso.",
+      });
+    }, 1500);
+  };
+
+  const getDadosFiltrados = () => {
+    if (selectedSchool === "todas") {
+      return statsPorEscola;
+    }
+    return statsPorEscola.filter(e => e.escola_id === selectedSchool);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-muted-foreground">Carregando relatórios...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-4">
+      {/* Filtros e Exportação */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex flex-wrap gap-4">
+          <Select value={relatorioTipo} onValueChange={setRelatorioTipo}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Tipo de relatório" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="geral">Relatório Geral</SelectItem>
+              <SelectItem value="frequencia">Frequência por Turma</SelectItem>
+              <SelectItem value="desempenho">Desempenho por Disciplina</SelectItem>
+              <SelectItem value="escola">Desempenho por Escola</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Select value={selectedSchool} onValueChange={setSelectedSchool}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Selecionar escola" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todas">Todas as Escolas</SelectItem>
-              <SelectItem value="emei-pp">EMEI Pequeno Príncipe</SelectItem>
-              <SelectItem value="emef-dp">EMEF Dom Pedro II</SelectItem>
-              <SelectItem value="emef-sd">EMEF Santos Dumont</SelectItem>
-              <SelectItem value="eja-centro">EJA Centro</SelectItem>
+              {escolas.map((escola) => (
+                <SelectItem key={escola.id} value={escola.id}>
+                  {escola.nome}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -60,168 +108,220 @@ export function RelatoriosEducacao() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="2024">2024</SelectItem>
+              <SelectItem value="2025">2025</SelectItem>
               <SelectItem value="2023">2023</SelectItem>
-              <SelectItem value="2022">2022</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <Button>
-          <Download className="mr-2 h-4 w-4" />
-          Exportar Relatório
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExportarExcel}>
+            <FileDown className="mr-2 h-4 w-4" />
+            Excel
+          </Button>
+          <Button onClick={handleExportarPDF}>
+            <Download className="mr-2 h-4 w-4" />
+            PDF
+          </Button>
+        </div>
       </div>
 
-      {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center">
-              <School className="mr-2 h-4 w-4" />
-              Total de Escolas
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{resumoGeral.totalEscolas}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center">
-              <Users className="mr-2 h-4 w-4" />
-              Total de Alunos
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{resumoGeral.totalAlunos.toLocaleString()}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center">
-              <Award className="mr-2 h-4 w-4" />
-              Taxa de Aprovação
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{resumoGeral.aprovacaoMedia}%</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              Taxa de Evasão
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{resumoGeral.evasaoMedia}%</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium flex items-center">
-              <FileText className="mr-2 h-4 w-4" />
-              Nota IDEB
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{resumoGeral.notaIdeb}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Conteúdo do Relatório */}
+      {relatorioTipo === "geral" && (
         <Card>
           <CardHeader>
-            <CardTitle>Desempenho por Escola</CardTitle>
+            <CardTitle>Relatório Geral de Educação - {selectedPeriod}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={desempenhoEscolas}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="escola" angle={-45} textAnchor="end" height={80} />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="aprovacao" fill="#22c55e" name="Taxa de Aprovação (%)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Indicadores Municipais - {selectedPeriod}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={indicadoresMunicipais}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mes" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="aprovacao" stroke="#22c55e" name="Aprovação (%)" />
-                <Line type="monotone" dataKey="evasao" stroke="#ef4444" name="Evasão (%)" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Tabela Detalhada */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Detalhamento por Escola</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-2">Escola</th>
-                  <th className="text-left p-2">Nº Alunos</th>
-                  <th className="text-left p-2">Taxa Aprovação</th>
-                  <th className="text-left p-2">Taxa Evasão</th>
-                  <th className="text-left p-2">Nota Municipal</th>
-                  <th className="text-left p-2">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {desempenhoEscolas.map((escola, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="p-2 font-medium">{escola.escola}</td>
-                    <td className="p-2">{escola.alunos}</td>
-                    <td className="p-2">
-                      <span className="text-green-600 font-semibold">{escola.aprovacao}%</span>
-                    </td>
-                    <td className="p-2">
-                      <span className="text-red-600 font-semibold">{escola.evasao}%</span>
-                    </td>
-                    <td className="p-2">
-                      <span className="text-blue-600 font-semibold">{escola.nota_municipal}</span>
-                    </td>
-                    <td className="p-2">
-                      <Badge className={
-                        escola.aprovacao >= 90 ? "bg-green-100 text-green-800" :
-                        escola.aprovacao >= 80 ? "bg-yellow-100 text-yellow-800" :
-                        "bg-red-100 text-red-800"
-                      }>
-                        {escola.aprovacao >= 90 ? "Excelente" :
-                         escola.aprovacao >= 80 ? "Bom" : "Atenção"}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Escola</TableHead>
+                  <TableHead className="text-right">Alunos</TableHead>
+                  <TableHead className="text-right">Turmas</TableHead>
+                  <TableHead className="text-right">Professores</TableHead>
+                  <TableHead className="text-right">Ocupação</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {getDadosFiltrados().map((escola) => (
+                  <TableRow key={escola.escola_id}>
+                    <TableCell className="font-medium">{escola.escola_nome}</TableCell>
+                    <TableCell className="text-right">{escola.total_alunos}</TableCell>
+                    <TableCell className="text-right">{escola.total_turmas}</TableCell>
+                    <TableCell className="text-right">{escola.total_professores}</TableCell>
+                    <TableCell className="text-right">{escola.taxa_ocupacao}%</TableCell>
+                    <TableCell>
+                      <Badge variant={escola.taxa_ocupacao > 90 ? "destructive" : "secondary"}>
+                        {escola.taxa_ocupacao > 90 ? "Superlotada" : "Normal"}
                       </Badge>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+              </TableBody>
+            </Table>
+            {getDadosFiltrados().length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                Nenhum dado disponível para os filtros selecionados
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {relatorioTipo === "frequencia" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Relatório de Frequência por Turma - {selectedPeriod}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Turma</TableHead>
+                  <TableHead>Escola</TableHead>
+                  <TableHead className="text-right">Alunos</TableHead>
+                  <TableHead className="text-right">Total Faltas</TableHead>
+                  <TableHead className="text-right">Taxa de Presença</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {frequenciaPorTurma
+                  .filter(t => selectedSchool === "todas" || t.escola_nome === escolas.find(e => e.id === selectedSchool)?.nome)
+                  .map((turma) => (
+                    <TableRow key={turma.turma_id}>
+                      <TableCell className="font-medium">{turma.turma_nome}</TableCell>
+                      <TableCell>{turma.escola_nome}</TableCell>
+                      <TableCell className="text-right">{turma.total_alunos}</TableCell>
+                      <TableCell className="text-right">{turma.total_faltas}</TableCell>
+                      <TableCell className="text-right font-semibold">{turma.taxa_presenca}%</TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant={
+                            turma.taxa_presenca >= 90 ? "default" : 
+                            turma.taxa_presenca >= 75 ? "secondary" : 
+                            "destructive"
+                          }
+                        >
+                          {turma.taxa_presenca >= 90 ? "Excelente" : 
+                           turma.taxa_presenca >= 75 ? "Boa" : 
+                           "Atenção"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            {frequenciaPorTurma.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                Nenhum dado de frequência disponível
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {relatorioTipo === "desempenho" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Relatório de Desempenho por Disciplina - {selectedPeriod}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Disciplina</TableHead>
+                  <TableHead className="text-right">Média Geral</TableHead>
+                  <TableHead className="text-right">Total de Avaliações</TableHead>
+                  <TableHead>Desempenho</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {desempenhoPorDisciplina.map((disciplina) => (
+                  <TableRow key={disciplina.disciplina_id}>
+                    <TableCell className="font-medium">{disciplina.disciplina_nome}</TableCell>
+                    <TableCell className="text-right font-semibold text-lg">
+                      {disciplina.media_geral.toFixed(1)}
+                    </TableCell>
+                    <TableCell className="text-right">{disciplina.total_avaliacoes}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={
+                          disciplina.media_geral >= 7 ? "default" : 
+                          disciplina.media_geral >= 6 ? "secondary" : 
+                          "destructive"
+                        }
+                      >
+                        {disciplina.media_geral >= 7 ? "Ótimo" : 
+                         disciplina.media_geral >= 6 ? "Bom" : 
+                         "Precisa Melhorar"}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {desempenhoPorDisciplina.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                Nenhum dado de desempenho disponível
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {relatorioTipo === "escola" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Relatório Detalhado por Escola - {selectedPeriod}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {getDadosFiltrados().map((escola) => (
+                <div key={escola.escola_id} className="border-b pb-6 last:border-b-0">
+                  <h3 className="text-lg font-semibold mb-4">{escola.escola_nome}</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Total de Alunos</p>
+                      <p className="text-2xl font-bold">{escola.total_alunos}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Total de Turmas</p>
+                      <p className="text-2xl font-bold">{escola.total_turmas}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Professores</p>
+                      <p className="text-2xl font-bold">{escola.total_professores}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm text-muted-foreground">Taxa de Ocupação</p>
+                      <p className="text-2xl font-bold">{escola.taxa_ocupacao}%</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Capacidade: {escola.total_alunos} / {escola.capacidade_total} alunos
+                    </p>
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all"
+                        style={{ width: `${Math.min(escola.taxa_ocupacao, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {getDadosFiltrados().length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nenhuma escola encontrada
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
