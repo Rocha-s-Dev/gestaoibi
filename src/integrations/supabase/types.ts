@@ -14,6 +14,56 @@ export type Database = {
   }
   public: {
     Tables: {
+      alertas_educacionais: {
+        Row: {
+          aluno_id: string
+          created_at: string | null
+          dados_adicionais: Json | null
+          data_resolucao: string | null
+          id: string
+          lido: boolean | null
+          mensagem: string
+          nivel: Database["public"]["Enums"]["nivel_alerta"]
+          resolvido: boolean | null
+          tipo: Database["public"]["Enums"]["tipo_alerta_educacional"]
+          updated_at: string | null
+        }
+        Insert: {
+          aluno_id: string
+          created_at?: string | null
+          dados_adicionais?: Json | null
+          data_resolucao?: string | null
+          id?: string
+          lido?: boolean | null
+          mensagem: string
+          nivel?: Database["public"]["Enums"]["nivel_alerta"]
+          resolvido?: boolean | null
+          tipo: Database["public"]["Enums"]["tipo_alerta_educacional"]
+          updated_at?: string | null
+        }
+        Update: {
+          aluno_id?: string
+          created_at?: string | null
+          dados_adicionais?: Json | null
+          data_resolucao?: string | null
+          id?: string
+          lido?: boolean | null
+          mensagem?: string
+          nivel?: Database["public"]["Enums"]["nivel_alerta"]
+          resolvido?: boolean | null
+          tipo?: Database["public"]["Enums"]["tipo_alerta_educacional"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_educacionais_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alunos: {
         Row: {
           bairro: string | null
@@ -149,6 +199,70 @@ export type Database = {
           },
         ]
       }
+      alunos_rotas: {
+        Row: {
+          aluno_id: string
+          ativo: boolean | null
+          created_at: string | null
+          horario_embarque: string | null
+          id: string
+          ponto_desembarque: string | null
+          ponto_embarque: string | null
+          rota_id: string
+          turno: string | null
+          updated_at: string | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          aluno_id: string
+          ativo?: boolean | null
+          created_at?: string | null
+          horario_embarque?: string | null
+          id?: string
+          ponto_desembarque?: string | null
+          ponto_embarque?: string | null
+          rota_id: string
+          turno?: string | null
+          updated_at?: string | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          aluno_id?: string
+          ativo?: boolean | null
+          created_at?: string | null
+          horario_embarque?: string | null
+          id?: string
+          ponto_desembarque?: string | null
+          ponto_embarque?: string | null
+          rota_id?: string
+          turno?: string | null
+          updated_at?: string | null
+          veiculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alunos_rotas_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alunos_rotas_rota_id_fkey"
+            columns: ["rota_id"]
+            isOneToOne: false
+            referencedRelation: "rotas_transporte"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alunos_rotas_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendario_escolar: {
         Row: {
           created_at: string | null
@@ -189,6 +303,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "calendario_escolar_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cardapios: {
+        Row: {
+          calorias_estimadas: number | null
+          created_at: string | null
+          data: string
+          escola_id: string | null
+          id: string
+          itens: Json
+          observacoes: string | null
+          refeicao: Database["public"]["Enums"]["tipo_refeicao"]
+          updated_at: string | null
+        }
+        Insert: {
+          calorias_estimadas?: number | null
+          created_at?: string | null
+          data: string
+          escola_id?: string | null
+          id?: string
+          itens: Json
+          observacoes?: string | null
+          refeicao: Database["public"]["Enums"]["tipo_refeicao"]
+          updated_at?: string | null
+        }
+        Update: {
+          calorias_estimadas?: number | null
+          created_at?: string | null
+          data?: string
+          escola_id?: string | null
+          id?: string
+          itens?: Json
+          observacoes?: string | null
+          refeicao?: Database["public"]["Enums"]["tipo_refeicao"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cardapios_escola_id_fkey"
             columns: ["escola_id"]
             isOneToOne: false
             referencedRelation: "escolas"
@@ -254,6 +412,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      configuracoes_alertas: {
+        Row: {
+          created_at: string | null
+          dias_sem_frequencia_evasao: number
+          id: string
+          nota_minima: number
+          percentual_faltas_critical: number
+          percentual_faltas_warning: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dias_sem_frequencia_evasao?: number
+          id?: string
+          nota_minima?: number
+          percentual_faltas_critical?: number
+          percentual_faltas_warning?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dias_sem_frequencia_evasao?: number
+          id?: string
+          nota_minima?: number
+          percentual_faltas_critical?: number
+          percentual_faltas_warning?: number
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       contract_payments: {
         Row: {
@@ -422,6 +610,47 @@ export type Database = {
         }
         Relationships: []
       }
+      documentos_matricula: {
+        Row: {
+          arquivo_url: string
+          created_at: string | null
+          id: string
+          nome_arquivo: string
+          observacao: string | null
+          solicitacao_id: string
+          tipo_documento: string
+          validado: boolean | null
+        }
+        Insert: {
+          arquivo_url: string
+          created_at?: string | null
+          id?: string
+          nome_arquivo: string
+          observacao?: string | null
+          solicitacao_id: string
+          tipo_documento: string
+          validado?: boolean | null
+        }
+        Update: {
+          arquivo_url?: string
+          created_at?: string | null
+          id?: string
+          nome_arquivo?: string
+          observacao?: string | null
+          solicitacao_id?: string
+          tipo_documento?: string
+          validado?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_matricula_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes_matricula"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escolas: {
         Row: {
           acessibilidade_cadeirante: boolean | null
@@ -517,6 +746,59 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      estoque_alimentos: {
+        Row: {
+          created_at: string | null
+          data_validade: string | null
+          escola_id: string | null
+          estoque_minimo: number | null
+          fornecedor: string | null
+          id: string
+          item: string
+          lote: string | null
+          preco_unitario: number | null
+          quantidade: number
+          unidade: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_validade?: string | null
+          escola_id?: string | null
+          estoque_minimo?: number | null
+          fornecedor?: string | null
+          id?: string
+          item: string
+          lote?: string | null
+          preco_unitario?: number | null
+          quantidade: number
+          unidade: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_validade?: string | null
+          escola_id?: string | null
+          estoque_minimo?: number | null
+          fornecedor?: string | null
+          id?: string
+          item?: string
+          lote?: string | null
+          preco_unitario?: number | null
+          quantidade?: number
+          unidade?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_alimentos_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faltas: {
         Row: {
@@ -780,6 +1062,129 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      historico_escolar: {
+        Row: {
+          aluno_id: string
+          ano_letivo: number
+          created_at: string | null
+          escola_id: string | null
+          escola_nome: string
+          id: string
+          media_geral: number | null
+          notas_finais: Json | null
+          observacoes: string | null
+          percentual_frequencia: number | null
+          serie: string
+          situacao: Database["public"]["Enums"]["situacao_ano_letivo"]
+          total_faltas: number | null
+          turma_nome: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          aluno_id: string
+          ano_letivo: number
+          created_at?: string | null
+          escola_id?: string | null
+          escola_nome: string
+          id?: string
+          media_geral?: number | null
+          notas_finais?: Json | null
+          observacoes?: string | null
+          percentual_frequencia?: number | null
+          serie: string
+          situacao: Database["public"]["Enums"]["situacao_ano_letivo"]
+          total_faltas?: number | null
+          turma_nome?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          aluno_id?: string
+          ano_letivo?: number
+          created_at?: string | null
+          escola_id?: string | null
+          escola_nome?: string
+          id?: string
+          media_geral?: number | null
+          notas_finais?: Json | null
+          observacoes?: string | null
+          percentual_frequencia?: number | null
+          serie?: string
+          situacao?: Database["public"]["Enums"]["situacao_ano_letivo"]
+          total_faltas?: number | null
+          turma_nome?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_escolar_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_escolar_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      justificativas_faltas: {
+        Row: {
+          created_at: string | null
+          data_analise: string | null
+          documento_url: string | null
+          falta_id: string
+          id: string
+          motivo: string
+          observacao_analise: string | null
+          responsavel_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_analise?: string | null
+          documento_url?: string | null
+          falta_id: string
+          id?: string
+          motivo: string
+          observacao_analise?: string | null
+          responsavel_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_analise?: string | null
+          documento_url?: string | null
+          falta_id?: string
+          id?: string
+          motivo?: string
+          observacao_analise?: string | null
+          responsavel_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "justificativas_faltas_falta_id_fkey"
+            columns: ["falta_id"]
+            isOneToOne: false
+            referencedRelation: "faltas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "justificativas_faltas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "responsaveis"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -1170,6 +1575,177 @@ export type Database = {
         }
         Relationships: []
       }
+      restricoes_alimentares: {
+        Row: {
+          alimentos_proibidos: Json | null
+          aluno_id: string
+          created_at: string | null
+          descricao: string | null
+          documento_medico_url: string | null
+          id: string
+          orientacoes_medicas: string | null
+          tipo_restricao: string
+          updated_at: string | null
+        }
+        Insert: {
+          alimentos_proibidos?: Json | null
+          aluno_id: string
+          created_at?: string | null
+          descricao?: string | null
+          documento_medico_url?: string | null
+          id?: string
+          orientacoes_medicas?: string | null
+          tipo_restricao: string
+          updated_at?: string | null
+        }
+        Update: {
+          alimentos_proibidos?: Json | null
+          aluno_id?: string
+          created_at?: string | null
+          descricao?: string | null
+          documento_medico_url?: string | null
+          id?: string
+          orientacoes_medicas?: string | null
+          tipo_restricao?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restricoes_alimentares_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rotas_transporte: {
+        Row: {
+          created_at: string | null
+          descricao: string | null
+          horario_fim: string | null
+          horario_inicio: string | null
+          id: string
+          km_estimado: number | null
+          nome: string
+          pontos_parada: Json | null
+          status: Database["public"]["Enums"]["status_rota"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao?: string | null
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          km_estimado?: number | null
+          nome: string
+          pontos_parada?: Json | null
+          status?: Database["public"]["Enums"]["status_rota"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao?: string | null
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          km_estimado?: number | null
+          nome?: string
+          pontos_parada?: Json | null
+          status?: Database["public"]["Enums"]["status_rota"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      solicitacoes_matricula: {
+        Row: {
+          aluno_criado_id: string | null
+          ano_letivo: number
+          created_at: string | null
+          dados_aluno: Json
+          dados_responsavel: Json
+          data_processamento: string | null
+          documentos: Json | null
+          escola_preferida_id: string | null
+          id: string
+          motivo_rejeicao: string | null
+          observacoes: string | null
+          processado_por: string | null
+          protocolo: string
+          serie_pretendida: string
+          status:
+            | Database["public"]["Enums"]["status_solicitacao_matricula"]
+            | null
+          turma_sugerida_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          aluno_criado_id?: string | null
+          ano_letivo: number
+          created_at?: string | null
+          dados_aluno: Json
+          dados_responsavel: Json
+          data_processamento?: string | null
+          documentos?: Json | null
+          escola_preferida_id?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          processado_por?: string | null
+          protocolo: string
+          serie_pretendida: string
+          status?:
+            | Database["public"]["Enums"]["status_solicitacao_matricula"]
+            | null
+          turma_sugerida_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          aluno_criado_id?: string | null
+          ano_letivo?: number
+          created_at?: string | null
+          dados_aluno?: Json
+          dados_responsavel?: Json
+          data_processamento?: string | null
+          documentos?: Json | null
+          escola_preferida_id?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          processado_por?: string | null
+          protocolo?: string
+          serie_pretendida?: string
+          status?:
+            | Database["public"]["Enums"]["status_solicitacao_matricula"]
+            | null
+          turma_sugerida_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solicitacoes_matricula_aluno_criado_id_fkey"
+            columns: ["aluno_criado_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_matricula_escola_preferida_id_fkey"
+            columns: ["escola_preferida_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_matricula_turma_sugerida_id_fkey"
+            columns: ["turma_sugerida_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       task_assignments: {
         Row: {
           assigned_at: string
@@ -1240,6 +1816,108 @@ export type Database = {
           },
         ]
       }
+      transferencias: {
+        Row: {
+          aluno_id: string
+          aprovado_por: string | null
+          created_at: string | null
+          data_efetivacao: string | null
+          data_solicitacao: string | null
+          documentos_gerados: Json | null
+          escola_destino_id: string | null
+          escola_externa_destino: string | null
+          escola_externa_origem: string | null
+          escola_origem_id: string | null
+          id: string
+          motivo: string | null
+          observacoes: string | null
+          solicitado_por: string | null
+          status: Database["public"]["Enums"]["status_transferencia"] | null
+          tipo: Database["public"]["Enums"]["tipo_transferencia"]
+          turma_destino_id: string | null
+          turma_origem_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          aluno_id: string
+          aprovado_por?: string | null
+          created_at?: string | null
+          data_efetivacao?: string | null
+          data_solicitacao?: string | null
+          documentos_gerados?: Json | null
+          escola_destino_id?: string | null
+          escola_externa_destino?: string | null
+          escola_externa_origem?: string | null
+          escola_origem_id?: string | null
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          solicitado_por?: string | null
+          status?: Database["public"]["Enums"]["status_transferencia"] | null
+          tipo: Database["public"]["Enums"]["tipo_transferencia"]
+          turma_destino_id?: string | null
+          turma_origem_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          aluno_id?: string
+          aprovado_por?: string | null
+          created_at?: string | null
+          data_efetivacao?: string | null
+          data_solicitacao?: string | null
+          documentos_gerados?: Json | null
+          escola_destino_id?: string | null
+          escola_externa_destino?: string | null
+          escola_externa_origem?: string | null
+          escola_origem_id?: string | null
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          solicitado_por?: string | null
+          status?: Database["public"]["Enums"]["status_transferencia"] | null
+          tipo?: Database["public"]["Enums"]["tipo_transferencia"]
+          turma_destino_id?: string | null
+          turma_origem_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transferencias_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transferencias_escola_destino_id_fkey"
+            columns: ["escola_destino_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transferencias_escola_origem_id_fkey"
+            columns: ["escola_origem_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transferencias_turma_destino_id_fkey"
+            columns: ["turma_destino_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transferencias_turma_origem_id_fkey"
+            columns: ["turma_origem_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       turmas: {
         Row: {
           ano_letivo: number
@@ -1303,12 +1981,87 @@ export type Database = {
           },
         ]
       }
+      usuarios_responsaveis: {
+        Row: {
+          created_at: string | null
+          id: string
+          responsavel_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          responsavel_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          responsavel_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usuarios_responsaveis_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "responsaveis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      veiculos: {
+        Row: {
+          ano: number | null
+          capacidade: number
+          created_at: string | null
+          id: string
+          modelo: string
+          motorista_cnh: string | null
+          motorista_nome: string | null
+          motorista_telefone: string | null
+          observacoes: string | null
+          placa: string
+          status: Database["public"]["Enums"]["status_veiculo"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          ano?: number | null
+          capacidade: number
+          created_at?: string | null
+          id?: string
+          modelo: string
+          motorista_cnh?: string | null
+          motorista_nome?: string | null
+          motorista_telefone?: string | null
+          observacoes?: string | null
+          placa: string
+          status?: Database["public"]["Enums"]["status_veiculo"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          ano?: number | null
+          capacidade?: number
+          created_at?: string | null
+          id?: string
+          modelo?: string
+          motorista_cnh?: string | null
+          motorista_nome?: string | null
+          motorista_telefone?: string | null
+          observacoes?: string | null
+          placa?: string
+          status?: Database["public"]["Enums"]["status_veiculo"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       gerar_numero_matricula: { Args: never; Returns: string }
+      gerar_protocolo_matricula: { Args: never; Returns: string }
     }
     Enums: {
       goal_status:
@@ -1324,6 +2077,7 @@ export type Database = {
         | "fundamental_ii"
         | "eja"
         | "creche"
+      nivel_alerta: "info" | "warning" | "critical"
       perfil_usuario:
         | "admin_secretaria"
         | "gestor_escolar"
@@ -1331,11 +2085,48 @@ export type Database = {
         | "aluno"
         | "responsavel"
       prioridade_chamado: "baixa" | "media" | "alta" | "urgente"
+      situacao_ano_letivo:
+        | "aprovado"
+        | "reprovado"
+        | "transferido"
+        | "em_curso"
+        | "evadido"
       status_aluno: "matriculado" | "transferido" | "evadido" | "concluido"
       status_chamado: "aberto" | "em_andamento" | "resolvido" | "cancelado"
       status_escola: "ativa" | "inativa" | "em_reforma" | "em_construcao"
+      status_rota: "ativa" | "inativa" | "em_manutencao"
+      status_solicitacao_matricula:
+        | "pendente"
+        | "em_analise"
+        | "aprovada"
+        | "rejeitada"
+        | "lista_espera"
+      status_transferencia:
+        | "solicitada"
+        | "em_analise"
+        | "aprovada"
+        | "rejeitada"
+        | "cancelada"
+        | "concluida"
+      status_veiculo: "disponivel" | "em_uso" | "manutencao" | "inativo"
       task_priority: "low" | "medium" | "high"
+      tipo_alerta_educacional:
+        | "faltas_excessivas"
+        | "nota_baixa"
+        | "risco_reprovacao"
+        | "evasao"
       tipo_falta: "justificada" | "injustificada"
+      tipo_refeicao:
+        | "cafe_manha"
+        | "lanche_manha"
+        | "almoco"
+        | "lanche_tarde"
+        | "jantar"
+      tipo_transferencia:
+        | "interna_turma"
+        | "interna_escola"
+        | "externa_entrada"
+        | "externa_saida"
       turno_escolar: "matutino" | "vespertino" | "noturno" | "integral"
     }
     CompositeTypes: {
@@ -1479,6 +2270,7 @@ export const Constants = {
         "eja",
         "creche",
       ],
+      nivel_alerta: ["info", "warning", "critical"],
       perfil_usuario: [
         "admin_secretaria",
         "gestor_escolar",
@@ -1487,11 +2279,54 @@ export const Constants = {
         "responsavel",
       ],
       prioridade_chamado: ["baixa", "media", "alta", "urgente"],
+      situacao_ano_letivo: [
+        "aprovado",
+        "reprovado",
+        "transferido",
+        "em_curso",
+        "evadido",
+      ],
       status_aluno: ["matriculado", "transferido", "evadido", "concluido"],
       status_chamado: ["aberto", "em_andamento", "resolvido", "cancelado"],
       status_escola: ["ativa", "inativa", "em_reforma", "em_construcao"],
+      status_rota: ["ativa", "inativa", "em_manutencao"],
+      status_solicitacao_matricula: [
+        "pendente",
+        "em_analise",
+        "aprovada",
+        "rejeitada",
+        "lista_espera",
+      ],
+      status_transferencia: [
+        "solicitada",
+        "em_analise",
+        "aprovada",
+        "rejeitada",
+        "cancelada",
+        "concluida",
+      ],
+      status_veiculo: ["disponivel", "em_uso", "manutencao", "inativo"],
       task_priority: ["low", "medium", "high"],
+      tipo_alerta_educacional: [
+        "faltas_excessivas",
+        "nota_baixa",
+        "risco_reprovacao",
+        "evasao",
+      ],
       tipo_falta: ["justificada", "injustificada"],
+      tipo_refeicao: [
+        "cafe_manha",
+        "lanche_manha",
+        "almoco",
+        "lanche_tarde",
+        "jantar",
+      ],
+      tipo_transferencia: [
+        "interna_turma",
+        "interna_escola",
+        "externa_entrada",
+        "externa_saida",
+      ],
       turno_escolar: ["matutino", "vespertino", "noturno", "integral"],
     },
   },
