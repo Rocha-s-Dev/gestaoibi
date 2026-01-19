@@ -305,16 +305,16 @@ export function AlunoDialog({ open, onOpenChange, onSubmit, aluno }: AlunoDialog
               <div className="space-y-2">
                 <Label htmlFor="turma_atual_id">Turma Atual</Label>
                 <Select
-                  value={formData.turma_atual_id}
+                  value={formData.turma_atual_id || "none"}
                   onValueChange={(value) => 
-                    setFormData(prev => ({ ...prev, turma_atual_id: value }))
+                    setFormData(prev => ({ ...prev, turma_atual_id: value === "none" ? "" : value }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma turma" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhuma turma</SelectItem>
+                    <SelectItem value="none">Nenhuma turma</SelectItem>
                     {turmas
                       .filter(turma => turma.escola_id === formData.escola_id)
                       .map((turma) => (

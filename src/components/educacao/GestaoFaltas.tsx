@@ -102,12 +102,12 @@ export function GestaoFaltas() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <Label htmlFor="turma">Turma</Label>
-              <Select value={filtroTurma} onValueChange={setFiltroTurma}>
+              <Select value={filtroTurma || "all"} onValueChange={(v) => setFiltroTurma(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as turmas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as turmas</SelectItem>
+                  <SelectItem value="all">Todas as turmas</SelectItem>
                   {turmas.map((turma) => (
                     <SelectItem key={turma.id} value={turma.id}>
                       {turma.nome} - {turma.serie}
@@ -119,12 +119,12 @@ export function GestaoFaltas() {
 
             <div>
               <Label htmlFor="disciplina">Disciplina</Label>
-              <Select value={filtroDisciplina} onValueChange={setFiltroDisciplina}>
+              <Select value={filtroDisciplina || "all"} onValueChange={(v) => setFiltroDisciplina(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as disciplinas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as disciplinas</SelectItem>
+                  <SelectItem value="all">Todas as disciplinas</SelectItem>
                   {disciplinas.map((disciplina) => (
                     <SelectItem key={disciplina.id} value={disciplina.id}>
                       {disciplina.nome}
@@ -136,12 +136,12 @@ export function GestaoFaltas() {
 
             <div>
               <Label htmlFor="tipo">Tipo de Falta</Label>
-              <Select value={filtroTipo} onValueChange={setFiltroTipo}>
+              <Select value={filtroTipo || "all"} onValueChange={(v) => setFiltroTipo(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todos os tipos" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os tipos</SelectItem>
+                  <SelectItem value="all">Todos os tipos</SelectItem>
                   <SelectItem value="justificada">Justificada</SelectItem>
                   <SelectItem value="injustificada">Injustificada</SelectItem>
                 </SelectContent>
