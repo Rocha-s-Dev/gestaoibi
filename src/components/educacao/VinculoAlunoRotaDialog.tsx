@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import { useTransporteEscolar } from "@/hooks/useTransporteEscolar";
+import { useRotas, useVeiculos, useAlunosRotas } from "@/hooks/useTransporteEscolar";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useAlunos } from "@/hooks/useAlunos";
 
@@ -33,9 +33,19 @@ interface VinculoAlunoRotaDialogProps {
 
 export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaDialogProps) {
   const [escolaId, setEscolaId] = useState<string>("");
-  const { rotas, veiculos, createAlunoRota, isCreatingAlunoRota } = useTransporteEscolar();
+  const [isSaving, setIsSaving] = useState(false);
+  
+  const { rotas } = useRotas();
+  const { veiculos } = useVeiculos();
+  const { vincularAluno } = useAlunosRotas();
   const { escolas } = useEscolas();
-  const { alunos } = useAlunos(escolaId);
+  const { alunos: todosAlunos } = useAlunos();
+
+  // Filtrar alunos pela escola selecionada
+  const alunos = useMemo(() => {
+    if (!escolaId) return [];
+    return todosAlunos?.filter(a => a.escola_id === escolaId) || [];
+  }, [todosAlunos, escolaId]);
 
   const form = useForm<VinculoFormData>({
     resolver: zodResolver(vinculoSchema),
@@ -52,19 +62,24 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
   });
 
   const onSubmit = async (data: VinculoFormData) => {
-    await createAlunoRota({
-      aluno_id: data.aluno_id,
-      rota_id: data.rota_id,
-      veiculo_id: data.veiculo_id || null,
-      turno: data.turno || null,
-      ponto_embarque: data.ponto_embarque || null,
-      ponto_desembarque: data.ponto_desembarque || null,
-      horario_embarque: data.horario_embarque || null,
-      ativo: data.ativo,
-    });
-    form.reset();
-    setEscolaId("");
-    onOpenChange(false);
+    setIsSaving(true);
+    try {
+      await vincularAluno({
+        aluno_id: data.aluno_id,
+        rota_id: data.rota_id,
+        veiculo_id: data.veiculo_id || undefined,
+        turno: data.turno || undefined,
+        ponto_embarque: data.ponto_embarque || undefined,
+        ponto_desembarque: data.ponto_desembarque || undefined,
+        horario_embarque: data.horario_embarque || undefined,
+        ativo: data.ativo,
+      });
+      form.reset();
+      setEscolaId("");
+      onOpenChange(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -263,8 +278,8 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isCreatingAlunoRota}>
-                {isCreatingAlunoRota && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              <Button type="submit" disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Vincular
               </Button>
             </DialogFooter>

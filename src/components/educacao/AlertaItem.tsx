@@ -4,29 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Bell, CheckCircle, Eye, User } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { AlertaEducacional } from "@/hooks/useAlertasEducacionais";
 
 interface AlertaItemProps {
-  alerta: {
-    id: string;
-    tipo: string;
-    nivel: string;
-    mensagem: string;
-    lido: boolean | null;
-    resolvido: boolean | null;
-    created_at: string | null;
-    data_resolucao: string | null;
-    dados_adicionais: any;
-    alunos?: {
-      nome: string;
-      numero_matricula: string;
-      turmas?: {
-        nome: string;
-        escolas?: {
-          nome: string;
-        };
-      };
-    };
-  };
+  alerta: AlertaEducacional;
   onMarcarLido: () => void;
   onResolver: () => void;
 }
@@ -51,7 +32,7 @@ const nivelIcons: Record<string, React.ReactNode> = {
 };
 
 export function AlertaItem({ alerta, onMarcarLido, onResolver }: AlertaItemProps) {
-  const aluno = alerta.alunos;
+  const alunoData = alerta.aluno;
 
   return (
     <Card className={`transition-all ${alerta.lido ? 'opacity-75' : ''} ${alerta.resolvido ? 'bg-muted/50' : ''}`}>
@@ -80,29 +61,29 @@ export function AlertaItem({ alerta, onMarcarLido, onResolver }: AlertaItemProps
 
           <p className="text-sm font-medium">{alerta.mensagem}</p>
 
-          {aluno && (
+          {alunoData && (
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <User className="h-4 w-4" />
-                <span>{aluno.nome}</span>
+                <span>{alunoData.nome}</span>
               </div>
-              <span>Matrícula: {aluno.numero_matricula}</span>
-              {aluno.turmas && (
-                <span>Turma: {aluno.turmas.nome}</span>
+              <span>Matrícula: {alunoData.numero_matricula}</span>
+              {alunoData.turma_atual && (
+                <span>Turma: {alunoData.turma_atual.nome}</span>
               )}
-              {aluno.turmas?.escolas && (
-                <span className="hidden md:inline">Escola: {aluno.turmas.escolas.nome}</span>
+              {alunoData.escola && (
+                <span className="hidden md:inline">Escola: {alunoData.escola.nome}</span>
               )}
             </div>
           )}
 
           {alerta.dados_adicionais && (
             <div className="text-xs text-muted-foreground">
-              {alerta.dados_adicionais.percentual_faltas && (
-                <span>Percentual de faltas: {alerta.dados_adicionais.percentual_faltas.toFixed(1)}%</span>
+              {(alerta.dados_adicionais as any).percentual_faltas && (
+                <span>Percentual de faltas: {(alerta.dados_adicionais as any).percentual_faltas.toFixed(1)}%</span>
               )}
-              {alerta.dados_adicionais.media_notas && (
-                <span>Média: {alerta.dados_adicionais.media_notas.toFixed(1)}</span>
+              {(alerta.dados_adicionais as any).media_notas && (
+                <span>Média: {(alerta.dados_adicionais as any).media_notas.toFixed(1)}</span>
               )}
             </div>
           )}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { useTransporteEscolar } from "@/hooks/useTransporteEscolar";
+import { useVeiculos, StatusVeiculo } from "@/hooks/useTransporteEscolar";
 
 const veiculoSchema = z.object({
   placa: z.string().min(1, "Placa é obrigatória"),
@@ -32,7 +32,8 @@ interface VeiculoDialogProps {
 }
 
 export function VeiculoDialog({ open, onOpenChange, veiculo }: VeiculoDialogProps) {
-  const { createVeiculo, updateVeiculo, isCreatingVeiculo, isUpdatingVeiculo } = useTransporteEscolar();
+  const { createVeiculo, updateVeiculo } = useVeiculos();
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<VeiculoFormData>({
     resolver: zodResolver(veiculoSchema),
@@ -78,15 +79,40 @@ export function VeiculoDialog({ open, onOpenChange, veiculo }: VeiculoDialogProp
   }, [veiculo, form]);
 
   const onSubmit = async (data: VeiculoFormData) => {
-    if (veiculo) {
-      await updateVeiculo({ id: veiculo.id, ...data });
-    } else {
-      await createVeiculo(data);
+    if (!data.placa || !data.modelo || !data.capacidade) return;
+    
+    setIsSaving(true);
+    try {
+      if (veiculo) {
+        await updateVeiculo(veiculo.id, { 
+          placa: data.placa,
+          modelo: data.modelo,
+          ano: data.ano,
+          capacidade: data.capacidade,
+          motorista_nome: data.motorista_nome,
+          motorista_cnh: data.motorista_cnh,
+          motorista_telefone: data.motorista_telefone,
+          observacoes: data.observacoes,
+          status: data.status as StatusVeiculo 
+        });
+      } else {
+        await createVeiculo({ 
+          placa: data.placa,
+          modelo: data.modelo,
+          ano: data.ano,
+          capacidade: data.capacidade,
+          motorista_nome: data.motorista_nome,
+          motorista_cnh: data.motorista_cnh,
+          motorista_telefone: data.motorista_telefone,
+          observacoes: data.observacoes,
+          status: data.status as StatusVeiculo 
+        });
+      }
+      onOpenChange(false);
+    } finally {
+      setIsSaving(false);
     }
-    onOpenChange(false);
   };
-
-  const isSaving = isCreatingVeiculo || isUpdatingVeiculo;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
