@@ -207,16 +207,16 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
             <div className="space-y-2">
               <Label htmlFor="professor_responsavel_id">Professor Responsável</Label>
               <Select
-                value={formData.professor_responsavel_id}
+                value={formData.professor_responsavel_id || "none"}
                 onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, professor_responsavel_id: value }))
+                  setFormData(prev => ({ ...prev, professor_responsavel_id: value === "none" ? "" : value }))
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione um professor" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum professor</SelectItem>
+                  <SelectItem value="none">Nenhum professor</SelectItem>
                   {professores.map((professor) => (
                     <SelectItem key={professor.id} value={professor.id}>
                       {professor.nome}

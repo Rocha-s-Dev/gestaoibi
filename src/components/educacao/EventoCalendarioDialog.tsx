@@ -138,14 +138,14 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
             <div>
               <Label htmlFor="escola_id">Escola (Opcional)</Label>
               <Select 
-                value={formData.escola_id} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, escola_id: value }))}
+                value={formData.escola_id || "all"} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, escola_id: value === "all" ? "" : value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as escolas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as escolas</SelectItem>
+                  <SelectItem value="all">Todas as escolas</SelectItem>
                   {escolas.map((escola) => (
                     <SelectItem key={escola.id} value={escola.id}>
                       {escola.nome}

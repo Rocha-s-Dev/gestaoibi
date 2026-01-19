@@ -67,12 +67,12 @@ export function GestaoNotas() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div>
               <Label htmlFor="turma">Turma</Label>
-              <Select value={filtroTurma} onValueChange={setFiltroTurma}>
+              <Select value={filtroTurma || "all"} onValueChange={(v) => setFiltroTurma(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as turmas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as turmas</SelectItem>
+                  <SelectItem value="all">Todas as turmas</SelectItem>
                   {turmas.map((turma) => (
                     <SelectItem key={turma.id} value={turma.id}>
                       {turma.nome} - {turma.serie}
@@ -84,12 +84,12 @@ export function GestaoNotas() {
 
             <div>
               <Label htmlFor="disciplina">Disciplina</Label>
-              <Select value={filtroDisciplina} onValueChange={setFiltroDisciplina}>
+              <Select value={filtroDisciplina || "all"} onValueChange={(v) => setFiltroDisciplina(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas as disciplinas" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as disciplinas</SelectItem>
+                  <SelectItem value="all">Todas as disciplinas</SelectItem>
                   {disciplinas.map((disciplina) => (
                     <SelectItem key={disciplina.id} value={disciplina.id}>
                       {disciplina.nome}
@@ -101,12 +101,12 @@ export function GestaoNotas() {
 
             <div>
               <Label htmlFor="bimestre">Bimestre</Label>
-              <Select value={filtroBimestre} onValueChange={setFiltroBimestre}>
+              <Select value={filtroBimestre || "all"} onValueChange={(v) => setFiltroBimestre(v === "all" ? "" : v)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todos os bimestres" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os bimestres</SelectItem>
+                  <SelectItem value="all">Todos os bimestres</SelectItem>
                   <SelectItem value="1">1º Bimestre</SelectItem>
                   <SelectItem value="2">2º Bimestre</SelectItem>
                   <SelectItem value="3">3º Bimestre</SelectItem>
