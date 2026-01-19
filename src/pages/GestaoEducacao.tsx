@@ -7,6 +7,9 @@ import { RelatoriosEducacao } from "@/components/educacao/RelatoriosEducacao";
 import { PlanejamentoEducacao } from "@/components/educacao/PlanejamentoEducacao";
 import { SistemaAcademico } from "@/components/educacao/SistemaAcademico";
 import { DashboardEducacional } from "@/components/educacao/DashboardEducacional";
+import { AlertasEducacionais } from "@/components/educacao/AlertasEducacionais";
+import { GestaoTransporte } from "@/components/educacao/GestaoTransporte";
+import { GestaoMerenda } from "@/components/educacao/GestaoMerenda";
 
 export default function GestaoEducacao() {
   return (
@@ -20,20 +23,29 @@ export default function GestaoEducacao() {
         </header>
 
         <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full grid-cols-5 h-auto">
-            <TabsTrigger value="dashboard" className="text-sm p-3">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 h-auto gap-1">
+            <TabsTrigger value="dashboard" className="text-xs md:text-sm p-2 md:p-3">
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="cadastro" className="text-sm p-3">
+            <TabsTrigger value="cadastro" className="text-xs md:text-sm p-2 md:p-3">
               Cadastro
             </TabsTrigger>
-            <TabsTrigger value="academico" className="text-sm p-3">
-              Sistema Acadêmico
+            <TabsTrigger value="academico" className="text-xs md:text-sm p-2 md:p-3">
+              Acadêmico
             </TabsTrigger>
-            <TabsTrigger value="relatorios" className="text-sm p-3">
+            <TabsTrigger value="alertas" className="text-xs md:text-sm p-2 md:p-3">
+              Alertas
+            </TabsTrigger>
+            <TabsTrigger value="transporte" className="text-xs md:text-sm p-2 md:p-3">
+              Transporte
+            </TabsTrigger>
+            <TabsTrigger value="merenda" className="text-xs md:text-sm p-2 md:p-3">
+              Merenda
+            </TabsTrigger>
+            <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2 md:p-3">
               Relatórios
             </TabsTrigger>
-            <TabsTrigger value="planejamento" className="text-sm p-3">
+            <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2 md:p-3">
               Planejamento
             </TabsTrigger>
           </TabsList>
@@ -60,6 +72,39 @@ export default function GestaoEducacao() {
               </CardHeader>
               <CardContent>
                 <SistemaAcademico />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="alertas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Alertas Educacionais</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AlertasEducacionais />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="transporte" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Transporte Escolar</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GestaoTransporte />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="merenda" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Merenda Escolar</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GestaoMerenda />
               </CardContent>
             </Card>
           </TabsContent>
