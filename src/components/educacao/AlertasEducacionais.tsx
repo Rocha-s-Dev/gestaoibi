@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, Bell, CheckCircle, Eye, Filter, RefreshCw, Search, Settings } from "lucide-react";
-import { useAlertasEducacionais } from "@/hooks/useAlertasEducacionais";
-import { useEscolas } from "@/hooks/useEscolas";
+import { useAlertasEducacionais, AlertaEducacional } from "@/hooks/useAlertasEducacionais";
 import { AlertaItem } from "./AlertaItem";
 import { ConfiguracaoAlertasDialog } from "./ConfiguracaoAlertasDialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,9 +15,9 @@ export function AlertasEducacionais() {
   const [filtroStatus, setFiltroStatus] = useState<string>("nao_resolvidos");
   const [busca, setBusca] = useState("");
   const [configDialogOpen, setConfigDialogOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const { alertas, isLoading, gerarAlertas, isGenerating, marcarComoLido, resolverAlerta } = useAlertasEducacionais();
-  const { escolas } = useEscolas();
+  const { alertas, loading, gerarAlertas, marcarComoLido, resolverAlerta } = useAlertasEducacionais();
 
   const alertasFiltrados = alertas?.filter((alerta) => {
     if (filtroTipo !== "todos" && alerta.tipo !== filtroTipo) return false;
@@ -27,7 +25,7 @@ export function AlertasEducacionais() {
     if (filtroStatus === "nao_resolvidos" && alerta.resolvido) return false;
     if (filtroStatus === "resolvidos" && !alerta.resolvido) return false;
     if (filtroStatus === "nao_lidos" && alerta.lido) return false;
-    if (busca && !alerta.alunos?.nome?.toLowerCase().includes(busca.toLowerCase())) return false;
+    if (busca && !alerta.aluno?.nome?.toLowerCase().includes(busca.toLowerCase())) return false;
     return true;
   }) || [];
 
@@ -38,8 +36,10 @@ export function AlertasEducacionais() {
     info: alertas?.filter(a => a.nivel === "info" && !a.resolvido).length || 0,
   };
 
-  const handleGerarAlertas = () => {
-    gerarAlertas();
+  const handleGerarAlertas = async () => {
+    setIsGenerating(true);
+    await gerarAlertas();
+    setIsGenerating(false);
   };
 
   return (
@@ -173,7 +173,7 @@ export function AlertasEducacionais() {
           </div>
 
           {/* Lista de Alertas */}
-          {isLoading ? (
+          {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <Skeleton key={i} className="h-24 w-full" />

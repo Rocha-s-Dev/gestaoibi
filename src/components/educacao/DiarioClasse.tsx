@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,12 +32,24 @@ export function DiarioClasse() {
   const [presencas, setPresencas] = useState<PresencaAluno[]>([]);
 
   const { escolas } = useEscolas();
-  const { turmas } = useTurmas(escolaId);
+  const { turmas: todasTurmas } = useTurmas();
   const { disciplinas } = useDisciplinas();
-  const { alunos } = useAlunos(escolaId, turmaId);
+  const { alunos: todosAlunos } = useAlunos();
   const { professores } = useProfessores();
-  const { salvarFaltasEmLote, isSaving } = useLancamentoLote();
+  const { salvarPresencaEmLote, loading: isSaving } = useLancamentoLote();
   const { toast } = useToast();
+
+  // Filtrar turmas pela escola selecionada
+  const turmas = useMemo(() => {
+    if (!escolaId) return [];
+    return todasTurmas?.filter(t => t.escola_id === escolaId) || [];
+  }, [todasTurmas, escolaId]);
+
+  // Filtrar alunos pela turma selecionada
+  const alunos = useMemo(() => {
+    if (!turmaId) return [];
+    return todosAlunos?.filter(a => a.turma_atual_id === turmaId) || [];
+  }, [todosAlunos, turmaId]);
 
   useEffect(() => {
     if (alunos && alunos.length > 0) {
@@ -88,19 +100,13 @@ export function DiarioClasse() {
       return;
     }
 
-    const faltasParaSalvar = presencas
-      .filter((p) => !p.presente)
-      .map((p) => ({
-        aluno_id: p.aluno_id,
-        turma_id: turmaId,
-        disciplina_id: disciplinaId,
-        professor_id: professorId,
-        data_falta: dataAula,
-        tipo: (p.justificativa ? "justificada" : "injustificada") as "justificada" | "injustificada",
-        justificativa: p.justificativa || null,
-      }));
+    const presencasParaSalvar = presencas.map((p) => ({
+      aluno_id: p.aluno_id,
+      presente: p.presente,
+      justificativa: p.justificativa || undefined,
+    }));
 
-    await salvarFaltasEmLote(faltasParaSalvar);
+    await salvarPresencaEmLote(presencasParaSalvar, disciplinaId, professorId, turmaId, dataAula);
   };
 
   const totalPresentes = presencas.filter((p) => p.presente).length;

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { useTransporteEscolar } from "@/hooks/useTransporteEscolar";
+import { useRotas, StatusRota } from "@/hooks/useTransporteEscolar";
 
 const rotaSchema = z.object({
   nome: z.string().min(1, "Nome é obrigatório"),
@@ -29,7 +29,8 @@ interface RotaDialogProps {
 }
 
 export function RotaDialog({ open, onOpenChange, rota }: RotaDialogProps) {
-  const { createRota, updateRota, isCreating, isUpdating } = useTransporteEscolar();
+  const { createRota, updateRota } = useRotas();
+  const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<RotaFormData>({
     resolver: zodResolver(rotaSchema),
@@ -66,15 +67,34 @@ export function RotaDialog({ open, onOpenChange, rota }: RotaDialogProps) {
   }, [rota, form]);
 
   const onSubmit = async (data: RotaFormData) => {
-    if (rota) {
-      await updateRota({ id: rota.id, ...data });
-    } else {
-      await createRota(data);
+    if (!data.nome) return;
+    
+    setIsSaving(true);
+    try {
+      if (rota) {
+        await updateRota(rota.id, { 
+          nome: data.nome,
+          descricao: data.descricao,
+          horario_inicio: data.horario_inicio,
+          horario_fim: data.horario_fim,
+          km_estimado: data.km_estimado,
+          status: data.status as StatusRota 
+        });
+      } else {
+        await createRota({ 
+          nome: data.nome,
+          descricao: data.descricao,
+          horario_inicio: data.horario_inicio,
+          horario_fim: data.horario_fim,
+          km_estimado: data.km_estimado,
+          status: data.status as StatusRota 
+        });
+      }
+      onOpenChange(false);
+    } finally {
+      setIsSaving(false);
     }
-    onOpenChange(false);
   };
-
-  const isSaving = isCreating || isUpdating;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

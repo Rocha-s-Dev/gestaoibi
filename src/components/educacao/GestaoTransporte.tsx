@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bus, Car, MapPin, Plus, Route, Trash2, Edit, Users } from "lucide-react";
-import { useTransporteEscolar } from "@/hooks/useTransporteEscolar";
+import { Bus, MapPin, Plus, Route, Trash2, Edit, Users } from "lucide-react";
+import { useRotas, useVeiculos, useAlunosRotas } from "@/hooks/useTransporteEscolar";
 import { RotaDialog } from "./RotaDialog";
 import { VeiculoDialog } from "./VeiculoDialog";
 import { VinculoAlunoRotaDialog } from "./VinculoAlunoRotaDialog";
@@ -43,11 +43,9 @@ export function GestaoTransporte() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ type: "rota" | "veiculo"; id: string } | null>(null);
 
-  const { 
-    rotas, rotasLoading, deleteRota, 
-    veiculos, veiculosLoading, deleteVeiculo,
-    alunosRotas, alunosRotasLoading 
-  } = useTransporteEscolar();
+  const { rotas, loading: rotasLoading, deleteRota, refreshRotas } = useRotas();
+  const { veiculos, loading: veiculosLoading, deleteVeiculo, refreshVeiculos } = useVeiculos();
+  const { alunosRotas, loading: alunosRotasLoading, refreshAlunosRotas } = useAlunosRotas();
 
   const handleEditRota = (rota: any) => {
     setSelectedRota(rota);
@@ -283,8 +281,8 @@ export function GestaoTransporte() {
                   <TableBody>
                     {alunosRotas.map((ar) => (
                       <TableRow key={ar.id}>
-                        <TableCell className="font-medium">{ar.alunos?.nome || "—"}</TableCell>
-                        <TableCell>{ar.rotas_transporte?.nome || "—"}</TableCell>
+                        <TableCell className="font-medium">{ar.aluno?.nome || "—"}</TableCell>
+                        <TableCell>{ar.rota?.nome || "—"}</TableCell>
                         <TableCell className="capitalize">{ar.turno || "—"}</TableCell>
                         <TableCell>{ar.ponto_embarque || "—"}</TableCell>
                         <TableCell>{ar.horario_embarque || "—"}</TableCell>
@@ -310,19 +308,28 @@ export function GestaoTransporte() {
 
       <RotaDialog
         open={rotaDialogOpen}
-        onOpenChange={setRotaDialogOpen}
+        onOpenChange={(open) => {
+          setRotaDialogOpen(open);
+          if (!open) refreshRotas();
+        }}
         rota={selectedRota}
       />
 
       <VeiculoDialog
         open={veiculoDialogOpen}
-        onOpenChange={setVeiculoDialogOpen}
+        onOpenChange={(open) => {
+          setVeiculoDialogOpen(open);
+          if (!open) refreshVeiculos();
+        }}
         veiculo={selectedVeiculo}
       />
 
       <VinculoAlunoRotaDialog
         open={vinculoDialogOpen}
-        onOpenChange={setVinculoDialogOpen}
+        onOpenChange={(open) => {
+          setVinculoDialogOpen(open);
+          if (!open) refreshAlunosRotas();
+        }}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
