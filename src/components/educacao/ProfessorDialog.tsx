@@ -222,16 +222,16 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
             <div className="space-y-2">
               <Label htmlFor="escola_principal_id">Escola Principal</Label>
               <Select
-                value={formData.escola_principal_id}
+                value={formData.escola_principal_id || "none"}
                 onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, escola_principal_id: value }))
+                  setFormData(prev => ({ ...prev, escola_principal_id: value === "none" ? "" : value }))
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione uma escola" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhuma escola</SelectItem>
+                  <SelectItem value="none">Nenhuma escola</SelectItem>
                   {escolas.map((escola) => (
                     <SelectItem key={escola.id} value={escola.id}>
                       {escola.nome}
