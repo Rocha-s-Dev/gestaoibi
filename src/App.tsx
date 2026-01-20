@@ -26,6 +26,8 @@ import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
 import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
 import Transparencia from "@/pages/Transparencia";
 import GestaoEducacao from "@/pages/GestaoEducacao";
+import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
+import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import "./App.css";
 
@@ -217,6 +219,16 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoEducacao />
+            </RequireAuth>
+          }
+        />
+        {/* Portal do Responsável */}
+        <Route path="/portal-responsavel/login" element={<PortalResponsavelLogin />} />
+        <Route
+          path="/portal-responsavel/dashboard"
+          element={
+            <RequireAuth>
+              <PortalResponsavelDashboard />
             </RequireAuth>
           }
         />
