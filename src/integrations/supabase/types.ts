@@ -251,6 +251,60 @@ export type Database = {
           },
         ]
       }
+      consumo_merenda: {
+        Row: {
+          cardapio_id: string | null
+          created_at: string
+          data: string
+          escola_id: string
+          id: string
+          observacoes: string | null
+          porcoes_planejadas: number | null
+          porcoes_servidas: number
+          refeicao: string
+          updated_at: string
+        }
+        Insert: {
+          cardapio_id?: string | null
+          created_at?: string
+          data?: string
+          escola_id: string
+          id?: string
+          observacoes?: string | null
+          porcoes_planejadas?: number | null
+          porcoes_servidas?: number
+          refeicao: string
+          updated_at?: string
+        }
+        Update: {
+          cardapio_id?: string | null
+          created_at?: string
+          data?: string
+          escola_id?: string
+          id?: string
+          observacoes?: string | null
+          porcoes_planejadas?: number | null
+          porcoes_servidas?: number
+          refeicao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consumo_merenda_cardapio_id_fkey"
+            columns: ["cardapio_id"]
+            isOneToOne: false
+            referencedRelation: "cardapios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consumo_merenda_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       disciplinas: {
         Row: {
           carga_horaria: number | null
@@ -913,6 +967,38 @@ export type Database = {
           },
         ]
       }
+      user_education_roles: {
+        Row: {
+          created_at: string
+          escola_id: string | null
+          id: string
+          role: Database["public"]["Enums"]["education_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          escola_id?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["education_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          escola_id?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["education_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_education_roles_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       veiculos_transporte: {
         Row: {
           ano: number | null
@@ -957,10 +1043,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
+      has_education_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["education_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_education_role_in_school: {
+        Args: {
+          _escola_id: string
+          _role: Database["public"]["Enums"]["education_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_responsavel_of_student: {
+        Args: { _aluno_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_secretaria: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      education_role: "secretaria" | "diretor" | "professor" | "responsavel"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1087,6 +1193,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      education_role: ["secretaria", "diretor", "professor", "responsavel"],
+    },
   },
 } as const
