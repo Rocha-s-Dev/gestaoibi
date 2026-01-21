@@ -2,7 +2,7 @@
 import { Notification } from "@/types/messaging";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Bell, MessageSquare, Calendar, AlertTriangle } from "lucide-react";
+import { Bell, MessageSquare, Calendar, AlertTriangle, GraduationCap, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface NotificationsListProps {
@@ -26,6 +26,14 @@ export const NotificationsList = ({
         return <Calendar className="h-5 w-5 text-orange-500" />;
       case 'goal_alert':
         return <AlertTriangle className="h-5 w-5 text-red-500" />;
+      case 'alerta_critico':
+        return <AlertTriangle className="h-5 w-5 text-red-600" />;
+      case 'alerta_warning':
+        return <AlertTriangle className="h-5 w-5 text-orange-500" />;
+      case 'comunicado_educacao':
+        return <GraduationCap className="h-5 w-5 text-blue-600" />;
+      case 'lembrete_educacao':
+        return <Clock className="h-5 w-5 text-purple-500" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
     }
