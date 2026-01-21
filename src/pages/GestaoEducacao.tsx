@@ -14,6 +14,7 @@ import { HistoricoEscolarView } from "@/components/educacao/HistoricoEscolarView
 import { GestaoNotasAvancada } from "@/components/educacao/GestaoNotasAvancada";
 import { GestaoFaltas } from "@/components/educacao/GestaoFaltas";
 import { IndicadoresEducacionais } from "@/components/educacao/IndicadoresEducacionais";
+import { AdminPapeisEducacionais } from "@/components/educacao/AdminPapeisEducacionais";
 
 export default function GestaoEducacao() {
   return (
@@ -41,6 +42,7 @@ export default function GestaoEducacao() {
             <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2">Relatórios</TabsTrigger>
             <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2">Planejamento</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-xs md:text-sm p-2">Indicadores</TabsTrigger>
+            <TabsTrigger value="papeis" className="text-xs md:text-sm p-2">Papéis</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-6">
@@ -142,6 +144,10 @@ export default function GestaoEducacao() {
 
           <TabsContent value="indicadores" className="mt-6">
             <IndicadoresEducacionais />
+          </TabsContent>
+
+          <TabsContent value="papeis" className="mt-6">
+            <AdminPapeisEducacionais />
           </TabsContent>
         </Tabs>
       </div>
