@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,6 +9,7 @@ import { DashboardEducacional } from "@/components/educacao/DashboardEducacional
 import { AlertasEducacionais } from "@/components/educacao/AlertasEducacionais";
 import { GestaoTransporte } from "@/components/educacao/GestaoTransporte";
 import { GestaoMerenda } from "@/components/educacao/GestaoMerenda";
+import { GestaoSolicitacoesMatricula } from "@/components/educacao/GestaoSolicitacoesMatricula";
 
 export default function GestaoEducacao() {
   return (
@@ -23,9 +23,12 @@ export default function GestaoEducacao() {
         </header>
 
         <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 h-auto gap-1">
+          <TabsList className="grid w-full grid-cols-5 md:grid-cols-9 h-auto gap-1">
             <TabsTrigger value="dashboard" className="text-xs md:text-sm p-2 md:p-3">
               Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="matriculas" className="text-xs md:text-sm p-2 md:p-3">
+              Matrículas
             </TabsTrigger>
             <TabsTrigger value="cadastro" className="text-xs md:text-sm p-2 md:p-3">
               Cadastro
