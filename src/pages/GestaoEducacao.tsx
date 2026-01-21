@@ -4,12 +4,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroEducacao } from "@/components/educacao/CadastroEducacao";
 import { RelatoriosEducacao } from "@/components/educacao/RelatoriosEducacao";
 import { PlanejamentoEducacao } from "@/components/educacao/PlanejamentoEducacao";
-import { SistemaAcademico } from "@/components/educacao/SistemaAcademico";
 import { DashboardEducacional } from "@/components/educacao/DashboardEducacional";
 import { AlertasEducacionais } from "@/components/educacao/AlertasEducacionais";
 import { GestaoTransporte } from "@/components/educacao/GestaoTransporte";
 import { GestaoMerenda } from "@/components/educacao/GestaoMerenda";
 import { GestaoSolicitacoesMatricula } from "@/components/educacao/GestaoSolicitacoesMatricula";
+import { GestaoTransferencias } from "@/components/educacao/GestaoTransferencias";
+import { HistoricoEscolarView } from "@/components/educacao/HistoricoEscolarView";
+import { GestaoNotasAvancada } from "@/components/educacao/GestaoNotasAvancada";
+import { GestaoFaltas } from "@/components/educacao/GestaoFaltas";
 
 export default function GestaoEducacao() {
   return (
@@ -23,38 +26,57 @@ export default function GestaoEducacao() {
         </header>
 
         <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full grid-cols-5 md:grid-cols-9 h-auto gap-1">
-            <TabsTrigger value="dashboard" className="text-xs md:text-sm p-2 md:p-3">
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="matriculas" className="text-xs md:text-sm p-2 md:p-3">
-              Matrículas
-            </TabsTrigger>
-            <TabsTrigger value="cadastro" className="text-xs md:text-sm p-2 md:p-3">
-              Cadastro
-            </TabsTrigger>
-            <TabsTrigger value="academico" className="text-xs md:text-sm p-2 md:p-3">
-              Acadêmico
-            </TabsTrigger>
-            <TabsTrigger value="alertas" className="text-xs md:text-sm p-2 md:p-3">
-              Alertas
-            </TabsTrigger>
-            <TabsTrigger value="transporte" className="text-xs md:text-sm p-2 md:p-3">
-              Transporte
-            </TabsTrigger>
-            <TabsTrigger value="merenda" className="text-xs md:text-sm p-2 md:p-3">
-              Merenda
-            </TabsTrigger>
-            <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2 md:p-3">
-              Relatórios
-            </TabsTrigger>
-            <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2 md:p-3">
-              Planejamento
-            </TabsTrigger>
+          <TabsList className="flex flex-wrap h-auto gap-1">
+            <TabsTrigger value="dashboard" className="text-xs md:text-sm p-2">Dashboard</TabsTrigger>
+            <TabsTrigger value="matriculas" className="text-xs md:text-sm p-2">Matrículas</TabsTrigger>
+            <TabsTrigger value="transferencias" className="text-xs md:text-sm p-2">Transferências</TabsTrigger>
+            <TabsTrigger value="historico" className="text-xs md:text-sm p-2">Histórico</TabsTrigger>
+            <TabsTrigger value="notas" className="text-xs md:text-sm p-2">Notas</TabsTrigger>
+            <TabsTrigger value="faltas" className="text-xs md:text-sm p-2">Faltas</TabsTrigger>
+            <TabsTrigger value="cadastro" className="text-xs md:text-sm p-2">Cadastro</TabsTrigger>
+            <TabsTrigger value="alertas" className="text-xs md:text-sm p-2">Alertas</TabsTrigger>
+            <TabsTrigger value="transporte" className="text-xs md:text-sm p-2">Transporte</TabsTrigger>
+            <TabsTrigger value="merenda" className="text-xs md:text-sm p-2">Merenda</TabsTrigger>
+            <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2">Relatórios</TabsTrigger>
+            <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2">Planejamento</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-6">
             <DashboardEducacional />
+          </TabsContent>
+
+          <TabsContent value="matriculas" className="mt-6">
+            <GestaoSolicitacoesMatricula />
+          </TabsContent>
+
+          <TabsContent value="transferencias" className="mt-6">
+            <GestaoTransferencias />
+          </TabsContent>
+
+          <TabsContent value="historico" className="mt-6">
+            <HistoricoEscolarView />
+          </TabsContent>
+
+          <TabsContent value="notas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Notas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GestaoNotasAvancada />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="faltas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Faltas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <GestaoFaltas />
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="cadastro" className="mt-6">
@@ -64,17 +86,6 @@ export default function GestaoEducacao() {
               </CardHeader>
               <CardContent>
                 <CadastroEducacao />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="academico" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sistema Acadêmico</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <SistemaAcademico />
               </CardContent>
             </Card>
           </TabsContent>
