@@ -54,84 +54,57 @@ export function useEducacaoStats() {
   const fetchEstatisticasGerais = async () => {
     try {
       setLoading(true);
-
-      // Total de escolas
-      const { count: totalEscolas } = await supabase
-        .from('escolas')
-        .select('*', { count: 'exact', head: true });
-
-      // Escolas ativas/inativas
-      const { count: escolasAtivas } = await supabase
-        .from('escolas')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'ativa');
-
-      // Total de alunos
-      const { count: totalAlunos } = await supabase
-        .from('alunos')
-        .select('*', { count: 'exact', head: true });
-
-      // Total de professores
-      const { count: totalProfessores } = await supabase
-        .from('professores')
-        .select('*', { count: 'exact', head: true });
-
-      // Total de turmas
-      const { count: totalTurmas } = await supabase
-        .from('turmas')
-        .select('*', { count: 'exact', head: true });
-
-      // Calcular taxa de frequência média
       const anoAtual = new Date().getFullYear();
-      const { data: totalAulasPorAluno } = await supabase
-        .from('notas')
-        .select('aluno_id')
-        .eq('ano_letivo', anoAtual);
 
-      const { data: faltasData } = await supabase
-        .from('faltas')
-        .select('aluno_id')
-        .gte('data_falta', `${anoAtual}-01-01`)
-        .lt('data_falta', `${anoAtual + 1}-01-01`);
+      // Buscar contagens em paralelo
+      const [escolasRes, escolasAtivasRes, alunosRes, professoresRes, turmasRes] = await Promise.all([
+        supabase.from('escolas').select('*', { count: 'exact', head: true }),
+        supabase.from('escolas').select('*', { count: 'exact', head: true }).eq('status', 'ativa'),
+        supabase.from('alunos').select('*', { count: 'exact', head: true }),
+        supabase.from('professores').select('*', { count: 'exact', head: true }),
+        supabase.from('turmas').select('*', { count: 'exact', head: true }),
+      ]);
 
-      const totalAulas = totalAulasPorAluno?.length || 1;
-      const totalFaltas = faltasData?.length || 0;
-      const taxaFrequenciaMedia = ((totalAulas - totalFaltas) / totalAulas) * 100;
+      const totalEscolas = escolasRes.count || 0;
+      const escolasAtivas = escolasAtivasRes.count || 0;
+      const totalAlunos = alunosRes.count || 0;
+      const totalProfessores = professoresRes.count || 0;
+      const totalTurmas = turmasRes.count || 0;
 
-      // Calcular desempenho médio
-      const { data: notasData } = await supabase
-        .from('notas')
-        .select('nota')
-        .eq('ano_letivo', anoAtual)
-        .not('nota', 'is', null);
+      // Buscar notas e faltas em paralelo
+      const [notasRes, faltasRes] = await Promise.all([
+        supabase.from('notas').select('nota, aluno_id').eq('ano_letivo', anoAtual).not('nota', 'is', null),
+        supabase.from('faltas').select('aluno_id').gte('data_falta', `${anoAtual}-01-01`).lt('data_falta', `${anoAtual + 1}-01-01`),
+      ]);
 
-      const somaNotas = notasData?.reduce((acc, n) => acc + (Number(n.nota) || 0), 0) || 0;
-      const desempenhoMedio = notasData?.length ? somaNotas / notasData.length : 0;
+      const notasData = notasRes.data || [];
+      const faltasData = faltasRes.data || [];
 
-      // Alunos em risco (nota < 6.0 ou faltas > 25%)
-      const { data: alunosComNotasBaixas } = await supabase
-        .from('notas')
-        .select('aluno_id')
-        .eq('ano_letivo', anoAtual)
-        .lt('nota', 6.0);
+      // Calcular métricas
+      const totalAulas = notasData.length || 1;
+      const totalFaltas = faltasData.length || 0;
+      const taxaFrequenciaMedia = Math.max(0, ((totalAulas - totalFaltas) / totalAulas) * 100);
 
-      const alunosEmRiscoSet = new Set(alunosComNotasBaixas?.map(a => a.aluno_id) || []);
+      const somaNotas = notasData.reduce((acc, n) => acc + (Number(n.nota) || 0), 0);
+      const desempenhoMedio = notasData.length ? somaNotas / notasData.length : 0;
 
-      // Taxa de aprovação (alunos com média >= 6.0)
-      const alunosAprovados = notasData?.filter(n => (Number(n.nota) || 0) >= 6.0).length || 0;
-      const taxaAprovacao = notasData?.length ? (alunosAprovados / notasData.length) * 100 : 0;
+      const alunosComNotasBaixas = notasData.filter(n => (Number(n.nota) || 0) < 6.0);
+      const alunosEmRiscoSet = new Set(alunosComNotasBaixas.map(a => a.aluno_id));
+
+      const alunosAprovados = notasData.filter(n => (Number(n.nota) || 0) >= 6.0).length;
+      const taxaAprovacao = notasData.length ? (alunosAprovados / notasData.length) * 100 : 0;
 
       setStats({
-        totalEscolas: totalEscolas || 0,
-        totalAlunos: totalAlunos || 0,
-        totalProfessores: totalProfessores || 0,
-        totalTurmas: totalTurmas || 0,
+        totalEscolas,
+        totalAlunos,
+        totalProfessores,
+        totalTurmas,
         taxaFrequenciaMedia: Number(taxaFrequenciaMedia.toFixed(1)),
         desempenhoMedio: Number(desempenhoMedio.toFixed(1)),
         alunosEmRisco: alunosEmRiscoSet.size,
         taxaAprovacao: Number(taxaAprovacao.toFixed(1)),
-        escolasAtivas: escolasAtivas || 0,
-        escolasInativas: (totalEscolas || 0) - (escolasAtivas || 0),
+        escolasAtivas,
+        escolasInativas: totalEscolas - escolasAtivas,
       });
 
     } catch (err) {
@@ -150,45 +123,34 @@ export function useEducacaoStats() {
 
       if (!escolas) return;
 
-      const estatisticas: EstatisticasPorEscola[] = [];
+      // Buscar dados em paralelo para todas as escolas
+      const estatisticas = await Promise.all(
+        escolas.map(async (escola) => {
+          const [alunosRes, turmasRes, professoresRes] = await Promise.all([
+            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
+            supabase.from('turmas').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
+            supabase.from('professores').select('*', { count: 'exact', head: true }).eq('escola_principal_id', escola.id),
+          ]);
 
-      for (const escola of escolas) {
-        // Total de alunos
-        const { count: totalAlunos } = await supabase
-          .from('alunos')
-          .select('*', { count: 'exact', head: true })
-          .eq('escola_id', escola.id);
+          const totalAlunos = alunosRes.count || 0;
+          const taxaOcupacao = escola.capacidade_total > 0 
+            ? (totalAlunos / escola.capacidade_total) * 100 
+            : 0;
 
-        // Total de turmas
-        const { count: totalTurmas } = await supabase
-          .from('turmas')
-          .select('*', { count: 'exact', head: true })
-          .eq('escola_id', escola.id);
-
-        // Total de professores (via escola_principal_id)
-        const { count: totalProfessores } = await supabase
-          .from('professores')
-          .select('*', { count: 'exact', head: true })
-          .eq('escola_principal_id', escola.id);
-
-        // Taxa de ocupação
-        const taxaOcupacao = escola.capacidade_total > 0 
-          ? ((totalAlunos || 0) / escola.capacidade_total) * 100 
-          : 0;
-
-        estatisticas.push({
-          escola_id: escola.id,
-          escola_nome: escola.nome,
-          total_alunos: totalAlunos || 0,
-          total_turmas: totalTurmas || 0,
-          total_professores: totalProfessores || 0,
-          taxa_frequencia: 0, // Será calculado separadamente se necessário
-          desempenho_medio: 0, // Será calculado separadamente se necessário
-          taxa_ocupacao: Number(taxaOcupacao.toFixed(1)),
-          capacidade_total: escola.capacidade_total,
-          alunos_em_risco: 0,
-        });
-      }
+          return {
+            escola_id: escola.id,
+            escola_nome: escola.nome,
+            total_alunos: totalAlunos,
+            total_turmas: turmasRes.count || 0,
+            total_professores: professoresRes.count || 0,
+            taxa_frequencia: 0,
+            desempenho_medio: 0,
+            taxa_ocupacao: Number(taxaOcupacao.toFixed(1)),
+            capacidade_total: escola.capacidade_total,
+            alunos_em_risco: 0,
+          };
+        })
+      );
 
       setStatsPorEscola(estatisticas);
     } catch (err) {
@@ -202,11 +164,7 @@ export function useEducacaoStats() {
       
       const { data: notas } = await supabase
         .from('notas')
-        .select(`
-          nota,
-          disciplina_id,
-          disciplina:disciplinas(nome)
-        `)
+        .select(`nota, disciplina_id, disciplina:disciplinas(nome)`)
         .eq('ano_letivo', anoAtual)
         .not('nota', 'is', null);
 
@@ -251,47 +209,40 @@ export function useEducacaoStats() {
       
       const { data: turmas } = await supabase
         .from('turmas')
-        .select(`
-          id,
-          nome,
-          escola:escolas(nome)
-        `)
+        .select(`id, nome, escola:escolas(nome)`)
         .eq('ano_letivo', anoAtual);
 
       if (!turmas) return;
 
-      const frequencia: FrequenciaPorTurma[] = [];
+      const frequencia = await Promise.all(
+        turmas.map(async (turma) => {
+          const [alunosRes, faltasRes] = await Promise.all([
+            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('turma_atual_id', turma.id),
+            supabase.from('faltas').select('*', { count: 'exact', head: true })
+              .eq('turma_id', turma.id)
+              .gte('data_falta', `${anoAtual}-01-01`)
+              .lt('data_falta', `${anoAtual + 1}-01-01`),
+          ]);
 
-      for (const turma of turmas) {
-        const { count: totalAlunos } = await supabase
-          .from('alunos')
-          .select('*', { count: 'exact', head: true })
-          .eq('turma_atual_id', turma.id);
+          const totalAlunos = alunosRes.count || 0;
+          const totalFaltas = faltasRes.count || 0;
+          const diasLetivos = 200;
+          const presencasEsperadas = totalAlunos * diasLetivos;
+          const presencasReais = presencasEsperadas - totalFaltas;
+          const taxaPresenca = presencasEsperadas > 0 
+            ? (presencasReais / presencasEsperadas) * 100 
+            : 100;
 
-        const { count: totalFaltas } = await supabase
-          .from('faltas')
-          .select('*', { count: 'exact', head: true })
-          .eq('turma_id', turma.id)
-          .gte('data_falta', `${anoAtual}-01-01`)
-          .lt('data_falta', `${anoAtual + 1}-01-01`);
-
-        // Assumindo média de 200 dias letivos
-        const diasLetivos = 200;
-        const presencasEsperadas = (totalAlunos || 0) * diasLetivos;
-        const presencasReais = presencasEsperadas - (totalFaltas || 0);
-        const taxaPresenca = presencasEsperadas > 0 
-          ? (presencasReais / presencasEsperadas) * 100 
-          : 100;
-
-        frequencia.push({
-          turma_id: turma.id,
-          turma_nome: turma.nome,
-          escola_nome: turma.escola?.nome || 'Sem escola',
-          total_alunos: totalAlunos || 0,
-          total_faltas: totalFaltas || 0,
-          taxa_presenca: Number(taxaPresenca.toFixed(1)),
-        });
-      }
+          return {
+            turma_id: turma.id,
+            turma_nome: turma.nome,
+            escola_nome: turma.escola?.nome || 'Sem escola',
+            total_alunos: totalAlunos,
+            total_faltas: totalFaltas,
+            taxa_presenca: Number(taxaPresenca.toFixed(1)),
+          };
+        })
+      );
 
       setFrequenciaPorTurma(frequencia);
     } catch (err) {
