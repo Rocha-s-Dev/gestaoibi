@@ -40,6 +40,19 @@ export interface RestricaoAlimentar {
   aluno?: { nome: string; numero_matricula: string };
 }
 
+export interface ConsumoMerenda {
+  id: string;
+  escola_id: string;
+  cardapio_id?: string;
+  data: string;
+  refeicao: string;
+  porcoes_servidas: number;
+  porcoes_planejadas?: number;
+  observacoes?: string;
+  escola?: { nome: string };
+  cardapio?: { itens: { nome: string; quantidade?: string }[] };
+}
+
 export function useCardapios() {
   const [cardapios, setCardapios] = useState<Cardapio[]>([]);
   const [loading, setLoading] = useState(true);
@@ -329,4 +342,139 @@ export function useRestricoesAlimentares() {
   }, [fetchRestricoes]);
 
   return { restricoes, loading, createRestricao, updateRestricao, deleteRestricao, fetchRestricoes };
+}
+
+export function useConsumoMerenda() {
+  const [consumos, setConsumos] = useState<ConsumoMerenda[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchConsumos = useCallback(async (escolaId?: string, dataInicio?: string, dataFim?: string) => {
+    try {
+      setLoading(true);
+      let query = supabase
+        .from('consumo_merenda')
+        .select(`
+          *,
+          escola:escolas(nome),
+          cardapio:cardapios(itens)
+        `)
+        .order('data', { ascending: false });
+
+      if (escolaId) {
+        query = query.eq('escola_id', escolaId);
+      }
+      if (dataInicio) {
+        query = query.gte('data', dataInicio);
+      }
+      if (dataFim) {
+        query = query.lte('data', dataFim);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      setConsumos(data as unknown as ConsumoMerenda[] || []);
+    } catch (err) {
+      console.error('Erro ao buscar consumos:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const registrarConsumo = async (consumo: Omit<ConsumoMerenda, 'id' | 'escola' | 'cardapio'>) => {
+    try {
+      const { error } = await supabase
+        .from('consumo_merenda')
+        .insert(consumo);
+
+      if (error) throw error;
+      toast.success('Consumo registrado');
+      await fetchConsumos();
+      return true;
+    } catch (err) {
+      console.error('Erro ao registrar consumo:', err);
+      toast.error('Erro ao registrar consumo');
+      return false;
+    }
+  };
+
+  const updateConsumo = async (id: string, updates: Partial<ConsumoMerenda>) => {
+    try {
+      const { error } = await supabase
+        .from('consumo_merenda')
+        .update(updates)
+        .eq('id', id);
+
+      if (error) throw error;
+      toast.success('Consumo atualizado');
+      await fetchConsumos();
+    } catch (err) {
+      console.error('Erro ao atualizar consumo:', err);
+      toast.error('Erro ao atualizar consumo');
+    }
+  };
+
+  const deleteConsumo = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('consumo_merenda')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      toast.success('Consumo removido');
+      await fetchConsumos();
+    } catch (err) {
+      console.error('Erro ao remover consumo:', err);
+      toast.error('Erro ao remover consumo');
+    }
+  };
+
+  const getEstatisticasConsumo = async (escolaId?: string, mes?: number, ano?: number) => {
+    const dataInicio = new Date(ano || new Date().getFullYear(), (mes || new Date().getMonth()), 1);
+    const dataFim = new Date(ano || new Date().getFullYear(), (mes || new Date().getMonth()) + 1, 0);
+
+    let query = supabase
+      .from('consumo_merenda')
+      .select('*')
+      .gte('data', dataInicio.toISOString().split('T')[0])
+      .lte('data', dataFim.toISOString().split('T')[0]);
+
+    if (escolaId) {
+      query = query.eq('escola_id', escolaId);
+    }
+
+    const { data } = await query;
+
+    if (!data || data.length === 0) {
+      return {
+        totalPorcoes: 0,
+        mediaDiaria: 0,
+        totalDias: 0
+      };
+    }
+
+    const totalPorcoes = data.reduce((acc, c) => acc + (c.porcoes_servidas || 0), 0);
+    const diasUnicos = new Set(data.map(c => c.data)).size;
+
+    return {
+      totalPorcoes,
+      mediaDiaria: diasUnicos > 0 ? Math.round(totalPorcoes / diasUnicos) : 0,
+      totalDias: diasUnicos
+    };
+  };
+
+  useEffect(() => {
+    fetchConsumos();
+  }, [fetchConsumos]);
+
+  return { 
+    consumos, 
+    loading, 
+    registrarConsumo, 
+    updateConsumo, 
+    deleteConsumo, 
+    fetchConsumos,
+    getEstatisticasConsumo
+  };
 }
