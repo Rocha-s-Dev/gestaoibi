@@ -17,13 +17,16 @@ export function useNotificacoesEducacionais() {
   const [notificacoes, setNotificacoes] = useState<NotificacaoEducacional[]>([]);
   const [loading, setLoading] = useState(true);
   const [naoLidas, setNaoLidas] = useState(0);
+  const [tableExists, setTableExists] = useState(true);
 
   const fetchNotificacoes = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-      // Use 'as any' since the table may not exist in types yet
       const { data, error } = await supabase
         .from('notificacoes_educacionais' as any)
         .select('*')
@@ -32,8 +35,8 @@ export function useNotificacoesEducacionais() {
         .limit(50);
 
       if (error) {
-        // Table may not exist yet
-        if (error.code === '42P01') {
+        if (error.code === '42P01' || error.message.includes('does not exist')) {
+          setTableExists(false);
           console.log('Tabela de notificações ainda não existe');
           return;
         }
@@ -43,6 +46,7 @@ export function useNotificacoesEducacionais() {
       const notifs = (data as unknown as NotificacaoEducacional[]) || [];
       setNotificacoes(notifs);
       setNaoLidas(notifs.filter(n => !n.lida).length);
+      setTableExists(true);
     } catch (err) {
       console.error('Erro ao buscar notificações:', err);
     } finally {
@@ -87,16 +91,15 @@ export function useNotificacoesEducacionais() {
     }
   };
 
-  // Escutar notificações em tempo real
   useEffect(() => {
     fetchNotificacoes();
 
     const setupRealtime = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) return null;
 
       const channel = supabase
-        .channel('notificacoes-educacionais')
+        .channel('notificacoes-educacionais-realtime')
         .on(
           'postgres_changes',
           {
@@ -110,7 +113,6 @@ export function useNotificacoesEducacionais() {
             setNotificacoes(prev => [novaNotificacao, ...prev]);
             setNaoLidas(prev => prev + 1);
             
-            // Mostrar toast para notificação crítica
             if (novaNotificacao.tipo === 'alerta_critico') {
               toast.error(novaNotificacao.titulo, {
                 description: novaNotificacao.mensagem,
@@ -120,103 +122,35 @@ export function useNotificacoesEducacionais() {
               toast.warning(novaNotificacao.titulo, {
                 description: novaNotificacao.mensagem,
               });
+            } else {
+              toast.info(novaNotificacao.titulo, {
+                description: novaNotificacao.mensagem,
+              });
             }
           }
         )
         .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
+      return channel;
     };
 
-    setupRealtime();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    setupRealtime().then(ch => { channel = ch; });
+
+    return () => {
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
+    };
   }, [fetchNotificacoes]);
 
   return {
     notificacoes,
     loading,
     naoLidas,
+    tableExists,
     marcarComoLida,
     marcarTodasComoLidas,
     refresh: fetchNotificacoes,
   };
-}
-
-// Hook para disparar notificações (usado internamente ou por edge functions)
-export function useDispararNotificacao() {
-  const dispararParaUsuario = async (
-    userId: string,
-    tipo: NotificacaoEducacional['tipo'],
-    titulo: string,
-    mensagem: string,
-    dadosReferencia?: Record<string, unknown>
-  ) => {
-    try {
-      const { error } = await supabase
-        .from('notificacoes_educacionais' as any)
-        .insert({
-          user_id: userId,
-          tipo,
-          titulo,
-          mensagem,
-          dados_referencia: dadosReferencia,
-        });
-
-      if (error) throw error;
-      return true;
-    } catch (err) {
-      console.error('Erro ao disparar notificação:', err);
-      return false;
-    }
-  };
-
-  const dispararParaPapel = async (
-    role: 'secretaria' | 'diretor' | 'professor' | 'responsavel',
-    tipo: NotificacaoEducacional['tipo'],
-    titulo: string,
-    mensagem: string,
-    escolaId?: string,
-    dadosReferencia?: Record<string, unknown>
-  ) => {
-    try {
-      // Buscar usuários com o papel específico
-      let query = supabase
-        .from('user_education_roles' as any)
-        .select('user_id')
-        .eq('role', role);
-
-      if (escolaId && (role === 'diretor' || role === 'professor')) {
-        query = query.eq('escola_id', escolaId);
-      }
-
-      const { data: users, error: usersError } = await query;
-      if (usersError) throw usersError;
-
-      // Criar notificações para todos os usuários
-      const usersArray = users as unknown as Array<{ user_id: string }>;
-      const notificacoes = usersArray?.map(u => ({
-        user_id: u.user_id,
-        tipo,
-        titulo,
-        mensagem,
-        dados_referencia: dadosReferencia,
-      })) || [];
-
-      if (notificacoes.length > 0) {
-        const { error } = await supabase
-          .from('notificacoes_educacionais' as any)
-          .insert(notificacoes);
-
-        if (error) throw error;
-      }
-
-      return true;
-    } catch (err) {
-      console.error('Erro ao disparar notificações:', err);
-      return false;
-    }
-  };
-
-  return { dispararParaUsuario, dispararParaPapel };
 }
