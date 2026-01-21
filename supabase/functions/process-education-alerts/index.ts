@@ -31,17 +31,20 @@ serve(async (req) => {
     const { data: config, error: configError } = await supabase
       .from('configuracoes_alertas')
       .select('*')
-      .single();
+      .maybeSingle();
 
-    if (configError || !config) {
+    if (configError) {
       console.error('Erro ao buscar configurações:', configError);
-      return new Response(
-        JSON.stringify({ error: 'Configurações não encontradas' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
     }
 
-    const alertConfig = config as AlertConfig;
+    // Usar valores padrão se não houver configuração
+    const alertConfig: AlertConfig = config || {
+      percentual_faltas_warning: 15,
+      percentual_faltas_critical: 25,
+      nota_minima: 6.0,
+      dias_sem_frequencia_evasao: 30,
+    };
+
     const anoAtual = new Date().getFullYear();
     const alertasGerados: string[] = [];
     const notificacoesEnviadas: string[] = [];
@@ -128,7 +131,7 @@ serve(async (req) => {
         });
       }
 
-      // Criar alertas no banco
+      // Criar alertas no banco e notificações
       for (const alertaInfo of alertasParaCriar) {
         // Verificar se já existe alerta não resolvido do mesmo tipo
         const { data: alertaExistente } = await supabase
@@ -140,6 +143,7 @@ serve(async (req) => {
           .maybeSingle();
 
         if (!alertaExistente) {
+          // Inserir alerta educacional
           const { error: insertError } = await supabase
             .from('alertas_educacionais')
             .insert({
@@ -152,7 +156,7 @@ serve(async (req) => {
           if (!insertError) {
             alertasGerados.push(alertaInfo.mensagem);
 
-            // Se for crítico, notificar responsáveis
+            // Se for crítico, notificar via tabela notifications existente
             if (alertaInfo.nivel === 'critical') {
               await notificarSobreAlerta(supabase, aluno, alertaInfo, notificacoesEnviadas);
             }
@@ -176,10 +180,11 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error: any) {
-    console.error('Erro no processamento:', error);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Erro no processamento:', errorMessage);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -192,51 +197,74 @@ async function notificarSobreAlerta(
   notificacoesEnviadas: string[]
 ) {
   try {
-    // Notificar secretaria (todos)
+    // Buscar usuários da secretaria (com papel educacional, se tabela existir)
+    let userIds = new Set<string>();
+
+    // Tentar buscar por papéis educacionais
     const { data: secretaria } = await supabase
       .from('user_education_roles')
       .select('user_id')
       .eq('role', 'secretaria');
 
-    // Notificar diretores da escola
+    if (secretaria) {
+      secretaria.forEach((s: any) => userIds.add(s.user_id));
+    }
+
+    // Tentar buscar diretores da escola
     const { data: diretores } = await supabase
       .from('user_education_roles')
       .select('user_id')
       .eq('role', 'diretor')
       .eq('escola_id', aluno.escola_id);
 
-    // Notificar responsáveis do aluno
+    if (diretores) {
+      diretores.forEach((d: any) => userIds.add(d.user_id));
+    }
+
+    // Tentar buscar responsáveis do aluno
     const { data: responsaveis } = await supabase
       .from('responsavel_alunos')
       .select('responsavel_user_id')
       .eq('aluno_id', aluno.id);
 
-    const userIds = new Set<string>();
+    if (responsaveis) {
+      responsaveis.forEach((r: any) => userIds.add(r.responsavel_user_id));
+    }
 
-    secretaria?.forEach((s: any) => userIds.add(s.user_id));
-    diretores?.forEach((d: any) => userIds.add(d.user_id));
-    responsaveis?.forEach((r: any) => userIds.add(r.responsavel_user_id));
+    // Se não encontrou ninguém pelos papéis, buscar todos os admins
+    if (userIds.size === 0) {
+      const { data: admins } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('role', 'admin');
+
+      if (admins) {
+        admins.forEach((a: any) => userIds.add(a.id));
+      }
+    }
 
     const tipoNotificacao = alertaInfo.nivel === 'critical' ? 'alerta_critico' : 'alerta_warning';
     const titulo = alertaInfo.nivel === 'critical' 
       ? `⚠️ Alerta Crítico: ${aluno.nome}` 
       : `Aviso: ${aluno.nome}`;
 
+    // Usar tabela notifications existente
     const notificacoes = Array.from(userIds).map(userId => ({
       user_id: userId,
-      tipo: tipoNotificacao,
-      titulo,
-      mensagem: alertaInfo.mensagem,
-      dados_referencia: {
-        aluno_id: aluno.id,
-        aluno_nome: aluno.nome,
-        tipo_alerta: alertaInfo.tipo,
-      },
+      type: tipoNotificacao,
+      title: titulo,
+      content: alertaInfo.mensagem,
+      related_id: aluno.id,
+      link: '/educacao/gestao',
     }));
 
     if (notificacoes.length > 0) {
-      await supabase.from('notificacoes_educacionais').insert(notificacoes);
-      notificacoesEnviadas.push(`Notificado ${notificacoes.length} usuários sobre ${aluno.nome}`);
+      const { error } = await supabase.from('notifications').insert(notificacoes);
+      if (!error) {
+        notificacoesEnviadas.push(`Notificado ${notificacoes.length} usuários sobre ${aluno.nome}`);
+      } else {
+        console.error('Erro ao inserir notificações:', error);
+      }
     }
 
   } catch (err) {

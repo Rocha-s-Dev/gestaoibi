@@ -34,7 +34,7 @@ export type Notification = {
   id: string;
   title: string;
   content: string;
-  type: 'deadline' | 'message' | 'goal_alert' | 'event';
+  type: 'deadline' | 'message' | 'goal_alert' | 'event' | 'alerta_critico' | 'alerta_warning' | 'comunicado_educacao' | 'lembrete_educacao';
   related_id?: string | null;
   created_at: string;
   read_at?: string | null;
