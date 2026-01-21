@@ -26,6 +26,7 @@ import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
 import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
 import Transparencia from "@/pages/Transparencia";
 import GestaoEducacao from "@/pages/GestaoEducacao";
+import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
@@ -222,6 +223,9 @@ export default function App() {
             </RequireAuth>
           }
         />
+        {/* Matrícula Online - Página Pública */}
+        <Route path="/matricula-online" element={<MatriculaOnline />} />
+        
         {/* Portal do Responsável */}
         <Route path="/portal-responsavel/login" element={<PortalResponsavelLogin />} />
         <Route
