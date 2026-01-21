@@ -10,6 +10,8 @@ import { FilhoCard } from "@/components/portal/FilhoCard";
 import { NotasResponsavel } from "@/components/portal/NotasResponsavel";
 import { FaltasResponsavel } from "@/components/portal/FaltasResponsavel";
 import { CardapioSemana } from "@/components/portal/CardapioSemana";
+import { ComunicacaoEscola } from "@/components/portal/ComunicacaoEscola";
+import { DocumentosDownload } from "@/components/portal/DocumentosDownload";
 import { 
   GraduationCap, 
   LogOut, 
@@ -17,7 +19,9 @@ import {
   BookOpen, 
   Calendar,
   UtensilsCrossed,
-  AlertCircle
+  AlertCircle,
+  MessageSquare,
+  Download
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -134,7 +138,7 @@ export default function PortalResponsavelDashboard() {
           {selectedFilho && (
             <section>
               <Tabs defaultValue="notas" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-3 h-auto">
+                <TabsList className="grid w-full grid-cols-5 h-auto">
                   <TabsTrigger value="notas" className="flex items-center gap-2 p-3">
                     <BookOpen className="h-4 w-4" />
                     <span className="hidden sm:inline">Notas</span>
@@ -146,6 +150,14 @@ export default function PortalResponsavelDashboard() {
                   <TabsTrigger value="cardapio" className="flex items-center gap-2 p-3">
                     <UtensilsCrossed className="h-4 w-4" />
                     <span className="hidden sm:inline">Cardápio</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="mensagens" className="flex items-center gap-2 p-3">
+                    <MessageSquare className="h-4 w-4" />
+                    <span className="hidden sm:inline">Mensagens</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="documentos" className="flex items-center gap-2 p-3">
+                    <Download className="h-4 w-4" />
+                    <span className="hidden sm:inline">Documentos</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -159,6 +171,22 @@ export default function PortalResponsavelDashboard() {
 
                 <TabsContent value="cardapio">
                   <CardapioSemana escolaId={selectedFilho.escola?.id} escolaNome={selectedFilho.escola?.nome} />
+                </TabsContent>
+
+                <TabsContent value="mensagens">
+                  <ComunicacaoEscola 
+                    alunoId={selectedFilho.id} 
+                    alunoNome={selectedFilho.nome} 
+                    escolaNome={selectedFilho.escola?.nome}
+                  />
+                </TabsContent>
+
+                <TabsContent value="documentos">
+                  <DocumentosDownload 
+                    alunoId={selectedFilho.id} 
+                    alunoNome={selectedFilho.nome}
+                    matricula={selectedFilho.numero_matricula}
+                  />
                 </TabsContent>
               </Tabs>
             </section>
