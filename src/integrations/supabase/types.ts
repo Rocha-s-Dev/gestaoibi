@@ -251,6 +251,36 @@ export type Database = {
           },
         ]
       }
+      configuracoes_alertas: {
+        Row: {
+          created_at: string
+          dias_sem_frequencia_evasao: number
+          id: string
+          nota_minima: number
+          percentual_faltas_critical: number
+          percentual_faltas_warning: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dias_sem_frequencia_evasao?: number
+          id?: string
+          nota_minima?: number
+          percentual_faltas_critical?: number
+          percentual_faltas_warning?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dias_sem_frequencia_evasao?: number
+          id?: string
+          nota_minima?: number
+          percentual_faltas_critical?: number
+          percentual_faltas_warning?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       consumo_merenda: {
         Row: {
           cardapio_id: string | null
@@ -456,6 +486,51 @@ export type Database = {
           },
         ]
       }
+      financial_goals: {
+        Row: {
+          alert_threshold: number | null
+          created_at: string
+          current_value: number | null
+          description: string
+          enable_alerts: boolean | null
+          id: string
+          percentage_increase: number | null
+          status: string | null
+          target_value: number
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_threshold?: number | null
+          created_at?: string
+          current_value?: number | null
+          description: string
+          enable_alerts?: boolean | null
+          id?: string
+          percentage_increase?: number | null
+          status?: string | null
+          target_value?: number
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_threshold?: number | null
+          created_at?: string
+          current_value?: number | null
+          description?: string
+          enable_alerts?: boolean | null
+          id?: string
+          percentage_increase?: number | null
+          status?: string | null
+          target_value?: number
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       metas_educacao: {
         Row: {
           created_at: string
@@ -635,6 +710,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string | null
+          id: string
+          name: string | null
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          id?: string
+          name?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string | null
+          id?: string
+          name?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       responsaveis_alunos: {
         Row: {
