@@ -14,6 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      agendamentos: {
+        Row: {
+          created_at: string
+          data_hora: string
+          especialidade: string | null
+          id: string
+          motivo_cancelamento: string | null
+          observacoes: string | null
+          paciente_id: string
+          prioridade: string | null
+          profissional_id: string | null
+          status: string | null
+          tipo: string
+          unidade_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_hora: string
+          especialidade?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacoes?: string | null
+          paciente_id: string
+          prioridade?: string | null
+          profissional_id?: string | null
+          status?: string | null
+          tipo: string
+          unidade_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_hora?: string
+          especialidade?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          observacoes?: string | null
+          paciente_id?: string
+          prioridade?: string | null
+          profissional_id?: string | null
+          status?: string | null
+          tipo?: string
+          unidade_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agendamentos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agendamentos_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agendamentos_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_educacionais: {
         Row: {
           aluno_id: string
@@ -48,6 +118,53 @@ export type Database = {
             columns: ["aluno_id"]
             isOneToOne: false
             referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alertas_saude: {
+        Row: {
+          ativo: boolean | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          descricao: string
+          id: string
+          nivel: string
+          tipo: string
+          titulo: string
+          unidade_id: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao: string
+          id?: string
+          nivel: string
+          tipo: string
+          titulo: string
+          unidade_id?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string
+          id?: string
+          nivel?: string
+          tipo?: string
+          titulo?: string
+          unidade_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_saude_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
             referencedColumns: ["id"]
           },
         ]
@@ -451,6 +568,60 @@ export type Database = {
           },
         ]
       }
+      evolucoes_tratamento: {
+        Row: {
+          created_at: string
+          data_evolucao: string
+          descricao: string
+          id: string
+          medicamentos_ajustados: Json | null
+          profissional_id: string | null
+          proxima_avaliacao: string | null
+          resultado_exames: string | null
+          sinais_vitais: Json | null
+          tratamento_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_evolucao?: string
+          descricao: string
+          id?: string
+          medicamentos_ajustados?: Json | null
+          profissional_id?: string | null
+          proxima_avaliacao?: string | null
+          resultado_exames?: string | null
+          sinais_vitais?: Json | null
+          tratamento_id: string
+        }
+        Update: {
+          created_at?: string
+          data_evolucao?: string
+          descricao?: string
+          id?: string
+          medicamentos_ajustados?: Json | null
+          profissional_id?: string | null
+          proxima_avaliacao?: string | null
+          resultado_exames?: string | null
+          sinais_vitais?: Json | null
+          tratamento_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evolucoes_tratamento_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evolucoes_tratamento_tratamento_id_fkey"
+            columns: ["tratamento_id"]
+            isOneToOne: false
+            referencedRelation: "tratamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faltas: {
         Row: {
           aluno_id: string
@@ -531,6 +702,62 @@ export type Database = {
         }
         Relationships: []
       }
+      indicadores_saude: {
+        Row: {
+          categoria: string
+          created_at: string
+          id: string
+          meta: number | null
+          nome: string
+          observacoes: string | null
+          periodo: string
+          status: string | null
+          tendencia: string | null
+          unidade_id: string | null
+          unidade_medida: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          id?: string
+          meta?: number | null
+          nome: string
+          observacoes?: string | null
+          periodo: string
+          status?: string | null
+          tendencia?: string | null
+          unidade_id?: string | null
+          unidade_medida: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          id?: string
+          meta?: number | null
+          nome?: string
+          observacoes?: string | null
+          periodo?: string
+          status?: string | null
+          tendencia?: string | null
+          unidade_id?: string | null
+          unidade_medida?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indicadores_saude_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metas_educacao: {
         Row: {
           created_at: string
@@ -569,6 +796,62 @@ export type Database = {
           valor_atual?: number | null
         }
         Relationships: []
+      }
+      metas_saude: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          prazo: string | null
+          responsavel: string | null
+          status: string | null
+          tipo: string
+          titulo: string
+          unidade_id: string | null
+          unidade_medida: string
+          updated_at: string
+          valor_atual: number | null
+          valor_meta: number
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          prazo?: string | null
+          responsavel?: string | null
+          status?: string | null
+          tipo: string
+          titulo: string
+          unidade_id?: string | null
+          unidade_medida: string
+          updated_at?: string
+          valor_atual?: number | null
+          valor_meta: number
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          prazo?: string | null
+          responsavel?: string | null
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          unidade_id?: string | null
+          unidade_medida?: string
+          updated_at?: string
+          valor_atual?: number | null
+          valor_meta?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_saude_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notas: {
         Row: {
@@ -664,6 +947,131 @@ export type Database = {
         }
         Relationships: []
       }
+      pacientes: {
+        Row: {
+          alergias: string[] | null
+          bairro: string | null
+          cartao_sus: string | null
+          cidade: string | null
+          condicoes_cronicas: string[] | null
+          cpf: string | null
+          created_at: string
+          data_nascimento: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          medicamentos_uso_continuo: string[] | null
+          nome: string
+          nome_mae: string | null
+          nome_responsavel: string | null
+          observacoes: string | null
+          sexo: string | null
+          status: string | null
+          telefone: string | null
+          telefone_responsavel: string | null
+          tipo_sanguineo: string | null
+          updated_at: string
+        }
+        Insert: {
+          alergias?: string[] | null
+          bairro?: string | null
+          cartao_sus?: string | null
+          cidade?: string | null
+          condicoes_cronicas?: string[] | null
+          cpf?: string | null
+          created_at?: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          medicamentos_uso_continuo?: string[] | null
+          nome: string
+          nome_mae?: string | null
+          nome_responsavel?: string | null
+          observacoes?: string | null
+          sexo?: string | null
+          status?: string | null
+          telefone?: string | null
+          telefone_responsavel?: string | null
+          tipo_sanguineo?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alergias?: string[] | null
+          bairro?: string | null
+          cartao_sus?: string | null
+          cidade?: string | null
+          condicoes_cronicas?: string[] | null
+          cpf?: string | null
+          created_at?: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          medicamentos_uso_continuo?: string[] | null
+          nome?: string
+          nome_mae?: string | null
+          nome_responsavel?: string | null
+          observacoes?: string | null
+          sexo?: string | null
+          status?: string | null
+          telefone?: string | null
+          telefone_responsavel?: string | null
+          tipo_sanguineo?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pesquisas_satisfacao: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          id: string
+          nota_media: number | null
+          status: string | null
+          titulo: string
+          total_respostas: number | null
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          id?: string
+          nota_media?: number | null
+          status?: string | null
+          titulo: string
+          total_respostas?: number | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          id?: string
+          nota_media?: number | null
+          status?: string | null
+          titulo?: string
+          total_respostas?: number | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pesquisas_satisfacao_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professores: {
         Row: {
           cpf: string | null
@@ -744,6 +1152,169 @@ export type Database = {
         }
         Relationships: []
       }
+      profissionais_saude: {
+        Row: {
+          carga_horaria_semanal: number | null
+          cpf: string | null
+          created_at: string
+          email: string | null
+          especialidade: string | null
+          id: string
+          nome: string
+          registro_conselho: string | null
+          status: string | null
+          telefone: string | null
+          tipo_conselho: string | null
+          unidade_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          carga_horaria_semanal?: number | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          especialidade?: string | null
+          id?: string
+          nome: string
+          registro_conselho?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo_conselho?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          carga_horaria_semanal?: number | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          especialidade?: string | null
+          id?: string
+          nome?: string
+          registro_conselho?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo_conselho?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profissionais_saude_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prontuarios: {
+        Row: {
+          agendamento_id: string | null
+          assinatura_digital: string | null
+          cid_principal: string | null
+          cid_secundarios: string[] | null
+          conduta: string | null
+          created_at: string
+          data_atendimento: string
+          encaminhamentos: string[] | null
+          exame_fisico: Json | null
+          hipotese_diagnostica: string | null
+          historia_doenca_atual: string | null
+          id: string
+          observacoes: string | null
+          paciente_id: string
+          prescricao_medicamentos: Json | null
+          profissional_id: string | null
+          queixa_principal: string | null
+          sinais_vitais: Json | null
+          solicitacao_exames: Json | null
+          tipo_atendimento: string
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agendamento_id?: string | null
+          assinatura_digital?: string | null
+          cid_principal?: string | null
+          cid_secundarios?: string[] | null
+          conduta?: string | null
+          created_at?: string
+          data_atendimento?: string
+          encaminhamentos?: string[] | null
+          exame_fisico?: Json | null
+          hipotese_diagnostica?: string | null
+          historia_doenca_atual?: string | null
+          id?: string
+          observacoes?: string | null
+          paciente_id: string
+          prescricao_medicamentos?: Json | null
+          profissional_id?: string | null
+          queixa_principal?: string | null
+          sinais_vitais?: Json | null
+          solicitacao_exames?: Json | null
+          tipo_atendimento: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agendamento_id?: string | null
+          assinatura_digital?: string | null
+          cid_principal?: string | null
+          cid_secundarios?: string[] | null
+          conduta?: string | null
+          created_at?: string
+          data_atendimento?: string
+          encaminhamentos?: string[] | null
+          exame_fisico?: Json | null
+          hipotese_diagnostica?: string | null
+          historia_doenca_atual?: string | null
+          id?: string
+          observacoes?: string | null
+          paciente_id?: string
+          prescricao_medicamentos?: Json | null
+          profissional_id?: string | null
+          queixa_principal?: string | null
+          sinais_vitais?: Json | null
+          solicitacao_exames?: Json | null
+          tipo_atendimento?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prontuarios_agendamento_id_fkey"
+            columns: ["agendamento_id"]
+            isOneToOne: false
+            referencedRelation: "agendamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prontuarios_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prontuarios_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prontuarios_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       responsaveis_alunos: {
         Row: {
           aluno_id: string
@@ -772,6 +1343,57 @@ export type Database = {
             columns: ["aluno_id"]
             isOneToOne: false
             referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      respostas_pesquisa: {
+        Row: {
+          comentario: string | null
+          created_at: string
+          id: string
+          nota_atendimento: number | null
+          nota_comunicacao: number | null
+          nota_infraestrutura: number | null
+          nota_tempo_espera: number | null
+          paciente_id: string | null
+          pesquisa_id: string
+        }
+        Insert: {
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota_atendimento?: number | null
+          nota_comunicacao?: number | null
+          nota_infraestrutura?: number | null
+          nota_tempo_espera?: number | null
+          paciente_id?: string | null
+          pesquisa_id: string
+        }
+        Update: {
+          comentario?: string | null
+          created_at?: string
+          id?: string
+          nota_atendimento?: number | null
+          nota_comunicacao?: number | null
+          nota_infraestrutura?: number | null
+          nota_tempo_espera?: number | null
+          paciente_id?: string | null
+          pesquisa_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "respostas_pesquisa_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "respostas_pesquisa_pesquisa_id_fkey"
+            columns: ["pesquisa_id"]
+            isOneToOne: false
+            referencedRelation: "pesquisas_satisfacao"
             referencedColumns: ["id"]
           },
         ]
@@ -1025,6 +1647,85 @@ export type Database = {
           },
         ]
       }
+      tratamentos: {
+        Row: {
+          cid: string | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          data_prevista_fim: string | null
+          id: string
+          medicamentos: Json | null
+          nome_tratamento: string
+          observacoes: string | null
+          orientacoes: string | null
+          paciente_id: string
+          profissional_id: string | null
+          progresso: number | null
+          status: string | null
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          cid?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          data_prevista_fim?: string | null
+          id?: string
+          medicamentos?: Json | null
+          nome_tratamento: string
+          observacoes?: string | null
+          orientacoes?: string | null
+          paciente_id: string
+          profissional_id?: string | null
+          progresso?: number | null
+          status?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cid?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          data_prevista_fim?: string | null
+          id?: string
+          medicamentos?: Json | null
+          nome_tratamento?: string
+          observacoes?: string | null
+          orientacoes?: string | null
+          paciente_id?: string
+          profissional_id?: string | null
+          progresso?: number | null
+          status?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tratamentos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tratamentos_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tratamentos_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       turmas: {
         Row: {
           ano_letivo: number
@@ -1075,6 +1776,57 @@ export type Database = {
           },
         ]
       }
+      unidades_saude: {
+        Row: {
+          capacidade_diaria: number | null
+          created_at: string
+          email: string | null
+          endereco: string | null
+          especialidades: string[] | null
+          horario_funcionamento: Json | null
+          id: string
+          nome: string
+          observacoes: string | null
+          responsavel: string | null
+          status: string | null
+          telefone: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          capacidade_diaria?: number | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          especialidades?: string[] | null
+          horario_funcionamento?: Json | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          responsavel?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          capacidade_diaria?: number | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          especialidades?: string[] | null
+          horario_funcionamento?: Json | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          responsavel?: string | null
+          status?: string | null
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_education_roles: {
         Row: {
           created_at: string
@@ -1103,6 +1855,100 @@ export type Database = {
             columns: ["escola_id"]
             isOneToOne: false
             referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_health_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["health_role"]
+          unidade_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["health_role"]
+          unidade_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["health_role"]
+          unidade_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vacinas: {
+        Row: {
+          created_at: string
+          data_aplicacao: string
+          data_proxima_dose: string | null
+          dose: string | null
+          fabricante: string | null
+          id: string
+          local_aplicacao: string | null
+          lote: string | null
+          nome_vacina: string
+          observacoes: string | null
+          paciente_id: string
+          profissional_id: string | null
+          unidade_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          data_aplicacao?: string
+          data_proxima_dose?: string | null
+          dose?: string | null
+          fabricante?: string | null
+          id?: string
+          local_aplicacao?: string | null
+          lote?: string | null
+          nome_vacina: string
+          observacoes?: string | null
+          paciente_id: string
+          profissional_id?: string | null
+          unidade_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          data_aplicacao?: string
+          data_proxima_dose?: string | null
+          dose?: string | null
+          fabricante?: string | null
+          id?: string
+          local_aplicacao?: string | null
+          lote?: string | null
+          nome_vacina?: string
+          observacoes?: string | null
+          paciente_id?: string
+          profissional_id?: string | null
+          unidade_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vacinas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vacinas_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vacinas_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
             referencedColumns: ["id"]
           },
         ]
@@ -1152,6 +1998,7 @@ export type Database = {
     }
     Functions: {
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
+      get_user_unidade_ids: { Args: { _user_id: string }; Returns: string[] }
       has_education_role: {
         Args: {
           _role: Database["public"]["Enums"]["education_role"]
@@ -1167,14 +2014,37 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_health_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["health_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_health_role_in_unidade: {
+        Args: {
+          _role: Database["public"]["Enums"]["health_role"]
+          _unidade_id: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_responsavel_of_student: {
         Args: { _aluno_id: string; _user_id: string }
         Returns: boolean
       }
       is_secretaria: { Args: { _user_id: string }; Returns: boolean }
+      is_secretaria_saude: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       education_role: "secretaria" | "diretor" | "professor" | "responsavel"
+      health_role:
+        | "secretaria_saude"
+        | "diretor_unidade"
+        | "medico"
+        | "enfermeiro"
+        | "recepcionista"
+        | "agente_saude"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1303,6 +2173,14 @@ export const Constants = {
   public: {
     Enums: {
       education_role: ["secretaria", "diretor", "professor", "responsavel"],
+      health_role: [
+        "secretaria_saude",
+        "diretor_unidade",
+        "medico",
+        "enfermeiro",
+        "recepcionista",
+        "agente_saude",
+      ],
     },
   },
 } as const
