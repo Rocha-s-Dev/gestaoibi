@@ -4,9 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 export type Disciplina = {
   id: string;
   nome: string;
-  codigo: string | null;
-  descricao: string | null;
-  carga_horaria: number | null;
+  codigo?: string;
+  carga_horaria?: number;
   created_at?: string;
 };
 
@@ -18,13 +17,12 @@ export function useDisciplinas() {
   const fetchDisciplinas = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('disciplinas')
+      const { data, error } = await (supabase.from("disciplinas" as any) as any)
         .select('*')
         .order('nome');
 
       if (error) throw error;
-      setDisciplinas(data || []);
+      setDisciplinas((data || []) as Disciplina[]);
     } catch (err) {
       console.error('Erro ao buscar disciplinas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -35,8 +33,7 @@ export function useDisciplinas() {
 
   const createDisciplina = async (disciplinaData: Omit<Disciplina, 'id'>) => {
     try {
-      const { data, error } = await supabase
-        .from('disciplinas')
+      const { data, error } = await (supabase.from("disciplinas" as any) as any)
         .insert([disciplinaData])
         .select()
         .single();
@@ -53,8 +50,7 @@ export function useDisciplinas() {
 
   const updateDisciplina = async (id: string, disciplinaData: Partial<Disciplina>) => {
     try {
-      const { data, error } = await supabase
-        .from('disciplinas')
+      const { data, error } = await (supabase.from("disciplinas" as any) as any)
         .update(disciplinaData)
         .eq('id', id)
         .select()
@@ -72,8 +68,7 @@ export function useDisciplinas() {
 
   const deleteDisciplina = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('disciplinas')
+      const { error } = await (supabase.from("disciplinas" as any) as any)
         .delete()
         .eq('id', id);
 
