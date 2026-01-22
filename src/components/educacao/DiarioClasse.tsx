@@ -106,7 +106,7 @@ export function DiarioClasse() {
       justificativa: p.justificativa || undefined,
     }));
 
-    await salvarPresencaEmLote(presencasParaSalvar, disciplinaId, professorId, turmaId, dataAula);
+    await salvarPresencaEmLote(presencasParaSalvar, disciplinaId, turmaId, dataAula);
   };
 
   const totalPresentes = presencas.filter((p) => p.presente).length;

@@ -5,24 +5,11 @@ import { toast } from 'sonner';
 interface NotaLote {
   aluno_id: string;
   disciplina_id: string;
-  professor_id: string;
   turma_id: string;
   bimestre: number;
   ano_letivo: number;
   nota: number | null;
-  tipo_avaliacao?: string;
-  data_avaliacao?: string;
   observacoes?: string;
-}
-
-interface FaltaLote {
-  aluno_id: string;
-  disciplina_id: string;
-  professor_id: string;
-  turma_id: string;
-  data_falta: string;
-  tipo: 'justificada' | 'injustificada';
-  justificativa?: string;
 }
 
 interface PresencaAluno {
@@ -60,7 +47,6 @@ export function useLancamentoLote() {
           .eq('turma_id', nota.turma_id)
           .eq('bimestre', nota.bimestre)
           .eq('ano_letivo', nota.ano_letivo)
-          .eq('tipo_avaliacao', nota.tipo_avaliacao || 'prova')
           .single();
 
         if (existente) {
@@ -68,7 +54,6 @@ export function useLancamentoLote() {
             .from('notas')
             .update({
               nota: nota.nota,
-              data_avaliacao: nota.data_avaliacao,
               observacoes: nota.observacoes
             })
             .eq('id', existente.id);
@@ -78,8 +63,13 @@ export function useLancamentoLote() {
           const { error } = await supabase
             .from('notas')
             .insert({
-              ...nota,
-              tipo_avaliacao: nota.tipo_avaliacao || 'prova'
+              aluno_id: nota.aluno_id,
+              disciplina_id: nota.disciplina_id,
+              turma_id: nota.turma_id,
+              bimestre: nota.bimestre,
+              ano_letivo: nota.ano_letivo,
+              nota: nota.nota,
+              observacoes: nota.observacoes
             });
 
           if (error) throw error;
@@ -100,7 +90,6 @@ export function useLancamentoLote() {
   const salvarPresencaEmLote = async (
     presencas: PresencaAluno[],
     disciplina_id: string,
-    professor_id: string,
     turma_id: string,
     data: string
   ) => {
@@ -112,26 +101,25 @@ export function useLancamentoLote() {
     setLoading(true);
     try {
       // Registrar apenas as faltas (ausências)
-      const faltas: FaltaLote[] = presencas
+      const faltas = presencas
         .filter(p => !p.presente)
         .map(p => ({
           aluno_id: p.aluno_id,
-          disciplina_id,
-          professor_id,
-          turma_id,
-          data_falta: data,
-          tipo: p.justificativa ? 'justificada' : 'injustificada',
-          justificativa: p.justificativa
+          data: data,
+          justificada: !!p.justificativa,
+          motivo: p.justificativa || null
         }));
 
       if (faltas.length > 0) {
-        // Remover faltas existentes para essa data/turma/disciplina
+        // Remover faltas existentes para essa data/turma
+        // First get alunos from this turma
+        const alunoIds = presencas.map(p => p.aluno_id);
+        
         await supabase
           .from('faltas')
           .delete()
-          .eq('turma_id', turma_id)
-          .eq('disciplina_id', disciplina_id)
-          .eq('data_falta', data);
+          .in('aluno_id', alunoIds)
+          .eq('data', data);
 
         // Inserir novas faltas
         const { error } = await supabase
@@ -159,8 +147,7 @@ export function useLancamentoLote() {
     turma_id: string,
     disciplina_id: string,
     bimestre: number,
-    ano_letivo: number,
-    tipo_avaliacao: string = 'prova'
+    ano_letivo: number
   ) => {
     try {
       const { data, error } = await supabase
@@ -169,8 +156,7 @@ export function useLancamentoLote() {
         .eq('turma_id', turma_id)
         .eq('disciplina_id', disciplina_id)
         .eq('bimestre', bimestre)
-        .eq('ano_letivo', ano_letivo)
-        .eq('tipo_avaliacao', tipo_avaliacao);
+        .eq('ano_letivo', ano_letivo);
 
       if (error) throw error;
       return data || [];
@@ -182,19 +168,31 @@ export function useLancamentoLote() {
 
   const buscarFaltasData = async (
     turma_id: string,
-    disciplina_id: string,
     data: string
   ) => {
     try {
+      // First get alunos from this turma
+      const { data: alunos } = await supabase
+        .from('alunos')
+        .select('id')
+        .eq('turma_id', turma_id);
+
+      if (!alunos || alunos.length === 0) return [];
+
+      const alunoIds = alunos.map(a => a.id);
+
       const { data: faltas, error } = await supabase
         .from('faltas')
-        .select('aluno_id, tipo, justificativa')
-        .eq('turma_id', turma_id)
-        .eq('disciplina_id', disciplina_id)
-        .eq('data_falta', data);
+        .select('aluno_id, justificada, motivo')
+        .in('aluno_id', alunoIds)
+        .eq('data', data);
 
       if (error) throw error;
-      return faltas || [];
+      return (faltas || []).map(f => ({
+        aluno_id: f.aluno_id,
+        tipo: f.justificada ? 'justificada' : 'injustificada',
+        justificativa: f.motivo
+      }));
     } catch (err) {
       console.error('Erro ao buscar faltas:', err);
       return [];

@@ -1,21 +1,20 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Turma = {
   id: string;
   nome: string;
-  serie: string;
+  serie: string | null;
   ano_letivo: number;
-  turno: 'matutino' | 'vespertino' | 'noturno' | 'integral';
-  modalidade: 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche';
-  capacidade: number;
-  sala?: string;
-  status: string;
+  turno: string | null;
+  capacidade: number | null;
+  sala?: string | null;
   escola_id: string;
-  professor_responsavel_id?: string;
+  professor_responsavel?: string | null;
   created_at?: string;
   updated_at?: string;
+  escola?: { nome: string } | null;
+  [key: string]: unknown;
 };
 
 export function useTurmas() {
@@ -30,13 +29,12 @@ export function useTurmas() {
         .from('turmas')
         .select(`
           *,
-          escola:escolas(nome),
-          professor_responsavel:professores(nome)
+          escola:escolas(nome)
         `)
         .order('nome');
 
       if (error) throw error;
-      setTurmas(data || []);
+      setTurmas(data as unknown as Turma[] || []);
     } catch (err) {
       console.error('Erro ao buscar turmas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -47,9 +45,10 @@ export function useTurmas() {
 
   const createTurma = async (turmaData: Omit<Turma, 'id'>) => {
     try {
+      const { escola, ...insertData } = turmaData;
       const { data, error } = await supabase
         .from('turmas')
-        .insert([turmaData])
+        .insert([insertData as any])
         .select()
         .single();
 
@@ -65,9 +64,10 @@ export function useTurmas() {
 
   const updateTurma = async (id: string, turmaData: Partial<Turma>) => {
     try {
+      const { escola, ...updateData } = turmaData;
       const { data, error } = await supabase
         .from('turmas')
-        .update(turmaData)
+        .update(updateData as any)
         .eq('id', id)
         .select()
         .single();

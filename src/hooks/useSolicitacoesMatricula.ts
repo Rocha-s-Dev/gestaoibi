@@ -4,52 +4,28 @@ import { toast } from 'sonner';
 
 export type StatusSolicitacaoMatricula = 'pendente' | 'em_analise' | 'aprovada' | 'rejeitada' | 'lista_espera';
 
-export interface DadosAluno {
-  nome: string;
-  data_nascimento: string;
-  cpf?: string;
-  rg?: string;
-  genero?: string;
-  endereco?: string;
-  numero_endereco?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  cep?: string;
-  telefone?: string;
-  email?: string;
-  necessidades_especiais?: string;
-}
-
-export interface DadosResponsavel {
-  nome: string;
-  cpf: string;
-  rg?: string;
-  telefone: string;
-  email?: string;
-  grau_parentesco: string;
-  endereco?: string;
-  profissao?: string;
-}
-
 export interface SolicitacaoMatricula {
   id: string;
   protocolo: string;
   status: StatusSolicitacaoMatricula;
-  dados_aluno: DadosAluno;
-  dados_responsavel: DadosResponsavel;
-  escola_preferida_id?: string;
-  turma_sugerida_id?: string;
-  ano_letivo: number;
-  serie_pretendida: string;
-  documentos?: { tipo: string; url: string }[];
+  nome_aluno: string;
+  nome_responsavel: string;
+  cpf_aluno?: string;
+  cpf_responsavel?: string;
+  data_nascimento?: string;
+  telefone_responsavel?: string;
+  email_responsavel?: string;
+  endereco?: string;
+  escola_desejada_id?: string;
+  serie_desejada?: string;
+  turno_desejado?: string;
+  documentos?: unknown;
   observacoes?: string;
-  motivo_rejeicao?: string;
-  aluno_criado_id?: string;
-  data_processamento?: string;
-  processado_por?: string;
+  motivo_recusa?: string;
   created_at: string;
-  escola_preferida?: { nome: string };
+  updated_at: string;
+  escola_desejada?: { nome: string };
+  [key: string]: unknown;
 }
 
 export function useSolicitacoesMatricula() {
@@ -63,7 +39,7 @@ export function useSolicitacoesMatricula() {
         .from('solicitacoes_matricula')
         .select(`
           *,
-          escola_preferida:escolas(nome)
+          escola_desejada:escolas!solicitacoes_matricula_escola_desejada_id_fkey(nome)
         `)
         .order('created_at', { ascending: false });
 
@@ -83,24 +59,30 @@ export function useSolicitacoesMatricula() {
   }, []);
 
   const criarSolicitacao = async (solicitacao: {
-    dados_aluno: DadosAluno;
-    dados_responsavel: DadosResponsavel;
-    escola_preferida_id?: string;
-    ano_letivo: number;
-    serie_pretendida: string;
+    nome_aluno: string;
+    nome_responsavel: string;
+    cpf_aluno?: string;
+    cpf_responsavel?: string;
+    data_nascimento?: string;
+    telefone_responsavel?: string;
+    email_responsavel?: string;
+    endereco?: string;
+    escola_desejada_id?: string;
+    serie_desejada?: string;
+    turno_desejado?: string;
     observacoes?: string;
   }) => {
     try {
-      // Gerar protocolo
-      const { data: protocolo } = await supabase.rpc('gerar_protocolo_matricula');
+      // Gerar protocolo simples
+      const protocolo = `MAT${Date.now()}`;
 
       const { data, error } = await supabase
         .from('solicitacoes_matricula')
         .insert({
           ...solicitacao,
-          protocolo: protocolo || `MAT${Date.now()}`,
+          protocolo,
           status: 'pendente'
-        } as never)
+        })
         .select()
         .single();
 
@@ -117,13 +99,10 @@ export function useSolicitacoesMatricula() {
 
   const atualizarStatus = async (id: string, status: StatusSolicitacaoMatricula, motivo?: string) => {
     try {
-      const updates: Record<string, unknown> = { 
-        status,
-        data_processamento: new Date().toISOString()
-      };
+      const updates: Record<string, unknown> = { status };
 
       if (motivo) {
-        updates.motivo_rejeicao = motivo;
+        updates.motivo_recusa = motivo;
       }
 
       const { error } = await supabase
@@ -154,76 +133,37 @@ export function useSolicitacoesMatricula() {
         return;
       }
 
-      const dadosAluno = solicitacao.dados_aluno as unknown as DadosAluno;
-      const dadosResponsavel = solicitacao.dados_responsavel as unknown as DadosResponsavel;
-
-      // Criar responsável
-      const { data: responsavel, error: respError } = await supabase
-        .from('responsaveis')
-        .insert({
-          nome: dadosResponsavel.nome,
-          cpf: dadosResponsavel.cpf,
-          rg: dadosResponsavel.rg,
-          telefone: dadosResponsavel.telefone,
-          email: dadosResponsavel.email,
-          grau_parentesco: dadosResponsavel.grau_parentesco,
-          endereco: dadosResponsavel.endereco,
-          profissao: dadosResponsavel.profissao
-        })
-        .select()
-        .single();
-
-      if (respError) throw respError;
+      const sol = solicitacao as SolicitacaoMatricula;
 
       // Gerar número de matrícula
-      const { data: numeroMatricula } = await supabase.rpc('gerar_numero_matricula');
+      const numeroMatricula = `${new Date().getFullYear()}${Date.now().toString().slice(-6)}`;
 
       // Criar aluno
       const { data: aluno, error: alunoError } = await supabase
         .from('alunos')
         .insert({
-          nome: dadosAluno.nome,
-          data_nascimento: dadosAluno.data_nascimento,
-          cpf: dadosAluno.cpf,
-          rg: dadosAluno.rg,
-          genero: dadosAluno.genero,
-          endereco: dadosAluno.endereco,
-          numero_endereco: dadosAluno.numero_endereco,
-          bairro: dadosAluno.bairro,
-          cidade: dadosAluno.cidade,
-          estado: dadosAluno.estado,
-          cep: dadosAluno.cep,
-          telefone: dadosAluno.telefone,
-          email: dadosAluno.email,
-          necessidades_especiais: dadosAluno.necessidades_especiais,
-          escola_id: solicitacao.escola_preferida_id,
-          turma_atual_id: turmaId || solicitacao.turma_sugerida_id,
-          numero_matricula: numeroMatricula || `${new Date().getFullYear()}${Date.now().toString().slice(-6)}`,
-          status: 'matriculado'
+          nome: sol.nome_aluno,
+          data_nascimento: sol.data_nascimento,
+          cpf: sol.cpf_aluno,
+          endereco: sol.endereco,
+          responsavel_nome: sol.nome_responsavel,
+          responsavel_telefone: sol.telefone_responsavel,
+          responsavel_email: sol.email_responsavel,
+          escola_id: sol.escola_desejada_id,
+          turma_id: turmaId,
+          numero_matricula: numeroMatricula,
+          situacao: 'ativo'
         })
         .select()
         .single();
 
       if (alunoError) throw alunoError;
 
-      // Vincular aluno ao responsável
-      await supabase
-        .from('alunos_responsaveis')
-        .insert({
-          aluno_id: aluno.id,
-          responsavel_id: responsavel.id,
-          responsavel_principal: true,
-          autorizado_buscar: true
-        });
-
       // Atualizar solicitação
       const { error: updateError } = await supabase
         .from('solicitacoes_matricula')
         .update({
-          status: 'aprovada',
-          aluno_criado_id: aluno.id,
-          turma_sugerida_id: turmaId || solicitacao.turma_sugerida_id,
-          data_processamento: new Date().toISOString()
+          status: 'aprovada'
         })
         .eq('id', id);
 
@@ -249,7 +189,7 @@ export function useSolicitacoesMatricula() {
         .from('solicitacoes_matricula')
         .select(`
           *,
-          escola_preferida:escolas(nome)
+          escola_desejada:escolas!solicitacoes_matricula_escola_desejada_id_fkey(nome)
         `)
         .eq('protocolo', protocolo)
         .single();

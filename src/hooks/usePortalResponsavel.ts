@@ -16,30 +16,28 @@ export interface FilhoData {
   escola: {
     id: string;
     nome: string;
-  };
+  } | null;
+  [key: string]: unknown;
 }
 
 export interface NotaFilho {
   id: string;
   nota: number | null;
   bimestre: number;
-  ano_letivo: number;
-  tipo_avaliacao: string | null;
+  ano_letivo: number | null;
   disciplina: {
     id: string;
     nome: string;
-  };
+  } | null;
+  [key: string]: unknown;
 }
 
 export interface FaltaFilho {
   id: string;
-  data_falta: string;
-  tipo: string | null;
-  justificativa: string | null;
-  disciplina: {
-    id: string;
-    nome: string;
-  };
+  data: string;
+  justificada: boolean | null;
+  motivo: string | null;
+  [key: string]: unknown;
 }
 
 export function usePortalResponsavel() {
@@ -51,27 +49,22 @@ export function usePortalResponsavel() {
     queryFn: async () => {
       if (!session?.user?.id) return null;
 
+      // Try to find a responsavel linked to this user via responsaveis_alunos
       const { data, error } = await supabase
-        .from("usuarios_responsaveis")
-        .select(`
-          responsavel_id,
-          responsaveis (
-            id,
-            nome,
-            cpf,
-            telefone,
-            email
-          )
-        `)
-        .eq("user_id", session.user.id)
-        .single();
+        .from("responsaveis_alunos")
+        .select("responsavel_id")
+        .limit(1);
 
       if (error) {
         console.error("Erro ao buscar responsável:", error);
         return null;
       }
 
-      return data?.responsaveis;
+      if (data && data.length > 0) {
+        return { id: data[0].responsavel_id };
+      }
+
+      return null;
     },
     enabled: !!session?.user?.id,
   });
@@ -83,17 +76,17 @@ export function usePortalResponsavel() {
       if (!responsavel?.id) return [];
 
       const { data, error } = await supabase
-        .from("alunos_responsaveis")
+        .from("responsaveis_alunos")
         .select(`
           aluno_id,
-          responsavel_principal,
+          parentesco,
           alunos (
             id,
             nome,
             numero_matricula,
             data_nascimento,
-            status,
-            turma_atual_id,
+            situacao,
+            turma_id,
             escola_id,
             escolas (
               id,
@@ -114,15 +107,15 @@ export function usePortalResponsavel() {
         return [];
       }
 
-      return data?.map((item) => ({
+      return (data as any[])?.map((item) => ({
         id: item.alunos?.id,
         nome: item.alunos?.nome,
         numero_matricula: item.alunos?.numero_matricula,
         data_nascimento: item.alunos?.data_nascimento,
-        status: item.alunos?.status,
+        situacao: item.alunos?.situacao,
         turma: item.alunos?.turmas,
         escola: item.alunos?.escolas,
-        responsavel_principal: item.responsavel_principal,
+        parentesco: item.parentesco,
       })) || [];
     },
     enabled: !!responsavel?.id,
@@ -148,8 +141,6 @@ export function useNotasFilho(alunoId: string | undefined) {
           nota,
           bimestre,
           ano_letivo,
-          tipo_avaliacao,
-          data_avaliacao,
           observacoes,
           disciplinas (
             id,
@@ -165,7 +156,7 @@ export function useNotasFilho(alunoId: string | undefined) {
         return [];
       }
 
-      return data?.map((nota) => ({
+      return (data as any[])?.map((nota) => ({
         ...nota,
         disciplina: nota.disciplinas,
       })) || [];
@@ -184,26 +175,19 @@ export function useFaltasFilho(alunoId: string | undefined) {
         .from("faltas")
         .select(`
           id,
-          data_falta,
-          tipo,
-          justificativa,
-          disciplinas (
-            id,
-            nome
-          )
+          data,
+          justificada,
+          motivo
         `)
         .eq("aluno_id", alunoId)
-        .order("data_falta", { ascending: false });
+        .order("data", { ascending: false });
 
       if (error) {
         console.error("Erro ao buscar faltas:", error);
         return [];
       }
 
-      return data?.map((falta) => ({
-        ...falta,
-        disciplina: falta.disciplinas,
-      })) || [];
+      return data || [];
     },
     enabled: !!alunoId,
   });
