@@ -39,8 +39,8 @@ export const AddUserDialog = () => {
   const { data: departments } = useQuery({
     queryKey: ["departments"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("departments")
+      const { data, error } = await (supabase
+        .from("departments" as any) as any)
         .select("*")
         .order("name");
       
@@ -282,7 +282,7 @@ export const AddUserDialog = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum departamento</SelectItem>
-                    {departments?.map(dept => (
+                    {departments?.map((dept: any) => (
                       <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
                     ))}
                   </SelectContent>

@@ -84,7 +84,7 @@ export function ContractList({ refreshTrigger }: { refreshTrigger: number }) {
     queryKey: ['contracts', refreshTrigger],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from("contracts") as any)
+        .from("contracts" as any) as any)
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -107,7 +107,7 @@ export function ContractList({ refreshTrigger }: { refreshTrigger: number }) {
       if (!selectedContract?.id) return [];
       
       const { data, error } = await (supabase
-        .from("contract_payments") as any)
+        .from("contract_payments" as any) as any)
         .select('*')
         .eq('contract_id', selectedContract.id)
         .order('due_date', { ascending: true });

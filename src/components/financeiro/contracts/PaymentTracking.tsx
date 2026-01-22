@@ -123,7 +123,7 @@ export function PaymentTracking() {
   const markAsPaidMutation = useMutation({
     mutationFn: async (paymentId: string) => {
       const { error } = await (supabase
-        .from("contract_payments") as any)
+        .from("contract_payments" as any) as any)
         .update({
           status: 'paid',
           payment_date: new Date().toISOString().split('T')[0]

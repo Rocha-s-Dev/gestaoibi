@@ -11,10 +11,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
+
+interface Goal {
+  id: string;
+  title: string;
+  description?: string | null;
+  term?: string;
+  status?: string;
+  due_date?: string | null;
+  created_by?: string;
+}
 
 interface DeleteGoalDialogProps {
-  goal: Tables<"goals">;
+  goal: Goal;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGoalDeleted: () => void;
@@ -33,7 +42,7 @@ export function DeleteGoalDialog({
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.from("goals").delete().eq("id", goal.id);
+      const { error } = await (supabase.from("goals" as any) as any).delete().eq("id", goal.id);
 
       if (error) throw error;
 
