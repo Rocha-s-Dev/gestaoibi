@@ -71,8 +71,8 @@ export const ConversationPanel = ({
   const fetchConversation = async () => {
     try {
       // Fetch the conversation
-      const { data: convData, error: convError } = await supabase
-        .from("conversations")
+      const { data: convData, error: convError } = await (supabase
+        .from("conversations" as any) as any)
         .select("*")
         .eq("id", conversationId)
         .single();
@@ -85,8 +85,8 @@ export const ConversationPanel = ({
         : convData.sender_id;
       
       // Fetch that user's profile
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
+      const { data: profileData, error: profileError } = await (supabase
+        .from("profiles" as any) as any)
         .select("first_name, last_name, role")
         .eq("id", otherUserId)
         .single();
@@ -115,8 +115,8 @@ export const ConversationPanel = ({
   const fetchMessages = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("messages")
+      const { data, error } = await (supabase
+        .from("messages" as any) as any)
         .select("*")
         .eq("conversation_id", conversationId)
         .order("created_at", { ascending: true });
@@ -124,7 +124,7 @@ export const ConversationPanel = ({
       if (error) throw error;
       
       // Transform the data to match the Message type
-      const typedMessages: Message[] = data?.map(msg => ({
+      const typedMessages: Message[] = (data as any[])?.map((msg: any) => ({
         id: msg.id,
         conversation_id: msg.conversation_id,
         sender_id: msg.sender_id,
@@ -238,15 +238,15 @@ export const ConversationPanel = ({
       };
       
       // Insert the message
-      const { error: messageError } = await supabase
-        .from("messages")
+      const { error: messageError } = await (supabase
+        .from("messages" as any) as any)
         .insert(newMessage);
 
       if (messageError) throw messageError;
       
       // Update conversation with last message text
-      const { error: convError } = await supabase
-        .from("conversations")
+      const { error: convError } = await (supabase
+        .from("conversations" as any) as any)
         .update({ 
           last_message: messageText.trim() || (attachmentData ? "Enviou um arquivo" : ""),
           updated_at: new Date().toISOString()

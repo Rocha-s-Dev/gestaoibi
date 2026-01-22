@@ -7,17 +7,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Database, Tables } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TaskPriority = Database["public"]["Enums"]["task_priority"];
-type Task = Tables<"tasks">;
+type TaskPriority = "low" | "medium" | "high";
+
+interface Task {
+  id: string;
+  title: string;
+  description?: string | null;
+  priority?: string;
+  status?: string;
+  goal_id?: string;
+  due_date?: string | null;
+}
 
 interface EditTaskDialogProps {
   task: Task;
@@ -30,7 +38,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description || "",
-    priority: task.priority as TaskPriority,
+    priority: (task.priority || "medium") as TaskPriority,
     assignedUsers: [] as string[],
     dueDate: task.due_date ? new Date(task.due_date) : undefined,
   });
@@ -40,13 +48,13 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
   const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
+      const { data, error } = await (supabase
+        .from("profiles" as any) as any)
         .select("*")
-        .order("first_name");
+        .order("name");
       
       if (error) throw error;
-      return data;
+      return data as any[];
     },
   });
 
@@ -55,8 +63,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
     setIsLoading(true);
 
     try {
-      const { error: taskError } = await supabase
-        .from("tasks")
+      const { error: taskError } = await (supabase
+        .from("tasks" as any) as any)
         .update({
           title: formData.title,
           description: formData.description,
@@ -69,8 +77,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
 
       if (formData.assignedUsers.length > 0) {
         // Primeiro, remover todas as atribuições existentes
-        await supabase
-          .from("task_assignments")
+        await (supabase
+          .from("task_assignments" as any) as any)
           .delete()
           .eq("task_id", task.id);
 
@@ -80,8 +88,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
           user_id: userId,
         }));
 
-        const { error: assignmentError } = await supabase
-          .from("task_assignments")
+        const { error: assignmentError } = await (supabase
+          .from("task_assignments" as any) as any)
           .insert(assignments);
 
         if (assignmentError) throw assignmentError;
@@ -177,9 +185,9 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
               <SelectValue placeholder="Responsável" />
             </SelectTrigger>
             <SelectContent>
-              {users?.map((user) => (
+              {users?.map((user: any) => (
                 <SelectItem key={user.id} value={user.id}>
-                  {user.first_name} {user.last_name}
+                  {user.name || user.email}
                 </SelectItem>
               ))}
             </SelectContent>
