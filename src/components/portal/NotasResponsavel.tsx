@@ -17,8 +17,22 @@ interface NotasResponsavelProps {
   alunoNome: string;
 }
 
+interface NotaItem {
+  id: string;
+  nota?: number;
+  bimestre?: number;
+  disciplina_id?: string;
+  disciplina?: { id: string; nome: string };
+}
+
+interface DisciplinaAgrupada {
+  disciplina: string;
+  bimestres: Record<number, number | null>;
+}
+
 export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) {
-  const { data: notas = [], isLoading } = useNotasFilho(alunoId);
+  const { data: notasRaw = [], isLoading } = useNotasFilho(alunoId);
+  const notas = (notasRaw as NotaItem[]) || [];
 
   if (isLoading) {
     return (
@@ -39,16 +53,18 @@ export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) 
 
   // Agrupar notas por disciplina
   const notasPorDisciplina = notas.reduce((acc, nota) => {
-    const disciplinaId = nota.disciplina?.id || "sem-disciplina";
+    const disciplinaId = nota.disciplina?.id || nota.disciplina_id || "sem-disciplina";
     if (!acc[disciplinaId]) {
       acc[disciplinaId] = {
         disciplina: nota.disciplina?.nome || "Sem disciplina",
-        bimestres: {},
+        bimestres: {} as Record<number, number | null>,
       };
     }
-    acc[disciplinaId].bimestres[nota.bimestre] = nota.nota;
+    if (nota.bimestre) {
+      acc[disciplinaId].bimestres[nota.bimestre] = nota.nota ?? null;
+    }
     return acc;
-  }, {} as Record<string, { disciplina: string; bimestres: Record<number, number | null> }>);
+  }, {} as Record<string, DisciplinaAgrupada>);
 
   const disciplinas = Object.values(notasPorDisciplina);
 

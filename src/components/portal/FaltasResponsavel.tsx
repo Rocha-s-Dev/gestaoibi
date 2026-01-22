@@ -19,13 +19,20 @@ interface FaltasResponsavelProps {
   alunoNome: string;
 }
 
-const tipoFaltaLabels: Record<string, string> = {
-  injustificada: "Não Justificada",
-  justificada: "Justificada",
-};
+interface FaltaItem {
+  id: string;
+  data_falta?: string;
+  data?: string;
+  tipo?: string;
+  justificativa?: string;
+  justificada?: boolean;
+  motivo?: string;
+  disciplina?: { nome: string };
+}
 
 export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps) {
-  const { data: faltas = [], isLoading } = useFaltasFilho(alunoId);
+  const { data: faltasRaw = [], isLoading } = useFaltasFilho(alunoId);
+  const faltas = (faltasRaw as FaltaItem[]) || [];
 
   if (isLoading) {
     return (
@@ -45,17 +52,18 @@ export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps
   }
 
   // Estatísticas
-  const totalFaltas = faltas.filter((f) => f.tipo === "injustificada" || !f.tipo).length;
+  const totalFaltas = faltas.filter((f) => !f.justificada && f.tipo !== "justificada").length;
   const totalAtrasos = faltas.length - totalFaltas;
-  const faltasJustificadas = faltas.filter((f) => f.tipo === "justificada").length;
+  const faltasJustificadas = faltas.filter((f) => f.justificada || f.tipo === "justificada").length;
 
   // Agrupar por mês
   const faltasPorMes = faltas.reduce((acc, falta) => {
-    const mes = format(new Date(falta.data_falta), "MMMM yyyy", { locale: ptBR });
+    const dataFalta = falta.data_falta || falta.data || new Date().toISOString();
+    const mes = format(new Date(dataFalta), "MMMM yyyy", { locale: ptBR });
     if (!acc[mes]) acc[mes] = [];
     acc[mes].push(falta);
     return acc;
-  }, {} as Record<string, typeof faltas>);
+  }, {} as Record<string, FaltaItem[]>);
 
   return (
     <Card>
@@ -110,36 +118,40 @@ export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {faltasMes.map((falta) => (
-                        <TableRow key={falta.id}>
-                          <TableCell>
-                            {format(new Date(falta.data_falta), "dd/MM/yyyy")}
-                          </TableCell>
-                          <TableCell>{falta.disciplina?.nome || "-"}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={falta.tipo === "justificada" ? "outline" : "destructive"}
-                            >
-                              {tipoFaltaLabels[falta.tipo || "injustificada"] || falta.tipo}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {falta.justificativa ? (
-                              <div className="flex items-center gap-2">
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                                <span className="text-sm truncate max-w-[200px]">
-                                  {falta.justificativa}
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                                <span className="text-sm">Não justificada</span>
-                              </div>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {faltasMes.map((falta) => {
+                        const dataFalta = falta.data_falta || falta.data || new Date().toISOString();
+                        const isJustificada = falta.justificada || falta.tipo === "justificada";
+                        const justificativaTexto = falta.justificativa || falta.motivo;
+                        
+                        return (
+                          <TableRow key={falta.id}>
+                            <TableCell>
+                              {format(new Date(dataFalta), "dd/MM/yyyy")}
+                            </TableCell>
+                            <TableCell>{falta.disciplina?.nome || "-"}</TableCell>
+                            <TableCell>
+                              <Badge variant={isJustificada ? "outline" : "destructive"}>
+                                {isJustificada ? "Justificada" : "Não Justificada"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {justificativaTexto ? (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="h-4 w-4 text-green-500" />
+                                  <span className="text-sm truncate max-w-[200px]">
+                                    {justificativaTexto}
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                                  <span className="text-sm">Não justificada</span>
+                                </div>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </div>
