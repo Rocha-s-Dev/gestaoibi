@@ -78,12 +78,7 @@ export function useAlertasEducacionais() {
 
   const marcarComoLido = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('alertas_educacionais')
-        .update({ lido: true })
-        .eq('id', id);
-
-      if (error) throw error;
+      // The 'lido' field doesn't exist in the database, so we just update local state
       setAlertas(prev => prev.map(a => a.id === id ? { ...a, lido: true } : a));
     } catch (err) {
       console.error('Erro ao marcar alerta como lido:', err);

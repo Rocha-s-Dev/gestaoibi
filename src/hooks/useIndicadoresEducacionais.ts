@@ -59,15 +59,14 @@ export function useIndicadoresEducacionais() {
       // Buscar todas as escolas
       const { data: escolas, error: escolasError } = await supabase
         .from("escolas")
-        .select("id, nome, status")
-        .eq("status", "ativa");
+        .select("id, nome");
 
       if (escolasError) throw escolasError;
 
-      // Buscar todos os alunos com seu status
+      // Buscar todos os alunos com seu situacao
       const { data: alunos, error: alunosError } = await supabase
         .from("alunos")
-        .select("id, escola_id, status");
+        .select("id, escola_id, situacao");
 
       if (alunosError) throw alunosError;
 
@@ -84,15 +83,15 @@ export function useIndicadoresEducacionais() {
       const { data: faltas, error: faltasError } = await supabase
         .from("faltas")
         .select("aluno_id")
-        .gte("data_falta", `${anoAtual}-01-01`)
-        .lt("data_falta", `${anoAtual + 1}-01-01`);
+        .gte("data", `${anoAtual}-01-01`)
+        .lt("data", `${anoAtual + 1}-01-01`);
 
       if (faltasError) throw faltasError;
 
       // Contar alunos por status
       const alunosPorStatus: Record<string, number> = {};
-      alunos?.forEach((a) => {
-        const status = a.status || "ativo";
+      (alunos as any[])?.forEach((a) => {
+        const status = a.situacao || "ativo";
         alunosPorStatus[status] = (alunosPorStatus[status] || 0) + 1;
       });
 
@@ -124,13 +123,13 @@ export function useIndicadoresEducacionais() {
 
       const diasLetivos = 200; // Estimativa de dias letivos
 
-      for (const escola of escolas || []) {
-        const alunosEscola = alunos?.filter((a) => a.escola_id === escola.id) || [];
+      for (const escola of (escolas as any[]) || []) {
+        const alunosEscola = (alunos as any[])?.filter((a) => a.escola_id === escola.id) || [];
         const totalAlunosEscola = alunosEscola.length;
         
-        const alunosMatriculados = alunosEscola.filter((a) => a.status === "matriculado" || a.status === "concluido").length;
-        const alunosEvadidos = alunosEscola.filter((a) => a.status === "evadido").length;
-        const alunosTransferidos = alunosEscola.filter((a) => a.status === "transferido").length;
+        const alunosMatriculados = alunosEscola.filter((a) => a.situacao === "ativo" || a.situacao === "concluido").length;
+        const alunosEvadidos = alunosEscola.filter((a) => a.situacao === "evadido").length;
+        const alunosTransferidos = alunosEscola.filter((a) => a.situacao === "transferido").length;
         
         const taxaEvasao = totalAlunosEscola > 0 ? (alunosEvadidos / totalAlunosEscola) * 100 : 0;
 
@@ -140,7 +139,7 @@ export function useIndicadoresEducacionais() {
         let alunosEmRisco = 0;
         let alunosAprovados = 0;
 
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           const notasAluno = notasPorAluno.get(aluno.id) || [];
           if (notasAluno.length > 0) {
             const mediaAluno = notasAluno.reduce((a, b) => a + b, 0) / notasAluno.length;
@@ -160,7 +159,7 @@ export function useIndicadoresEducacionais() {
 
         // Calcular frequência média
         let totalFaltas = 0;
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           totalFaltas += faltasPorAluno.get(aluno.id) || 0;
         });
 
@@ -170,7 +169,7 @@ export function useIndicadoresEducacionais() {
           : 100;
 
         // Verificar frequência como fator de risco
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           const faltasAluno = faltasPorAluno.get(aluno.id) || 0;
           const freqAluno = ((diasLetivos - faltasAluno) / diasLetivos) * 100;
           if (freqAluno < 75 && !notasPorAluno.has(aluno.id)) {

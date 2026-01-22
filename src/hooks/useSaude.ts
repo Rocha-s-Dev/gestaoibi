@@ -470,7 +470,7 @@ export function useProntuarios(pacienteId?: string) {
   const createProntuario = async (prontuario: Omit<Prontuario, "id" | "created_at" | "updated_at" | "paciente" | "profissional">) => {
     const { data, error } = await supabase
       .from("prontuarios")
-      .insert(prontuario)
+      .insert(prontuario as any)
       .select()
       .single();
 
@@ -483,7 +483,7 @@ export function useProntuarios(pacienteId?: string) {
     const { paciente, profissional, ...updateData } = prontuario;
     const { data, error } = await supabase
       .from("prontuarios")
-      .update(updateData)
+      .update(updateData as any)
       .eq("id", id)
       .select()
       .single();

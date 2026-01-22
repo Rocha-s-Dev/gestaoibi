@@ -5,21 +5,19 @@ export type Nota = {
   id: string;
   aluno_id: string;
   disciplina_id: string;
-  professor_id: string;
-  turma_id: string;
+  turma_id: string | null;
   bimestre: number;
-  ano_letivo: number;
+  ano_letivo: number | null;
   nota: number | null;
-  data_avaliacao: string | null;
   observacoes: string | null;
-  tipo_avaliacao: string;
+  fechada: boolean | null;
   created_at?: string;
   updated_at?: string;
   // Relations
-  aluno?: { nome: string; numero_matricula: string };
-  disciplina?: { nome: string };
-  professor?: { nome: string };
-  turma?: { nome: string };
+  aluno?: { nome: string; numero_matricula: string } | null;
+  disciplina?: { nome: string } | null;
+  turma?: { nome: string } | null;
+  [key: string]: unknown;
 };
 
 export function useNotas() {
@@ -36,13 +34,12 @@ export function useNotas() {
           *,
           aluno:alunos(nome, numero_matricula),
           disciplina:disciplinas(nome),
-          professor:professores(nome),
           turma:turmas(nome)
         `)
-        .order('data_avaliacao', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setNotas(data || []);
+      setNotas(data as unknown as Nota[] || []);
     } catch (err) {
       console.error('Erro ao buscar notas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -53,9 +50,10 @@ export function useNotas() {
 
   const createNota = async (notaData: Omit<Nota, 'id'>) => {
     try {
+      const { aluno, disciplina, turma, ...insertData } = notaData;
       const { data, error } = await supabase
         .from('notas')
-        .insert([notaData])
+        .insert([insertData as any])
         .select()
         .single();
 
@@ -71,9 +69,10 @@ export function useNotas() {
 
   const updateNota = async (id: string, notaData: Partial<Nota>) => {
     try {
+      const { aluno, disciplina, turma, ...updateData } = notaData;
       const { data, error } = await supabase
         .from('notas')
-        .update(notaData)
+        .update(updateData as any)
         .eq('id', id)
         .select()
         .single();
@@ -111,8 +110,7 @@ export function useNotas() {
         .select(`
           *,
           aluno:alunos(nome, numero_matricula),
-          disciplina:disciplinas(nome),
-          professor:professores(nome)
+          disciplina:disciplinas(nome)
         `)
         .eq('turma_id', turmaId);
 
@@ -123,7 +121,7 @@ export function useNotas() {
       const { data, error } = await query;
       if (error) throw error;
       
-      return data || [];
+      return data as unknown as Nota[] || [];
     } catch (err) {
       console.error('Erro ao buscar notas por turma:', err);
       throw err;
@@ -137,7 +135,6 @@ export function useNotas() {
         .select(`
           *,
           disciplina:disciplinas(nome),
-          professor:professores(nome),
           turma:turmas(nome)
         `)
         .eq('aluno_id', alunoId);
@@ -149,7 +146,7 @@ export function useNotas() {
       const { data, error } = await query.order('bimestre');
       if (error) throw error;
       
-      return data || [];
+      return data as unknown as Nota[] || [];
     } catch (err) {
       console.error('Erro ao buscar notas por aluno:', err);
       throw err;
