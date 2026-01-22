@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -15,7 +16,7 @@ import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TaskPriority = "low" | "medium" | "high";
+type TaskPriority = Database["public"]["Enums"]["task_priority"];
 
 interface AddTaskDialogProps {
   goalId: string;
@@ -38,13 +39,13 @@ export function AddTaskDialog({ goalId, open, onOpenChange, onTaskAdded }: AddTa
   const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from("profiles" as any) as any)
+      const { data, error } = await supabase
+        .from("profiles")
         .select("*")
-        .order("name");
+        .order("first_name");
       
       if (error) throw error;
-      return data as any[];
+      return data;
     },
   });
 
@@ -54,8 +55,8 @@ export function AddTaskDialog({ goalId, open, onOpenChange, onTaskAdded }: AddTa
 
     try {
       // Primeiro, criar a tarefa
-      const { data: task, error: taskError } = await (supabase
-        .from("tasks" as any) as any)
+      const { data: task, error: taskError } = await supabase
+        .from("tasks")
         .insert({
           title: formData.title,
           description: formData.description,
@@ -75,8 +76,8 @@ export function AddTaskDialog({ goalId, open, onOpenChange, onTaskAdded }: AddTa
           user_id: userId,
         }));
 
-        const { error: assignmentError } = await (supabase
-          .from("task_assignments" as any) as any)
+        const { error: assignmentError } = await supabase
+          .from("task_assignments")
           .insert(assignments);
 
         if (assignmentError) throw assignmentError;
@@ -179,9 +180,9 @@ export function AddTaskDialog({ goalId, open, onOpenChange, onTaskAdded }: AddTa
               <SelectValue placeholder="Responsável" />
             </SelectTrigger>
             <SelectContent>
-              {users?.map((user: any) => (
+              {users?.map((user) => (
                 <SelectItem key={user.id} value={user.id}>
-                  {user.name || user.email}
+                  {user.first_name} {user.last_name}
                 </SelectItem>
               ))}
             </SelectContent>

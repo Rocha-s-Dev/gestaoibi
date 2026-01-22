@@ -1,17 +1,22 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Professor = {
   id: string;
   nome: string;
-  cpf: string | null;
-  email: string | null;
-  telefone: string | null;
-  especialidade: string | null;
-  escola_id: string | null;
-  user_id: string | null;
-  escola_principal?: { nome: string } | null;
-  [key: string]: unknown;
+  cpf: string;
+  rg?: string;
+  data_nascimento?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  formacao?: string;
+  especializacao?: string;
+  registro_profissional?: string;
+  data_admissao: string;
+  status: string;
+  escola_principal_id?: string;
 };
 
 export function useProfessores() {
@@ -31,7 +36,7 @@ export function useProfessores() {
         .order('nome');
 
       if (error) throw error;
-      setProfessores(data as unknown as Professor[] || []);
+      setProfessores(data || []);
     } catch (err) {
       console.error('Erro ao buscar professores:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -42,16 +47,15 @@ export function useProfessores() {
 
   const createProfessor = async (professorData: Omit<Professor, 'id'>) => {
     try {
-      const { escola_principal, ...insertData } = professorData;
       const { data, error } = await supabase
         .from('professores')
-        .insert([insertData as any])
+        .insert([professorData])
         .select()
         .single();
 
       if (error) throw error;
       
-      await fetchProfessores();
+      await fetchProfessores(); // Refresh list
       return data;
     } catch (err) {
       console.error('Erro ao criar professor:', err);
@@ -61,17 +65,16 @@ export function useProfessores() {
 
   const updateProfessor = async (id: string, professorData: Partial<Professor>) => {
     try {
-      const { escola_principal, ...updateData } = professorData;
       const { data, error } = await supabase
         .from('professores')
-        .update(updateData as any)
+        .update(professorData)
         .eq('id', id)
         .select()
         .single();
 
       if (error) throw error;
       
-      await fetchProfessores();
+      await fetchProfessores(); // Refresh list
       return data;
     } catch (err) {
       console.error('Erro ao atualizar professor:', err);
@@ -88,7 +91,7 @@ export function useProfessores() {
 
       if (error) throw error;
       
-      await fetchProfessores();
+      await fetchProfessores(); // Refresh list
     } catch (err) {
       console.error('Erro ao deletar professor:', err);
       throw err;

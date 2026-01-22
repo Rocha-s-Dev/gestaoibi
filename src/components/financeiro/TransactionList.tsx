@@ -30,8 +30,8 @@ export function TransactionList({ type, refreshTrigger }: TransactionListProps) 
     const fetchTransactions = async () => {
       setLoading(true);
       
-      const { data, error } = await (supabase
-        .from("financial_transactions" as any) as any)
+      const { data, error } = await supabase
+        .from("financial_transactions")
         .select(`
           id,
           description,

@@ -61,7 +61,7 @@ export function AlunoDialog({ open, onOpenChange, onSubmit, aluno }: AlunoDialog
         data_matricula: aluno.data_matricula,
         escola_id: aluno.escola_id,
         turma_atual_id: aluno.turma_atual_id || "",
-        status: (aluno.status as 'matriculado' | 'transferido' | 'evadido' | 'concluido') || 'matriculado',
+        status: aluno.status,
         observacoes: aluno.observacoes || "",
         necessidades_especiais: aluno.necessidades_especiais || ""
       });

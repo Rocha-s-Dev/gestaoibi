@@ -36,8 +36,8 @@ export function AddFinancialGoalDialog({ open, onOpenChange, onGoalAdded }: AddF
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
-      const { data, error } = await (supabase
-        .from("financial_goals" as any) as any)
+      const { data, error } = await supabase
+        .from("financial_goals")
         .insert({
           description: formData.description,
           type: formData.type,
@@ -47,7 +47,6 @@ export function AddFinancialGoalDialog({ open, onOpenChange, onGoalAdded }: AddF
           alert_threshold: formData.alert_threshold,
           status: "active",
           current_value: 0,
-          user_id: user.id,
         })
         .select()
         .single();

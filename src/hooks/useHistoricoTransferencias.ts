@@ -55,8 +55,8 @@ export function useHistoricoEscolar() {
   const fetchHistoricos = useCallback(async (alunoId?: string) => {
     try {
       setLoading(true);
-      // historico_escolar table may not exist - use type assertion
-      let query = (supabase.from('historico_escolar' as any) as any)
+      let query = supabase
+        .from('historico_escolar')
         .select(`
           *,
           aluno:alunos(nome, numero_matricula)
@@ -80,7 +80,8 @@ export function useHistoricoEscolar() {
 
   const getHistoricoAluno = async (alunoId: string) => {
     try {
-      const { data, error } = await (supabase.from('historico_escolar' as any) as any)
+      const { data, error } = await supabase
+        .from('historico_escolar')
         .select('*')
         .eq('aluno_id', alunoId)
         .order('ano_letivo', { ascending: false });
@@ -95,7 +96,8 @@ export function useHistoricoEscolar() {
 
   const createHistorico = async (historico: Omit<HistoricoEscolar, 'id' | 'aluno'>) => {
     try {
-      const { error } = await (supabase.from('historico_escolar' as any) as any)
+      const { error } = await supabase
+        .from('historico_escolar')
         .insert(historico);
 
       if (error) throw error;
@@ -109,7 +111,8 @@ export function useHistoricoEscolar() {
 
   const updateHistorico = async (id: string, updates: Partial<HistoricoEscolar>) => {
     try {
-      const { error } = await (supabase.from('historico_escolar' as any) as any)
+      const { error } = await supabase
+        .from('historico_escolar')
         .update(updates)
         .eq('id', id);
 
@@ -193,7 +196,8 @@ export function useHistoricoEscolar() {
         situacao: 'em_curso' as SituacaoAnoLetivo
       };
 
-      const { data: existente } = await (supabase.from('historico_escolar' as any) as any)
+      const { data: existente } = await supabase
+        .from('historico_escolar')
         .select('id')
         .eq('aluno_id', alunoId)
         .eq('ano_letivo', anoAtual)
@@ -326,12 +330,11 @@ export function useTransferencias() {
       }
 
       // Atualizar aluno se for transferência interna
-      const tipo = (transferencia as any).tipo;
-      if (tipo === 'interna_turma' || tipo === 'interna_escola') {
+      if (transferencia.tipo === 'interna_turma' || transferencia.tipo === 'interna_escola') {
         const updates: Record<string, string | undefined> = {};
         
         if (transferencia.turma_destino_id) {
-          updates.turma_id = transferencia.turma_destino_id;
+          updates.turma_atual_id = transferencia.turma_destino_id;
         }
         if (transferencia.escola_destino_id) {
           updates.escola_id = transferencia.escola_destino_id;
@@ -346,10 +349,10 @@ export function useTransferencias() {
       }
 
       // Se for transferência externa de saída, atualizar status do aluno
-      if (tipo === 'externa_saida') {
+      if (transferencia.tipo === 'externa_saida') {
         await supabase
           .from('alunos')
-          .update({ situacao: 'transferido' })
+          .update({ status: 'transferido' })
           .eq('id', transferencia.aluno_id);
       }
 

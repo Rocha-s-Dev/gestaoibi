@@ -11,19 +11,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string | null;
-  priority?: string;
-  status?: string;
-  goal_id?: string;
-  due_date?: string | null;
-}
+import { Tables } from "@/integrations/supabase/types";
 
 interface DeleteTaskDialogProps {
-  task: Task;
+  task: Tables<"tasks">;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onTaskDeleted: () => void;
@@ -42,8 +33,8 @@ export function DeleteTaskDialog({
     setIsLoading(true);
 
     try {
-      const { error } = await (supabase
-        .from("tasks" as any) as any)
+      const { error } = await supabase
+        .from("tasks")
         .delete()
         .eq("id", task.id);
 

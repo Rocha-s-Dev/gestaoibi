@@ -1,10 +1,10 @@
+
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DashboardSaude } from "@/components/saude/DashboardSaude";
-import { CadastroPacientes } from "@/components/saude/CadastroPacientes";
-import { AgendamentoConsultas } from "@/components/saude/AgendamentoConsultas";
-import { ProntuarioEletronico } from "@/components/saude/ProntuarioEletronico";
+import { CadastroUnidadesSaude } from "@/components/saude/CadastroUnidadesSaude";
+import { MonitoramentoIndicadores } from "@/components/saude/MonitoramentoIndicadores";
+import { MetasSaudePublica } from "@/components/saude/MetasSaudePublica";
 
 export default function GestaoSaudePublica() {
   return (
@@ -13,47 +13,54 @@ export default function GestaoSaudePublica() {
         <header>
           <h1 className="text-3xl font-bold tracking-tight">Gestão de Saúde Pública</h1>
           <p className="text-muted-foreground mt-2">
-            Sistema completo de gestão dos serviços de saúde pública municipal
+            Sistema de gestão e acompanhamento dos serviços de saúde pública
           </p>
         </header>
 
-        <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger value="dashboard" className="text-sm p-3">
-              Dashboard
+        <Tabs defaultValue="unidades">
+          <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsTrigger value="unidades" className="text-sm p-3">
+              Cadastro de Unidades de Saúde
             </TabsTrigger>
-            <TabsTrigger value="pacientes" className="text-sm p-3">
-              Pacientes
+            <TabsTrigger value="indicadores" className="text-sm p-3">
+              Monitoramento de Indicadores de Saúde
             </TabsTrigger>
-            <TabsTrigger value="agendamentos" className="text-sm p-3">
-              Agendamentos
-            </TabsTrigger>
-            <TabsTrigger value="prontuarios" className="text-sm p-3">
-              Prontuários
+            <TabsTrigger value="metas" className="text-sm p-3">
+              Metas de Saúde Pública
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="dashboard" className="mt-6">
-            <DashboardSaude />
-          </TabsContent>
-
-          <TabsContent value="pacientes" className="mt-6">
+          <TabsContent value="unidades" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Cadastro de Pacientes</CardTitle>
+                <CardTitle>Registro de Unidades e Serviços de Saúde</CardTitle>
               </CardHeader>
               <CardContent>
-                <CadastroPacientes />
+                <CadastroUnidadesSaude />
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="agendamentos" className="mt-6">
-            <AgendamentoConsultas />
+          <TabsContent value="indicadores" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Acompanhamento de Indicadores de Saúde Pública</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MonitoramentoIndicadores />
+              </CardContent>
+            </Card>
           </TabsContent>
 
-          <TabsContent value="prontuarios" className="mt-6">
-            <ProntuarioEletronico />
+          <TabsContent value="metas" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestão de Metas de Saúde Pública</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetasSaudePublica />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

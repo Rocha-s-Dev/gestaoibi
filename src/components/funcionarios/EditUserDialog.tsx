@@ -59,8 +59,8 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
   const { data: departments } = useQuery({
     queryKey: ["departments"],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from("departments" as any) as any)
+      const { data, error } = await supabase
+        .from("departments")
         .select("*")
         .order("name");
       
@@ -283,7 +283,7 @@ export const EditUserDialog = ({ user }: EditUserDialogProps) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhum departamento</SelectItem>
-                    {departments?.map((dept: any) => (
+                    {departments?.map(dept => (
                       <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
                     ))}
                   </SelectContent>

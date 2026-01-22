@@ -15,7 +15,6 @@ export interface Rota {
   km_estimado?: number;
   status: StatusRota;
   created_at: string;
-  [key: string]: unknown;
 }
 
 export interface Veiculo {
@@ -30,7 +29,6 @@ export interface Veiculo {
   status: StatusVeiculo;
   observacoes?: string;
   created_at: string;
-  [key: string]: unknown;
 }
 
 export interface AlunoRota {
@@ -46,7 +44,6 @@ export interface AlunoRota {
   aluno?: { nome: string; numero_matricula: string };
   rota?: { nome: string };
   veiculo?: { placa: string; modelo: string };
-  [key: string]: unknown;
 }
 
 export function useRotas() {
@@ -75,7 +72,7 @@ export function useRotas() {
     try {
       const { data, error } = await supabase
         .from('rotas_transporte')
-        .insert(rota as any)
+        .insert(rota)
         .select()
         .single();
 
@@ -93,7 +90,7 @@ export function useRotas() {
     try {
       const { error } = await supabase
         .from('rotas_transporte')
-        .update(updates as any)
+        .update(updates)
         .eq('id', id);
 
       if (error) throw error;
@@ -135,8 +132,8 @@ export function useVeiculos() {
   const fetchVeiculos = useCallback(async () => {
     try {
       setLoading(true);
-      // veiculos_transporte is the actual table name
-      const { data, error } = await (supabase.from('veiculos_transporte' as any) as any)
+      const { data, error } = await supabase
+        .from('veiculos')
         .select('*')
         .order('placa');
 
@@ -152,7 +149,8 @@ export function useVeiculos() {
 
   const createVeiculo = async (veiculo: Omit<Veiculo, 'id' | 'created_at'>) => {
     try {
-      const { data, error } = await (supabase.from('veiculos_transporte' as any) as any)
+      const { data, error } = await supabase
+        .from('veiculos')
         .insert(veiculo)
         .select()
         .single();
@@ -169,7 +167,8 @@ export function useVeiculos() {
 
   const updateVeiculo = async (id: string, updates: Partial<Veiculo>) => {
     try {
-      const { error } = await (supabase.from('veiculos_transporte' as any) as any)
+      const { error } = await supabase
+        .from('veiculos')
         .update(updates)
         .eq('id', id);
 
@@ -184,7 +183,8 @@ export function useVeiculos() {
 
   const deleteVeiculo = async (id: string) => {
     try {
-      const { error } = await (supabase.from('veiculos_transporte' as any) as any)
+      const { error } = await supabase
+        .from('veiculos')
         .delete()
         .eq('id', id);
 
@@ -216,7 +216,8 @@ export function useAlunosRotas() {
         .select(`
           *,
           aluno:alunos(nome, numero_matricula),
-          rota:rotas_transporte(nome)
+          rota:rotas_transporte(nome),
+          veiculo:veiculos(placa, modelo)
         `)
         .order('created_at', { ascending: false });
 
@@ -235,11 +236,11 @@ export function useAlunosRotas() {
     }
   }, []);
 
-  const vincularAluno = async (vinculo: Omit<AlunoRota, 'id' | 'aluno' | 'rota' | 'veiculo' | 'ativo'>) => {
+  const vincularAluno = async (vinculo: Omit<AlunoRota, 'id' | 'aluno' | 'rota' | 'veiculo'>) => {
     try {
       const { error } = await supabase
         .from('alunos_rotas')
-        .insert(vinculo as any);
+        .insert(vinculo);
 
       if (error) throw error;
       toast.success('Aluno vinculado à rota');

@@ -1,25 +1,15 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tables } from "@/integrations/supabase/types";
 import { TaskList } from "./TaskList";
 
-interface Goal {
-  id: string;
-  title: string;
-  description?: string | null;
-  term?: string;
-  status?: string;
-  due_date?: string | null;
-  created_at?: string;
-  created_by?: string;
-}
-
 interface ViewGoalDialogProps {
-  goal: Goal;
+  goal: Tables<"goals">;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export function ViewGoalDialog({ goal, open, onOpenChange }: ViewGoalDialogProps) {
-  const getStatusDisplay = (status: string | undefined) => {
+  const getStatusDisplay = (status: string) => {
     const statusMap: Record<string, string> = {
       pending: "Pendente",
       in_progress: "Em Andamento",
@@ -27,16 +17,16 @@ export function ViewGoalDialog({ goal, open, onOpenChange }: ViewGoalDialogProps
       completed: "Concluída",
       cancelled: "Cancelada",
     };
-    return statusMap[status || "pending"] || status || "Pendente";
+    return statusMap[status] || status;
   };
 
-  const getTermDisplay = (term: string | undefined) => {
+  const getTermDisplay = (term: string) => {
     const termMap: Record<string, string> = {
       short: "Curto Prazo",
       medium: "Médio Prazo",
       long: "Longo Prazo",
     };
-    return termMap[term || "short"] || term || "Curto Prazo";
+    return termMap[term] || term;
   };
 
   return (
@@ -65,7 +55,7 @@ export function ViewGoalDialog({ goal, open, onOpenChange }: ViewGoalDialogProps
           <div>
             <h4 className="text-sm font-medium mb-1">Criado em</h4>
             <p className="text-sm text-gray-600">
-              {goal.created_at ? new Date(goal.created_at).toLocaleDateString("pt-BR") : "-"}
+              {new Date(goal.created_at).toLocaleDateString("pt-BR")}
             </p>
           </div>
           

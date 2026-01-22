@@ -58,11 +58,11 @@ export function useEducacaoStats() {
 
       // Buscar contagens em paralelo
       const [escolasRes, escolasAtivasRes, alunosRes, professoresRes, turmasRes] = await Promise.all([
-        (supabase.from("escolas" as any) as any).select('*', { count: 'exact', head: true }),
-        (supabase.from("escolas" as any) as any).select('*', { count: 'exact', head: true }).eq('tipo', 'municipal'),
-        (supabase.from("alunos" as any) as any).select('*', { count: 'exact', head: true }),
-        (supabase.from("professores" as any) as any).select('*', { count: 'exact', head: true }),
-        (supabase.from("turmas" as any) as any).select('*', { count: 'exact', head: true }),
+        supabase.from('escolas').select('*', { count: 'exact', head: true }),
+        supabase.from('escolas').select('*', { count: 'exact', head: true }).eq('status', 'ativa'),
+        supabase.from('alunos').select('*', { count: 'exact', head: true }),
+        supabase.from('professores').select('*', { count: 'exact', head: true }),
+        supabase.from('turmas').select('*', { count: 'exact', head: true }),
       ]);
 
       const totalEscolas = escolasRes.count || 0;
@@ -73,25 +73,25 @@ export function useEducacaoStats() {
 
       // Buscar notas e faltas em paralelo
       const [notasRes, faltasRes] = await Promise.all([
-        (supabase.from("notas" as any) as any).select('nota, aluno_id').eq('ano_letivo', anoAtual).not('nota', 'is', null),
-        (supabase.from("faltas" as any) as any).select('aluno_id').gte('data', `${anoAtual}-01-01`).lt('data', `${anoAtual + 1}-01-01`),
+        supabase.from('notas').select('nota, aluno_id').eq('ano_letivo', anoAtual).not('nota', 'is', null),
+        supabase.from('faltas').select('aluno_id').gte('data_falta', `${anoAtual}-01-01`).lt('data_falta', `${anoAtual + 1}-01-01`),
       ]);
 
-      const notasData = (notasRes.data || []) as any[];
-      const faltasData = (faltasRes.data || []) as any[];
+      const notasData = notasRes.data || [];
+      const faltasData = faltasRes.data || [];
 
       // Calcular métricas
       const totalAulas = notasData.length || 1;
       const totalFaltas = faltasData.length || 0;
       const taxaFrequenciaMedia = Math.max(0, ((totalAulas - totalFaltas) / totalAulas) * 100);
 
-      const somaNotas = notasData.reduce((acc: number, n: any) => acc + (Number(n.nota) || 0), 0);
+      const somaNotas = notasData.reduce((acc, n) => acc + (Number(n.nota) || 0), 0);
       const desempenhoMedio = notasData.length ? somaNotas / notasData.length : 0;
 
-      const alunosComNotasBaixas = notasData.filter((n: any) => (Number(n.nota) || 0) < 6.0);
-      const alunosEmRiscoSet = new Set(alunosComNotasBaixas.map((a: any) => a.aluno_id));
+      const alunosComNotasBaixas = notasData.filter(n => (Number(n.nota) || 0) < 6.0);
+      const alunosEmRiscoSet = new Set(alunosComNotasBaixas.map(a => a.aluno_id));
 
-      const alunosAprovados = notasData.filter((n: any) => (Number(n.nota) || 0) >= 6.0).length;
+      const alunosAprovados = notasData.filter(n => (Number(n.nota) || 0) >= 6.0).length;
       const taxaAprovacao = notasData.length ? (alunosAprovados / notasData.length) * 100 : 0;
 
       setStats({
@@ -117,24 +117,24 @@ export function useEducacaoStats() {
 
   const fetchEstatisticasPorEscola = async () => {
     try {
-      const { data: escolas } = await (supabase.from("escolas" as any) as any)
-        .select('id, nome, capacidade');
+      const { data: escolas } = await supabase
+        .from('escolas')
+        .select('id, nome, capacidade_total');
 
       if (!escolas) return;
 
       // Buscar dados em paralelo para todas as escolas
       const estatisticas = await Promise.all(
-        (escolas as any[]).map(async (escola: any) => {
+        escolas.map(async (escola) => {
           const [alunosRes, turmasRes, professoresRes] = await Promise.all([
-            (supabase.from("alunos" as any) as any).select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
-            (supabase.from("turmas" as any) as any).select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
-            (supabase.from("professores" as any) as any).select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
+            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
+            supabase.from('turmas').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
+            supabase.from('professores').select('*', { count: 'exact', head: true }).eq('escola_principal_id', escola.id),
           ]);
 
           const totalAlunos = alunosRes.count || 0;
-          const capacidade = escola.capacidade || 0;
-          const taxaOcupacao = capacidade > 0 
-            ? (totalAlunos / capacidade) * 100 
+          const taxaOcupacao = escola.capacidade_total > 0 
+            ? (totalAlunos / escola.capacidade_total) * 100 
             : 0;
 
           return {
@@ -146,7 +146,7 @@ export function useEducacaoStats() {
             taxa_frequencia: 0,
             desempenho_medio: 0,
             taxa_ocupacao: Number(taxaOcupacao.toFixed(1)),
-            capacidade_total: capacidade,
+            capacidade_total: escola.capacidade_total,
             alunos_em_risco: 0,
           };
         })
@@ -162,7 +162,8 @@ export function useEducacaoStats() {
     try {
       const anoAtual = new Date().getFullYear();
       
-      const { data: notas } = await (supabase.from("notas" as any) as any)
+      const { data: notas } = await supabase
+        .from('notas')
         .select(`nota, disciplina_id, disciplina:disciplinas(nome)`)
         .eq('ano_letivo', anoAtual)
         .not('nota', 'is', null);
@@ -171,7 +172,7 @@ export function useEducacaoStats() {
 
       const disciplinasMap = new Map<string, { nome: string; notas: number[] }>();
 
-      (notas as any[]).forEach((nota: any) => {
+      notas.forEach((nota) => {
         const disciplinaId = nota.disciplina_id;
         const disciplinaNome = nota.disciplina?.nome || 'Sem nome';
         
@@ -206,20 +207,21 @@ export function useEducacaoStats() {
     try {
       const anoAtual = new Date().getFullYear();
       
-      const { data: turmas } = await (supabase.from("turmas" as any) as any)
+      const { data: turmas } = await supabase
+        .from('turmas')
         .select(`id, nome, escola:escolas(nome)`)
         .eq('ano_letivo', anoAtual);
 
       if (!turmas) return;
 
       const frequencia = await Promise.all(
-        (turmas as any[]).map(async (turma: any) => {
+        turmas.map(async (turma) => {
           const [alunosRes, faltasRes] = await Promise.all([
-            (supabase.from("alunos" as any) as any).select('*', { count: 'exact', head: true }).eq('turma_id', turma.id),
-            (supabase.from("faltas" as any) as any).select('*', { count: 'exact', head: true })
-              .eq('aluno_id', turma.id)
-              .gte('data', `${anoAtual}-01-01`)
-              .lt('data', `${anoAtual + 1}-01-01`),
+            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('turma_atual_id', turma.id),
+            supabase.from('faltas').select('*', { count: 'exact', head: true })
+              .eq('turma_id', turma.id)
+              .gte('data_falta', `${anoAtual}-01-01`)
+              .lt('data_falta', `${anoAtual + 1}-01-01`),
           ]);
 
           const totalAlunos = alunosRes.count || 0;

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Database, Tables } from "@/integrations/supabase/types";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -18,21 +19,11 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 
-type GoalTerm = "short" | "medium" | "long";
-type GoalStatus = "pending" | "in_progress" | "delayed" | "completed" | "cancelled";
-
-interface Goal {
-  id: string;
-  title: string;
-  description?: string | null;
-  term?: string;
-  status?: string;
-  due_date?: string | null;
-  created_by?: string;
-}
+type GoalTerm = Database["public"]["Enums"]["goal_term"];
+type GoalStatus = Database["public"]["Enums"]["goal_status"];
 
 interface EditGoalDialogProps {
-  goal: Goal;
+  goal: Tables<"goals">;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGoalUpdated: () => void;
@@ -42,8 +33,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
   const [formData, setFormData] = useState({
     title: goal.title,
     description: goal.description || "",
-    term: (goal.term || "short") as GoalTerm,
-    status: (goal.status || "pending") as GoalStatus,
+    term: goal.term as GoalTerm,
+    status: goal.status as GoalStatus,
     dueDate: goal.due_date ? new Date(goal.due_date) : undefined,
   });
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
@@ -53,13 +44,13 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
   const { data: departments } = useQuery({
     queryKey: ["departments"],
     queryFn: async () => {
-      const { data, error } = await (supabase
-        .from("departments" as any) as any)
+      const { data, error } = await supabase
+        .from("departments")
         .select("*")
         .order("name");
       
       if (error) throw error;
-      return data as any[];
+      return data;
     },
   });
 
@@ -67,8 +58,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
     if (open && goal) {
       // Fetch the departments associated with this goal
       const fetchGoalDepartments = async () => {
-        const { data, error } = await (supabase
-          .from("goal_departments" as any) as any)
+        const { data, error } = await supabase
+          .from("goal_departments")
           .select("department_id")
           .eq("goal_id", goal.id);
         
@@ -78,7 +69,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
         }
         
         if (data) {
-          const departmentIds = data.map((item: any) => item.department_id);
+          const departmentIds = data.map(item => item.department_id);
           setSelectedDepartments(departmentIds);
         }
       };
@@ -103,8 +94,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
 
     try {
       // Update the goal information
-      const { error: goalError } = await (supabase
-        .from("goals" as any) as any)
+      const { error: goalError } = await supabase
+        .from("goals")
         .update({
           title: formData.title,
           description: formData.description,
@@ -117,8 +108,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
       if (goalError) throw goalError;
 
       // Remove all existing department associations
-      const { error: deleteError } = await (supabase
-        .from("goal_departments" as any) as any)
+      const { error: deleteError } = await supabase
+        .from("goal_departments")
         .delete()
         .eq("goal_id", goal.id);
 
@@ -131,8 +122,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
           department_id: departmentId
         }));
 
-        const { error: insertError } = await (supabase
-          .from("goal_departments" as any) as any)
+        const { error: insertError } = await supabase
+          .from("goal_departments")
           .insert(departmentAssociations);
 
         if (insertError) throw insertError;
@@ -180,7 +171,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
             <Label htmlFor="departments">Secretarias (selecione uma ou mais)</Label>
             <ScrollArea className="h-[200px] border rounded-md p-2">
               <div className="space-y-2">
-                {departments?.map((department: any) => (
+                {departments?.map((department) => (
                   <div key={department.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={`department-${department.id}`}

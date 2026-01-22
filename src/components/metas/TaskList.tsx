@@ -4,6 +4,7 @@ import { Plus, CheckCircle, Circle, CalendarIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { Tables } from "@/integrations/supabase/types";
 import { AddTaskDialog } from "./AddTaskDialog";
 import { EditTaskDialog } from "./EditTaskDialog";
 import { DeleteTaskDialog } from "./DeleteTaskDialog";
@@ -14,24 +15,17 @@ interface TaskListProps {
   goalId: string;
 }
 
-interface Task {
-  id: string;
-  title: string;
-  description?: string | null;
-  priority?: string;
-  status?: string;
-  goal_id?: string;
-  due_date?: string | null;
-  completed?: boolean;
-  created_at?: string;
-  task_assignments?: {
+type Task = Tables<"tasks"> & {
+  task_assignments: {
     user_id: string;
     profiles?: {
       first_name: string | null;
       last_name: string | null;
     } | null;
   }[];
-}
+  due_date?: string | null;
+  completed?: boolean;
+};
 
 export function TaskList({ goalId }: TaskListProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -45,8 +39,8 @@ export function TaskList({ goalId }: TaskListProps) {
       console.log("Fetching tasks for goal ID:", goalId);
       
       // Primeiro, vamos buscar as tarefas básicas
-      const { data: tasksData, error: tasksError } = await (supabase
-        .from("tasks" as any) as any)
+      const { data: tasksData, error: tasksError } = await supabase
+        .from("tasks")
         .select("*")
         .eq("goal_id", goalId)
         .order("created_at", { ascending: false });
@@ -60,10 +54,10 @@ export function TaskList({ goalId }: TaskListProps) {
       
       // Para cada tarefa, vamos buscar as atribuições de usuários separadamente
       const tasksWithAssignments = await Promise.all(
-        (tasksData as any[]).map(async (task: any) => {
+        tasksData.map(async (task) => {
           // Buscar todas as atribuições para esta tarefa
-          const { data: assignmentsData, error: assignmentsError } = await (supabase
-            .from("task_assignments" as any) as any)
+          const { data: assignmentsData, error: assignmentsError } = await supabase
+            .from("task_assignments")
             .select("user_id")
             .eq("task_id", task.id);
             
@@ -76,12 +70,12 @@ export function TaskList({ goalId }: TaskListProps) {
           }
           
           // Se temos atribuições, buscar o perfil de cada usuário separadamente
-          let assignmentsWithProfiles: any[] = [];
+          let assignmentsWithProfiles = [];
           if (assignmentsData && assignmentsData.length > 0) {
             assignmentsWithProfiles = await Promise.all(
-              (assignmentsData as any[]).map(async (assignment: any) => {
-                const { data: profileData, error: profileError } = await (supabase
-                  .from("profiles" as any) as any)
+              assignmentsData.map(async (assignment) => {
+                const { data: profileData, error: profileError } = await supabase
+                  .from("profiles")
                   .select("first_name, last_name")
                   .eq("id", assignment.user_id)
                   .single();
@@ -116,19 +110,19 @@ export function TaskList({ goalId }: TaskListProps) {
     },
   });
 
-  const getPriorityColor = (priority: string | undefined) => {
+  const getPriorityColor = (priority: string) => {
     const colorMap: Record<string, string> = {
       low: "bg-green-100 text-green-800",
       medium: "bg-yellow-100 text-yellow-800",
       high: "bg-red-100 text-red-800",
     };
-    return colorMap[priority || "medium"] || "bg-gray-100 text-gray-800";
+    return colorMap[priority] || "bg-gray-100 text-gray-800";
   };
 
   const toggleTaskCompletion = async (task: Task) => {
     try {
-      const { error } = await (supabase
-        .from('tasks' as any) as any)
+      const { error } = await supabase
+        .from('tasks')
         .update({ completed: !task.completed })
         .eq('id', task.id);
       

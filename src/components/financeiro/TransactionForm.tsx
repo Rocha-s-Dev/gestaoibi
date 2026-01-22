@@ -61,8 +61,8 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
   // Buscar categorias e departamentos
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data, error } = await (supabase
-        .from("financial_categories" as any) as any)
+      const { data, error } = await supabase
+        .from("financial_categories")
         .select("*")
         .eq("type", transactionType)
         .order("name");
@@ -76,8 +76,8 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
     };
 
     const fetchDepartments = async () => {
-      const { data, error } = await (supabase
-        .from("departments" as any) as any)
+      const { data, error } = await supabase
+        .from("departments")
         .select("*")
         .order("name");
       
@@ -125,8 +125,8 @@ export function TransactionForm({ transactionType, onTransactionAdded }: Transac
     };
 
     // Inserir no Supabase
-    const { error } = await (supabase
-      .from("financial_transactions" as any) as any)
+    const { error } = await supabase
+      .from("financial_transactions")
       .insert(transactionData);
 
     setIsSubmitting(false);
