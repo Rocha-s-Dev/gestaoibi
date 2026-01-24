@@ -1282,27 +1282,33 @@ export type Database = {
       }
       messages: {
         Row: {
+          attachment: Json | null
           content: string
           conversation_id: string
           created_at: string
           id: string
           read: boolean
+          read_at: string | null
           sender_id: string
         }
         Insert: {
+          attachment?: Json | null
           content: string
           conversation_id: string
           created_at?: string
           id?: string
           read?: boolean
+          read_at?: string | null
           sender_id: string
         }
         Update: {
+          attachment?: Json | null
           content?: string
           conversation_id?: string
           created_at?: string
           id?: string
           read?: boolean
+          read_at?: string | null
           sender_id?: string
         }
         Relationships: [

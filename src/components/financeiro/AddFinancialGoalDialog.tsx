@@ -1,14 +1,14 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AddFinancialGoalDialogProps {
   open: boolean;
@@ -17,6 +17,7 @@ interface AddFinancialGoalDialogProps {
 }
 
 export function AddFinancialGoalDialog({ open, onOpenChange, onGoalAdded }: AddFinancialGoalDialogProps) {
+  const { session } = useAuth();
   const [formData, setFormData] = useState({
     description: "",
     type: "revenue",
@@ -33,12 +34,12 @@ export function AddFinancialGoalDialog({ open, onOpenChange, onGoalAdded }: AddF
     setIsLoading(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!session?.user?.id) throw new Error("User not authenticated");
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("financial_goals")
         .insert({
+          user_id: session.user.id,
           description: formData.description,
           type: formData.type,
           target_value: formData.target_value,
@@ -47,9 +48,7 @@ export function AddFinancialGoalDialog({ open, onOpenChange, onGoalAdded }: AddF
           alert_threshold: formData.alert_threshold,
           status: "active",
           current_value: 0,
-        })
-        .select()
-        .single();
+        });
 
       if (error) throw error;
 

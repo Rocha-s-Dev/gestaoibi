@@ -30,11 +30,13 @@ import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
+import { SecretariaProvider } from "@/contexts/SecretariaContext";
 import "./App.css";
 
 export default function App() {
   return (
     <AuthProvider>
+      <SecretariaProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
@@ -239,6 +241,7 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
+      </SecretariaProvider>
     </AuthProvider>
   );
 }

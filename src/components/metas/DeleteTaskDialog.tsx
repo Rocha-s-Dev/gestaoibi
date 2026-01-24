@@ -11,10 +11,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
+
+interface Task {
+  id: string;
+  title: string;
+}
 
 interface DeleteTaskDialogProps {
-  task: Tables<"tasks">;
+  task: Task;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onTaskDeleted: () => void;
@@ -65,7 +69,7 @@ export function DeleteTaskDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Excluir Tarefa</AlertDialogTitle>
           <AlertDialogDescription>
-            Tem certeza que deseja excluir esta tarefa? Esta ação não pode ser
+            Tem certeza que deseja excluir a tarefa "{task.title}"? Esta ação não pode ser
             desfeita.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -7,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Database, Tables } from "@/integrations/supabase/types";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -19,11 +17,20 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 
-type GoalTerm = Database["public"]["Enums"]["goal_term"];
-type GoalStatus = Database["public"]["Enums"]["goal_status"];
+type GoalTerm = "short" | "medium" | "long";
+type GoalStatus = "pending" | "in_progress" | "delayed" | "completed" | "cancelled";
+
+interface Goal {
+  id: string;
+  title: string;
+  description: string | null;
+  term: string;
+  status: string;
+  due_date: string | null;
+}
 
 interface EditGoalDialogProps {
-  goal: Tables<"goals">;
+  goal: Goal;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGoalUpdated: () => void;
@@ -50,12 +57,20 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
         .order("name");
       
       if (error) throw error;
-      return data;
+      return data || [];
     },
   });
 
   useEffect(() => {
     if (open && goal) {
+      setFormData({
+        title: goal.title,
+        description: goal.description || "",
+        term: goal.term as GoalTerm,
+        status: goal.status as GoalStatus,
+        dueDate: goal.due_date ? new Date(goal.due_date) : undefined,
+      });
+      
       // Fetch the departments associated with this goal
       const fetchGoalDepartments = async () => {
         const { data, error } = await supabase
@@ -69,7 +84,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
         }
         
         if (data) {
-          const departmentIds = data.map(item => item.department_id);
+          const departmentIds = data.map((item: any) => item.department_id);
           setSelectedDepartments(departmentIds);
         }
       };
@@ -101,8 +116,8 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
           description: formData.description,
           term: formData.term,
           status: formData.status,
-          due_date: formData.dueDate ? formData.dueDate.toISOString() : null,
-        })
+          due_date: formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : null,
+        } as any)
         .eq("id", goal.id);
 
       if (goalError) throw goalError;
@@ -124,7 +139,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
 
         const { error: insertError } = await supabase
           .from("goal_departments")
-          .insert(departmentAssociations);
+          .insert(departmentAssociations as any);
 
         if (insertError) throw insertError;
       }
@@ -171,7 +186,7 @@ export function EditGoalDialog({ goal, open, onOpenChange, onGoalUpdated }: Edit
             <Label htmlFor="departments">Secretarias (selecione uma ou mais)</Label>
             <ScrollArea className="h-[200px] border rounded-md p-2">
               <div className="space-y-2">
-                {departments?.map((department) => (
+                {departments?.map((department: any) => (
                   <div key={department.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={`department-${department.id}`}
