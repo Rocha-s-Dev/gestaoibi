@@ -1012,6 +1012,7 @@ export type Database = {
           enable_alerts: boolean | null
           id: string
           percentage_increase: number | null
+          secretaria_id: string | null
           status: string | null
           target_value: number
           type: string
@@ -1026,6 +1027,7 @@ export type Database = {
           enable_alerts?: boolean | null
           id?: string
           percentage_increase?: number | null
+          secretaria_id?: string | null
           status?: string | null
           target_value?: number
           type: string
@@ -1040,13 +1042,22 @@ export type Database = {
           enable_alerts?: boolean | null
           id?: string
           percentage_increase?: number | null
+          secretaria_id?: string | null
           status?: string | null
           target_value?: number
           type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "financial_goals_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       financial_transactions: {
         Row: {
@@ -1120,6 +1131,92 @@ export type Database = {
           },
           {
             foreignKeyName: "financial_transactions_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goal_departments: {
+        Row: {
+          created_at: string
+          department_id: string
+          goal_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          department_id: string
+          goal_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          department_id?: string
+          goal_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_departments_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "goal_departments_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goals: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          progress: number | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["goal_status"]
+          term: Database["public"]["Enums"]["goal_term"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          progress?: number | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["goal_status"]
+          term?: Database["public"]["Enums"]["goal_term"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          progress?: number | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["goal_status"]
+          term?: Database["public"]["Enums"]["goal_term"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goals_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -2282,6 +2379,95 @@ export type Database = {
           },
         ]
       }
+      task_assignments: {
+        Row: {
+          assigned_at: string
+          id: string
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string
+          id?: string
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string
+          id?: string
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_assignments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          goal_id: string | null
+          id: string
+          priority: Database["public"]["Enums"]["task_priority"]
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          goal_id?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"]
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          goal_id?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"]
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transferencias: {
         Row: {
           aluno_id: string
@@ -2892,6 +3078,13 @@ export type Database = {
       education_role: "secretaria" | "diretor" | "professor" | "responsavel"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
       feriado_tipo: "nacional" | "estadual" | "municipal" | "ponto_facultativo"
+      goal_status:
+        | "pending"
+        | "in_progress"
+        | "delayed"
+        | "completed"
+        | "cancelled"
+      goal_term: "short" | "medium" | "long"
       health_role:
         | "secretaria_saude"
         | "diretor_unidade"
@@ -2910,6 +3103,8 @@ export type Database = {
         | "servidor"
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
+      task_priority: "low" | "medium" | "high" | "urgent"
+      task_status: "pending" | "in_progress" | "completed" | "cancelled"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -3041,6 +3236,14 @@ export const Constants = {
       education_role: ["secretaria", "diretor", "professor", "responsavel"],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
       feriado_tipo: ["nacional", "estadual", "municipal", "ponto_facultativo"],
+      goal_status: [
+        "pending",
+        "in_progress",
+        "delayed",
+        "completed",
+        "cancelled",
+      ],
+      goal_term: ["short", "medium", "long"],
       health_role: [
         "secretaria_saude",
         "diretor_unidade",
@@ -3061,6 +3264,8 @@ export const Constants = {
         "estagiario",
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
+      task_priority: ["low", "medium", "high", "urgent"],
+      task_status: ["pending", "in_progress", "completed", "cancelled"],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },
   },
