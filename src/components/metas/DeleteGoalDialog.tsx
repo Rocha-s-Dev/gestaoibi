@@ -11,10 +11,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
+
+interface Goal {
+  id: string;
+  title: string;
+}
 
 interface DeleteGoalDialogProps {
-  goal: Tables<"goals">;
+  goal: Goal;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onGoalDeleted: () => void;

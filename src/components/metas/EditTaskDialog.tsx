@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -7,17 +6,23 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Database, Tables } from "@/integrations/supabase/types";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type TaskPriority = Database["public"]["Enums"]["task_priority"];
-type Task = Tables<"tasks">;
+type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+interface Task {
+  id: string;
+  title: string;
+  description: string | null;
+  priority: string;
+  due_date: string | null;
+}
 
 interface EditTaskDialogProps {
   task: Task;
@@ -38,15 +43,15 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
   const { toast } = useToast();
 
   const { data: users } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users-profiles-edit"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
-        .order("first_name");
+        .select("id, user_id, name, email, role")
+        .order("name");
       
       if (error) throw error;
-      return data;
+      return data || [];
     },
   });
 
@@ -61,8 +66,8 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
           title: formData.title,
           description: formData.description,
           priority: formData.priority,
-          due_date: formData.dueDate ? formData.dueDate.toISOString() : null,
-        })
+          due_date: formData.dueDate ? formData.dueDate.toISOString().split('T')[0] : null,
+        } as any)
         .eq("id", task.id);
 
       if (taskError) throw taskError;
@@ -82,7 +87,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
 
         const { error: assignmentError } = await supabase
           .from("task_assignments")
-          .insert(assignments);
+          .insert(assignments as any);
 
         if (assignmentError) throw assignmentError;
       }
@@ -167,6 +172,7 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
               <SelectItem value="low">Baixa</SelectItem>
               <SelectItem value="medium">Média</SelectItem>
               <SelectItem value="high">Alta</SelectItem>
+              <SelectItem value="urgent">Urgente</SelectItem>
             </SelectContent>
           </Select>
           <Select
@@ -177,9 +183,9 @@ export function EditTaskDialog({ task, open, onOpenChange, onTaskUpdated }: Edit
               <SelectValue placeholder="Responsável" />
             </SelectTrigger>
             <SelectContent>
-              {users?.map((user) => (
-                <SelectItem key={user.id} value={user.id}>
-                  {user.first_name} {user.last_name}
+              {users?.map((user: any) => (
+                <SelectItem key={user.id} value={user.user_id}>
+                  {user.name || user.email}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Send, Paperclip, X, FileText, Image, File } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -9,9 +8,35 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Message, Conversation } from "@/types/messaging";
 import { useToast } from "@/hooks/use-toast";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+  read_at?: string | null;
+  attachment?: {
+    path: string;
+    type: string;
+    name: string;
+    size: number;
+  } | null;
+}
+
+interface Conversation {
+  id: string;
+  sender_id: string;
+  receiver_id: string;
+  last_message: string | null;
+  created_at: string;
+  updated_at: string;
+  receiver_profile: {
+    name: string | null;
+    role: string | null;
+  } | null;
+}
 
 interface ConversationPanelProps {
   conversationId: string;
@@ -87,8 +112,8 @@ export const ConversationPanel = ({
       // Fetch that user's profile
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("first_name, last_name, role")
-        .eq("id", otherUserId)
+        .select("name, role")
+        .eq("user_id", otherUserId)
         .single();
       
       if (profileError && profileError.code !== 'PGRST116') {
@@ -124,20 +149,15 @@ export const ConversationPanel = ({
       if (error) throw error;
       
       // Transform the data to match the Message type
-      const typedMessages: Message[] = data?.map(msg => ({
+      const typedMessages: Message[] = (data || []).map((msg: any) => ({
         id: msg.id,
         conversation_id: msg.conversation_id,
         sender_id: msg.sender_id,
         content: msg.content,
         created_at: msg.created_at,
         read_at: msg.read_at,
-        attachment: msg.attachment ? msg.attachment as {
-          path: string;
-          type: string;
-          name: string;
-          size: number;
-        } : null
-      })) || [];
+        attachment: msg.attachment ? msg.attachment as Message['attachment'] : null
+      }));
       
       setMessages(typedMessages);
     } catch (error) {
@@ -240,7 +260,7 @@ export const ConversationPanel = ({
       // Insert the message
       const { error: messageError } = await supabase
         .from("messages")
-        .insert(newMessage);
+        .insert(newMessage as any);
 
       if (messageError) throw messageError;
       
@@ -297,7 +317,7 @@ export const ConversationPanel = ({
     }
   };
 
-  const renderAttachment = (attachment: any) => {
+  const renderAttachment = (attachment: Message['attachment']) => {
     if (!attachment) return null;
     
     const fileUrl = getFileUrl(attachment.path);
@@ -362,12 +382,12 @@ export const ConversationPanel = ({
         <div className="flex items-center">
           <Avatar className="h-10 w-10 mr-3">
             <div className="bg-primary text-primary-foreground h-full w-full flex items-center justify-center text-lg">
-              {conversation.receiver_profile?.first_name?.charAt(0) || "U"}
+              {conversation.receiver_profile?.name?.charAt(0) || "U"}
             </div>
           </Avatar>
           <div>
             <h3 className="font-medium">
-              {conversation.receiver_profile?.first_name} {conversation.receiver_profile?.last_name}
+              {conversation.receiver_profile?.name || "Usuário"}
             </h3>
             <p className="text-sm text-gray-500">
               {conversation.receiver_profile?.role === "secretary" ? "Secretário" : 
@@ -498,7 +518,7 @@ export const ConversationPanel = ({
             type="submit" 
             disabled={(uploading || (!messageText.trim() && !selectedFile))}
           >
-            <Send className="h-4 w-4" />
+            {uploading ? "Enviando..." : <Send className="h-4 w-4" />}
           </Button>
         </form>
       </div>

@@ -1,10 +1,8 @@
-
 import { useState } from "react";
 import { Plus, CheckCircle, Circle, CalendarIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
 import { AddTaskDialog } from "./AddTaskDialog";
 import { EditTaskDialog } from "./EditTaskDialog";
 import { DeleteTaskDialog } from "./DeleteTaskDialog";
@@ -15,17 +13,20 @@ interface TaskListProps {
   goalId: string;
 }
 
-type Task = Tables<"tasks"> & {
+interface Task {
+  id: string;
+  title: string;
+  description: string | null;
+  priority: string;
+  status: string;
+  due_date: string | null;
   task_assignments: {
     user_id: string;
-    profiles?: {
-      first_name: string | null;
-      last_name: string | null;
+    profile?: {
+      name: string | null;
     } | null;
   }[];
-  due_date?: string | null;
-  completed?: boolean;
-};
+}
 
 export function TaskList({ goalId }: TaskListProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -38,7 +39,6 @@ export function TaskList({ goalId }: TaskListProps) {
     queryFn: async () => {
       console.log("Fetching tasks for goal ID:", goalId);
       
-      // Primeiro, vamos buscar as tarefas básicas
       const { data: tasksData, error: tasksError } = await supabase
         .from("tasks")
         .select("*")
@@ -50,62 +50,39 @@ export function TaskList({ goalId }: TaskListProps) {
         throw tasksError;
       }
       
-      console.log("Basic tasks fetched:", tasksData);
-      
-      // Para cada tarefa, vamos buscar as atribuições de usuários separadamente
+      // Para cada tarefa, buscar as atribuições de usuários
       const tasksWithAssignments = await Promise.all(
-        tasksData.map(async (task) => {
-          // Buscar todas as atribuições para esta tarefa
-          const { data: assignmentsData, error: assignmentsError } = await supabase
+        (tasksData || []).map(async (task: any) => {
+          const { data: assignmentsData } = await supabase
             .from("task_assignments")
             .select("user_id")
             .eq("task_id", task.id);
             
-          if (assignmentsError) {
-            console.error("Error fetching assignments for task:", task.id, assignmentsError);
-            return {
-              ...task,
-              task_assignments: []
-            };
-          }
-          
-          // Se temos atribuições, buscar o perfil de cada usuário separadamente
-          let assignmentsWithProfiles = [];
+          let assignmentsWithProfiles: any[] = [];
           if (assignmentsData && assignmentsData.length > 0) {
             assignmentsWithProfiles = await Promise.all(
-              assignmentsData.map(async (assignment) => {
-                const { data: profileData, error: profileError } = await supabase
+              assignmentsData.map(async (assignment: any) => {
+                const { data: profileData } = await supabase
                   .from("profiles")
-                  .select("first_name, last_name")
-                  .eq("id", assignment.user_id)
+                  .select("name")
+                  .eq("user_id", assignment.user_id)
                   .single();
-                
-                if (profileError) {
-                  console.error("Error fetching profile for user:", assignment.user_id, profileError);
-                  return {
-                    user_id: assignment.user_id,
-                    profiles: null
-                  };
-                }
                 
                 return {
                   user_id: assignment.user_id,
-                  profiles: profileData
+                  profile: profileData
                 };
               })
             );
           }
           
-          console.log("Assignments with profiles for task", task.id, ":", assignmentsWithProfiles);
-          
           return {
             ...task,
-            task_assignments: assignmentsWithProfiles || []
+            task_assignments: assignmentsWithProfiles
           };
         })
       );
       
-      console.log("Tasks with assignments:", tasksWithAssignments);
       return tasksWithAssignments as Task[];
     },
   });
@@ -115,22 +92,27 @@ export function TaskList({ goalId }: TaskListProps) {
       low: "bg-green-100 text-green-800",
       medium: "bg-yellow-100 text-yellow-800",
       high: "bg-red-100 text-red-800",
+      urgent: "bg-purple-100 text-purple-800",
     };
     return colorMap[priority] || "bg-gray-100 text-gray-800";
   };
 
-  const toggleTaskCompletion = async (task: Task) => {
+  const toggleTaskStatus = async (task: Task) => {
     try {
+      const newStatus = task.status === "completed" ? "pending" : "completed";
       const { error } = await supabase
         .from('tasks')
-        .update({ completed: !task.completed })
+        .update({ 
+          status: newStatus,
+          completed_at: newStatus === "completed" ? new Date().toISOString() : null
+        } as any)
         .eq('id', task.id);
       
       if (error) throw error;
       
       refetch();
     } catch (error) {
-      console.error("Error toggling task completion:", error);
+      console.error("Error toggling task status:", error);
     }
   };
 
@@ -144,7 +126,7 @@ export function TaskList({ goalId }: TaskListProps) {
     }
   };
 
-  console.log("Current tasks:", tasks);
+  const isCompleted = (task: Task) => task.status === "completed";
 
   return (
     <div className="mt-6">
@@ -172,17 +154,17 @@ export function TaskList({ goalId }: TaskListProps) {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleTaskCompletion(task);
+                      toggleTaskStatus(task);
                     }}
                     className="text-gray-500 hover:text-green-600 transition-colors"
                   >
-                    {task.completed ? (
+                    {isCompleted(task) ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
                     ) : (
                       <Circle className="h-5 w-5" />
                     )}
                   </button>
-                  <h4 className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}>
+                  <h4 className={`font-medium ${isCompleted(task) ? 'line-through text-gray-500' : ''}`}>
                     {task.title}
                   </h4>
                 </div>
@@ -195,7 +177,9 @@ export function TaskList({ goalId }: TaskListProps) {
                     ? "Baixa"
                     : task.priority === "medium"
                     ? "Média"
-                    : "Alta"}
+                    : task.priority === "high"
+                    ? "Alta"
+                    : "Urgente"}
                 </span>
               </div>
               <p className="text-sm text-gray-600 mb-2">{task.description}</p>
@@ -214,7 +198,7 @@ export function TaskList({ goalId }: TaskListProps) {
                       key={`${assignment.user_id}_${index}`}
                       className="text-xs bg-gray-100 px-2 py-1 rounded"
                     >
-                      {assignment.profiles?.first_name} {assignment.profiles?.last_name}
+                      {assignment.profile?.name || "Usuário"}
                     </span>
                   ))}
                 </div>
