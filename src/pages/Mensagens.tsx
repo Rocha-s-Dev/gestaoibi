@@ -81,16 +81,21 @@ const Mensagens = () => {
           ? conversation.receiver_id 
           : conversation.sender_id;
         
-        // Fetch the profile for that user
+        // Fetch the profile for that user using the correct column names
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("first_name, last_name, role")
+          .select("name, role")
           .eq("id", otherUserId)
           .single();
         
         if (profileError && profileError.code !== 'PGRST116') {
           console.error("Error fetching profile:", profileError);
         }
+        
+        // Parse name into first_name and last_name for compatibility
+        const nameParts = profileData?.name?.split(' ') || [];
+        const firstName = nameParts[0] || null;
+        const lastName = nameParts.slice(1).join(' ') || null;
         
         // Add to our conversations array with the profile information
         conversationsWithProfiles.push({
@@ -100,7 +105,11 @@ const Mensagens = () => {
           last_message: conversation.last_message,
           created_at: conversation.created_at,
           updated_at: conversation.updated_at,
-          receiver_profile: profileData || null
+          receiver_profile: profileData ? {
+            first_name: firstName,
+            last_name: lastName,
+            role: profileData.role || 'employee'
+          } : null
         });
       }
       

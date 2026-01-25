@@ -7,21 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import { useRotas, useVeiculos, useAlunosRotas } from "@/hooks/useTransporteEscolar";
+import { useRotas, useAlunosRotas } from "@/hooks/useTransporteEscolar";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useAlunos } from "@/hooks/useAlunos";
 
 const vinculoSchema = z.object({
   aluno_id: z.string().min(1, "Aluno é obrigatório"),
   rota_id: z.string().min(1, "Rota é obrigatória"),
-  veiculo_id: z.string().optional(),
-  turno: z.string().optional(),
   ponto_embarque: z.string().optional(),
-  ponto_desembarque: z.string().optional(),
   horario_embarque: z.string().optional(),
-  ativo: z.boolean().default(true),
 });
 
 type VinculoFormData = z.infer<typeof vinculoSchema>;
@@ -36,7 +31,6 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
   const [isSaving, setIsSaving] = useState(false);
   
   const { rotas } = useRotas();
-  const { veiculos } = useVeiculos();
   const { vincularAluno } = useAlunosRotas();
   const { escolas } = useEscolas();
   const { alunos: todosAlunos } = useAlunos();
@@ -52,12 +46,8 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
     defaultValues: {
       aluno_id: "",
       rota_id: "",
-      veiculo_id: "",
-      turno: "",
       ponto_embarque: "",
-      ponto_desembarque: "",
       horario_embarque: "",
-      ativo: true,
     },
   });
 
@@ -67,12 +57,8 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
       await vincularAluno({
         aluno_id: data.aluno_id,
         rota_id: data.rota_id,
-        veiculo_id: data.veiculo_id || undefined,
-        turno: data.turno || undefined,
         ponto_embarque: data.ponto_embarque || undefined,
-        ponto_desembarque: data.ponto_desembarque || undefined,
         horario_embarque: data.horario_embarque || undefined,
-        ativo: data.ativo,
       });
       form.reset();
       setEscolaId("");
@@ -137,77 +123,41 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="rota_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rota *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione a rota" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {rotas?.filter(r => r.status === "ativa").map((rota) => (
-                          <SelectItem key={rota.id} value={rota.id}>
-                            {rota.nome}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="veiculo_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Veículo</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o veículo" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {veiculos?.filter(v => v.status !== "inativo").map((veiculo) => (
-                          <SelectItem key={veiculo.id} value={veiculo.id}>
-                            {veiculo.placa} - {veiculo.modelo}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="rota_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rota *</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione a rota" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {rotas?.filter(r => r.status === "ativa").map((rota) => (
+                        <SelectItem key={rota.id} value={rota.id}>
+                          {rota.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="turno"
+                name="ponto_embarque"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Turno</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o turno" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="matutino">Matutino</SelectItem>
-                        <SelectItem value="vespertino">Vespertino</SelectItem>
-                        <SelectItem value="integral">Integral</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Ponto de Embarque</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Local de embarque" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -227,52 +177,6 @@ export function VinculoAlunoRotaDialog({ open, onOpenChange }: VinculoAlunoRotaD
                 )}
               />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="ponto_embarque"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ponto de Embarque</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Local de embarque" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="ponto_desembarque"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ponto de Desembarque</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Local de desembarque" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="ativo"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel className="font-normal">Vínculo ativo</FormLabel>
-                </FormItem>
-              )}
-            />
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

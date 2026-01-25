@@ -170,11 +170,8 @@ export function ConsultaProtocolo() {
                     Dados do Aluno
                   </h4>
                   <div className="space-y-1 text-sm">
-                    <p><span className="text-muted-foreground">Nome:</span> {solicitacao.dados_aluno.nome}</p>
-                    <p><span className="text-muted-foreground">Nascimento:</span> {new Date(solicitacao.dados_aluno.data_nascimento).toLocaleDateString("pt-BR")}</p>
-                    {solicitacao.dados_aluno.necessidades_especiais && (
-                      <p><span className="text-muted-foreground">Necessidades Especiais:</span> Sim</p>
-                    )}
+                    <p><span className="text-muted-foreground">Nome:</span> {solicitacao.nome_aluno}</p>
+                    <p><span className="text-muted-foreground">Nascimento:</span> {new Date(solicitacao.data_nascimento).toLocaleDateString("pt-BR")}</p>
                   </div>
                 </div>
 
@@ -186,8 +183,8 @@ export function ConsultaProtocolo() {
                   <div className="space-y-1 text-sm">
                     <p><span className="text-muted-foreground">Série:</span> {solicitacao.serie_pretendida}</p>
                     <p><span className="text-muted-foreground">Ano Letivo:</span> {solicitacao.ano_letivo}</p>
-                    {solicitacao.escola_preferida && (
-                      <p><span className="text-muted-foreground">Escola:</span> {solicitacao.escola_preferida.nome}</p>
+                    {solicitacao.escola_desejada && (
+                      <p><span className="text-muted-foreground">Escola:</span> {solicitacao.escola_desejada.nome}</p>
                     )}
                   </div>
                 </div>
@@ -199,13 +196,6 @@ export function ConsultaProtocolo() {
                 <Calendar className="h-4 w-4" />
                 <span>Solicitação realizada em {formatDate(solicitacao.created_at)}</span>
               </div>
-
-              {solicitacao.data_processamento && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <FileText className="h-4 w-4" />
-                  <span>Processado em {formatDate(solicitacao.data_processamento)}</span>
-                </div>
-              )}
 
               {solicitacao.status === "rejeitada" && solicitacao.motivo_rejeicao && (
                 <Alert variant="destructive">

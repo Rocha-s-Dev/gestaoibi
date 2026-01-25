@@ -4,41 +4,29 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Loader2, Upload, User, Users, School, FileText } from "lucide-react";
+import { CheckCircle2, Loader2, User, Users, School } from "lucide-react";
 import { toast } from "sonner";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useSolicitacoesMatricula } from "@/hooks/useSolicitacoesMatricula";
-import { UploadDocumentos } from "./UploadDocumentos";
 
 const formSchema = z.object({
   // Dados do Aluno
   aluno_nome: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   aluno_data_nascimento: z.string().min(1, "Data de nascimento é obrigatória"),
   aluno_cpf: z.string().optional(),
-  aluno_rg: z.string().optional(),
-  aluno_genero: z.string().optional(),
   aluno_endereco: z.string().min(1, "Endereço é obrigatório"),
-  aluno_numero: z.string().optional(),
-  aluno_bairro: z.string().min(1, "Bairro é obrigatório"),
-  aluno_cidade: z.string().min(1, "Cidade é obrigatória"),
-  aluno_estado: z.string().min(1, "Estado é obrigatório"),
-  aluno_cep: z.string().optional(),
   aluno_necessidades_especiais: z.string().optional(),
   
   // Dados do Responsável
   responsavel_nome: z.string().min(3, "Nome do responsável é obrigatório"),
   responsavel_cpf: z.string().min(11, "CPF do responsável é obrigatório"),
-  responsavel_rg: z.string().optional(),
   responsavel_telefone: z.string().min(10, "Telefone é obrigatório"),
   responsavel_email: z.string().email("Email inválido").optional().or(z.literal("")),
-  responsavel_grau_parentesco: z.string().min(1, "Grau de parentesco é obrigatório"),
-  responsavel_profissao: z.string().optional(),
   
   // Dados da Matrícula
   escola_preferida_id: z.string().optional(),
@@ -68,20 +56,9 @@ const SERIES = [
   { value: "9ano", label: "9º Ano - Ensino Fundamental" },
 ];
 
-const GRAUS_PARENTESCO = [
-  { value: "mae", label: "Mãe" },
-  { value: "pai", label: "Pai" },
-  { value: "avo", label: "Avô/Avó" },
-  { value: "tio", label: "Tio/Tia" },
-  { value: "irmao", label: "Irmão/Irmã" },
-  { value: "tutor", label: "Tutor Legal" },
-  { value: "outro", label: "Outro" },
-];
-
 export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
   const [step, setStep] = useState(1);
   const [protocoloGerado, setProtocoloGerado] = useState<string | null>(null);
-  const [documentosUpload, setDocumentosUpload] = useState<{ tipo: string; url: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { escolas } = useEscolas();
@@ -93,13 +70,9 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
       aluno_nome: "",
       aluno_data_nascimento: "",
       aluno_endereco: "",
-      aluno_bairro: "",
-      aluno_cidade: "",
-      aluno_estado: "SP",
       responsavel_nome: "",
       responsavel_cpf: "",
       responsavel_telefone: "",
-      responsavel_grau_parentesco: "",
       serie_pretendida: "",
       ano_letivo: new Date().getFullYear(),
       observacoes: "",
@@ -111,30 +84,15 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
     
     try {
       const solicitacao = await criarSolicitacao({
-        dados_aluno: {
-          nome: data.aluno_nome,
-          data_nascimento: data.aluno_data_nascimento,
-          cpf: data.aluno_cpf,
-          rg: data.aluno_rg,
-          genero: data.aluno_genero,
-          endereco: data.aluno_endereco,
-          numero_endereco: data.aluno_numero,
-          bairro: data.aluno_bairro,
-          cidade: data.aluno_cidade,
-          estado: data.aluno_estado,
-          cep: data.aluno_cep,
-          necessidades_especiais: data.aluno_necessidades_especiais,
-        },
-        dados_responsavel: {
-          nome: data.responsavel_nome,
-          cpf: data.responsavel_cpf,
-          rg: data.responsavel_rg,
-          telefone: data.responsavel_telefone,
-          email: data.responsavel_email,
-          grau_parentesco: data.responsavel_grau_parentesco,
-          profissao: data.responsavel_profissao,
-        },
-        escola_preferida_id: data.escola_preferida_id || undefined,
+        nome_aluno: data.aluno_nome,
+        data_nascimento: data.aluno_data_nascimento,
+        cpf_aluno: data.aluno_cpf,
+        cpf_responsavel: data.responsavel_cpf,
+        nome_responsavel: data.responsavel_nome,
+        telefone_responsavel: data.responsavel_telefone,
+        email_responsavel: data.responsavel_email,
+        endereco: data.aluno_endereco,
+        escola_desejada_id: data.escola_preferida_id || undefined,
         serie_pretendida: data.serie_pretendida,
         ano_letivo: data.ano_letivo,
         observacoes: data.observacoes,
@@ -156,8 +114,8 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
 
   const nextStep = async () => {
     const fieldsToValidate: (keyof FormData)[][] = [
-      ["aluno_nome", "aluno_data_nascimento", "aluno_endereco", "aluno_bairro", "aluno_cidade", "aluno_estado"],
-      ["responsavel_nome", "responsavel_cpf", "responsavel_telefone", "responsavel_grau_parentesco"],
+      ["aluno_nome", "aluno_data_nascimento", "aluno_endereco"],
+      ["responsavel_nome", "responsavel_cpf", "responsavel_telefone"],
       ["serie_pretendida", "ano_letivo"],
     ];
     
@@ -287,29 +245,6 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
               
               <FormField
                 control={form.control}
-                name="aluno_genero"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gênero</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="masculino">Masculino</SelectItem>
-                        <SelectItem value="feminino">Feminino</SelectItem>
-                        <SelectItem value="outro">Outro</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
                 name="aluno_cpf"
                 render={({ field }) => (
                   <FormItem>
@@ -324,115 +259,13 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
               
               <FormField
                 control={form.control}
-                name="aluno_rg"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>RG</FormLabel>
-                    <FormControl>
-                      <Input placeholder="00.000.000-0" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <Separator />
-            <h4 className="font-medium">Endereço</h4>
-            
-            <div className="grid gap-4 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="aluno_cep"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>CEP</FormLabel>
-                    <FormControl>
-                      <Input placeholder="00000-000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
                 name="aluno_endereco"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Endereço *</FormLabel>
+                    <FormLabel>Endereço Completo *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Rua, Avenida..." {...field} />
+                      <Input placeholder="Rua, número, bairro, cidade, CEP" {...field} />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="aluno_numero"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Número</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Nº" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="aluno_bairro"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bairro *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Bairro" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="aluno_cidade"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cidade *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Cidade" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="aluno_estado"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Estado *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="SP">São Paulo</SelectItem>
-                        <SelectItem value="RJ">Rio de Janeiro</SelectItem>
-                        <SelectItem value="MG">Minas Gerais</SelectItem>
-                        <SelectItem value="ES">Espírito Santo</SelectItem>
-                        <SelectItem value="PR">Paraná</SelectItem>
-                        <SelectItem value="SC">Santa Catarina</SelectItem>
-                        <SelectItem value="RS">Rio Grande do Sul</SelectItem>
-                      </SelectContent>
-                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -497,20 +330,6 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
               
               <FormField
                 control={form.control}
-                name="responsavel_rg"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>RG</FormLabel>
-                    <FormControl>
-                      <Input placeholder="00.000.000-0" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
                 name="responsavel_telefone"
                 render={({ field }) => (
                   <FormItem>
@@ -527,49 +346,10 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
                 control={form.control}
                 name="responsavel_email"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="email@exemplo.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="responsavel_grau_parentesco"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Grau de Parentesco *</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {GRAUS_PARENTESCO.map((grau) => (
-                          <SelectItem key={grau.value} value={grau.value}>
-                            {grau.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="responsavel_profissao"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profissão</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Profissão" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -619,24 +399,13 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Ano Letivo *</FormLabel>
-                    <Select 
-                      onValueChange={(v) => field.onChange(parseInt(v))} 
-                      value={field.value?.toString()}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o ano" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value={new Date().getFullYear().toString()}>
-                          {new Date().getFullYear()}
-                        </SelectItem>
-                        <SelectItem value={(new Date().getFullYear() + 1).toString()}>
-                          {new Date().getFullYear() + 1}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -647,56 +416,43 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
                 name="escola_preferida_id"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Escola de Preferência</FormLabel>
+                    <FormLabel>Escola Preferida</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione uma escola (opcional)" />
+                          <SelectValue placeholder="Selecione a escola (opcional)" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {escolas.map((escola) => (
-                            <SelectItem key={escola.id} value={escola.id}>
-                              {escola.nome}
-                            </SelectItem>
-                          ))}
+                        {escolas?.map((escola) => (
+                          <SelectItem key={escola.id} value={escola.id}>
+                            {escola.nome}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
-              <FormField
-                control={form.control}
-                name="observacoes"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2">
-                    <FormLabel>Observações</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Informações adicionais relevantes para a matrícula"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
-
-            <Separator />
             
-            <div>
-              <h4 className="mb-4 flex items-center gap-2 font-medium">
-                <FileText className="h-4 w-4" />
-                Documentos (opcional)
-              </h4>
-              <UploadDocumentos
-                documentos={documentosUpload}
-                onChange={setDocumentosUpload}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="observacoes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Observações</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Informações adicionais que considerar relevantes"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         )}
 
@@ -706,22 +462,18 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
               Voltar
             </Button>
           )}
-          {step < 3 ? (
-            <Button type="button" onClick={nextStep} className="ml-auto">
-              Próximo
-            </Button>
-          ) : (
-            <Button type="submit" className="ml-auto" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Enviando...
-                </>
-              ) : (
-                "Enviar Solicitação"
-              )}
-            </Button>
-          )}
+          <div className="ml-auto">
+            {step < 3 ? (
+              <Button type="button" onClick={nextStep}>
+                Próximo
+              </Button>
+            ) : (
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Enviar Solicitação
+              </Button>
+            )}
+          </div>
         </div>
       </form>
     </Form>
