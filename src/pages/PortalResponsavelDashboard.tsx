@@ -26,9 +26,9 @@ import {
 import { toast } from "sonner";
 
 export default function PortalResponsavelDashboard() {
-  const { signOut } = useAuth();
+  const { signOut, session } = useAuth();
   const navigate = useNavigate();
-  const { responsavel, filhos, isLoading } = usePortalResponsavel();
+  const { filhos, isLoading } = usePortalResponsavel();
   const [selectedFilhoId, setSelectedFilhoId] = useState<string | null>(null);
 
   const handleLogout = async () => {
@@ -38,6 +38,11 @@ export default function PortalResponsavelDashboard() {
   };
 
   const selectedFilho = filhos.find((f) => f.id === selectedFilhoId);
+
+  // Get user name from session
+  const userName = session?.user?.user_metadata?.first_name || 
+                   session?.user?.email?.split('@')[0] || 
+                   'Responsável';
 
   if (isLoading) {
     return (
@@ -54,15 +59,15 @@ export default function PortalResponsavelDashboard() {
     );
   }
 
-  if (!responsavel) {
+  if (filhos.length === 0) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
         <Card className="max-w-md w-full">
           <CardHeader className="text-center">
             <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-            <CardTitle>Acesso Negado</CardTitle>
+            <CardTitle>Nenhum Aluno Vinculado</CardTitle>
             <CardDescription>
-              Sua conta não está vinculada a um responsável. Entre em contato com a secretaria da escola.
+              Sua conta não está vinculada a nenhum aluno. Entre em contato com a secretaria da escola.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -89,7 +94,7 @@ export default function PortalResponsavelDashboard() {
               <div>
                 <h1 className="font-semibold">Portal do Responsável</h1>
                 <p className="text-sm text-muted-foreground">
-                  Olá, {responsavel.nome?.split(" ")[0]}
+                  Olá, {userName}
                 </p>
               </div>
             </div>
@@ -111,27 +116,16 @@ export default function PortalResponsavelDashboard() {
               <h2 className="text-lg font-semibold">Meus Filhos</h2>
             </div>
 
-            {filhos.length === 0 ? (
-              <Card>
-                <CardContent className="py-8 text-center">
-                  <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">
-                    Nenhum aluno vinculado encontrado.
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filhos.map((filho) => (
-                  <FilhoCard
-                    key={filho.id}
-                    filho={filho}
-                    isSelected={selectedFilhoId === filho.id}
-                    onSelect={() => setSelectedFilhoId(filho.id)}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {filhos.map((filho) => (
+                <FilhoCard
+                  key={filho.id}
+                  filho={filho}
+                  isSelected={selectedFilhoId === filho.id}
+                  onSelect={() => setSelectedFilhoId(filho.id)}
+                />
+              ))}
+            </div>
           </section>
 
           {/* Detalhes do Filho Selecionado */}

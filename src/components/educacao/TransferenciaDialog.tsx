@@ -60,10 +60,10 @@ export function TransferenciaDialog({ open, onOpenChange, onClose }: Transferenc
       await solicitarTransferencia({
         aluno_id: alunoId,
         escola_origem_id: alunoSelecionado?.escola_id,
-        turma_origem_id: alunoSelecionado?.turma_id,
         escola_destino_id: tipo === "interna_escola" ? escolaDestinoId : undefined,
         turma_destino_id: tipo !== "externa_saida" ? turmaDestinoId : undefined,
-        motivo
+        motivo,
+        observacoes: tipo === "externa_saida" ? `Escola destino: ${escolaExternaDestino}` : undefined
       });
       
       toast.success("Solicitação de transferência criada com sucesso!");
