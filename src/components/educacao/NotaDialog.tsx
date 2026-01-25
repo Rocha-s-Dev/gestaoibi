@@ -89,7 +89,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
 
   // Filtrar alunos pela turma selecionada
   const alunosFiltrados = alunos.filter(aluno => 
-    !formData.turma_id || aluno.turma_atual_id === formData.turma_id
+    !formData.turma_id || aluno.turma_id === formData.turma_id
   );
 
   return (

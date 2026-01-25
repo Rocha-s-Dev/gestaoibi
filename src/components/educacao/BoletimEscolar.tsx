@@ -45,7 +45,7 @@ export function BoletimEscolar() {
       ]);
 
       const aluno = alunos.find(a => a.id === alunoSelecionado);
-      const turma = aluno?.turma_atual_id ? turmas.find(t => t.id === aluno.turma_atual_id) : null;
+      const turma = aluno?.turma_id ? turmas.find(t => t.id === aluno.turma_id) : null;
 
       // Organizar notas por disciplina e bimestre
       const notasPorDisciplina: Record<string, any> = {};

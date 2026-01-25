@@ -36,16 +36,9 @@ export function useIndicadoresEducacionais() {
   const [error, setError] = useState<string | null>(null);
 
   const calcularIDEBEstimado = (mediaNotas: number, taxaAprovacao: number): number => {
-    // IDEB = N × P, onde:
-    // N = média padronizada das notas (escala 0-10 para 0-10)
-    // P = taxa de aprovação (0-1)
-    // Simplificação: IDEB estimado = média * (taxa/100)
     if (mediaNotas <= 0 || taxaAprovacao <= 0) return 0;
-    
-    // Padronizar média para escala 0-10 e multiplicar pela taxa
     const mediasPadronizada = Math.min(mediaNotas, 10);
     const ideb = mediasPadronizada * (taxaAprovacao / 100);
-    
     return Math.min(ideb, 10);
   };
 
@@ -56,18 +49,17 @@ export function useIndicadoresEducacionais() {
 
       const anoAtual = new Date().getFullYear();
 
-      // Buscar todas as escolas
+      // Buscar todas as escolas (sem filtro de status pois não existe no schema)
       const { data: escolas, error: escolasError } = await supabase
         .from("escolas")
-        .select("id, nome, status")
-        .eq("status", "ativa");
+        .select("id, nome");
 
       if (escolasError) throw escolasError;
 
-      // Buscar todos os alunos com seu status
+      // Buscar todos os alunos com situacao
       const { data: alunos, error: alunosError } = await supabase
         .from("alunos")
-        .select("id, escola_id, status");
+        .select("id, escola_id, situacao");
 
       if (alunosError) throw alunosError;
 
@@ -84,27 +76,27 @@ export function useIndicadoresEducacionais() {
       const { data: faltas, error: faltasError } = await supabase
         .from("faltas")
         .select("aluno_id")
-        .gte("data_falta", `${anoAtual}-01-01`)
-        .lt("data_falta", `${anoAtual + 1}-01-01`);
+        .gte("data", `${anoAtual}-01-01`)
+        .lt("data", `${anoAtual + 1}-01-01`);
 
       if (faltasError) throw faltasError;
 
-      // Contar alunos por status
+      // Contar alunos por situacao
       const alunosPorStatus: Record<string, number> = {};
-      alunos?.forEach((a) => {
-        const status = a.status || "ativo";
-        alunosPorStatus[status] = (alunosPorStatus[status] || 0) + 1;
+      (alunos || []).forEach((a: any) => {
+        const situacao = a.situacao || "ativo";
+        alunosPorStatus[situacao] = (alunosPorStatus[situacao] || 0) + 1;
       });
 
       // Mapear faltas por aluno
       const faltasPorAluno = new Map<string, number>();
-      faltas?.forEach((f) => {
+      (faltas || []).forEach((f: any) => {
         faltasPorAluno.set(f.aluno_id, (faltasPorAluno.get(f.aluno_id) || 0) + 1);
       });
 
       // Mapear notas por aluno
       const notasPorAluno = new Map<string, number[]>();
-      notas?.forEach((n) => {
+      (notas || []).forEach((n: any) => {
         if (!notasPorAluno.has(n.aluno_id)) {
           notasPorAluno.set(n.aluno_id, []);
         }
@@ -122,25 +114,24 @@ export function useIndicadoresEducacionais() {
       let totalEvadidosGeral = 0;
       let totalAprovadosGeral = 0;
 
-      const diasLetivos = 200; // Estimativa de dias letivos
+      const diasLetivos = 200;
 
-      for (const escola of escolas || []) {
-        const alunosEscola = alunos?.filter((a) => a.escola_id === escola.id) || [];
+      for (const escola of (escolas || []) as any[]) {
+        const alunosEscola = (alunos || []).filter((a: any) => a.escola_id === escola.id);
         const totalAlunosEscola = alunosEscola.length;
         
-        const alunosMatriculados = alunosEscola.filter((a) => a.status === "matriculado" || a.status === "concluido").length;
-        const alunosEvadidos = alunosEscola.filter((a) => a.status === "evadido").length;
-        const alunosTransferidos = alunosEscola.filter((a) => a.status === "transferido").length;
+        const alunosMatriculados = alunosEscola.filter((a: any) => a.situacao === "ativo" || a.situacao === "concluido").length;
+        const alunosEvadidos = alunosEscola.filter((a: any) => a.situacao === "evadido").length;
+        const alunosTransferidos = alunosEscola.filter((a: any) => a.situacao === "transferido").length;
         
         const taxaEvasao = totalAlunosEscola > 0 ? (alunosEvadidos / totalAlunosEscola) * 100 : 0;
 
-        // Calcular média de notas da escola
         let somaNotas = 0;
         let countNotas = 0;
         let alunosEmRisco = 0;
         let alunosAprovados = 0;
 
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           const notasAluno = notasPorAluno.get(aluno.id) || [];
           if (notasAluno.length > 0) {
             const mediaAluno = notasAluno.reduce((a, b) => a + b, 0) / notasAluno.length;
@@ -158,9 +149,8 @@ export function useIndicadoresEducacionais() {
         const mediaNotas = countNotas > 0 ? somaNotas / countNotas : 0;
         const taxaAprovacao = countNotas > 0 ? (alunosAprovados / countNotas) * 100 : 0;
 
-        // Calcular frequência média
         let totalFaltas = 0;
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           totalFaltas += faltasPorAluno.get(aluno.id) || 0;
         });
 
@@ -169,12 +159,10 @@ export function useIndicadoresEducacionais() {
           ? ((presencasEsperadas - totalFaltas) / presencasEsperadas) * 100 
           : 100;
 
-        // Verificar frequência como fator de risco
-        alunosEscola.forEach((aluno) => {
+        alunosEscola.forEach((aluno: any) => {
           const faltasAluno = faltasPorAluno.get(aluno.id) || 0;
           const freqAluno = ((diasLetivos - faltasAluno) / diasLetivos) * 100;
           if (freqAluno < 75 && !notasPorAluno.has(aluno.id)) {
-            // Aluno com baixa frequência sem notas registradas
             alunosEmRisco++;
           }
         });
@@ -197,7 +185,6 @@ export function useIndicadoresEducacionais() {
           taxa_aprovacao: Number(taxaAprovacao.toFixed(2)),
         });
 
-        // Acumular para indicadores gerais
         totalGeralAlunos += totalAlunosEscola;
         if (countNotas > 0) {
           somaMediasGeral += mediaNotas * countNotas;
@@ -209,7 +196,6 @@ export function useIndicadoresEducacionais() {
         totalAprovadosGeral += alunosAprovados;
       }
 
-      // Calcular indicadores gerais
       const taxaEvasaoGeral = totalGeralAlunos > 0 ? (totalEvadidosGeral / totalGeralAlunos) * 100 : 0;
       const mediaGeral = totalAlunosComNotas > 0 ? somaMediasGeral / totalAlunosComNotas : 0;
       const frequenciaMediaGeral = totalGeralAlunos > 0 ? somaFrequenciaGeral / totalGeralAlunos : 0;
@@ -218,7 +204,7 @@ export function useIndicadoresEducacionais() {
 
       setIndicadoresGerais({
         total_alunos: totalGeralAlunos,
-        total_escolas: escolas?.length || 0,
+        total_escolas: (escolas || []).length,
         taxa_evasao_geral: Number(taxaEvasaoGeral.toFixed(2)),
         media_geral: Number(mediaGeral.toFixed(2)),
         frequencia_media_geral: Number(frequenciaMediaGeral.toFixed(2)),

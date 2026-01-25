@@ -302,7 +302,7 @@ export function RelatoriosEducacao() {
                   </div>
                   <div className="mt-4">
                     <p className="text-sm text-muted-foreground mb-2">
-                      Capacidade: {escola.total_alunos} / {escola.capacidade_total} alunos
+                      Capacidade: {escola.total_alunos} / {escola.capacidade || 0} alunos
                     </p>
                     <div className="w-full bg-secondary rounded-full h-2">
                       <div 

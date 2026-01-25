@@ -1,21 +1,21 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Turma = {
   id: string;
   nome: string;
-  serie: string;
+  serie?: string | null;
   ano_letivo: number;
-  turno: 'matutino' | 'vespertino' | 'noturno' | 'integral';
-  modalidade: 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche';
-  capacidade: number;
-  sala?: string;
-  status: string;
+  turno?: string | null;
+  modalidade?: string | null;
+  capacidade?: number | null;
+  sala?: string | null;
+  status?: string | null;
   escola_id: string;
-  professor_responsavel_id?: string;
   created_at?: string;
   updated_at?: string;
+  // Relations
+  escola?: { nome: string };
 };
 
 export function useTurmas() {
@@ -30,13 +30,12 @@ export function useTurmas() {
         .from('turmas')
         .select(`
           *,
-          escola:escolas(nome),
-          professor_responsavel:professores(nome)
+          escola:escolas(nome)
         `)
         .order('nome');
 
       if (error) throw error;
-      setTurmas(data || []);
+      setTurmas((data as unknown as Turma[]) || []);
     } catch (err) {
       console.error('Erro ao buscar turmas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -45,16 +44,25 @@ export function useTurmas() {
     }
   };
 
-  const createTurma = async (turmaData: Omit<Turma, 'id'>) => {
+  const createTurma = async (turmaData: Omit<Turma, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
         .from('turmas')
-        .insert([turmaData])
+        .insert([{
+          nome: turmaData.nome,
+          serie: turmaData.serie,
+          ano_letivo: turmaData.ano_letivo,
+          turno: turmaData.turno,
+          modalidade: turmaData.modalidade,
+          capacidade: turmaData.capacidade,
+          sala: turmaData.sala,
+          status: turmaData.status,
+          escola_id: turmaData.escola_id
+        }])
         .select()
         .single();
 
       if (error) throw error;
-      
       await fetchTurmas();
       return data;
     } catch (err) {
@@ -73,7 +81,6 @@ export function useTurmas() {
         .single();
 
       if (error) throw error;
-      
       await fetchTurmas();
       return data;
     } catch (err) {
@@ -90,7 +97,6 @@ export function useTurmas() {
         .eq('id', id);
 
       if (error) throw error;
-      
       await fetchTurmas();
     } catch (err) {
       console.error('Erro ao deletar turma:', err);

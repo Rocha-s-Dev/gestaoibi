@@ -199,8 +199,8 @@ export function CadastroEducacao() {
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{escola.endereco}</p>
                       <div className="flex items-center justify-between">
-                        <Badge variant={escola.status === 'ativa' ? 'default' : 'secondary'}>
-                          {escola.status}
+                        <Badge variant={escola.tipo === 'municipal' ? 'default' : 'secondary'}>
+                          {escola.tipo || 'municipal'}
                         </Badge>
                         <div className="flex space-x-2">
                           <Button 
@@ -391,15 +391,15 @@ export function CadastroEducacao() {
                         <span>Data Matrícula:</span>
                         <span>{new Date(aluno.data_matricula).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      {aluno.telefone && (
+                      {aluno.responsavel_telefone && (
                         <div className="flex justify-between text-sm">
-                          <span>Telefone:</span>
-                          <span>{aluno.telefone}</span>
+                          <span>Responsável:</span>
+                          <span>{aluno.responsavel_telefone}</span>
                         </div>
                       )}
                       <div className="flex items-center justify-between pt-2">
-                        <Badge variant={aluno.status === 'matriculado' ? 'default' : 'secondary'}>
-                          {aluno.status}
+                        <Badge variant={aluno.situacao === 'ativo' ? 'default' : 'secondary'}>
+                          {aluno.situacao || 'ativo'}
                         </Badge>
                         <div className="flex space-x-2">
                           <Button 

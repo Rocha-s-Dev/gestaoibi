@@ -5,24 +5,11 @@ import { toast } from 'sonner';
 interface NotaLote {
   aluno_id: string;
   disciplina_id: string;
-  professor_id: string;
   turma_id: string;
   bimestre: number;
   ano_letivo: number;
   nota: number | null;
-  tipo_avaliacao?: string;
-  data_avaliacao?: string;
   observacoes?: string;
-}
-
-interface FaltaLote {
-  aluno_id: string;
-  disciplina_id: string;
-  professor_id: string;
-  turma_id: string;
-  data_falta: string;
-  tipo: 'justificada' | 'injustificada';
-  justificativa?: string;
 }
 
 interface PresencaAluno {
@@ -42,7 +29,6 @@ export function useLancamentoLote() {
 
     setLoading(true);
     try {
-      // Filtrar apenas notas válidas (com valor)
       const notasValidas = notas.filter(n => n.nota !== null && n.nota !== undefined);
 
       if (notasValidas.length === 0) {
@@ -50,9 +36,8 @@ export function useLancamentoLote() {
         return false;
       }
 
-      // Para cada nota, verificar se já existe e atualizar ou inserir
       for (const nota of notasValidas) {
-        const { data: existente } = await supabase
+        const { data: existente } = await (supabase
           .from('notas')
           .select('id')
           .eq('aluno_id', nota.aluno_id)
@@ -60,15 +45,13 @@ export function useLancamentoLote() {
           .eq('turma_id', nota.turma_id)
           .eq('bimestre', nota.bimestre)
           .eq('ano_letivo', nota.ano_letivo)
-          .eq('tipo_avaliacao', nota.tipo_avaliacao || 'prova')
-          .single();
+          .maybeSingle() as any);
 
         if (existente) {
           const { error } = await supabase
             .from('notas')
             .update({
               nota: nota.nota,
-              data_avaliacao: nota.data_avaliacao,
               observacoes: nota.observacoes
             })
             .eq('id', existente.id);
@@ -78,8 +61,13 @@ export function useLancamentoLote() {
           const { error } = await supabase
             .from('notas')
             .insert({
-              ...nota,
-              tipo_avaliacao: nota.tipo_avaliacao || 'prova'
+              aluno_id: nota.aluno_id,
+              disciplina_id: nota.disciplina_id,
+              turma_id: nota.turma_id,
+              bimestre: nota.bimestre,
+              ano_letivo: nota.ano_letivo,
+              nota: nota.nota,
+              observacoes: nota.observacoes
             });
 
           if (error) throw error;
@@ -102,7 +90,7 @@ export function useLancamentoLote() {
     disciplina_id: string,
     professor_id: string,
     turma_id: string,
-    data: string
+    dataAula: string
   ) => {
     if (presencas.length === 0) {
       toast.warning('Nenhum aluno selecionado');
@@ -112,26 +100,22 @@ export function useLancamentoLote() {
     setLoading(true);
     try {
       // Registrar apenas as faltas (ausências)
-      const faltas: FaltaLote[] = presencas
+      const faltas = presencas
         .filter(p => !p.presente)
         .map(p => ({
           aluno_id: p.aluno_id,
-          disciplina_id,
-          professor_id,
-          turma_id,
-          data_falta: data,
-          tipo: p.justificativa ? 'justificada' : 'injustificada',
-          justificativa: p.justificativa
+          data: dataAula,
+          justificada: !!p.justificativa,
+          motivo: p.justificativa || null
         }));
 
       if (faltas.length > 0) {
-        // Remover faltas existentes para essa data/turma/disciplina
+        // Remover faltas existentes para essa data
         await supabase
           .from('faltas')
           .delete()
-          .eq('turma_id', turma_id)
-          .eq('disciplina_id', disciplina_id)
-          .eq('data_falta', data);
+          .eq('data', dataAula)
+          .in('aluno_id', faltas.map(f => f.aluno_id));
 
         // Inserir novas faltas
         const { error } = await supabase
@@ -159,8 +143,7 @@ export function useLancamentoLote() {
     turma_id: string,
     disciplina_id: string,
     bimestre: number,
-    ano_letivo: number,
-    tipo_avaliacao: string = 'prova'
+    ano_letivo: number
   ) => {
     try {
       const { data, error } = await supabase
@@ -169,8 +152,7 @@ export function useLancamentoLote() {
         .eq('turma_id', turma_id)
         .eq('disciplina_id', disciplina_id)
         .eq('bimestre', bimestre)
-        .eq('ano_letivo', ano_letivo)
-        .eq('tipo_avaliacao', tipo_avaliacao);
+        .eq('ano_letivo', ano_letivo);
 
       if (error) throw error;
       return data || [];
@@ -188,10 +170,8 @@ export function useLancamentoLote() {
     try {
       const { data: faltas, error } = await supabase
         .from('faltas')
-        .select('aluno_id, tipo, justificativa')
-        .eq('turma_id', turma_id)
-        .eq('disciplina_id', disciplina_id)
-        .eq('data_falta', data);
+        .select('aluno_id, justificada, motivo')
+        .eq('data', data);
 
       if (error) throw error;
       return faltas || [];
