@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Type aligned with actual database schema
 export type Disciplina = {
   id: string;
   nome: string;
-  codigo: string | null;
-  descricao: string | null;
-  carga_horaria: number | null;
+  codigo?: string | null;
+  carga_horaria?: number | null;
   created_at?: string;
 };
 
@@ -24,7 +24,7 @@ export function useDisciplinas() {
         .order('nome');
 
       if (error) throw error;
-      setDisciplinas(data || []);
+      setDisciplinas((data as Disciplina[]) || []);
     } catch (err) {
       console.error('Erro ao buscar disciplinas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -33,7 +33,7 @@ export function useDisciplinas() {
     }
   };
 
-  const createDisciplina = async (disciplinaData: Omit<Disciplina, 'id'>) => {
+  const createDisciplina = async (disciplinaData: Omit<Disciplina, 'id' | 'created_at'>) => {
     try {
       const { data, error } = await supabase
         .from('disciplinas')

@@ -1,54 +1,26 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Type aligned with actual database schema
 export type Aluno = {
   id: string;
   nome: string;
-  cpf?: string;
-  rg?: string;
-  data_nascimento: string;
-  genero?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  numero_endereco?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  cep?: string;
+  cpf?: string | null;
+  data_nascimento?: string | null;
+  endereco?: string | null;
   numero_matricula: string;
-  data_matricula: string;
-  escola_id: string;
-  turma_atual_id?: string;
-  status: 'matriculado' | 'transferido' | 'evadido' | 'concluido';
-  observacoes?: string;
-  necessidades_especiais?: string;
+  data_matricula?: string | null;
+  escola_id?: string | null;
+  turma_id?: string | null;
+  situacao?: string | null;
+  responsavel_nome?: string | null;
+  responsavel_telefone?: string | null;
+  responsavel_email?: string | null;
   created_at?: string;
   updated_at?: string;
-};
-
-export type Responsavel = {
-  id: string;
-  nome: string;
-  cpf: string;
-  rg?: string;
-  data_nascimento?: string;
-  genero?: string;
-  telefone: string;
-  email?: string;
-  endereco?: string;
-  numero_endereco?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  cep?: string;
-  profissao?: string;
-  local_trabalho?: string;
-  telefone_trabalho?: string;
-  grau_parentesco: string;
-  created_at?: string;
-  updated_at?: string;
+  // Relations
+  escola?: { nome: string } | null;
+  turma_atual?: { nome: string } | null;
 };
 
 export function useAlunos() {
@@ -69,7 +41,7 @@ export function useAlunos() {
         .order('nome');
 
       if (error) throw error;
-      setAlunos(data || []);
+      setAlunos((data as unknown as Aluno[]) || []);
     } catch (err) {
       console.error('Erro ao buscar alunos:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -78,13 +50,12 @@ export function useAlunos() {
     }
   };
 
-  const createAluno = async (alunoData: Omit<Aluno, 'id' | 'numero_matricula'>) => {
+  const createAluno = async (alunoData: Omit<Aluno, 'id' | 'numero_matricula' | 'created_at' | 'updated_at'>) => {
     try {
-      // Gerar número de matrícula automaticamente
-      const { data: numeroMatricula, error: matriculaError } = await supabase
-        .rpc('gerar_numero_matricula');
-
-      if (matriculaError) throw matriculaError;
+      // Generate registration number manually
+      const timestamp = Date.now().toString().slice(-8);
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      const numeroMatricula = `${new Date().getFullYear()}${timestamp}${random}`;
 
       const { data, error } = await supabase
         .from('alunos')
@@ -149,59 +120,5 @@ export function useAlunos() {
     updateAluno,
     deleteAluno,
     refreshAlunos: fetchAlunos
-  };
-}
-
-export function useResponsaveis() {
-  const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchResponsaveis = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('responsaveis')
-        .select('*')
-        .order('nome');
-
-      if (error) throw error;
-      setResponsaveis(data || []);
-    } catch (err) {
-      console.error('Erro ao buscar responsáveis:', err);
-      setError(err instanceof Error ? err.message : 'Erro desconhecido');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createResponsavel = async (responsavelData: Omit<Responsavel, 'id'>) => {
-    try {
-      const { data, error } = await supabase
-        .from('responsaveis')
-        .insert([responsavelData])
-        .select()
-        .single();
-
-      if (error) throw error;
-      
-      await fetchResponsaveis();
-      return data;
-    } catch (err) {
-      console.error('Erro ao criar responsável:', err);
-      throw err;
-    }
-  };
-
-  useEffect(() => {
-    fetchResponsaveis();
-  }, []);
-
-  return {
-    responsaveis,
-    loading,
-    error,
-    createResponsavel,
-    refreshResponsaveis: fetchResponsaveis
   };
 }

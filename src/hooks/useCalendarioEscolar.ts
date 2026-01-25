@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Type aligned with actual database schema
 export type EventoCalendario = {
   id: string;
-  escola_id: string | null;
+  escola_id?: string | null;
   titulo: string;
-  descricao: string | null;
-  tipo_evento: string;
+  descricao?: string | null;
+  tipo?: string | null;
   data_inicio: string;
-  data_fim: string | null;
-  turmas_especificas: string[] | null;
+  data_fim?: string | null;
+  ano_letivo?: number | null;
   created_at?: string;
-  updated_at?: string;
   // Relations
-  escola?: { nome: string };
+  escola?: { nome: string } | null;
 };
 
 export function useCalendarioEscolar() {
@@ -33,7 +33,7 @@ export function useCalendarioEscolar() {
         .order('data_inicio', { ascending: true });
 
       if (error) throw error;
-      setEventos(data || []);
+      setEventos((data as unknown as EventoCalendario[]) || []);
     } catch (err) {
       console.error('Erro ao buscar eventos:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -42,7 +42,7 @@ export function useCalendarioEscolar() {
     }
   };
 
-  const createEvento = async (eventoData: Omit<EventoCalendario, 'id'>) => {
+  const createEvento = async (eventoData: Omit<EventoCalendario, 'id' | 'created_at'>) => {
     try {
       const { data, error } = await supabase
         .from('calendario_escolar')

@@ -8,7 +8,6 @@ import { AlertaEducacional } from "@/hooks/useAlertasEducacionais";
 
 interface AlertaItemProps {
   alerta: AlertaEducacional;
-  onMarcarLido: () => void;
   onResolver: () => void;
 }
 
@@ -31,26 +30,22 @@ const nivelIcons: Record<string, React.ReactNode> = {
   info: <Bell className="h-5 w-5" />,
 };
 
-export function AlertaItem({ alerta, onMarcarLido, onResolver }: AlertaItemProps) {
+export function AlertaItem({ alerta, onResolver }: AlertaItemProps) {
   const alunoData = alerta.aluno;
+  const nivel = alerta.nivel || 'info';
 
   return (
-    <Card className={`transition-all ${alerta.lido ? 'opacity-75' : ''} ${alerta.resolvido ? 'bg-muted/50' : ''}`}>
+    <Card className={`transition-all ${alerta.resolvido ? 'bg-muted/50 opacity-75' : ''}`}>
       <CardContent className="flex items-start gap-4 p-4">
-        <div className={`rounded-full p-2 ${nivelColors[alerta.nivel] || 'bg-muted'}`}>
-          {nivelIcons[alerta.nivel] || <Bell className="h-5 w-5" />}
+        <div className={`rounded-full p-2 ${nivelColors[nivel] || 'bg-muted'}`}>
+          {nivelIcons[nivel] || <Bell className="h-5 w-5" />}
         </div>
 
         <div className="flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant={alerta.nivel === "critical" ? "destructive" : "secondary"}>
+            <Badge variant={nivel === "critical" ? "destructive" : "secondary"}>
               {tipoLabels[alerta.tipo] || alerta.tipo}
             </Badge>
-            {!alerta.lido && (
-              <Badge variant="outline" className="border-primary text-primary">
-                Novo
-              </Badge>
-            )}
             {alerta.resolvido && (
               <Badge variant="outline" className="border-green-500 text-green-500">
                 <CheckCircle className="mr-1 h-3 w-3" />
@@ -77,38 +72,16 @@ export function AlertaItem({ alerta, onMarcarLido, onResolver }: AlertaItemProps
             </div>
           )}
 
-          {alerta.dados_adicionais && (
-            <div className="text-xs text-muted-foreground">
-              {(alerta.dados_adicionais as any).percentual_faltas && (
-                <span>Percentual de faltas: {(alerta.dados_adicionais as any).percentual_faltas.toFixed(1)}%</span>
-              )}
-              {(alerta.dados_adicionais as any).media_notas && (
-                <span>Média: {(alerta.dados_adicionais as any).media_notas.toFixed(1)}</span>
-              )}
-            </div>
-          )}
-
           <div className="text-xs text-muted-foreground">
             {alerta.created_at && (
               <span>
                 Gerado em: {format(new Date(alerta.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
               </span>
             )}
-            {alerta.data_resolucao && (
-              <span className="ml-4">
-                Resolvido em: {format(new Date(alerta.data_resolucao), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-              </span>
-            )}
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          {!alerta.lido && (
-            <Button variant="ghost" size="sm" onClick={onMarcarLido}>
-              <Eye className="mr-1 h-4 w-4" />
-              Marcar lido
-            </Button>
-          )}
           {!alerta.resolvido && (
             <Button variant="outline" size="sm" onClick={onResolver}>
               <CheckCircle className="mr-1 h-4 w-4" />

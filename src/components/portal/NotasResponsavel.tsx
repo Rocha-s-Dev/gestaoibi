@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNotasFilho } from "@/hooks/usePortalResponsavel";
+import { useNotasFilho, NotaFilho } from "@/hooks/usePortalResponsavel";
 import { BookOpen, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import {
   Table,
@@ -15,6 +15,11 @@ import {
 interface NotasResponsavelProps {
   alunoId: string;
   alunoNome: string;
+}
+
+interface DisciplinaNotas {
+  disciplina: string;
+  bimestres: Record<number, number | null>;
 }
 
 export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) {
@@ -48,7 +53,7 @@ export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) 
     }
     acc[disciplinaId].bimestres[nota.bimestre] = nota.nota;
     return acc;
-  }, {} as Record<string, { disciplina: string; bimestres: Record<number, number | null> }>);
+  }, {} as Record<string, DisciplinaNotas>);
 
   const disciplinas = Object.values(notasPorDisciplina);
 

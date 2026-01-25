@@ -6,7 +6,8 @@ export interface FilhoData {
   id: string;
   nome: string;
   numero_matricula: string;
-  data_nascimento: string;
+  data_nascimento: string | null;
+  situacao: string | null;
   turma: {
     id: string;
     nome: string;
@@ -16,129 +17,71 @@ export interface FilhoData {
   escola: {
     id: string;
     nome: string;
-  };
+  } | null;
 }
 
 export interface NotaFilho {
   id: string;
   nota: number | null;
   bimestre: number;
-  ano_letivo: number;
-  tipo_avaliacao: string | null;
+  ano_letivo: number | null;
+  observacoes: string | null;
   disciplina: {
     id: string;
     nome: string;
-  };
+  } | null;
 }
 
 export interface FaltaFilho {
   id: string;
-  data_falta: string;
-  tipo: string | null;
-  justificativa: string | null;
-  disciplina: {
-    id: string;
-    nome: string;
-  };
+  data: string;
+  justificada: boolean | null;
+  motivo: string | null;
 }
 
 export function usePortalResponsavel() {
   const { session } = useAuth();
 
-  // Buscar responsável vinculado ao usuário logado
-  const { data: responsavel, isLoading: loadingResponsavel } = useQuery({
-    queryKey: ["portal-responsavel", session?.user?.id],
+  // Buscar alunos vinculados ao responsável via responsaveis_alunos
+  const { data: filhos = [], isLoading } = useQuery({
+    queryKey: ["portal-filhos", session?.user?.id],
     queryFn: async () => {
-      if (!session?.user?.id) return null;
+      if (!session?.user?.id) return [];
 
+      // Buscar alunos onde o usuário é responsável via responsaveis_alunos table
       const { data, error } = await supabase
-        .from("usuarios_responsaveis")
+        .from("alunos")
         .select(`
-          responsavel_id,
-          responsaveis (
-            id,
-            nome,
-            cpf,
-            telefone,
-            email
-          )
+          id,
+          nome,
+          numero_matricula,
+          data_nascimento,
+          situacao,
+          escola:escolas(id, nome),
+          turma:turmas(id, nome, serie, turno)
         `)
-        .eq("user_id", session.user.id)
-        .single();
-
-      if (error) {
-        console.error("Erro ao buscar responsável:", error);
-        return null;
-      }
-
-      return data?.responsaveis;
-    },
-    enabled: !!session?.user?.id,
-  });
-
-  // Buscar filhos vinculados ao responsável
-  const { data: filhos = [], isLoading: loadingFilhos } = useQuery({
-    queryKey: ["portal-filhos", responsavel?.id],
-    queryFn: async () => {
-      if (!responsavel?.id) return [];
-
-      const { data, error } = await supabase
-        .from("alunos_responsaveis")
-        .select(`
-          aluno_id,
-          responsavel_principal,
-          alunos (
-            id,
-            nome,
-            numero_matricula,
-            data_nascimento,
-            status,
-            turma_atual_id,
-            escola_id,
-            escolas (
-              id,
-              nome
-            ),
-            turmas (
-              id,
-              nome,
-              serie,
-              turno
-            )
-          )
-        `)
-        .eq("responsavel_id", responsavel.id);
+        .eq("responsavel_email", session.user.email);
 
       if (error) {
         console.error("Erro ao buscar filhos:", error);
         return [];
       }
 
-      return data?.map((item) => ({
-        id: item.alunos?.id,
-        nome: item.alunos?.nome,
-        numero_matricula: item.alunos?.numero_matricula,
-        data_nascimento: item.alunos?.data_nascimento,
-        status: item.alunos?.status,
-        turma: item.alunos?.turmas,
-        escola: item.alunos?.escolas,
-        responsavel_principal: item.responsavel_principal,
-      })) || [];
+      return (data as unknown as FilhoData[]) || [];
     },
-    enabled: !!responsavel?.id,
+    enabled: !!session?.user?.id,
   });
 
   return {
-    responsavel,
     filhos,
-    isLoading: loadingResponsavel || loadingFilhos,
+    isLoading,
   };
 }
 
 export function useNotasFilho(alunoId: string | undefined) {
   return useQuery({
     queryKey: ["portal-notas-filho", alunoId],
-    queryFn: async () => {
+    queryFn: async (): Promise<NotaFilho[]> => {
       if (!alunoId) return [];
 
       const { data, error } = await supabase
@@ -148,13 +91,8 @@ export function useNotasFilho(alunoId: string | undefined) {
           nota,
           bimestre,
           ano_letivo,
-          tipo_avaliacao,
-          data_avaliacao,
           observacoes,
-          disciplinas (
-            id,
-            nome
-          )
+          disciplina:disciplinas(id, nome)
         `)
         .eq("aluno_id", alunoId)
         .order("ano_letivo", { ascending: false })
@@ -165,10 +103,7 @@ export function useNotasFilho(alunoId: string | undefined) {
         return [];
       }
 
-      return data?.map((nota) => ({
-        ...nota,
-        disciplina: nota.disciplinas,
-      })) || [];
+      return (data as unknown as NotaFilho[]) || [];
     },
     enabled: !!alunoId,
   });
@@ -177,33 +112,26 @@ export function useNotasFilho(alunoId: string | undefined) {
 export function useFaltasFilho(alunoId: string | undefined) {
   return useQuery({
     queryKey: ["portal-faltas-filho", alunoId],
-    queryFn: async () => {
+    queryFn: async (): Promise<FaltaFilho[]> => {
       if (!alunoId) return [];
 
       const { data, error } = await supabase
         .from("faltas")
         .select(`
           id,
-          data_falta,
-          tipo,
-          justificativa,
-          disciplinas (
-            id,
-            nome
-          )
+          data,
+          justificada,
+          motivo
         `)
         .eq("aluno_id", alunoId)
-        .order("data_falta", { ascending: false });
+        .order("data", { ascending: false });
 
       if (error) {
         console.error("Erro ao buscar faltas:", error);
         return [];
       }
 
-      return data?.map((falta) => ({
-        ...falta,
-        disciplina: falta.disciplinas,
-      })) || [];
+      return (data as unknown as FaltaFilho[]) || [];
     },
     enabled: !!alunoId,
   });
