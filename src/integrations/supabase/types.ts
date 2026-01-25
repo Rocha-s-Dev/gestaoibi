@@ -368,6 +368,110 @@ export type Database = {
           },
         ]
       }
+      cargos_publicos: {
+        Row: {
+          classe: string | null
+          codigo: string
+          created_at: string
+          criterios_progressao: Json | null
+          data_criacao: string | null
+          descricao: string | null
+          escolaridade_minima: string | null
+          formacao_especifica: string | null
+          id: string
+          intersticio_progressao_meses: number | null
+          jornada_diaria: number | null
+          jornada_semanal: number
+          lei_criacao: string | null
+          municipio_id: string | null
+          nivel: string | null
+          nome: string
+          padrao: string | null
+          permite_progressao_horizontal: boolean | null
+          permite_progressao_vertical: boolean | null
+          regime: Database["public"]["Enums"]["regime_trabalho"]
+          requisitos_adicionais: Json | null
+          status: string | null
+          teto_remuneratorio: number | null
+          tipo: Database["public"]["Enums"]["tipo_cargo"]
+          updated_at: string
+          vagas_criadas: number | null
+          vagas_disponiveis: number | null
+          vagas_ocupadas: number | null
+          vencimento_base: number | null
+        }
+        Insert: {
+          classe?: string | null
+          codigo: string
+          created_at?: string
+          criterios_progressao?: Json | null
+          data_criacao?: string | null
+          descricao?: string | null
+          escolaridade_minima?: string | null
+          formacao_especifica?: string | null
+          id?: string
+          intersticio_progressao_meses?: number | null
+          jornada_diaria?: number | null
+          jornada_semanal?: number
+          lei_criacao?: string | null
+          municipio_id?: string | null
+          nivel?: string | null
+          nome: string
+          padrao?: string | null
+          permite_progressao_horizontal?: boolean | null
+          permite_progressao_vertical?: boolean | null
+          regime?: Database["public"]["Enums"]["regime_trabalho"]
+          requisitos_adicionais?: Json | null
+          status?: string | null
+          teto_remuneratorio?: number | null
+          tipo?: Database["public"]["Enums"]["tipo_cargo"]
+          updated_at?: string
+          vagas_criadas?: number | null
+          vagas_disponiveis?: number | null
+          vagas_ocupadas?: number | null
+          vencimento_base?: number | null
+        }
+        Update: {
+          classe?: string | null
+          codigo?: string
+          created_at?: string
+          criterios_progressao?: Json | null
+          data_criacao?: string | null
+          descricao?: string | null
+          escolaridade_minima?: string | null
+          formacao_especifica?: string | null
+          id?: string
+          intersticio_progressao_meses?: number | null
+          jornada_diaria?: number | null
+          jornada_semanal?: number
+          lei_criacao?: string | null
+          municipio_id?: string | null
+          nivel?: string | null
+          nome?: string
+          padrao?: string | null
+          permite_progressao_horizontal?: boolean | null
+          permite_progressao_vertical?: boolean | null
+          regime?: Database["public"]["Enums"]["regime_trabalho"]
+          requisitos_adicionais?: Json | null
+          status?: string | null
+          teto_remuneratorio?: number | null
+          tipo?: Database["public"]["Enums"]["tipo_cargo"]
+          updated_at?: string
+          vagas_criadas?: number | null
+          vagas_disponiveis?: number | null
+          vagas_ocupadas?: number | null
+          vencimento_base?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cargos_publicos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracoes_alertas: {
         Row: {
           created_at: string
@@ -1138,6 +1242,94 @@ export type Database = {
           },
         ]
       }
+      funcoes_administrativas: {
+        Row: {
+          atribuicoes: string | null
+          cargo_vinculado_id: string | null
+          codigo: string
+          competencias: Json | null
+          created_at: string
+          descricao: string | null
+          exclusivo_efetivo: boolean | null
+          funcao_superior_id: string | null
+          id: string
+          nivel_hierarquico: number | null
+          nome: string
+          percentual_gratificacao: number | null
+          requisitos_ocupacao: string | null
+          secretaria_id: string | null
+          status: string | null
+          tempo_minimo_servico_meses: number | null
+          tipo: Database["public"]["Enums"]["tipo_funcao"]
+          updated_at: string
+          valor_gratificacao: number | null
+        }
+        Insert: {
+          atribuicoes?: string | null
+          cargo_vinculado_id?: string | null
+          codigo: string
+          competencias?: Json | null
+          created_at?: string
+          descricao?: string | null
+          exclusivo_efetivo?: boolean | null
+          funcao_superior_id?: string | null
+          id?: string
+          nivel_hierarquico?: number | null
+          nome: string
+          percentual_gratificacao?: number | null
+          requisitos_ocupacao?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tempo_minimo_servico_meses?: number | null
+          tipo: Database["public"]["Enums"]["tipo_funcao"]
+          updated_at?: string
+          valor_gratificacao?: number | null
+        }
+        Update: {
+          atribuicoes?: string | null
+          cargo_vinculado_id?: string | null
+          codigo?: string
+          competencias?: Json | null
+          created_at?: string
+          descricao?: string | null
+          exclusivo_efetivo?: boolean | null
+          funcao_superior_id?: string | null
+          id?: string
+          nivel_hierarquico?: number | null
+          nome?: string
+          percentual_gratificacao?: number | null
+          requisitos_ocupacao?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tempo_minimo_servico_meses?: number | null
+          tipo?: Database["public"]["Enums"]["tipo_funcao"]
+          updated_at?: string
+          valor_gratificacao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funcoes_administrativas_cargo_vinculado_id_fkey"
+            columns: ["cargo_vinculado_id"]
+            isOneToOne: false
+            referencedRelation: "cargos_publicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funcoes_administrativas_funcao_superior_id_fkey"
+            columns: ["funcao_superior_id"]
+            isOneToOne: false
+            referencedRelation: "funcoes_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funcoes_administrativas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goal_departments: {
         Row: {
           created_at: string
@@ -1224,6 +1416,86 @@ export type Database = {
           },
         ]
       }
+      historico_lotacoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_fim: string | null
+          data_inicio: string
+          funcao_id: string | null
+          id: string
+          motivo: string | null
+          observacoes: string | null
+          portaria_data: string | null
+          portaria_numero: string | null
+          secretaria_id: string | null
+          tipo_movimentacao: string
+          unidade_id: string | null
+          vinculo_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio: string
+          funcao_id?: string | null
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          portaria_data?: string | null
+          portaria_numero?: string | null
+          secretaria_id?: string | null
+          tipo_movimentacao: string
+          unidade_id?: string | null
+          vinculo_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          funcao_id?: string | null
+          id?: string
+          motivo?: string | null
+          observacoes?: string | null
+          portaria_data?: string | null
+          portaria_numero?: string | null
+          secretaria_id?: string | null
+          tipo_movimentacao?: string
+          unidade_id?: string | null
+          vinculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_lotacoes_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "funcoes_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indicadores_saude: {
         Row: {
           categoria: string
@@ -1279,6 +1551,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      log_acessos: {
+        Row: {
+          acao: string
+          created_at: string
+          dados_anteriores: Json | null
+          dados_novos: Json | null
+          dispositivo: string | null
+          id: string
+          ip_address: unknown
+          localizacao: Json | null
+          modulo: string | null
+          motivo_negacao: string | null
+          permitido: boolean
+          recurso: string | null
+          recurso_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          dados_anteriores?: Json | null
+          dados_novos?: Json | null
+          dispositivo?: string | null
+          id?: string
+          ip_address?: unknown
+          localizacao?: Json | null
+          modulo?: string | null
+          motivo_negacao?: string | null
+          permitido: boolean
+          recurso?: string | null
+          recurso_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          dados_anteriores?: Json | null
+          dados_novos?: Json | null
+          dispositivo?: string | null
+          id?: string
+          ip_address?: unknown
+          localizacao?: Json | null
+          modulo?: string | null
+          motivo_negacao?: string | null
+          permitido?: boolean
+          recurso?: string | null
+          recurso_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -1415,6 +1741,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      modulos_sistema: {
+        Row: {
+          ativo: boolean | null
+          codigo: string
+          created_at: string
+          descricao: string | null
+          icone: string | null
+          id: string
+          nome: string
+          ordem: number | null
+          rota_base: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo: string
+          created_at?: string
+          descricao?: string | null
+          icone?: string | null
+          id?: string
+          nome: string
+          ordem?: number | null
+          rota_base?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo?: string
+          created_at?: string
+          descricao?: string | null
+          icone?: string | null
+          id?: string
+          nome?: string
+          ordem?: number | null
+          rota_base?: string | null
+        }
+        Relationships: []
       }
       municipios: {
         Row: {
@@ -1657,6 +2019,69 @@ export type Database = {
         }
         Relationships: []
       }
+      papeis_usuario: {
+        Row: {
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          delegado_por: string | null
+          id: string
+          is_active: boolean | null
+          modulo_codigo: string | null
+          motivo_delegacao: string | null
+          papel: Database["public"]["Enums"]["papel_sistemico"]
+          secretaria_id: string | null
+          unidade_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          delegado_por?: string | null
+          id?: string
+          is_active?: boolean | null
+          modulo_codigo?: string | null
+          motivo_delegacao?: string | null
+          papel: Database["public"]["Enums"]["papel_sistemico"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          delegado_por?: string | null
+          id?: string
+          is_active?: boolean | null
+          modulo_codigo?: string | null
+          motivo_delegacao?: string | null
+          papel?: Database["public"]["Enums"]["papel_sistemico"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "papeis_usuario_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "papeis_usuario_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       periodos_fiscais: {
         Row: {
           bloqueado_em: string | null
@@ -1700,6 +2125,84 @@ export type Database = {
             columns: ["exercicio_id"]
             isOneToOne: false
             referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      permissoes_papel: {
+        Row: {
+          condicao_editar:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_excluir:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_ver: Database["public"]["Enums"]["condicao_permissao"] | null
+          created_at: string
+          id: string
+          modulo_id: string | null
+          nivel_hierarquico_minimo: number | null
+          papel: Database["public"]["Enums"]["papel_sistemico"]
+          pode_aprovar: boolean | null
+          pode_criar: boolean | null
+          pode_editar: boolean | null
+          pode_excluir: boolean | null
+          pode_publicar: boolean | null
+          pode_ver: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          condicao_editar?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_excluir?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_ver?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          created_at?: string
+          id?: string
+          modulo_id?: string | null
+          nivel_hierarquico_minimo?: number | null
+          papel: Database["public"]["Enums"]["papel_sistemico"]
+          pode_aprovar?: boolean | null
+          pode_criar?: boolean | null
+          pode_editar?: boolean | null
+          pode_excluir?: boolean | null
+          pode_publicar?: boolean | null
+          pode_ver?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          condicao_editar?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_excluir?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          condicao_ver?:
+            | Database["public"]["Enums"]["condicao_permissao"]
+            | null
+          created_at?: string
+          id?: string
+          modulo_id?: string | null
+          nivel_hierarquico_minimo?: number | null
+          papel?: Database["public"]["Enums"]["papel_sistemico"]
+          pode_aprovar?: boolean | null
+          pode_criar?: boolean | null
+          pode_editar?: boolean | null
+          pode_excluir?: boolean | null
+          pode_publicar?: boolean | null
+          pode_ver?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "permissoes_papel_modulo_id_fkey"
+            columns: ["modulo_id"]
+            isOneToOne: false
+            referencedRelation: "modulos_sistema"
             referencedColumns: ["id"]
           },
         ]
@@ -2076,6 +2579,77 @@ export type Database = {
             columns: ["pesquisa_id"]
             isOneToOne: false
             referencedRelation: "pesquisas_satisfacao"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      restricoes_acesso: {
+        Row: {
+          apenas_rede_interna: boolean | null
+          ativo: boolean | null
+          created_at: string
+          delegacao_automatica_ausencia: boolean | null
+          delegado_substituto_id: string | null
+          dias_semana: number[] | null
+          dispositivos_permitidos: string[] | null
+          horario_fim: string | null
+          horario_inicio: string | null
+          id: string
+          ips_permitidos: string[] | null
+          limite_aprovacao_financeira: number | null
+          limite_diario: number | null
+          limite_mensal: number | null
+          localizacoes_permitidas: Json | null
+          papel_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          apenas_rede_interna?: boolean | null
+          ativo?: boolean | null
+          created_at?: string
+          delegacao_automatica_ausencia?: boolean | null
+          delegado_substituto_id?: string | null
+          dias_semana?: number[] | null
+          dispositivos_permitidos?: string[] | null
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          ips_permitidos?: string[] | null
+          limite_aprovacao_financeira?: number | null
+          limite_diario?: number | null
+          limite_mensal?: number | null
+          localizacoes_permitidas?: Json | null
+          papel_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          apenas_rede_interna?: boolean | null
+          ativo?: boolean | null
+          created_at?: string
+          delegacao_automatica_ausencia?: boolean | null
+          delegado_substituto_id?: string | null
+          dias_semana?: number[] | null
+          dispositivos_permitidos?: string[] | null
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          ips_permitidos?: string[] | null
+          limite_aprovacao_financeira?: number | null
+          limite_diario?: number | null
+          limite_mensal?: number | null
+          localizacoes_permitidas?: Json | null
+          papel_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restricoes_acesso_papel_id_fkey"
+            columns: ["papel_id"]
+            isOneToOne: false
+            referencedRelation: "papeis_usuario"
             referencedColumns: ["id"]
           },
         ]
@@ -3019,6 +3593,125 @@ export type Database = {
         }
         Relationships: []
       }
+      vinculos_funcionais: {
+        Row: {
+          cargo_id: string | null
+          classe_atual: string | null
+          created_at: string
+          data_admissao: string
+          data_afastamento: string | null
+          data_exercicio: string | null
+          data_posse: string | null
+          data_ultima_progressao: string | null
+          funcao_id: string | null
+          horario_entrada: string | null
+          horario_saida: string | null
+          id: string
+          is_primary: boolean | null
+          jornada_semanal: number | null
+          matricula: string | null
+          motivo_afastamento: string | null
+          nivel_atual: string | null
+          padrao_atual: string | null
+          previsao_retorno: string | null
+          proxima_progressao: string | null
+          regime: Database["public"]["Enums"]["regime_trabalho"]
+          secretaria_id: string | null
+          situacao: string | null
+          unidade_id: string | null
+          updated_at: string
+          user_id: string
+          vencimento_atual: number | null
+        }
+        Insert: {
+          cargo_id?: string | null
+          classe_atual?: string | null
+          created_at?: string
+          data_admissao: string
+          data_afastamento?: string | null
+          data_exercicio?: string | null
+          data_posse?: string | null
+          data_ultima_progressao?: string | null
+          funcao_id?: string | null
+          horario_entrada?: string | null
+          horario_saida?: string | null
+          id?: string
+          is_primary?: boolean | null
+          jornada_semanal?: number | null
+          matricula?: string | null
+          motivo_afastamento?: string | null
+          nivel_atual?: string | null
+          padrao_atual?: string | null
+          previsao_retorno?: string | null
+          proxima_progressao?: string | null
+          regime?: Database["public"]["Enums"]["regime_trabalho"]
+          secretaria_id?: string | null
+          situacao?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id: string
+          vencimento_atual?: number | null
+        }
+        Update: {
+          cargo_id?: string | null
+          classe_atual?: string | null
+          created_at?: string
+          data_admissao?: string
+          data_afastamento?: string | null
+          data_exercicio?: string | null
+          data_posse?: string | null
+          data_ultima_progressao?: string | null
+          funcao_id?: string | null
+          horario_entrada?: string | null
+          horario_saida?: string | null
+          id?: string
+          is_primary?: boolean | null
+          jornada_semanal?: number | null
+          matricula?: string | null
+          motivo_afastamento?: string | null
+          nivel_atual?: string | null
+          padrao_atual?: string | null
+          previsao_retorno?: string | null
+          proxima_progressao?: string | null
+          regime?: Database["public"]["Enums"]["regime_trabalho"]
+          secretaria_id?: string | null
+          situacao?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id?: string
+          vencimento_atual?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vinculos_funcionais_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos_publicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "funcoes_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -3027,6 +3720,16 @@ export type Database = {
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_unidade_ids: { Args: { _user_id: string }; Returns: string[] }
+      get_vinculo_funcional: {
+        Args: { _user_id: string }
+        Returns: {
+          cargo_nome: string
+          funcao_nome: string
+          secretaria_nome: string
+          unidade_nome: string
+          vinculo_id: string
+        }[]
+      }
       has_education_role: {
         Args: {
           _role: Database["public"]["Enums"]["education_role"]
@@ -3057,6 +3760,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_papel_em_secretaria: {
+        Args: {
+          _papel: Database["public"]["Enums"]["papel_sistemico"]
+          _secretaria_id: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      has_papel_sistemico: {
+        Args: {
+          _papel: Database["public"]["Enums"]["papel_sistemico"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_secretaria_access: {
         Args: { _secretaria_id: string; _user_id: string }
         Returns: boolean
@@ -3079,8 +3797,33 @@ export type Database = {
         Args: { _secretaria_id: string; _user_id: string }
         Returns: boolean
       }
+      tem_permissao: {
+        Args: {
+          _acao: Database["public"]["Enums"]["tipo_permissao"]
+          _modulo: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      verifica_restricoes_abac: {
+        Args: {
+          _dia_semana?: number
+          _hora?: string
+          _ip?: string
+          _user_id: string
+          _valor_financeiro?: number
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      condicao_permissao:
+        | "todos"
+        | "proprios"
+        | "subordinados"
+        | "mesma_unidade"
+        | "mesma_secretaria"
+        | "hierarquia_inferior"
       education_role: "secretaria" | "diretor" | "professor" | "responsavel"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
       feriado_tipo: "nacional" | "estadual" | "municipal" | "ponto_facultativo"
@@ -3098,7 +3841,21 @@ export type Database = {
         | "enfermeiro"
         | "recepcionista"
         | "agente_saude"
+      papel_sistemico:
+        | "admin_municipal"
+        | "secretario"
+        | "secretario_adjunto"
+        | "diretor"
+        | "coordenador"
+        | "tecnico"
+        | "operador"
+        | "auditor"
       periodo_tipo: "bimestre" | "trimestre" | "quadrimestre" | "semestre"
+      regime_trabalho:
+        | "estatutario"
+        | "celetista"
+        | "temporario"
+        | "comissionado"
       secretaria_role:
         | "admin_municipal"
         | "secretario"
@@ -3111,6 +3868,15 @@ export type Database = {
       secretaria_tipo: "finalistico" | "administrativo"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status: "pending" | "in_progress" | "completed" | "cancelled"
+      tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
+      tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
+      tipo_permissao:
+        | "ver"
+        | "criar"
+        | "editar"
+        | "excluir"
+        | "aprovar"
+        | "publicar"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -3239,6 +4005,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      condicao_permissao: [
+        "todos",
+        "proprios",
+        "subordinados",
+        "mesma_unidade",
+        "mesma_secretaria",
+        "hierarquia_inferior",
+      ],
       education_role: ["secretaria", "diretor", "professor", "responsavel"],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
       feriado_tipo: ["nacional", "estadual", "municipal", "ponto_facultativo"],
@@ -3258,7 +4032,23 @@ export const Constants = {
         "recepcionista",
         "agente_saude",
       ],
+      papel_sistemico: [
+        "admin_municipal",
+        "secretario",
+        "secretario_adjunto",
+        "diretor",
+        "coordenador",
+        "tecnico",
+        "operador",
+        "auditor",
+      ],
       periodo_tipo: ["bimestre", "trimestre", "quadrimestre", "semestre"],
+      regime_trabalho: [
+        "estatutario",
+        "celetista",
+        "temporario",
+        "comissionado",
+      ],
       secretaria_role: [
         "admin_municipal",
         "secretario",
@@ -3272,6 +4062,16 @@ export const Constants = {
       secretaria_tipo: ["finalistico", "administrativo"],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["pending", "in_progress", "completed", "cancelled"],
+      tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
+      tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
+      tipo_permissao: [
+        "ver",
+        "criar",
+        "editar",
+        "excluir",
+        "aprovar",
+        "publicar",
+      ],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },
   },
