@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Transferencia, StatusTransferencia } from "@/hooks/useHistoricoTransferencias";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ArrowRight, Calendar, FileText, User, School, Info } from "lucide-react";
+import { ArrowRight, Calendar, FileText, User, School } from "lucide-react";
 
 interface TransferenciaDetalhesDialogProps {
   open: boolean;
@@ -19,13 +19,6 @@ const statusConfig: Record<StatusTransferencia, { label: string; color: string }
   rejeitada: { label: "Rejeitada", color: "bg-red-100 text-red-800" },
   cancelada: { label: "Cancelada", color: "bg-gray-100 text-gray-800" },
   concluida: { label: "Concluída", color: "bg-primary/20 text-primary" },
-};
-
-const tipoLabels = {
-  interna_turma: "Mudança de Turma",
-  interna_escola: "Mudança de Escola",
-  externa_entrada: "Entrada na Rede",
-  externa_saida: "Saída da Rede",
 };
 
 export function TransferenciaDetalhesDialog({ 
@@ -69,17 +62,6 @@ export function TransferenciaDetalhesDialog({
             </div>
           </div>
 
-          {/* Tipo de Transferência */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-              <Info className="h-4 w-4" />
-              Tipo de Transferência
-            </div>
-            <Badge variant="secondary" className="text-base">
-              {tipoLabels[transferencia.tipo]}
-            </Badge>
-          </div>
-
           {/* Origem → Destino */}
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -90,19 +72,14 @@ export function TransferenciaDetalhesDialog({
               <div className="flex-1">
                 <p className="text-xs text-muted-foreground">Origem</p>
                 <p className="font-medium">
-                  {transferencia.escola_origem?.nome || transferencia.escola_externa_origem || "-"}
+                  {transferencia.escola_origem?.nome || "-"}
                 </p>
-                {transferencia.turma_origem?.nome && (
-                  <p className="text-sm text-muted-foreground">
-                    Turma: {transferencia.turma_origem.nome}
-                  </p>
-                )}
               </div>
               <ArrowRight className="h-6 w-6 text-muted-foreground flex-shrink-0" />
               <div className="flex-1">
                 <p className="text-xs text-muted-foreground">Destino</p>
                 <p className="font-medium">
-                  {transferencia.escola_destino?.nome || transferencia.escola_externa_destino || "-"}
+                  {transferencia.escola_destino?.nome || "-"}
                 </p>
                 {transferencia.turma_destino?.nome && (
                   <p className="text-sm text-muted-foreground">

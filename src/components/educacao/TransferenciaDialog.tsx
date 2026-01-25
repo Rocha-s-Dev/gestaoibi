@@ -59,12 +59,10 @@ export function TransferenciaDialog({ open, onOpenChange, onClose }: Transferenc
       
       await solicitarTransferencia({
         aluno_id: alunoId,
-        tipo,
         escola_origem_id: alunoSelecionado?.escola_id,
-        turma_origem_id: alunoSelecionado?.turma_atual_id,
+        turma_origem_id: alunoSelecionado?.turma_id,
         escola_destino_id: tipo === "interna_escola" ? escolaDestinoId : undefined,
         turma_destino_id: tipo !== "externa_saida" ? turmaDestinoId : undefined,
-        escola_externa_destino: tipo === "externa_saida" ? escolaExternaDestino : undefined,
         motivo
       });
       
@@ -110,7 +108,7 @@ export function TransferenciaDialog({ open, onOpenChange, onClose }: Transferenc
                 <SelectValue placeholder="Selecione o aluno" />
               </SelectTrigger>
               <SelectContent>
-                {alunos.filter(a => a.status === 'matriculado').map((aluno) => (
+                {alunos.filter(a => a.situacao === 'ativo').map((aluno) => (
                   <SelectItem key={aluno.id} value={aluno.id}>
                     {aluno.nome} - {aluno.numero_matricula}
                   </SelectItem>
@@ -161,7 +159,7 @@ export function TransferenciaDialog({ open, onOpenChange, onClose }: Transferenc
                 </SelectTrigger>
                 <SelectContent>
                   {turmasFiltradas
-                    .filter(t => t.id !== alunoSelecionado?.turma_atual_id)
+                    .filter(t => t.id !== alunoSelecionado?.turma_id)
                     .map((turma) => (
                       <SelectItem key={turma.id} value={turma.id}>
                         {turma.nome} - {turma.serie}

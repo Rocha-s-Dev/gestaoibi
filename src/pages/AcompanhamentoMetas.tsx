@@ -284,7 +284,7 @@ export default function AcompanhamentoMetas() {
   const prepareTaskChartData = () => {
     // Dados para o gráfico de pizza por status de tarefas
     const taskStatusCounts = tasks.reduce((acc, task) => {
-      const status = task.completed ? "completed" : "pending";
+      const status = task.completed_at ? "completed" : "pending";
       acc[status] = (acc[status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
@@ -557,9 +557,9 @@ export default function AcompanhamentoMetas() {
                                 <div className="flex items-center">
                                   <div 
                                     className="w-3 h-3 rounded-full mr-2" 
-                                    style={{ backgroundColor: task.completed ? STATUS_COLORS.completed : STATUS_COLORS.pending }}
+                                    style={{ backgroundColor: task.completed_at ? STATUS_COLORS.completed : STATUS_COLORS.pending }}
                                   ></div>
-                                  {task.completed ? "Concluída" : "Pendente"}
+                                  {task.completed_at ? "Concluída" : "Pendente"}
                                 </div>
                               </td>
                               <td className="p-2 border">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,12 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Professor } from "@/hooks/useProfessores";
-import { Escola, useEscolas } from "@/hooks/useEscolas";
+import { useEscolas } from "@/hooks/useEscolas";
 
 type ProfessorDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (professor: Omit<Professor, "id"> | Professor) => void;
+  onSubmit: (professor: Omit<Professor, "id" | "created_at" | "updated_at" | "escola_principal"> | (Professor & { escola_id?: string | null })) => void;
   professor?: Professor | null;
 };
 
@@ -21,51 +20,33 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
   const [formData, setFormData] = useState({
     nome: "",
     cpf: "",
-    rg: "",
-    data_nascimento: "",
     telefone: "",
     email: "",
-    endereco: "",
     formacao: "",
-    especializacao: "",
-    registro_profissional: "",
-    data_admissao: "",
     status: "ativo" as string,
-    escola_principal_id: ""
+    escola_id: ""
   });
 
   useEffect(() => {
     if (professor) {
       setFormData({
         nome: professor.nome,
-        cpf: professor.cpf,
-        rg: professor.rg || "",
-        data_nascimento: professor.data_nascimento || "",
+        cpf: professor.cpf || "",
         telefone: professor.telefone || "",
         email: professor.email || "",
-        endereco: professor.endereco || "",
         formacao: professor.formacao || "",
-        especializacao: professor.especializacao || "",
-        registro_profissional: professor.registro_profissional || "",
-        data_admissao: professor.data_admissao,
-        status: professor.status,
-        escola_principal_id: professor.escola_principal_id || ""
+        status: professor.status || "ativo",
+        escola_id: professor.escola_id || ""
       });
     } else {
       setFormData({
         nome: "",
         cpf: "",
-        rg: "",
-        data_nascimento: "",
         telefone: "",
         email: "",
-        endereco: "",
         formacao: "",
-        especializacao: "",
-        registro_profissional: "",
-        data_admissao: "",
         status: "ativo",
-        escola_principal_id: ""
+        escola_id: ""
       });
     }
   }, [professor]);
@@ -74,14 +55,19 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
     e.preventDefault();
     
     const professorData = {
-      ...formData,
-      escola_principal_id: formData.escola_principal_id || null
+      nome: formData.nome,
+      cpf: formData.cpf || null,
+      telefone: formData.telefone || null,
+      email: formData.email || null,
+      formacao: formData.formacao || undefined,
+      status: formData.status,
+      escola_id: formData.escola_id || null
     };
 
     if (professor) {
-      onSubmit({ ...professorData, id: professor.id });
+      onSubmit({ ...professorData, id: professor.id } as any);
     } else {
-      onSubmit(professorData);
+      onSubmit(professorData as any);
     }
   };
 
@@ -108,35 +94,12 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="cpf">CPF *</Label>
+              <Label htmlFor="cpf">CPF</Label>
               <Input
                 id="cpf"
                 value={formData.cpf}
                 onChange={(e) => setFormData(prev => ({ ...prev, cpf: e.target.value }))}
                 placeholder="000.000.000-00"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="rg">RG</Label>
-              <Input
-                id="rg"
-                value={formData.rg}
-                onChange={(e) => setFormData(prev => ({ ...prev, rg: e.target.value }))}
-                placeholder="00.000.000-0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="data_nascimento">Data de Nascimento</Label>
-              <Input
-                id="data_nascimento"
-                type="date"
-                value={formData.data_nascimento}
-                onChange={(e) => setFormData(prev => ({ ...prev, data_nascimento: e.target.value }))}
               />
             </div>
           </div>
@@ -165,66 +128,22 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="endereco">Endereço</Label>
-            <Textarea
-              id="endereco"
-              value={formData.endereco}
-              onChange={(e) => setFormData(prev => ({ ...prev, endereco: e.target.value }))}
-              placeholder="Rua, número, bairro, cidade, CEP"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="formacao">Formação *</Label>
+            <Label htmlFor="formacao">Formação</Label>
             <Textarea
               id="formacao"
               value={formData.formacao}
               onChange={(e) => setFormData(prev => ({ ...prev, formacao: e.target.value }))}
               placeholder="Ex: Licenciatura em Pedagogia - Universidade XYZ"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="especializacao">Especialização</Label>
-            <Textarea
-              id="especializacao"
-              value={formData.especializacao}
-              onChange={(e) => setFormData(prev => ({ ...prev, especializacao: e.target.value }))}
-              placeholder="Ex: Pós-graduação em Educação Especial"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="registro_profissional">Registro Profissional</Label>
-              <Input
-                id="registro_profissional"
-                value={formData.registro_profissional}
-                onChange={(e) => setFormData(prev => ({ ...prev, registro_profissional: e.target.value }))}
-                placeholder="Ex: CRE 123456"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="data_admissao">Data de Admissão *</Label>
-              <Input
-                id="data_admissao"
-                type="date"
-                value={formData.data_admissao}
-                onChange={(e) => setFormData(prev => ({ ...prev, data_admissao: e.target.value }))}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="escola_principal_id">Escola Principal</Label>
+              <Label htmlFor="escola_id">Escola</Label>
               <Select
-                value={formData.escola_principal_id || "none"}
+                value={formData.escola_id || "none"}
                 onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, escola_principal_id: value === "none" ? "" : value }))
+                  setFormData(prev => ({ ...prev, escola_id: value === "none" ? "" : value }))
                 }
               >
                 <SelectTrigger>

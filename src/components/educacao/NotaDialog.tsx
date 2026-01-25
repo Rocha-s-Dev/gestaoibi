@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useNotas, type Nota } from "@/hooks/useNotas";
 import { useAlunos } from "@/hooks/useAlunos";
 import { useTurmas } from "@/hooks/useTurmas";
 import { useDisciplinas } from "@/hooks/useDisciplinas";
-import { useProfessores } from "@/hooks/useProfessores";
 
 type NotaDialogProps = {
   open: boolean;
@@ -23,48 +23,41 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
   const [formData, setFormData] = useState({
     aluno_id: "",
     disciplina_id: "",
-    professor_id: "",
     turma_id: "",
     bimestre: 1,
     ano_letivo: new Date().getFullYear(),
     nota: 0,
-    data_avaliacao: new Date().toISOString().split('T')[0],
     observacoes: "",
-    tipo_avaliacao: "prova"
+    fechada: false
   });
 
   const { createNota, updateNota } = useNotas();
   const { alunos } = useAlunos();
   const { turmas } = useTurmas();
   const { disciplinas } = useDisciplinas();
-  const { professores } = useProfessores();
 
   useEffect(() => {
     if (nota) {
       setFormData({
         aluno_id: nota.aluno_id,
         disciplina_id: nota.disciplina_id,
-        professor_id: nota.professor_id,
-        turma_id: nota.turma_id,
+        turma_id: nota.turma_id || "",
         bimestre: nota.bimestre,
-        ano_letivo: nota.ano_letivo,
+        ano_letivo: nota.ano_letivo || new Date().getFullYear(),
         nota: nota.nota || 0,
-        data_avaliacao: nota.data_avaliacao || new Date().toISOString().split('T')[0],
         observacoes: nota.observacoes || "",
-        tipo_avaliacao: nota.tipo_avaliacao
+        fechada: nota.fechada || false
       });
     } else {
       setFormData({
         aluno_id: "",
         disciplina_id: "",
-        professor_id: "",
         turma_id: "",
         bimestre: 1,
         ano_letivo: new Date().getFullYear(),
         nota: 0,
-        data_avaliacao: new Date().toISOString().split('T')[0],
         observacoes: "",
-        tipo_avaliacao: "prova"
+        fechada: false
       });
     }
   }, [nota]);
@@ -73,11 +66,22 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
     e.preventDefault();
     
     try {
+      const notaData = {
+        aluno_id: formData.aluno_id,
+        disciplina_id: formData.disciplina_id,
+        turma_id: formData.turma_id || null,
+        bimestre: formData.bimestre,
+        ano_letivo: formData.ano_letivo,
+        nota: formData.nota,
+        observacoes: formData.observacoes || null,
+        fechada: formData.fechada
+      };
+
       if (nota) {
-        await updateNota(nota.id, formData);
+        await updateNota(nota.id, notaData);
         toast.success("Nota atualizada com sucesso!");
       } else {
-        await createNota(formData);
+        await createNota(notaData);
         toast.success("Nota lançada com sucesso!");
       }
       onClose();
@@ -123,7 +127,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="aluno_id">Aluno</Label>
+              <Label htmlFor="aluno_id">Aluno *</Label>
               <Select 
                 value={formData.aluno_id} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, aluno_id: value }))}
@@ -142,7 +146,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="disciplina_id">Disciplina</Label>
+              <Label htmlFor="disciplina_id">Disciplina *</Label>
               <Select 
                 value={formData.disciplina_id} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, disciplina_id: value }))}
@@ -161,26 +165,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="professor_id">Professor</Label>
-              <Select 
-                value={formData.professor_id} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, professor_id: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o professor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {professores.map((professor) => (
-                    <SelectItem key={professor.id} value={professor.id}>
-                      {professor.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="bimestre">Bimestre</Label>
+              <Label htmlFor="bimestre">Bimestre *</Label>
               <Select 
                 value={formData.bimestre.toString()} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, bimestre: parseInt(value) }))}
@@ -198,7 +183,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="ano_letivo">Ano Letivo</Label>
+              <Label htmlFor="ano_letivo">Ano Letivo *</Label>
               <Input
                 id="ano_letivo"
                 type="number"
@@ -211,7 +196,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="nota">Nota (0-10)</Label>
+              <Label htmlFor="nota">Nota (0-10) *</Label>
               <Input
                 id="nota"
                 type="number"
@@ -220,37 +205,6 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
                 step="0.1"
                 value={formData.nota}
                 onChange={(e) => setFormData(prev => ({ ...prev, nota: parseFloat(e.target.value) }))}
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="tipo_avaliacao">Tipo de Avaliação</Label>
-              <Select 
-                value={formData.tipo_avaliacao} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, tipo_avaliacao: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="prova">Prova</SelectItem>
-                  <SelectItem value="trabalho">Trabalho</SelectItem>
-                  <SelectItem value="seminario">Seminário</SelectItem>
-                  <SelectItem value="participacao">Participação</SelectItem>
-                  <SelectItem value="exercicio">Exercício</SelectItem>
-                  <SelectItem value="projeto">Projeto</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="data_avaliacao">Data da Avaliação</Label>
-              <Input
-                id="data_avaliacao"
-                type="date"
-                value={formData.data_avaliacao}
-                onChange={(e) => setFormData(prev => ({ ...prev, data_avaliacao: e.target.value }))}
                 required
               />
             </div>
@@ -264,6 +218,15 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
               value={formData.observacoes}
               onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
             />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="fechada"
+              checked={formData.fechada}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, fechada: checked }))}
+            />
+            <Label htmlFor="fechada">Nota fechada (não pode ser alterada pelo professor)</Label>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

@@ -3,7 +3,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export type StatusRota = 'ativa' | 'inativa' | 'em_manutencao';
-export type StatusVeiculo = 'disponivel' | 'em_uso' | 'manutencao' | 'inativo';
 
 export interface Rota {
   id: string;
@@ -17,33 +16,14 @@ export interface Rota {
   created_at: string;
 }
 
-export interface Veiculo {
-  id: string;
-  placa: string;
-  modelo: string;
-  ano?: number;
-  capacidade: number;
-  motorista_nome?: string;
-  motorista_cnh?: string;
-  motorista_telefone?: string;
-  status: StatusVeiculo;
-  observacoes?: string;
-  created_at: string;
-}
-
 export interface AlunoRota {
   id: string;
   aluno_id: string;
   rota_id: string;
-  veiculo_id?: string;
   ponto_embarque?: string;
-  ponto_desembarque?: string;
   horario_embarque?: string;
-  turno?: string;
-  ativo: boolean;
   aluno?: { nome: string; numero_matricula: string };
   rota?: { nome: string };
-  veiculo?: { placa: string; modelo: string };
 }
 
 export function useRotas() {
@@ -125,85 +105,6 @@ export function useRotas() {
   return { rotas, loading, createRota, updateRota, deleteRota, refreshRotas: fetchRotas };
 }
 
-export function useVeiculos() {
-  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchVeiculos = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('veiculos')
-        .select('*')
-        .order('placa');
-
-      if (error) throw error;
-      setVeiculos(data as unknown as Veiculo[] || []);
-    } catch (err) {
-      console.error('Erro ao buscar veículos:', err);
-      toast.error('Erro ao carregar veículos');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const createVeiculo = async (veiculo: Omit<Veiculo, 'id' | 'created_at'>) => {
-    try {
-      const { data, error } = await supabase
-        .from('veiculos')
-        .insert(veiculo)
-        .select()
-        .single();
-
-      if (error) throw error;
-      toast.success('Veículo cadastrado');
-      await fetchVeiculos();
-      return data;
-    } catch (err) {
-      console.error('Erro ao cadastrar veículo:', err);
-      toast.error('Erro ao cadastrar veículo');
-    }
-  };
-
-  const updateVeiculo = async (id: string, updates: Partial<Veiculo>) => {
-    try {
-      const { error } = await supabase
-        .from('veiculos')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success('Veículo atualizado');
-      await fetchVeiculos();
-    } catch (err) {
-      console.error('Erro ao atualizar veículo:', err);
-      toast.error('Erro ao atualizar veículo');
-    }
-  };
-
-  const deleteVeiculo = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('veiculos')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success('Veículo removido');
-      await fetchVeiculos();
-    } catch (err) {
-      console.error('Erro ao remover veículo:', err);
-      toast.error('Erro ao remover veículo');
-    }
-  };
-
-  useEffect(() => {
-    fetchVeiculos();
-  }, [fetchVeiculos]);
-
-  return { veiculos, loading, createVeiculo, updateVeiculo, deleteVeiculo, refreshVeiculos: fetchVeiculos };
-}
-
 export function useAlunosRotas() {
   const [alunosRotas, setAlunosRotas] = useState<AlunoRota[]>([]);
   const [loading, setLoading] = useState(true);
@@ -216,8 +117,7 @@ export function useAlunosRotas() {
         .select(`
           *,
           aluno:alunos(nome, numero_matricula),
-          rota:rotas_transporte(nome),
-          veiculo:veiculos(placa, modelo)
+          rota:rotas_transporte(nome)
         `)
         .order('created_at', { ascending: false });
 
@@ -236,7 +136,7 @@ export function useAlunosRotas() {
     }
   }, []);
 
-  const vincularAluno = async (vinculo: Omit<AlunoRota, 'id' | 'aluno' | 'rota' | 'veiculo'>) => {
+  const vincularAluno = async (vinculo: { aluno_id: string; rota_id: string; ponto_embarque?: string; horario_embarque?: string }) => {
     try {
       const { error } = await supabase
         .from('alunos_rotas')
@@ -273,3 +173,6 @@ export function useAlunosRotas() {
 
   return { alunosRotas, loading, vincularAluno, desvincularAluno, refreshAlunosRotas: fetchAlunosRotas };
 }
+
+// Re-export for backwards compatibility
+export { useRotas as useVeiculos };
