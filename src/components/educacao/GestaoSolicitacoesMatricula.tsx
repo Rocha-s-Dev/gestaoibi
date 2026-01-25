@@ -46,9 +46,9 @@ export function GestaoSolicitacoesMatricula() {
     const termoBusca = busca.toLowerCase();
     return (
       s.protocolo.toLowerCase().includes(termoBusca) ||
-      s.dados_aluno.nome.toLowerCase().includes(termoBusca) ||
-      s.dados_responsavel.nome.toLowerCase().includes(termoBusca) ||
-      s.dados_responsavel.cpf.includes(termoBusca)
+      s.nome_aluno?.toLowerCase().includes(termoBusca) ||
+      s.nome_responsavel?.toLowerCase().includes(termoBusca) ||
+      s.cpf_responsavel?.includes(termoBusca)
     );
   });
 
@@ -241,17 +241,17 @@ export function GestaoSolicitacoesMatricula() {
                         </TableCell>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{solicitacao.dados_aluno.nome}</p>
+                            <p className="font-medium">{solicitacao.nome_aluno}</p>
                             <p className="text-xs text-muted-foreground">
-                              Nasc: {new Date(solicitacao.dados_aluno.data_nascimento).toLocaleDateString("pt-BR")}
+                              Nasc: {new Date(solicitacao.data_nascimento).toLocaleDateString("pt-BR")}
                             </p>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div>
-                            <p>{solicitacao.dados_responsavel.nome}</p>
+                            <p>{solicitacao.nome_responsavel}</p>
                             <p className="text-xs text-muted-foreground">
-                              {solicitacao.dados_responsavel.telefone}
+                              {solicitacao.telefone_responsavel}
                             </p>
                           </div>
                         </TableCell>

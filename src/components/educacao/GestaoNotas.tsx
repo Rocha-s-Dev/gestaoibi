@@ -168,8 +168,7 @@ export function GestaoNotas() {
                     <th className="text-left p-3">Disciplina</th>
                     <th className="text-left p-3">Bimestre</th>
                     <th className="text-left p-3">Nota</th>
-                    <th className="text-left p-3">Tipo</th>
-                    <th className="text-left p-3">Data</th>
+                    <th className="text-left p-3">Status</th>
                     <th className="text-left p-3">Ações</th>
                   </tr>
                 </thead>
@@ -197,14 +196,9 @@ export function GestaoNotas() {
                         </span>
                       </td>
                       <td className="p-3">
-                        <Badge variant="secondary">
-                          {nota.tipo_avaliacao}
+                        <Badge variant={nota.fechada ? "default" : "secondary"}>
+                          {nota.fechada ? "Fechada" : "Aberta"}
                         </Badge>
-                      </td>
-                      <td className="p-3">
-                        {nota.data_avaliacao && 
-                          new Date(nota.data_avaliacao).toLocaleDateString('pt-BR')
-                        }
                       </td>
                       <td className="p-3">
                         <div className="flex space-x-2">

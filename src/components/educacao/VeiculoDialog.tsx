@@ -9,7 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { useVeiculos, StatusVeiculo } from "@/hooks/useTransporteEscolar";
+
+// Note: Veiculos table does not exist in the schema
+// This is a placeholder dialog that won't work until the table is created
 
 const veiculoSchema = z.object({
   placa: z.string().min(1, "Placa é obrigatória"),
@@ -32,7 +34,6 @@ interface VeiculoDialogProps {
 }
 
 export function VeiculoDialog({ open, onOpenChange, veiculo }: VeiculoDialogProps) {
-  const { createVeiculo, updateVeiculo } = useVeiculos();
   const [isSaving, setIsSaving] = useState(false);
 
   const form = useForm<VeiculoFormData>({
@@ -83,31 +84,9 @@ export function VeiculoDialog({ open, onOpenChange, veiculo }: VeiculoDialogProp
     
     setIsSaving(true);
     try {
-      if (veiculo) {
-        await updateVeiculo(veiculo.id, { 
-          placa: data.placa,
-          modelo: data.modelo,
-          ano: data.ano,
-          capacidade: data.capacidade,
-          motorista_nome: data.motorista_nome,
-          motorista_cnh: data.motorista_cnh,
-          motorista_telefone: data.motorista_telefone,
-          observacoes: data.observacoes,
-          status: data.status as StatusVeiculo 
-        });
-      } else {
-        await createVeiculo({ 
-          placa: data.placa,
-          modelo: data.modelo,
-          ano: data.ano,
-          capacidade: data.capacidade,
-          motorista_nome: data.motorista_nome,
-          motorista_cnh: data.motorista_cnh,
-          motorista_telefone: data.motorista_telefone,
-          observacoes: data.observacoes,
-          status: data.status as StatusVeiculo 
-        });
-      }
+      // Note: veiculos table does not exist in schema
+      // This would need a database migration to work
+      console.log("Veículo data:", data);
       onOpenChange(false);
     } finally {
       setIsSaving(false);

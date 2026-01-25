@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Input } from "@/components/ui/input";
@@ -19,7 +18,7 @@ const Funcionarios = () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .order("first_name");
+        .order("name");
       
       if (error) {
         console.error("Erro ao buscar perfis:", error);
@@ -42,14 +41,10 @@ const Funcionarios = () => {
   };
 
   const filteredProfiles = profiles?.filter(profile => 
-    profile.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.department_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    profile.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     getRoleDisplay(profile.role).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.cidade?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.estado?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    profile.cpf?.toLowerCase().includes(searchTerm.toLowerCase())
+    profile.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -65,7 +60,7 @@ const Funcionarios = () => {
           <div className="relative mb-6">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar funcionários por nome, cargo, departamento, email, cidade..."
+              placeholder="Buscar funcionários por nome, cargo, departamento, email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -84,10 +79,10 @@ const Funcionarios = () => {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-lg font-semibold">
-                        {profile.first_name} {profile.last_name}
+                        {profile.name || "Nome não informado"}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        {profile.department_id || "Departamento não definido"}
+                        {profile.department || "Departamento não definido"}
                       </p>
                       <p className="text-sm text-gray-600">
                         {getRoleDisplay(profile.role)}
@@ -95,18 +90,23 @@ const Funcionarios = () => {
                       {profile.email && (
                         <p className="text-sm text-gray-600">{profile.email}</p>
                       )}
-                      {profile.cidade && profile.estado && (
-                        <p className="text-sm text-gray-600">
-                          {profile.cidade}, {profile.estado}
-                        </p>
-                      )}
                     </div>
                     <div className="flex gap-2">
-                      <ViewUserDialog user={profile} />
-                      <EditUserDialog user={profile} />
+                      <ViewUserDialog user={{
+                        ...profile,
+                        first_name: profile.name?.split(' ')[0] || null,
+                        last_name: profile.name?.split(' ').slice(1).join(' ') || null,
+                        department_id: profile.department
+                      }} />
+                      <EditUserDialog user={{
+                        ...profile,
+                        first_name: profile.name?.split(' ')[0] || null,
+                        last_name: profile.name?.split(' ').slice(1).join(' ') || null,
+                        department_id: profile.department
+                      }} />
                       <DeleteUserDialog 
                         userId={profile.id} 
-                        userName={`${profile.first_name} ${profile.last_name}`} 
+                        userName={profile.name || "Usuário"} 
                       />
                     </div>
                   </div>

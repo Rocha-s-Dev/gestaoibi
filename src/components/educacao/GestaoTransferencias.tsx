@@ -11,7 +11,6 @@ import {
   CheckCircle2, 
   Clock, 
   AlertCircle,
-  FileText,
   Eye 
 } from "lucide-react";
 import { TransferenciaDialog } from "./TransferenciaDialog";
@@ -30,13 +29,6 @@ const statusConfig: Record<StatusTransferencia, { label: string; variant: "defau
   concluida: { label: "Concluída", variant: "default", icon: CheckCircle2 },
 };
 
-const tipoLabels = {
-  interna_turma: "Mudança de Turma",
-  interna_escola: "Mudança de Escola",
-  externa_entrada: "Entrada na Rede",
-  externa_saida: "Saída da Rede",
-};
-
 export function GestaoTransferencias() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [detalhesDialog, setDetalhesDialog] = useState<Transferencia | null>(null);
@@ -47,8 +39,7 @@ export function GestaoTransferencias() {
     loading, 
     aprovarTransferencia, 
     rejeitarTransferencia, 
-    concluirTransferencia,
-    cancelarTransferencia 
+    concluirTransferencia 
   } = useTransferencias();
 
   const transferenciasFiltradas = filtroStatus === "todas" 
@@ -183,7 +174,6 @@ export function GestaoTransferencias() {
                     <thead>
                       <tr className="border-b">
                         <th className="text-left p-3">Aluno</th>
-                        <th className="text-left p-3">Tipo</th>
                         <th className="text-left p-3">Origem → Destino</th>
                         <th className="text-left p-3">Data</th>
                         <th className="text-left p-3">Status</th>
@@ -204,15 +194,10 @@ export function GestaoTransferencias() {
                               </div>
                             </td>
                             <td className="p-3">
-                              <Badge variant="secondary">
-                                {tipoLabels[t.tipo]}
-                              </Badge>
-                            </td>
-                            <td className="p-3">
                               <div className="text-sm">
-                                <span>{t.escola_origem?.nome || t.escola_externa_origem || "-"}</span>
+                                <span>{t.escola_origem?.nome || "-"}</span>
                                 <span className="mx-2">→</span>
-                                <span>{t.escola_destino?.nome || t.escola_externa_destino || "-"}</span>
+                                <span>{t.escola_destino?.nome || "-"}</span>
                               </div>
                             </td>
                             <td className="p-3">

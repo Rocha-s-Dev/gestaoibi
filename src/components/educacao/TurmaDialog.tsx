@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Turma } from "@/hooks/useTurmas";
 import { useEscolas } from "@/hooks/useEscolas";
-import { useProfessores } from "@/hooks/useProfessores";
 
 type TurmaDialogProps = {
   open: boolean;
@@ -16,20 +14,31 @@ type TurmaDialogProps = {
   turma?: Turma | null;
 };
 
+type TurnoType = 'matutino' | 'vespertino' | 'noturno' | 'integral';
+type ModalidadeType = 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche';
+
 export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialogProps) {
   const { escolas } = useEscolas();
-  const { professores } = useProfessores();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    nome: string;
+    serie: string;
+    ano_letivo: number;
+    turno: TurnoType;
+    modalidade: ModalidadeType;
+    capacidade: number;
+    sala: string;
+    status: string;
+    escola_id: string;
+  }>({
     nome: "",
     serie: "",
     ano_letivo: new Date().getFullYear(),
-    turno: "matutino" as 'matutino' | 'vespertino' | 'noturno' | 'integral',
-    modalidade: "fundamental_i" as 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche',
+    turno: "matutino",
+    modalidade: "fundamental_i",
     capacidade: 30,
     sala: "",
     status: "ativa",
-    escola_id: "",
-    professor_responsavel_id: ""
+    escola_id: ""
   });
 
   useEffect(() => {
@@ -38,13 +47,12 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
         nome: turma.nome,
         serie: turma.serie,
         ano_letivo: turma.ano_letivo,
-        turno: turma.turno,
-        modalidade: turma.modalidade,
+        turno: turma.turno as TurnoType,
+        modalidade: turma.modalidade as ModalidadeType,
         capacidade: turma.capacidade || 30,
         sala: turma.sala || "",
         status: turma.status,
-        escola_id: turma.escola_id,
-        professor_responsavel_id: turma.professor_responsavel_id || ""
+        escola_id: turma.escola_id
       });
     } else {
       setFormData({
@@ -56,8 +64,7 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
         capacidade: 30,
         sala: "",
         status: "ativa",
-        escola_id: "",
-        professor_responsavel_id: ""
+        escola_id: ""
       });
     }
   }, [turma]);
@@ -65,15 +72,10 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const turmaData = {
-      ...formData,
-      professor_responsavel_id: formData.professor_responsavel_id || null
-    };
-
     if (turma) {
-      onSubmit({ ...turmaData, id: turma.id });
+      onSubmit({ ...formData, id: turma.id });
     } else {
-      onSubmit(turmaData);
+      onSubmit(formData);
     }
   };
 
@@ -144,7 +146,7 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
               <Label htmlFor="turno">Turno *</Label>
               <Select
                 value={formData.turno}
-                onValueChange={(value: 'matutino' | 'vespertino' | 'noturno' | 'integral') => 
+                onValueChange={(value: TurnoType) => 
                   setFormData(prev => ({ ...prev, turno: value }))
                 }
               >
@@ -164,7 +166,7 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
               <Label htmlFor="modalidade">Modalidade *</Label>
               <Select
                 value={formData.modalidade}
-                onValueChange={(value: 'infantil' | 'fundamental_i' | 'fundamental_ii' | 'eja' | 'creche') => 
+                onValueChange={(value: ModalidadeType) => 
                   setFormData(prev => ({ ...prev, modalidade: value }))
                 }
               >
@@ -205,30 +207,6 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="professor_responsavel_id">Professor Responsável</Label>
-              <Select
-                value={formData.professor_responsavel_id || "none"}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, professor_responsavel_id: value === "none" ? "" : value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um professor" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Nenhum professor</SelectItem>
-                  {professores.map((professor) => (
-                    <SelectItem key={professor.id} value={professor.id}>
-                      {professor.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
               <Label htmlFor="sala">Sala</Label>
               <Input
                 id="sala"
@@ -237,24 +215,24 @@ export function TurmaDialog({ open, onOpenChange, onSubmit, turma }: TurmaDialog
                 placeholder="Ex: Sala 101"
               />
             </div>
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="status">Status *</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, status: value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ativa">Ativa</SelectItem>
-                  <SelectItem value="inativa">Inativa</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="status">Status *</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value) => 
+                setFormData(prev => ({ ...prev, status: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ativa">Ativa</SelectItem>
+                <SelectItem value="inativa">Inativa</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-end space-x-2">

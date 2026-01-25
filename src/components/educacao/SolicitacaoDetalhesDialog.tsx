@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +18,7 @@ import {
   FileText,
   CheckCircle,
   XCircle,
-  Clock,
-  AlertTriangle
+  Clock
 } from "lucide-react";
 import { type SolicitacaoMatricula } from "@/hooks/useSolicitacoesMatricula";
 import { useTurmas } from "@/hooks/useTurmas";
@@ -51,8 +49,8 @@ export function SolicitacaoDetalhesDialog({
   const { escolas } = useEscolas();
 
   const turmasFiltradas = turmas.filter((t) => {
-    if (solicitacao.escola_preferida_id) {
-      return t.escola_id === solicitacao.escola_preferida_id;
+    if (solicitacao.escola_desejada_id) {
+      return t.escola_id === solicitacao.escola_desejada_id;
     }
     return true;
   });
@@ -134,25 +132,17 @@ export function SolicitacaoDetalhesDialog({
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <Label className="text-muted-foreground">Nome Completo</Label>
-                <p className="font-medium">{solicitacao.dados_aluno.nome}</p>
+                <p className="font-medium">{solicitacao.nome_aluno}</p>
               </div>
               <div>
                 <Label className="text-muted-foreground">Data de Nascimento</Label>
                 <p className="font-medium">
-                  {new Date(solicitacao.dados_aluno.data_nascimento).toLocaleDateString("pt-BR")}
+                  {new Date(solicitacao.data_nascimento).toLocaleDateString("pt-BR")}
                 </p>
               </div>
               <div>
                 <Label className="text-muted-foreground">CPF</Label>
-                <p className="font-medium">{solicitacao.dados_aluno.cpf || "Não informado"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">RG</Label>
-                <p className="font-medium">{solicitacao.dados_aluno.rg || "Não informado"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Gênero</Label>
-                <p className="font-medium">{solicitacao.dados_aluno.genero || "Não informado"}</p>
+                <p className="font-medium">{solicitacao.cpf_aluno || "Não informado"}</p>
               </div>
             </div>
 
@@ -164,44 +154,20 @@ export function SolicitacaoDetalhesDialog({
                 Endereço
               </Label>
               <p className="font-medium">
-                {solicitacao.dados_aluno.endereco}
-                {solicitacao.dados_aluno.numero_endereco && `, ${solicitacao.dados_aluno.numero_endereco}`}
-                {solicitacao.dados_aluno.bairro && ` - ${solicitacao.dados_aluno.bairro}`}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {solicitacao.dados_aluno.cidade}/{solicitacao.dados_aluno.estado}
-                {solicitacao.dados_aluno.cep && ` - CEP: ${solicitacao.dados_aluno.cep}`}
+                {solicitacao.endereco || "Não informado"}
               </p>
             </div>
-
-            {solicitacao.dados_aluno.necessidades_especiais && (
-              <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3">
-                <Label className="flex items-center gap-2 text-yellow-800">
-                  <AlertTriangle className="h-4 w-4" />
-                  Necessidades Especiais
-                </Label>
-                <p className="mt-1 text-sm">{solicitacao.dados_aluno.necessidades_especiais}</p>
-              </div>
-            )}
           </TabsContent>
 
           <TabsContent value="responsavel" className="mt-4 space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <Label className="text-muted-foreground">Nome Completo</Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.nome}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Grau de Parentesco</Label>
-                <p className="font-medium capitalize">{solicitacao.dados_responsavel.grau_parentesco}</p>
+                <p className="font-medium">{solicitacao.nome_responsavel}</p>
               </div>
               <div>
                 <Label className="text-muted-foreground">CPF</Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.cpf}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">RG</Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.rg || "Não informado"}</p>
+                <p className="font-medium">{solicitacao.cpf_responsavel}</p>
               </div>
             </div>
 
@@ -213,18 +179,14 @@ export function SolicitacaoDetalhesDialog({
                   <Phone className="h-4 w-4" />
                   Telefone
                 </Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.telefone}</p>
+                <p className="font-medium">{solicitacao.telefone_responsavel}</p>
               </div>
               <div>
                 <Label className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4" />
                   E-mail
                 </Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.email || "Não informado"}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Profissão</Label>
-                <p className="font-medium">{solicitacao.dados_responsavel.profissao || "Não informado"}</p>
+                <p className="font-medium">{solicitacao.email_responsavel || "Não informado"}</p>
               </div>
             </div>
           </TabsContent>
@@ -242,7 +204,7 @@ export function SolicitacaoDetalhesDialog({
               <div>
                 <Label className="text-muted-foreground">Escola de Preferência</Label>
                 <p className="font-medium">
-                  {solicitacao.escola_preferida?.nome || "Não especificada"}
+                  {solicitacao.escola_desejada?.nome || "Não especificada"}
                 </p>
               </div>
               <div>
@@ -265,12 +227,6 @@ export function SolicitacaoDetalhesDialog({
               <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                 <Label className="text-red-800">Motivo do Indeferimento</Label>
                 <p className="mt-1 text-sm text-red-700">{solicitacao.motivo_rejeicao}</p>
-              </div>
-            )}
-
-            {solicitacao.data_processamento && (
-              <div className="text-sm text-muted-foreground">
-                Processado em: {formatDate(solicitacao.data_processamento)}
               </div>
             )}
           </TabsContent>
