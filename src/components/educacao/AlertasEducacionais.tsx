@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, Bell, CheckCircle, Eye, Filter, RefreshCw, Search, Settings } from "lucide-react";
-import { useAlertasEducacionais, AlertaEducacional } from "@/hooks/useAlertasEducacionais";
+import { useAlertasEducacionais } from "@/hooks/useAlertasEducacionais";
 import { AlertaItem } from "./AlertaItem";
 import { ConfiguracaoAlertasDialog } from "./ConfiguracaoAlertasDialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,14 +17,13 @@ export function AlertasEducacionais() {
   const [configDialogOpen, setConfigDialogOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const { alertas, loading, gerarAlertas, marcarComoLido, resolverAlerta } = useAlertasEducacionais();
+  const { alertas, loading, gerarAlertas, resolverAlerta } = useAlertasEducacionais();
 
   const alertasFiltrados = alertas?.filter((alerta) => {
     if (filtroTipo !== "todos" && alerta.tipo !== filtroTipo) return false;
     if (filtroNivel !== "todos" && alerta.nivel !== filtroNivel) return false;
     if (filtroStatus === "nao_resolvidos" && alerta.resolvido) return false;
     if (filtroStatus === "resolvidos" && !alerta.resolvido) return false;
-    if (filtroStatus === "nao_lidos" && alerta.lido) return false;
     if (busca && !alerta.aluno?.nome?.toLowerCase().includes(busca.toLowerCase())) return false;
     return true;
   }) || [];
@@ -166,7 +165,6 @@ export function AlertasEducacionais() {
                   <SelectItem value="todos">Todos</SelectItem>
                   <SelectItem value="nao_resolvidos">Não resolvidos</SelectItem>
                   <SelectItem value="resolvidos">Resolvidos</SelectItem>
-                  <SelectItem value="nao_lidos">Não lidos</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -195,7 +193,6 @@ export function AlertasEducacionais() {
                 <AlertaItem
                   key={alerta.id}
                   alerta={alerta}
-                  onMarcarLido={() => marcarComoLido(alerta.id)}
                   onResolver={() => resolverAlerta(alerta.id)}
                 />
               ))}

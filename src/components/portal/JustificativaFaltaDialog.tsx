@@ -51,12 +51,12 @@ export function JustificativaFaltaDialog({
       setLoading(true);
 
       if (faltaId) {
-        // Atualizar falta existente com justificativa
+        // Atualizar falta existente com justificativa - using database fields
         const { error } = await supabase
           .from("faltas")
           .update({
-            tipo: "justificada",
-            justificativa: `[${tiposJustificativa.find(t => t.value === tipoJustificativa)?.label}] ${justificativa}`,
+            justificada: true,
+            motivo: `[${tiposJustificativa.find(t => t.value === tipoJustificativa)?.label}] ${justificativa}`,
           })
           .eq("id", faltaId);
 

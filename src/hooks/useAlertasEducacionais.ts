@@ -5,24 +5,21 @@ import { toast } from 'sonner';
 export type TipoAlerta = 'faltas_excessivas' | 'nota_baixa' | 'risco_reprovacao' | 'evasao';
 export type NivelAlerta = 'info' | 'warning' | 'critical';
 
+// Type aligned with actual database schema
 export interface AlertaEducacional {
   id: string;
   aluno_id: string;
-  tipo: TipoAlerta;
-  nivel: NivelAlerta;
+  tipo: string;
+  nivel?: string | null;
   mensagem: string;
-  dados_adicionais?: Record<string, unknown>;
-  lido: boolean;
-  resolvido: boolean;
-  data_resolucao?: string;
-  created_at: string;
-  updated_at: string;
+  resolvido?: boolean | null;
+  created_at?: string;
   aluno?: {
     nome: string;
     numero_matricula: string;
-    escola?: { nome: string };
-    turma_atual?: { nome: string };
-  };
+    escola?: { nome: string } | null;
+    turma_atual?: { nome: string } | null;
+  } | null;
 }
 
 export interface ConfiguracaoAlertas {
@@ -67,7 +64,7 @@ export function useAlertasEducacionais() {
       const { data, error: fetchError } = await query;
 
       if (fetchError) throw fetchError;
-      setAlertas(data as unknown as AlertaEducacional[] || []);
+      setAlertas((data as unknown as AlertaEducacional[]) || []);
     } catch (err) {
       console.error('Erro ao buscar alertas:', err);
       setError('Erro ao carregar alertas');
@@ -76,29 +73,11 @@ export function useAlertasEducacionais() {
     }
   }, []);
 
-  const marcarComoLido = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('alertas_educacionais')
-        .update({ lido: true })
-        .eq('id', id);
-
-      if (error) throw error;
-      setAlertas(prev => prev.map(a => a.id === id ? { ...a, lido: true } : a));
-    } catch (err) {
-      console.error('Erro ao marcar alerta como lido:', err);
-      toast.error('Erro ao marcar alerta como lido');
-    }
-  };
-
   const resolverAlerta = async (id: string) => {
     try {
       const { error } = await supabase
         .from('alertas_educacionais')
-        .update({ 
-          resolvido: true, 
-          data_resolucao: new Date().toISOString() 
-        })
+        .update({ resolvido: true })
         .eq('id', id);
 
       if (error) throw error;
@@ -218,7 +197,6 @@ export function useAlertasEducacionais() {
     loading,
     error,
     fetchAlertas,
-    marcarComoLido,
     resolverAlerta,
     gerarAlertas,
     refreshAlertas: () => fetchAlertas({ resolvido: false })

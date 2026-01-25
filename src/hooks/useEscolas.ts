@@ -1,35 +1,18 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+// Type aligned with actual database schema
 export type Escola = {
   id: string;
   nome: string;
-  endereco: string;
-  telefone: string;
-  email: string;
-  diretor: string;
-  status: string;
-  codigo_mec?: string;
-  cnpj?: string;
-  cep?: string;
-  bairro?: string;
-  cidade?: string;
-  estado?: string;
-  capacidade_total: number;
-  tem_biblioteca: boolean;
-  tem_laboratorio_informatica: boolean;
-  tem_quadra_esportes: boolean;
-  tem_cozinha: boolean;
-  tem_refeitorio: boolean;
-  tem_sala_professores: boolean;
-  tem_sala_diretoria: boolean;
-  tem_secretaria: boolean;
-  acessibilidade_cadeirante: boolean;
-  internet_banda_larga: boolean;
-  energia_eletrica: boolean;
-  agua_potavel: boolean;
-  esgoto_sanitario: boolean;
+  endereco?: string | null;
+  telefone?: string | null;
+  email?: string | null;
+  diretor?: string | null;
+  tipo?: string | null;
+  capacidade?: number | null;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export function useEscolas() {
@@ -46,7 +29,7 @@ export function useEscolas() {
         .order('nome');
 
       if (error) throw error;
-      setEscolas(data || []);
+      setEscolas((data as Escola[]) || []);
     } catch (err) {
       console.error('Erro ao buscar escolas:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -55,7 +38,7 @@ export function useEscolas() {
     }
   };
 
-  const createEscola = async (escolaData: Omit<Escola, 'id'>) => {
+  const createEscola = async (escolaData: Omit<Escola, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
         .from('escolas')
@@ -65,7 +48,7 @@ export function useEscolas() {
 
       if (error) throw error;
       
-      await fetchEscolas(); // Refresh list
+      await fetchEscolas();
       return data;
     } catch (err) {
       console.error('Erro ao criar escola:', err);
@@ -84,7 +67,7 @@ export function useEscolas() {
 
       if (error) throw error;
       
-      await fetchEscolas(); // Refresh list
+      await fetchEscolas();
       return data;
     } catch (err) {
       console.error('Erro ao atualizar escola:', err);
@@ -101,7 +84,7 @@ export function useEscolas() {
 
       if (error) throw error;
       
-      await fetchEscolas(); // Refresh list
+      await fetchEscolas();
     } catch (err) {
       console.error('Erro ao deletar escola:', err);
       throw err;

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFaltasFilho } from "@/hooks/usePortalResponsavel";
+import { useFaltasFilho, FaltaFilho } from "@/hooks/usePortalResponsavel";
 import { Calendar, AlertTriangle, CheckCircle } from "lucide-react";
 import {
   Table,
@@ -18,11 +18,6 @@ interface FaltasResponsavelProps {
   alunoId: string;
   alunoNome: string;
 }
-
-const tipoFaltaLabels: Record<string, string> = {
-  injustificada: "Não Justificada",
-  justificada: "Justificada",
-};
 
 export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps) {
   const { data: faltas = [], isLoading } = useFaltasFilho(alunoId);
@@ -45,17 +40,16 @@ export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps
   }
 
   // Estatísticas
-  const totalFaltas = faltas.filter((f) => f.tipo === "injustificada" || !f.tipo).length;
-  const totalAtrasos = faltas.length - totalFaltas;
-  const faltasJustificadas = faltas.filter((f) => f.tipo === "justificada").length;
+  const totalFaltas = faltas.filter((f) => !f.justificada).length;
+  const faltasJustificadas = faltas.filter((f) => f.justificada).length;
 
   // Agrupar por mês
   const faltasPorMes = faltas.reduce((acc, falta) => {
-    const mes = format(new Date(falta.data_falta), "MMMM yyyy", { locale: ptBR });
+    const mes = format(new Date(falta.data), "MMMM yyyy", { locale: ptBR });
     if (!acc[mes]) acc[mes] = [];
     acc[mes].push(falta);
     return acc;
-  }, {} as Record<string, typeof faltas>);
+  }, {} as Record<string, FaltaFilho[]>);
 
   return (
     <Card>
@@ -67,14 +61,10 @@ export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Estatísticas */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           <div className="bg-muted/50 rounded-lg p-4 text-center">
             <p className="text-2xl font-bold text-destructive">{totalFaltas}</p>
-            <p className="text-sm text-muted-foreground">Faltas</p>
-          </div>
-          <div className="bg-muted/50 rounded-lg p-4 text-center">
-            <p className="text-2xl font-bold text-yellow-600">{totalAtrasos}</p>
-            <p className="text-sm text-muted-foreground">Atrasos</p>
+            <p className="text-sm text-muted-foreground">Faltas não justificadas</p>
           </div>
           <div className="bg-muted/50 rounded-lg p-4 text-center">
             <p className="text-2xl font-bold text-green-600">{faltasJustificadas}</p>
@@ -104,37 +94,35 @@ export function FaltasResponsavel({ alunoId, alunoNome }: FaltasResponsavelProps
                     <TableHeader>
                       <TableRow>
                         <TableHead>Data</TableHead>
-                        <TableHead>Disciplina</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Justificativa</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Motivo</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {faltasMes.map((falta) => (
                         <TableRow key={falta.id}>
                           <TableCell>
-                            {format(new Date(falta.data_falta), "dd/MM/yyyy")}
+                            {format(new Date(falta.data), "dd/MM/yyyy")}
                           </TableCell>
-                          <TableCell>{falta.disciplina?.nome || "-"}</TableCell>
                           <TableCell>
                             <Badge
-                              variant={falta.tipo === "justificada" ? "outline" : "destructive"}
+                              variant={falta.justificada ? "outline" : "destructive"}
                             >
-                              {tipoFaltaLabels[falta.tipo || "injustificada"] || falta.tipo}
+                              {falta.justificada ? "Justificada" : "Não Justificada"}
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {falta.justificativa ? (
+                            {falta.motivo ? (
                               <div className="flex items-center gap-2">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <span className="text-sm truncate max-w-[200px]">
-                                  {falta.justificativa}
+                                  {falta.motivo}
                                 </span>
                               </div>
                             ) : (
                               <div className="flex items-center gap-2 text-muted-foreground">
                                 <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                                <span className="text-sm">Não justificada</span>
+                                <span className="text-sm">Sem motivo informado</span>
                               </div>
                             )}
                           </TableCell>

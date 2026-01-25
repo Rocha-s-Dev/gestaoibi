@@ -23,7 +23,7 @@ export type EstatisticasPorEscola = {
   taxa_frequencia: number;
   desempenho_medio: number;
   taxa_ocupacao: number;
-  capacidade_total: number;
+  capacidade: number;
   alunos_em_risco: number;
 };
 
@@ -57,16 +57,14 @@ export function useEducacaoStats() {
       const anoAtual = new Date().getFullYear();
 
       // Buscar contagens em paralelo
-      const [escolasRes, escolasAtivasRes, alunosRes, professoresRes, turmasRes] = await Promise.all([
+      const [escolasRes, alunosRes, professoresRes, turmasRes] = await Promise.all([
         supabase.from('escolas').select('*', { count: 'exact', head: true }),
-        supabase.from('escolas').select('*', { count: 'exact', head: true }).eq('status', 'ativa'),
         supabase.from('alunos').select('*', { count: 'exact', head: true }),
         supabase.from('professores').select('*', { count: 'exact', head: true }),
         supabase.from('turmas').select('*', { count: 'exact', head: true }),
       ]);
 
       const totalEscolas = escolasRes.count || 0;
-      const escolasAtivas = escolasAtivasRes.count || 0;
       const totalAlunos = alunosRes.count || 0;
       const totalProfessores = professoresRes.count || 0;
       const totalTurmas = turmasRes.count || 0;
@@ -74,7 +72,7 @@ export function useEducacaoStats() {
       // Buscar notas e faltas em paralelo
       const [notasRes, faltasRes] = await Promise.all([
         supabase.from('notas').select('nota, aluno_id').eq('ano_letivo', anoAtual).not('nota', 'is', null),
-        supabase.from('faltas').select('aluno_id').gte('data_falta', `${anoAtual}-01-01`).lt('data_falta', `${anoAtual + 1}-01-01`),
+        supabase.from('faltas').select('aluno_id').gte('data', `${anoAtual}-01-01`).lt('data', `${anoAtual + 1}-01-01`),
       ]);
 
       const notasData = notasRes.data || [];
@@ -103,8 +101,8 @@ export function useEducacaoStats() {
         desempenhoMedio: Number(desempenhoMedio.toFixed(1)),
         alunosEmRisco: alunosEmRiscoSet.size,
         taxaAprovacao: Number(taxaAprovacao.toFixed(1)),
-        escolasAtivas,
-        escolasInativas: totalEscolas - escolasAtivas,
+        escolasAtivas: totalEscolas,
+        escolasInativas: 0,
       });
 
     } catch (err) {
@@ -119,7 +117,7 @@ export function useEducacaoStats() {
     try {
       const { data: escolas } = await supabase
         .from('escolas')
-        .select('id, nome, capacidade_total');
+        .select('id, nome, capacidade');
 
       if (!escolas) return;
 
@@ -129,12 +127,13 @@ export function useEducacaoStats() {
           const [alunosRes, turmasRes, professoresRes] = await Promise.all([
             supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
             supabase.from('turmas').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
-            supabase.from('professores').select('*', { count: 'exact', head: true }).eq('escola_principal_id', escola.id),
+            supabase.from('professores').select('*', { count: 'exact', head: true }).eq('escola_id', escola.id),
           ]);
 
           const totalAlunos = alunosRes.count || 0;
-          const taxaOcupacao = escola.capacidade_total > 0 
-            ? (totalAlunos / escola.capacidade_total) * 100 
+          const capacidade = escola.capacidade || 0;
+          const taxaOcupacao = capacidade > 0 
+            ? (totalAlunos / capacidade) * 100 
             : 0;
 
           return {
@@ -146,7 +145,7 @@ export function useEducacaoStats() {
             taxa_frequencia: 0,
             desempenho_medio: 0,
             taxa_ocupacao: Number(taxaOcupacao.toFixed(1)),
-            capacidade_total: escola.capacidade_total,
+            capacidade: capacidade,
             alunos_em_risco: 0,
           };
         })
@@ -174,7 +173,7 @@ export function useEducacaoStats() {
 
       notas.forEach((nota) => {
         const disciplinaId = nota.disciplina_id;
-        const disciplinaNome = nota.disciplina?.nome || 'Sem nome';
+        const disciplinaNome = (nota.disciplina as { nome: string } | null)?.nome || 'Sem nome';
         
         if (!disciplinasMap.has(disciplinaId)) {
           disciplinasMap.set(disciplinaId, { nome: disciplinaNome, notas: [] });
@@ -217,11 +216,10 @@ export function useEducacaoStats() {
       const frequencia = await Promise.all(
         turmas.map(async (turma) => {
           const [alunosRes, faltasRes] = await Promise.all([
-            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('turma_atual_id', turma.id),
+            supabase.from('alunos').select('*', { count: 'exact', head: true }).eq('turma_id', turma.id),
             supabase.from('faltas').select('*', { count: 'exact', head: true })
-              .eq('turma_id', turma.id)
-              .gte('data_falta', `${anoAtual}-01-01`)
-              .lt('data_falta', `${anoAtual + 1}-01-01`),
+              .gte('data', `${anoAtual}-01-01`)
+              .lt('data', `${anoAtual + 1}-01-01`),
           ]);
 
           const totalAlunos = alunosRes.count || 0;
@@ -236,7 +234,7 @@ export function useEducacaoStats() {
           return {
             turma_id: turma.id,
             turma_nome: turma.nome,
-            escola_nome: turma.escola?.nome || 'Sem escola',
+            escola_nome: (turma.escola as { nome: string } | null)?.nome || 'Sem escola',
             total_alunos: totalAlunos,
             total_faltas: totalFaltas,
             taxa_presenca: Number(taxaPresenca.toFixed(1)),
