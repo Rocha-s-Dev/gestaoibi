@@ -1,22 +1,21 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Professor = {
   id: string;
   nome: string;
-  cpf: string;
-  rg?: string;
-  data_nascimento?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
+  cpf?: string | null;
+  telefone?: string | null;
+  email?: string | null;
+  especialidade?: string | null;
+  escola_id?: string | null;
+  user_id?: string | null;
   formacao?: string;
-  especializacao?: string;
-  registro_profissional?: string;
-  data_admissao: string;
-  status: string;
-  escola_principal_id?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+  // Relation
+  escola_principal?: { nome: string };
 };
 
 export function useProfessores() {
@@ -36,7 +35,7 @@ export function useProfessores() {
         .order('nome');
 
       if (error) throw error;
-      setProfessores(data || []);
+      setProfessores((data as unknown as Professor[]) || []);
     } catch (err) {
       console.error('Erro ao buscar professores:', err);
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
@@ -45,17 +44,24 @@ export function useProfessores() {
     }
   };
 
-  const createProfessor = async (professorData: Omit<Professor, 'id'>) => {
+  const createProfessor = async (professorData: Omit<Professor, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
         .from('professores')
-        .insert([professorData])
+        .insert([{
+          nome: professorData.nome,
+          cpf: professorData.cpf,
+          telefone: professorData.telefone,
+          email: professorData.email,
+          especialidade: professorData.especialidade,
+          escola_id: professorData.escola_id
+        }])
         .select()
         .single();
 
       if (error) throw error;
       
-      await fetchProfessores(); // Refresh list
+      await fetchProfessores();
       return data;
     } catch (err) {
       console.error('Erro ao criar professor:', err);
@@ -74,7 +80,7 @@ export function useProfessores() {
 
       if (error) throw error;
       
-      await fetchProfessores(); // Refresh list
+      await fetchProfessores();
       return data;
     } catch (err) {
       console.error('Erro ao atualizar professor:', err);
@@ -91,7 +97,7 @@ export function useProfessores() {
 
       if (error) throw error;
       
-      await fetchProfessores(); // Refresh list
+      await fetchProfessores();
     } catch (err) {
       console.error('Erro ao deletar professor:', err);
       throw err;

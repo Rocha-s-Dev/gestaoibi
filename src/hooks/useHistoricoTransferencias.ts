@@ -26,28 +26,22 @@ export interface HistoricoEscolar {
 export interface Transferencia {
   id: string;
   aluno_id: string;
-  tipo: TipoTransferencia;
   escola_origem_id?: string;
   escola_destino_id?: string;
-  turma_origem_id?: string;
   turma_destino_id?: string;
-  escola_externa_origem?: string;
-  escola_externa_destino?: string;
   motivo?: string;
   status: StatusTransferencia;
   data_solicitacao: string;
   data_efetivacao?: string;
-  solicitado_por?: string;
-  aprovado_por?: string;
-  documentos_gerados?: string[];
   observacoes?: string;
   aluno?: { nome: string; numero_matricula: string };
   escola_origem?: { nome: string };
   escola_destino?: { nome: string };
-  turma_origem?: { nome: string };
   turma_destino?: { nome: string };
 }
 
+// Generate historical data from existing notas and faltas tables
+// since historico_escolar table doesn't exist in the schema
 export function useHistoricoEscolar() {
   const [historicos, setHistoricos] = useState<HistoricoEscolar[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,22 +49,129 @@ export function useHistoricoEscolar() {
   const fetchHistoricos = useCallback(async (alunoId?: string) => {
     try {
       setLoading(true);
-      let query = supabase
-        .from('historico_escolar')
+      
+      // Fetch alunos with their escola and turma info
+      let alunosQuery = supabase
+        .from('alunos')
         .select(`
-          *,
-          aluno:alunos(nome, numero_matricula)
-        `)
-        .order('ano_letivo', { ascending: false });
+          id,
+          nome,
+          numero_matricula,
+          escola_id,
+          turma_id,
+          situacao,
+          escola:escolas(nome),
+          turma:turmas(nome, serie)
+        `);
 
       if (alunoId) {
-        query = query.eq('aluno_id', alunoId);
+        alunosQuery = alunosQuery.eq('id', alunoId);
       }
 
-      const { data, error } = await query;
+      const { data: alunosData } = await alunosQuery;
 
-      if (error) throw error;
-      setHistoricos(data as unknown as HistoricoEscolar[] || []);
+      if (!alunosData || alunosData.length === 0) {
+        setHistoricos([]);
+        return;
+      }
+
+      const anoAtual = new Date().getFullYear();
+      const historicosList: HistoricoEscolar[] = [];
+
+      for (const aluno of alunosData) {
+        // Fetch notas for this student
+        const { data: notasData } = await supabase
+          .from('notas')
+          .select(`
+            nota,
+            bimestre,
+            ano_letivo,
+            disciplina:disciplinas(nome)
+          `)
+          .eq('aluno_id', aluno.id);
+
+        // Fetch faltas count
+        const { count: faltasCount } = await supabase
+          .from('faltas')
+          .select('*', { count: 'exact', head: true })
+          .eq('aluno_id', aluno.id);
+
+        // Group notes by year
+        const notasPorAno: Record<number, Record<string, number[]>> = {};
+        notasData?.forEach(n => {
+          const ano = n.ano_letivo || anoAtual;
+          const disciplina = (n.disciplina as { nome: string })?.nome || 'Sem disciplina';
+          
+          if (!notasPorAno[ano]) notasPorAno[ano] = {};
+          if (!notasPorAno[ano][disciplina]) notasPorAno[ano][disciplina] = [];
+          
+          if (n.nota !== null) {
+            notasPorAno[ano][disciplina].push(n.nota);
+          }
+        });
+
+        // Generate historico for each year with data
+        Object.entries(notasPorAno).forEach(([ano, disciplinas]) => {
+          const notasFinais: Record<string, number> = {};
+          let somaMedias = 0;
+          let contDisciplinas = 0;
+
+          Object.entries(disciplinas).forEach(([disc, notas]) => {
+            if (notas.length > 0) {
+              const media = notas.reduce((a, b) => a + b, 0) / notas.length;
+              notasFinais[disc] = media;
+              somaMedias += media;
+              contDisciplinas++;
+            }
+          });
+
+          const mediaGeral = contDisciplinas > 0 ? somaMedias / contDisciplinas : 0;
+          const totalFaltas = faltasCount || 0;
+          const percentualFrequencia = 100 - (totalFaltas / 200 * 100);
+
+          let situacao: SituacaoAnoLetivo = 'em_curso';
+          if (parseInt(ano) < anoAtual) {
+            situacao = mediaGeral >= 6 ? 'aprovado' : 'reprovado';
+          }
+
+          historicosList.push({
+            id: `${aluno.id}-${ano}`,
+            aluno_id: aluno.id,
+            ano_letivo: parseInt(ano),
+            serie: (aluno.turma as { serie?: string })?.serie || 'N/A',
+            turma_nome: (aluno.turma as { nome?: string })?.nome,
+            escola_nome: (aluno.escola as { nome?: string })?.nome || 'N/A',
+            escola_id: aluno.escola_id || undefined,
+            notas_finais: notasFinais,
+            media_geral: mediaGeral,
+            total_faltas: totalFaltas,
+            percentual_frequencia: percentualFrequencia,
+            situacao,
+            aluno: { nome: aluno.nome, numero_matricula: aluno.numero_matricula }
+          });
+        });
+
+        // If no notas exist, still create an "em_curso" entry for current year
+        if (Object.keys(notasPorAno).length === 0) {
+          historicosList.push({
+            id: `${aluno.id}-${anoAtual}`,
+            aluno_id: aluno.id,
+            ano_letivo: anoAtual,
+            serie: (aluno.turma as { serie?: string })?.serie || 'N/A',
+            turma_nome: (aluno.turma as { nome?: string })?.nome,
+            escola_nome: (aluno.escola as { nome?: string })?.nome || 'N/A',
+            escola_id: aluno.escola_id || undefined,
+            notas_finais: {},
+            media_geral: 0,
+            total_faltas: faltasCount || 0,
+            percentual_frequencia: 100 - ((faltasCount || 0) / 200 * 100),
+            situacao: 'em_curso',
+            aluno: { nome: aluno.nome, numero_matricula: aluno.numero_matricula }
+          });
+        }
+      }
+
+      setHistoricos(historicosList.sort((a, b) => b.ano_letivo - a.ano_letivo));
     } catch (err) {
       console.error('Erro ao buscar históricos:', err);
     } finally {
@@ -79,141 +180,13 @@ export function useHistoricoEscolar() {
   }, []);
 
   const getHistoricoAluno = async (alunoId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('historico_escolar')
-        .select('*')
-        .eq('aluno_id', alunoId)
-        .order('ano_letivo', { ascending: false });
-
-      if (error) throw error;
-      return data as unknown as HistoricoEscolar[] || [];
-    } catch (err) {
-      console.error('Erro ao buscar histórico do aluno:', err);
-      return [];
-    }
-  };
-
-  const createHistorico = async (historico: Omit<HistoricoEscolar, 'id' | 'aluno'>) => {
-    try {
-      const { error } = await supabase
-        .from('historico_escolar')
-        .insert(historico);
-
-      if (error) throw error;
-      toast.success('Histórico criado');
-      await fetchHistoricos();
-    } catch (err) {
-      console.error('Erro ao criar histórico:', err);
-      toast.error('Erro ao criar histórico');
-    }
-  };
-
-  const updateHistorico = async (id: string, updates: Partial<HistoricoEscolar>) => {
-    try {
-      const { error } = await supabase
-        .from('historico_escolar')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) throw error;
-      toast.success('Histórico atualizado');
-      await fetchHistoricos();
-    } catch (err) {
-      console.error('Erro ao atualizar histórico:', err);
-      toast.error('Erro ao atualizar histórico');
-    }
+    await fetchHistoricos(alunoId);
+    return historicos.filter(h => h.aluno_id === alunoId);
   };
 
   const gerarHistoricoAnoAtual = async (alunoId: string) => {
-    try {
-      // Buscar dados do aluno
-      const { data: aluno } = await supabase
-        .from('alunos')
-        .select(`
-          *,
-          escola:escolas(nome),
-          turma:turmas(nome, serie)
-        `)
-        .eq('id', alunoId)
-        .single();
-
-      if (!aluno) {
-        toast.error('Aluno não encontrado');
-        return;
-      }
-
-      // Buscar notas do aluno no ano atual
-      const anoAtual = new Date().getFullYear();
-      const { data: notas } = await supabase
-        .from('notas')
-        .select(`
-          nota,
-          disciplina:disciplinas(nome)
-        `)
-        .eq('aluno_id', alunoId)
-        .eq('ano_letivo', anoAtual);
-
-      // Calcular média por disciplina
-      const notasPorDisciplina: Record<string, number[]> = {};
-      notas?.forEach(n => {
-        const disciplina = (n.disciplina as { nome: string })?.nome || 'Sem disciplina';
-        if (!notasPorDisciplina[disciplina]) {
-          notasPorDisciplina[disciplina] = [];
-        }
-        if (n.nota) {
-          notasPorDisciplina[disciplina].push(n.nota);
-        }
-      });
-
-      const notasFinais: Record<string, number> = {};
-      Object.entries(notasPorDisciplina).forEach(([disciplina, notas]) => {
-        notasFinais[disciplina] = notas.reduce((a, b) => a + b, 0) / notas.length;
-      });
-
-      const mediaGeral = Object.values(notasFinais).length > 0
-        ? Object.values(notasFinais).reduce((a, b) => a + b, 0) / Object.values(notasFinais).length
-        : 0;
-
-      // Contar faltas
-      const { count: totalFaltas } = await supabase
-        .from('faltas')
-        .select('*', { count: 'exact', head: true })
-        .eq('aluno_id', alunoId);
-
-      // Criar ou atualizar histórico
-      const historico = {
-        aluno_id: alunoId,
-        ano_letivo: anoAtual,
-        serie: (aluno.turma as { serie?: string })?.serie || 'N/A',
-        turma_nome: (aluno.turma as { nome?: string })?.nome,
-        escola_nome: (aluno.escola as { nome?: string })?.nome || 'N/A',
-        escola_id: aluno.escola_id,
-        notas_finais: notasFinais,
-        media_geral: mediaGeral,
-        total_faltas: totalFaltas || 0,
-        percentual_frequencia: 100 - ((totalFaltas || 0) / 200 * 100),
-        situacao: 'em_curso' as SituacaoAnoLetivo
-      };
-
-      const { data: existente } = await supabase
-        .from('historico_escolar')
-        .select('id')
-        .eq('aluno_id', alunoId)
-        .eq('ano_letivo', anoAtual)
-        .single();
-
-      if (existente) {
-        await updateHistorico(existente.id, historico);
-      } else {
-        await createHistorico(historico);
-      }
-
-      toast.success('Histórico gerado com sucesso');
-    } catch (err) {
-      console.error('Erro ao gerar histórico:', err);
-      toast.error('Erro ao gerar histórico');
-    }
+    await fetchHistoricos(alunoId);
+    toast.success('Histórico atualizado com sucesso');
   };
 
   useEffect(() => {
@@ -225,8 +198,6 @@ export function useHistoricoEscolar() {
     loading, 
     fetchHistoricos, 
     getHistoricoAluno,
-    createHistorico, 
-    updateHistorico,
     gerarHistoricoAnoAtual
   };
 }
@@ -245,7 +216,6 @@ export function useTransferencias() {
           aluno:alunos(nome, numero_matricula),
           escola_origem:escolas!transferencias_escola_origem_id_fkey(nome),
           escola_destino:escolas!transferencias_escola_destino_id_fkey(nome),
-          turma_origem:turmas!transferencias_turma_origem_id_fkey(nome),
           turma_destino:turmas!transferencias_turma_destino_id_fkey(nome)
         `)
         .order('data_solicitacao', { ascending: false });
@@ -265,7 +235,7 @@ export function useTransferencias() {
     }
   }, []);
 
-  const solicitarTransferencia = async (transferencia: Omit<Transferencia, 'id' | 'status' | 'data_solicitacao' | 'aluno' | 'escola_origem' | 'escola_destino' | 'turma_origem' | 'turma_destino'>) => {
+  const solicitarTransferencia = async (transferencia: Omit<Transferencia, 'id' | 'status' | 'data_solicitacao' | 'aluno' | 'escola_origem' | 'escola_destino' | 'turma_destino'>) => {
     try {
       const { error } = await supabase
         .from('transferencias')
@@ -286,23 +256,10 @@ export function useTransferencias() {
 
   const aprovarTransferencia = async (id: string, aprovadoPor?: string) => {
     try {
-      const { data: transferencia } = await supabase
-        .from('transferencias')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (!transferencia) {
-        toast.error('Transferência não encontrada');
-        return;
-      }
-
-      // Atualizar status da transferência
       const { error } = await supabase
         .from('transferencias')
         .update({ 
-          status: 'aprovada',
-          aprovado_por: aprovadoPor 
+          status: 'aprovada'
         })
         .eq('id', id);
 
@@ -329,34 +286,24 @@ export function useTransferencias() {
         return;
       }
 
-      // Atualizar aluno se for transferência interna
-      if (transferencia.tipo === 'interna_turma' || transferencia.tipo === 'interna_escola') {
-        const updates: Record<string, string | undefined> = {};
-        
-        if (transferencia.turma_destino_id) {
-          updates.turma_atual_id = transferencia.turma_destino_id;
-        }
-        if (transferencia.escola_destino_id) {
-          updates.escola_id = transferencia.escola_destino_id;
-        }
-
-        if (Object.keys(updates).length > 0) {
-          await supabase
-            .from('alunos')
-            .update(updates)
-            .eq('id', transferencia.aluno_id);
-        }
+      // Update student data
+      const updates: Record<string, string | undefined> = {};
+      
+      if (transferencia.turma_destino_id) {
+        updates.turma_id = transferencia.turma_destino_id;
+      }
+      if (transferencia.escola_destino_id) {
+        updates.escola_id = transferencia.escola_destino_id;
       }
 
-      // Se for transferência externa de saída, atualizar status do aluno
-      if (transferencia.tipo === 'externa_saida') {
+      if (Object.keys(updates).length > 0) {
         await supabase
           .from('alunos')
-          .update({ status: 'transferido' })
+          .update(updates)
           .eq('id', transferencia.aluno_id);
       }
 
-      // Atualizar status da transferência
+      // Update transfer status
       const { error } = await supabase
         .from('transferencias')
         .update({ 

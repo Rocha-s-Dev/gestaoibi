@@ -159,8 +159,8 @@ export function HistoricoEscolarView() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Status</p>
-                  <Badge>{alunoInfo.status}</Badge>
+                  <p className="text-xs text-muted-foreground">Situação</p>
+                  <Badge>{alunoInfo.situacao || 'ativo'}</Badge>
                 </div>
               </div>
 

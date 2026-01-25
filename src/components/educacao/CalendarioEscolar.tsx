@@ -109,7 +109,7 @@ export function CalendarioEscolar() {
           {dayEvents.slice(0, 3).map((evento, index) => (
             <div
               key={evento.id}
-              className={`text-xs p-1 rounded truncate cursor-pointer ${getTipoEventoColor(evento.tipo_evento)}`}
+              className={`text-xs p-1 rounded truncate cursor-pointer ${getTipoEventoColor(evento.tipo || '')}`}
               title={evento.titulo}
               onClick={() => {
                 setSelectedEvento(evento);
@@ -200,8 +200,8 @@ export function CalendarioEscolar() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
                         <h4 className="font-medium">{evento.titulo}</h4>
-                        <Badge variant="outline" className={getTipoEventoColor(evento.tipo_evento)}>
-                          {evento.tipo_evento}
+                        <Badge variant="outline" className={getTipoEventoColor(evento.tipo || '')}>
+                          {evento.tipo || 'evento'}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{evento.descricao}</p>

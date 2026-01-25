@@ -67,7 +67,7 @@ export function GestaoNotasAvancada() {
     if (!turmaRecuperacao) return [];
 
     const notasTurma = notas.filter(n => n.turma_id === turmaRecuperacao);
-    const alunosTurma = alunos.filter(a => a.turma_atual_id === turmaRecuperacao);
+    const alunosTurma = alunos.filter(a => a.turma_id === turmaRecuperacao);
     
     const alunosEmRecuperacao: { 
       aluno: typeof alunos[0]; 

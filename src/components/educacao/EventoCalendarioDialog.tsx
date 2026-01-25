@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useCalendarioEscolar, type EventoCalendario } from "@/hooks/useCalendarioEscolar";
 import { useEscolas } from "@/hooks/useEscolas";
-import { useTurmas } from "@/hooks/useTurmas";
 
 type EventoCalendarioDialogProps = {
   open: boolean;
@@ -22,15 +21,13 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
     escola_id: "",
     titulo: "",
     descricao: "",
-    tipo_evento: "",
+    tipo: "",
     data_inicio: new Date().toISOString().split('T')[0],
-    data_fim: "",
-    turmas_especificas: [] as string[]
+    data_fim: ""
   });
 
   const { createEvento, updateEvento } = useCalendarioEscolar();
   const { escolas } = useEscolas();
-  const { turmas } = useTurmas();
 
   useEffect(() => {
     if (evento) {
@@ -38,20 +35,18 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
         escola_id: evento.escola_id || "",
         titulo: evento.titulo,
         descricao: evento.descricao || "",
-        tipo_evento: evento.tipo_evento,
+        tipo: evento.tipo || "",
         data_inicio: evento.data_inicio,
-        data_fim: evento.data_fim || "",
-        turmas_especificas: evento.turmas_especificas || []
+        data_fim: evento.data_fim || ""
       });
     } else {
       setFormData({
         escola_id: "",
         titulo: "",
         descricao: "",
-        tipo_evento: "",
+        tipo: "",
         data_inicio: new Date().toISOString().split('T')[0],
-        data_fim: "",
-        turmas_especificas: []
+        data_fim: ""
       });
     }
   }, [evento]);
@@ -63,8 +58,7 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
       const eventoData = {
         ...formData,
         escola_id: formData.escola_id || null,
-        data_fim: formData.data_fim || null,
-        turmas_especificas: formData.turmas_especificas.length > 0 ? formData.turmas_especificas : null
+        data_fim: formData.data_fim || null
       };
 
       if (evento) {
@@ -117,10 +111,10 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
             </div>
 
             <div>
-              <Label htmlFor="tipo_evento">Tipo de Evento</Label>
+              <Label htmlFor="tipo">Tipo de Evento</Label>
               <Select 
-                value={formData.tipo_evento} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, tipo_evento: value }))}
+                value={formData.tipo} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, tipo: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo" />
@@ -187,47 +181,6 @@ export function EventoCalendarioDialog({ open, onOpenChange, evento, onClose }: 
               onChange={(e) => setFormData(prev => ({ ...prev, descricao: e.target.value }))}
               rows={3}
             />
-          </div>
-
-          {/* Turmas Específicas */}
-          <div>
-            <Label>Turmas Específicas (Opcional)</Label>
-            <div className="mt-2 max-h-40 overflow-y-auto border rounded p-2">
-              {turmas
-                .filter(turma => !formData.escola_id || turma.escola_id === formData.escola_id)
-                .map((turma) => (
-                  <div key={turma.id} className="flex items-center space-x-2 py-1">
-                    <input
-                      type="checkbox"
-                      id={`turma-${turma.id}`}
-                      checked={formData.turmas_especificas.includes(turma.id)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setFormData(prev => ({
-                            ...prev,
-                            turmas_especificas: [...prev.turmas_especificas, turma.id]
-                          }));
-                        } else {
-                          setFormData(prev => ({
-                            ...prev,
-                            turmas_especificas: prev.turmas_especificas.filter(id => id !== turma.id)
-                          }));
-                        }
-                      }}
-                      className="rounded"
-                    />
-                    <Label 
-                      htmlFor={`turma-${turma.id}`} 
-                      className="text-sm cursor-pointer"
-                    >
-                      {turma.nome} - {turma.serie}
-                    </Label>
-                  </div>
-                ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Deixe em branco para aplicar a todas as turmas da escola
-            </p>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

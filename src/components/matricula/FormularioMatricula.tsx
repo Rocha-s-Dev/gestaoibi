@@ -655,9 +655,7 @@ export function FormularioMatricula({ onSuccess }: FormularioMatriculaProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {escolas
-                          .filter((e) => e.status === "ativa")
-                          .map((escola) => (
+                        {escolas.map((escola) => (
                             <SelectItem key={escola.id} value={escola.id}>
                               {escola.nome}
                             </SelectItem>

@@ -50,7 +50,7 @@ export function LancamentoNotasLote() {
   // Filtrar alunos pela turma selecionada
   const alunos = useMemo(() => {
     if (!turmaId) return [];
-    return todosAlunos?.filter(a => a.turma_atual_id === turmaId) || [];
+    return todosAlunos?.filter(a => a.turma_id === turmaId) || [];
   }, [todosAlunos, turmaId]);
 
   useEffect(() => {

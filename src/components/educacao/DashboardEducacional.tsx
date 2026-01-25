@@ -261,7 +261,7 @@ export function DashboardEducacional() {
                   </div>
                   <div>
                     <p className="text-muted-foreground">Capacidade</p>
-                    <p className="font-medium">{escola.total_alunos} / {escola.capacidade_total}</p>
+                    <p className="font-medium">{escola.total_alunos} / {escola.capacidade || 0}</p>
                   </div>
                 </div>
                 <Progress value={escola.taxa_ocupacao} className="mt-2" />
