@@ -32,7 +32,8 @@ import {
   UserCheck,
   Scale,
   Eye,
-  GraduationCap
+  GraduationCap,
+  UserCog
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ const mainMenuItems = [
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: Users, label: "Funcionários", path: "/funcionarios" },
+  { icon: UserCog, label: "RH e Permissões", path: "/admin/rh" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 

@@ -26,6 +26,7 @@ import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
 import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
 import Transparencia from "@/pages/Transparencia";
 import GestaoEducacao from "@/pages/GestaoEducacao";
+import AdminRH from "@/pages/AdminRH";
 import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
@@ -214,6 +215,14 @@ export default function App() {
           element={
             <RequireAuth>
               <Transparencia />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/rh"
+          element={
+            <RequireAuth>
+              <AdminRH />
             </RequireAuth>
           }
         />
