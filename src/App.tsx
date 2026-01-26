@@ -4,7 +4,7 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/NotFound";
-import Funcionarios from "@/pages/Funcionarios";
+
 import Metas from "@/pages/Metas";
 import AcompanhamentoMetas from "@/pages/AcompanhamentoMetas";
 import Mensagens from "@/pages/Mensagens";
@@ -50,14 +50,7 @@ export default function App() {
             </RequireAuth>
           }
         />
-        <Route
-          path="/funcionarios"
-          element={
-            <RequireAuth>
-              <Funcionarios />
-            </RequireAuth>
-          }
-        />
+        <Route path="/funcionarios" element={<Navigate to="/admin/rh" replace />} />
         <Route
           path="/metas"
           element={

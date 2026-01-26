@@ -48,7 +48,6 @@ const mainMenuItems = [
   { icon: BarChart, label: "Acompanhamento", path: "/acompanhamento-metas" },
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
-  { icon: Users, label: "Funcionários", path: "/funcionarios" },
   { icon: UserCog, label: "RH e Permissões", path: "/admin/rh" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
