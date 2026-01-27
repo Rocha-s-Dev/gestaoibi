@@ -280,6 +280,86 @@ export type Database = {
           },
         ]
       }
+      auditoria_global: {
+        Row: {
+          alteracoes: Json | null
+          categoria: Database["public"]["Enums"]["categoria_auditoria"]
+          created_at: string
+          entidade: string
+          entidade_id: string | null
+          estado_anterior: Json | null
+          estado_posterior: Json | null
+          hash_anterior: string | null
+          hash_registro: string
+          id: string
+          ip_address: unknown
+          metadata: Json | null
+          modulo: string
+          secretaria_id: string | null
+          secretaria_nome: string | null
+          tipo_acao: Database["public"]["Enums"]["tipo_acao_auditoria"]
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_nome: string | null
+          versao: number | null
+        }
+        Insert: {
+          alteracoes?: Json | null
+          categoria?: Database["public"]["Enums"]["categoria_auditoria"]
+          created_at?: string
+          entidade: string
+          entidade_id?: string | null
+          estado_anterior?: Json | null
+          estado_posterior?: Json | null
+          hash_anterior?: string | null
+          hash_registro: string
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          modulo: string
+          secretaria_id?: string | null
+          secretaria_nome?: string | null
+          tipo_acao: Database["public"]["Enums"]["tipo_acao_auditoria"]
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_nome?: string | null
+          versao?: number | null
+        }
+        Update: {
+          alteracoes?: Json | null
+          categoria?: Database["public"]["Enums"]["categoria_auditoria"]
+          created_at?: string
+          entidade?: string
+          entidade_id?: string | null
+          estado_anterior?: Json | null
+          estado_posterior?: Json | null
+          hash_anterior?: string | null
+          hash_registro?: string
+          id?: string
+          ip_address?: unknown
+          metadata?: Json | null
+          modulo?: string
+          secretaria_id?: string | null
+          secretaria_nome?: string | null
+          tipo_acao?: Database["public"]["Enums"]["tipo_acao_auditoria"]
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_nome?: string | null
+          versao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditoria_global_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendario_escolar: {
         Row: {
           ano_letivo: number | null
@@ -766,6 +846,57 @@ export type Database = {
           created_at?: string
           id?: string
           nome?: string
+        }
+        Relationships: []
+      }
+      entidade_versoes: {
+        Row: {
+          aprovado_em: string | null
+          aprovado_por: string | null
+          created_at: string
+          dados: Json
+          entidade: string
+          entidade_id: string
+          hash_anterior: string | null
+          hash_dados: string
+          id: string
+          motivo: string | null
+          revertido: boolean | null
+          revertido_para_versao: number | null
+          user_id: string | null
+          versao: number
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovado_por?: string | null
+          created_at?: string
+          dados: Json
+          entidade: string
+          entidade_id: string
+          hash_anterior?: string | null
+          hash_dados: string
+          id?: string
+          motivo?: string | null
+          revertido?: boolean | null
+          revertido_para_versao?: number | null
+          user_id?: string | null
+          versao: number
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovado_por?: string | null
+          created_at?: string
+          dados?: Json
+          entidade?: string
+          entidade_id?: string
+          hash_anterior?: string | null
+          hash_dados?: string
+          id?: string
+          motivo?: string | null
+          revertido?: boolean | null
+          revertido_para_versao?: number | null
+          user_id?: string | null
+          versao?: number
         }
         Relationships: []
       }
@@ -2959,6 +3090,51 @@ export type Database = {
           },
         ]
       }
+      solicitacoes_reversao: {
+        Row: {
+          aprovado_em: string | null
+          aprovador_id: string | null
+          created_at: string
+          entidade: string
+          entidade_id: string
+          id: string
+          motivo: string
+          motivo_rejeicao: string | null
+          solicitante_id: string
+          status: string | null
+          versao_atual: number
+          versao_destino: number
+        }
+        Insert: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          created_at?: string
+          entidade: string
+          entidade_id: string
+          id?: string
+          motivo: string
+          motivo_rejeicao?: string | null
+          solicitante_id: string
+          status?: string | null
+          versao_atual: number
+          versao_destino: number
+        }
+        Update: {
+          aprovado_em?: string | null
+          aprovador_id?: string | null
+          created_at?: string
+          entidade?: string
+          entidade_id?: string
+          id?: string
+          motivo?: string
+          motivo_rejeicao?: string | null
+          solicitante_id?: string
+          status?: string | null
+          versao_atual?: number
+          versao_destino?: number
+        }
+        Relationships: []
+      }
       task_assignments: {
         Row: {
           assigned_at: string
@@ -3717,6 +3893,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calcular_alteracoes: {
+        Args: { estado_anterior: Json; estado_posterior: Json }
+        Returns: Json
+      }
+      criar_versao_entidade: {
+        Args: {
+          p_dados: Json
+          p_entidade: string
+          p_entidade_id: string
+          p_motivo?: string
+          p_user_id: string
+        }
+        Returns: number
+      }
+      gerar_hash_auditoria: { Args: { dados: Json }; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_unidade_ids: { Args: { _user_id: string }; Returns: string[] }
@@ -3797,6 +3988,23 @@ export type Database = {
         Args: { _secretaria_id: string; _user_id: string }
         Returns: boolean
       }
+      registrar_auditoria: {
+        Args: {
+          p_categoria: Database["public"]["Enums"]["categoria_auditoria"]
+          p_entidade: string
+          p_entidade_id: string
+          p_estado_anterior: Json
+          p_estado_posterior: Json
+          p_ip?: string
+          p_metadata?: Json
+          p_modulo: string
+          p_secretaria_id: string
+          p_tipo_acao: Database["public"]["Enums"]["tipo_acao_auditoria"]
+          p_user_agent?: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       tem_permissao: {
         Args: {
           _acao: Database["public"]["Enums"]["tipo_permissao"]
@@ -3817,6 +4025,7 @@ export type Database = {
       }
     }
     Enums: {
+      categoria_auditoria: "seguranca" | "dados" | "financeiro" | "documental"
       condicao_permissao:
         | "todos"
         | "proprios"
@@ -3868,6 +4077,18 @@ export type Database = {
       secretaria_tipo: "finalistico" | "administrativo"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status: "pending" | "in_progress" | "completed" | "cancelled"
+      tipo_acao_auditoria:
+        | "criar"
+        | "editar"
+        | "excluir"
+        | "visualizar"
+        | "aprovar"
+        | "rejeitar"
+        | "login"
+        | "logout"
+        | "exportar"
+        | "importar"
+        | "reverter"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
       tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
       tipo_permissao:
@@ -4005,6 +4226,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      categoria_auditoria: ["seguranca", "dados", "financeiro", "documental"],
       condicao_permissao: [
         "todos",
         "proprios",
@@ -4062,6 +4284,19 @@ export const Constants = {
       secretaria_tipo: ["finalistico", "administrativo"],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["pending", "in_progress", "completed", "cancelled"],
+      tipo_acao_auditoria: [
+        "criar",
+        "editar",
+        "excluir",
+        "visualizar",
+        "aprovar",
+        "rejeitar",
+        "login",
+        "logout",
+        "exportar",
+        "importar",
+        "reverter",
+      ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
       tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
       tipo_permissao: [
