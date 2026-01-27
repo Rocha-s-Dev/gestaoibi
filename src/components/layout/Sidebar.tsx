@@ -33,7 +33,8 @@ import {
   Scale,
   Eye,
   GraduationCap,
-  UserCog
+  UserCog,
+  Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ const mainMenuItems = [
   { icon: MessageSquare, label: "Mensagens", path: "/mensagens" },
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: UserCog, label: "RH e Permissões", path: "/admin/rh" },
+  { icon: Shield, label: "Auditoria", path: "/admin/auditoria" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
