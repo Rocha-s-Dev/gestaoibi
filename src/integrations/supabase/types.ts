@@ -781,6 +781,74 @@ export type Database = {
         }
         Relationships: []
       }
+      dados_bancarios: {
+        Row: {
+          agencia: string
+          agencia_digito: string | null
+          ativo: boolean | null
+          banco_codigo: string
+          banco_nome: string
+          conta: string
+          conta_digito: string | null
+          conta_principal: boolean | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          id: string
+          pix_chave: string | null
+          pix_tipo: string | null
+          servidor_id: string
+          tipo_conta: string
+          updated_at: string
+        }
+        Insert: {
+          agencia: string
+          agencia_digito?: string | null
+          ativo?: boolean | null
+          banco_codigo: string
+          banco_nome: string
+          conta: string
+          conta_digito?: string | null
+          conta_principal?: boolean | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          servidor_id: string
+          tipo_conta: string
+          updated_at?: string
+        }
+        Update: {
+          agencia?: string
+          agencia_digito?: string | null
+          ativo?: boolean | null
+          banco_codigo?: string
+          banco_nome?: string
+          conta?: string
+          conta_digito?: string | null
+          conta_principal?: boolean | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          servidor_id?: string
+          tipo_conta?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dados_bancarios_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           code: string | null
@@ -821,6 +889,92 @@ export type Database = {
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dependentes: {
+        Row: {
+          ativo: boolean | null
+          certidao_cartorio: string | null
+          certidao_folha: string | null
+          certidao_livro: string | null
+          certidao_numero: string | null
+          certidao_tipo: string | null
+          cpf: string | null
+          created_at: string
+          data_fim_dependencia: string | null
+          data_inicio_dependencia: string | null
+          data_nascimento: string
+          descricao_deficiencia: string | null
+          id: string
+          ir_dependente: boolean | null
+          nome: string
+          observacoes: string | null
+          parentesco: string
+          plano_saude_dependente: boolean | null
+          possui_deficiencia: boolean | null
+          salario_familia_dependente: boolean | null
+          servidor_id: string
+          sexo: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          certidao_cartorio?: string | null
+          certidao_folha?: string | null
+          certidao_livro?: string | null
+          certidao_numero?: string | null
+          certidao_tipo?: string | null
+          cpf?: string | null
+          created_at?: string
+          data_fim_dependencia?: string | null
+          data_inicio_dependencia?: string | null
+          data_nascimento: string
+          descricao_deficiencia?: string | null
+          id?: string
+          ir_dependente?: boolean | null
+          nome: string
+          observacoes?: string | null
+          parentesco: string
+          plano_saude_dependente?: boolean | null
+          possui_deficiencia?: boolean | null
+          salario_familia_dependente?: boolean | null
+          servidor_id: string
+          sexo?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean | null
+          certidao_cartorio?: string | null
+          certidao_folha?: string | null
+          certidao_livro?: string | null
+          certidao_numero?: string | null
+          certidao_tipo?: string | null
+          cpf?: string | null
+          created_at?: string
+          data_fim_dependencia?: string | null
+          data_inicio_dependencia?: string | null
+          data_nascimento?: string
+          descricao_deficiencia?: string | null
+          id?: string
+          ir_dependente?: boolean | null
+          nome?: string
+          observacoes?: string | null
+          parentesco?: string
+          plano_saude_dependente?: boolean | null
+          possui_deficiencia?: boolean | null
+          salario_familia_dependente?: boolean | null
+          servidor_id?: string
+          sexo?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dependentes_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2437,34 +2591,130 @@ export type Database = {
       }
       profiles: {
         Row: {
+          cnh_categoria: string | null
+          cnh_numero: string | null
+          cnh_validade: string | null
+          cpf: string | null
           created_at: string
+          ctps_numero: string | null
+          ctps_serie: string | null
+          ctps_uf: string | null
+          data_nascimento: string | null
           department: string | null
           email: string | null
+          endereco_bairro: string | null
+          endereco_cep: string | null
+          endereco_cidade: string | null
+          endereco_complemento: string | null
+          endereco_logradouro: string | null
+          endereco_numero: string | null
+          endereco_uf: string | null
+          estado_civil: string | null
+          foto_url: string | null
           id: string
+          nacionalidade: string | null
           name: string | null
+          naturalidade: string | null
+          nome_mae: string | null
+          nome_pai: string | null
+          observacoes: string | null
+          pis_pasep: string | null
+          rg: string | null
+          rg_orgao_emissor: string | null
+          rg_uf: string | null
           role: string | null
+          secao_eleitoral: string | null
+          sexo: string | null
+          telefone_celular: string | null
+          telefone_residencial: string | null
+          titulo_eleitor: string | null
           updated_at: string
           user_id: string
+          zona_eleitoral: string | null
         }
         Insert: {
+          cnh_categoria?: string | null
+          cnh_numero?: string | null
+          cnh_validade?: string | null
+          cpf?: string | null
           created_at?: string
+          ctps_numero?: string | null
+          ctps_serie?: string | null
+          ctps_uf?: string | null
+          data_nascimento?: string | null
           department?: string | null
           email?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_logradouro?: string | null
+          endereco_numero?: string | null
+          endereco_uf?: string | null
+          estado_civil?: string | null
+          foto_url?: string | null
           id?: string
+          nacionalidade?: string | null
           name?: string | null
+          naturalidade?: string | null
+          nome_mae?: string | null
+          nome_pai?: string | null
+          observacoes?: string | null
+          pis_pasep?: string | null
+          rg?: string | null
+          rg_orgao_emissor?: string | null
+          rg_uf?: string | null
           role?: string | null
+          secao_eleitoral?: string | null
+          sexo?: string | null
+          telefone_celular?: string | null
+          telefone_residencial?: string | null
+          titulo_eleitor?: string | null
           updated_at?: string
           user_id: string
+          zona_eleitoral?: string | null
         }
         Update: {
+          cnh_categoria?: string | null
+          cnh_numero?: string | null
+          cnh_validade?: string | null
+          cpf?: string | null
           created_at?: string
+          ctps_numero?: string | null
+          ctps_serie?: string | null
+          ctps_uf?: string | null
+          data_nascimento?: string | null
           department?: string | null
           email?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_logradouro?: string | null
+          endereco_numero?: string | null
+          endereco_uf?: string | null
+          estado_civil?: string | null
+          foto_url?: string | null
           id?: string
+          nacionalidade?: string | null
           name?: string | null
+          naturalidade?: string | null
+          nome_mae?: string | null
+          nome_pai?: string | null
+          observacoes?: string | null
+          pis_pasep?: string | null
+          rg?: string | null
+          rg_orgao_emissor?: string | null
+          rg_uf?: string | null
           role?: string | null
+          secao_eleitoral?: string | null
+          sexo?: string | null
+          telefone_celular?: string | null
+          telefone_residencial?: string | null
+          titulo_eleitor?: string | null
           updated_at?: string
           user_id?: string
+          zona_eleitoral?: string | null
         }
         Relationships: []
       }

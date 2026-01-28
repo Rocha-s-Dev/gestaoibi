@@ -10,21 +10,23 @@ O módulo de Recursos Humanos está **parcialmente implementado** com uma base s
 
 ## 1. CADASTRO DE SERVIDORES
 
-### Implementado
+### Implementado ✅
 | Componente | Status | Observações |
 |------------|--------|-------------|
-| Tabela `profiles` | Parcial | Campos básicos: id, user_id, name, email, role, department |
+| Tabela `profiles` | **Completo** | Campos expandidos: CPF, RG, data nascimento, endereço, telefones, documentos (PIS, Título, CTPS, CNH) |
 | Tabela `vinculos_funcionais` | Completo | Matrícula, data_admissao, data_posse, regime, jornada, situação, secretaria, unidade |
-| ServidoresManagement | Básico | Interface CRUD simples usando tabela profiles |
-| ServidorDialog | Básico | Formulário com nome, email, departamento, role genérico |
+| Tabela `dependentes` | **Completo** | Parentesco, benefícios (IR, Plano, Sal. Família), deficiência |
+| Tabela `dados_bancarios` | **Completo** | Banco, agência, conta, PIX, conta principal |
+| ServidoresManagement | Completo | Interface CRUD com visualização detalhada |
+| ServidorDialog | **Completo** | Formulário com abas: Pessoais, Documentos, Endereço, Bancários, Dependentes |
+| ViewServidorDialog | **Completo** | Visualização organizada em abas |
+| DependentesTab | **Completo** | CRUD de dependentes com benefícios |
+| DadosBancariosTab | **Completo** | CRUD de contas bancárias com PIX |
+| Triggers de auditoria | **Completo** | `audit_profiles_rh`, `audit_dependentes`, `audit_dados_bancarios` |
 
 ### Faltando
 | Componente | Prioridade |
 |------------|------------|
-| Dados pessoais completos (CPF, RG, data nascimento, endereço) | Alta |
-| Dados bancários (banco, agência, conta) | Alta |
-| Dependentes legais | Média |
-| Versionamento automático de alterações | Alta |
 | Interface de histórico completo | Média |
 
 ---
@@ -161,7 +163,7 @@ Nada implementado.
 +-----------------------------------+----------+
 | Área                              | Progresso|
 +-----------------------------------+----------+
-| 1. Cadastro de Servidores         |    40%   |
+| 1. Cadastro de Servidores         |    90%   | ✅ Fase 1 Completa
 | 2. Cargos, Funções e Carreira     |    80%   |
 | 3. Folha de Pagamento             |     0%   |
 | 4. Frequência e Jornada           |     0%   |
@@ -170,7 +172,7 @@ Nada implementado.
 | 7. Relatórios Legais              |     0%   |
 | 8. Requisitos Transversais        |    70%   |
 +-----------------------------------+----------+
-| TOTAL GERAL                       |   ~25%   |
+| TOTAL GERAL                       |   ~35%   |
 +-----------------------------------+----------+
 ```
 
@@ -178,10 +180,10 @@ Nada implementado.
 
 ## Próximos Passos Recomendados
 
-### Fase 1 - Fundação (Prioridade Crítica)
-1. Expandir tabela `profiles` com dados pessoais completos (CPF, RG, endereço)
-2. Criar tabela `dependentes` vinculada a servidores
-3. Criar tabela `dados_bancarios` para pagamentos
+### ~~Fase 1 - Fundação (Prioridade Crítica)~~ ✅ CONCLUÍDA
+1. ~~Expandir tabela `profiles` com dados pessoais completos (CPF, RG, endereço)~~
+2. ~~Criar tabela `dependentes` vinculada a servidores~~
+3. ~~Criar tabela `dados_bancarios` para pagamentos~~
 
 ### Fase 2 - Folha de Pagamento
 1. Criar estrutura de tabelas para folha
