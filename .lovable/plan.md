@@ -1,127 +1,209 @@
 
 
-# Plano de Correção: Usuário Admin + Erros de Build
+# Análise do Módulo de RH - Estado de Implementação
 
-## Visão Geral
+## Resumo Executivo
 
-Existem dois problemas a resolver:
-1. **Login impossível** - O banco está vazio (nenhum usuário existe)
-2. **Erros de build** - Componentes educacionais referenciam campos inexistentes no schema
+O módulo de Recursos Humanos está **parcialmente implementado** com uma base sólida, mas faltam componentes críticos para atender aos requisitos completos do serviço público brasileiro.
 
-## Parte 1: Criar Usuário Administrador
+---
 
-### O que será feito
-Criar o usuário `gabrielrocha725@gmail.com` com role `admin_municipal` (nível mais alto do sistema, acima de prefeito).
+## 1. CADASTRO DE SERVIDORES
 
-### Processo
-1. Criar usuário no sistema de autenticação via SQL (não pela interface pois você não consegue logar)
-2. Criar registro na tabela `profiles` com dados básicos
-3. Atribuir role `admin_municipal` na tabela `user_secretaria_roles`
+### Implementado
+| Componente | Status | Observações |
+|------------|--------|-------------|
+| Tabela `profiles` | Parcial | Campos básicos: id, user_id, name, email, role, department |
+| Tabela `vinculos_funcionais` | Completo | Matrícula, data_admissao, data_posse, regime, jornada, situação, secretaria, unidade |
+| ServidoresManagement | Básico | Interface CRUD simples usando tabela profiles |
+| ServidorDialog | Básico | Formulário com nome, email, departamento, role genérico |
 
-### SQL de Migração (Resumo)
-```sql
--- O usuário será criado diretamente nas tabelas de auth
--- Senha: rocha290307 (hash bcrypt)
--- Role: admin_municipal (acesso total ao sistema)
+### Faltando
+| Componente | Prioridade |
+|------------|------------|
+| Dados pessoais completos (CPF, RG, data nascimento, endereço) | Alta |
+| Dados bancários (banco, agência, conta) | Alta |
+| Dependentes legais | Média |
+| Versionamento automático de alterações | Alta |
+| Interface de histórico completo | Média |
+
+---
+
+## 2. CARGOS, FUNÇÕES E CARREIRA
+
+### Implementado
+| Componente | Status |
+|------------|--------|
+| Tabela `cargos_publicos` | Completo - tipo, regime, nível/classe/padrão, vencimento, progressão |
+| Tabela `funcoes_administrativas` | Completo - funções comissionadas/gratificadas |
+| Tabela `historico_lotacoes` | Existe no banco - registra movimentações |
+| CargosPublicosManagement | Completo |
+| FuncoesAdministrativasManagement | Completo |
+| CargoDialog/FuncaoDialog | Completos |
+| useCargosPublicos/useFuncoesAdministrativas | Completos |
+
+### Faltando
+| Componente | Prioridade |
+|------------|------------|
+| Interface de gestão de progressões | Média |
+| Visualização de histórico de lotações | Média |
+| Simulador de progressão de carreira | Baixa |
+
+---
+
+## 3. FOLHA DE PAGAMENTO PÚBLICA
+
+### Implementado
+Nada implementado.
+
+### Faltando (100%)
+| Componente | Prioridade |
+|------------|------------|
+| Tabela `folha_pagamento` | Crítica |
+| Tabela `eventos_folha` (rubricas) | Crítica |
+| Tabela `tabelas_inss_irrf` | Alta |
+| Cálculo automático de vencimentos | Crítica |
+| Cálculo de férias, 13º, adicionais | Crítica |
+| Fechamento mensal com bloqueio | Alta |
+| Reprocessamento controlado | Alta |
+| Contracheque digital em PDF | Alta |
+
+---
+
+## 4. FREQUÊNCIA E JORNADA
+
+### Implementado
+Nada implementado.
+
+### Faltando (100%)
+| Componente | Prioridade |
+|------------|------------|
+| Tabela `ponto_servidor` | Crítica |
+| Registro de entrada/saída/intervalo | Crítica |
+| Tipos de jornada (presencial, teletrabalho) | Alta |
+| Justificativas digitais | Alta |
+| Banco de horas | Média |
+| Alertas de irregularidades | Média |
+
+---
+
+## 5. FÉRIAS E LICENÇAS
+
+### Implementado
+Nada implementado.
+
+### Faltando (100%)
+| Componente | Prioridade |
+|------------|------------|
+| Tabela `ferias` | Crítica |
+| Tabela `licencas` | Crítica |
+| Controle de período aquisitivo | Alta |
+| Solicitação online | Alta |
+| Aprovação por chefia | Alta |
+| Cálculo de 1/3 constitucional | Alta |
+| Tipos: saúde, maternidade, paternidade, etc. | Alta |
+
+---
+
+## 6. PROCESSOS TRABALHISTAS
+
+### Implementado
+Nada implementado.
+
+### Faltando (100%)
+| Componente | Prioridade |
+|------------|------------|
+| Tabela `processos_trabalhistas` | Média |
+| Cadastro de processo (vara, número, valor) | Média |
+| Acompanhamento de prazos/audiências | Média |
+| Provisionamento financeiro | Média |
+| Integração com folha | Baixa |
+
+---
+
+## 7. RELATÓRIOS LEGAIS
+
+### Implementado
+Nada implementado.
+
+### Faltando (100%)
+| Componente | Prioridade |
+|------------|------------|
+| Geração RAIS | Alta |
+| Geração CAGED | Alta |
+| Geração GFIP | Alta |
+| Geração DIRF | Alta |
+| Relatórios TCE | Alta |
+| Exportação com assinatura digital | Média |
+
+---
+
+## 8. REQUISITOS TRANSVERSAIS
+
+### Implementado
+| Componente | Status |
+|------------|--------|
+| Auditoria imutável | Completo - `auditoria_global` com hash SHA-256 |
+| Controle de permissões | Completo - `papeis_usuario`, RBAC/ABAC |
+| Versionamento de entidades | Parcial - `entidade_versoes` existe |
+
+### Faltando
+| Componente | Prioridade |
+|------------|------------|
+| Assinatura digital de documentos | Média |
+| Triggers de auditoria específicos para RH | Alta |
+
+---
+
+## Porcentagem de Conclusão por Área
+
+```text
++-----------------------------------+----------+
+| Área                              | Progresso|
++-----------------------------------+----------+
+| 1. Cadastro de Servidores         |    40%   |
+| 2. Cargos, Funções e Carreira     |    80%   |
+| 3. Folha de Pagamento             |     0%   |
+| 4. Frequência e Jornada           |     0%   |
+| 5. Férias e Licenças              |     0%   |
+| 6. Processos Trabalhistas         |     0%   |
+| 7. Relatórios Legais              |     0%   |
+| 8. Requisitos Transversais        |    70%   |
++-----------------------------------+----------+
+| TOTAL GERAL                       |   ~25%   |
++-----------------------------------+----------+
 ```
 
-## Parte 2: Corrigir Erros de Build
+---
 
-Os componentes estão usando campos que existem na UI mas não no banco. A estratégia será **simplificar os componentes** para usar apenas os campos que existem.
+## Próximos Passos Recomendados
 
-### Arquivos a Corrigir
+### Fase 1 - Fundação (Prioridade Crítica)
+1. Expandir tabela `profiles` com dados pessoais completos (CPF, RG, endereço)
+2. Criar tabela `dependentes` vinculada a servidores
+3. Criar tabela `dados_bancarios` para pagamentos
 
-| Arquivo | Problema | Solução |
-|---------|----------|---------|
-| `AlunoDialog.tsx` | Usa `rg`, `genero`, `telefone`, `email`, `turma_atual_id`, `status` | Simplificar formulário para usar apenas campos existentes (`turma_id`, `situacao`) |
-| `NovaEscolaDialog.tsx` | Usa `status`, `codigo_mec`, `cnpj`, `capacidade_total`, `tem_*` | Simplificar para usar apenas `capacidade` e campos existentes |
-| `CadastroEducacao.tsx` | Usa `status` em Escola e `telefone`/`status` em Aluno | Mudar para campos corretos (`situacao`) |
-| `CalendarioEscolar.tsx` | Usa `tipo_evento` | Mudar para usar `tipo` |
-| `EventoCalendarioDialog.tsx` | Usa `tipo_evento`, `turmas_especificas` | Simplificar formulário |
-| `useHistoricoTransferencias.ts` | Query para tabela `historico_escolar` que não existe, usa `tipo` em transferencias | Usar dados simulados/locais ou remover queries inválidas |
-| `BoletimEscolar.tsx` | Usa `turma_atual_id` | Mudar para `turma_id` |
-| `DiarioClasse.tsx` | Usa `turma_atual_id` | Mudar para `turma_id` |
-| `GestaoNotasAvancada.tsx` | Usa `turma_atual_id` | Mudar para `turma_id` |
-| `LancamentoNotasLote.tsx` | Usa `turma_atual_id` | Mudar para `turma_id` |
-| `NotaDialog.tsx` | Usa `turma_atual_id` | Mudar para `turma_id` |
-| `TransferenciaDialog.tsx` | Usa `turma_atual_id`, `status` | Mudar para `turma_id`, `situacao` |
-| `HistoricoEscolarView.tsx` | Usa `status` em Aluno | Mudar para `situacao` |
-| `FormularioMatricula.tsx` | Usa `status` em Escola | Remover referência ou usar campo alternativo |
-| `DashboardEducacional.tsx` | Usa `capacidade_total` | Mudar para `capacidade` |
-| `RelatoriosEducacao.tsx` | Usa `capacidade_total` | Mudar para `capacidade` |
+### Fase 2 - Folha de Pagamento
+1. Criar estrutura de tabelas para folha
+2. Implementar cálculos de vencimentos e descontos
+3. Criar interface de fechamento mensal
 
-### Mapeamento de Campos
+### Fase 3 - Frequência
+1. Criar tabela de ponto
+2. Implementar registro e justificativas
+3. Integrar com folha de pagamento
 
-| Campo Antigo (UI) | Campo Correto (DB) |
-|-------------------|--------------------|
-| `turma_atual_id` | `turma_id` |
-| `status` (Aluno) | `situacao` |
-| `status` (Escola) | Não existe - remover |
-| `capacidade_total` | `capacidade` |
-| `tipo_evento` | `tipo` |
-| `rg`, `genero`, `telefone`, `email` (Aluno) | Não existem - remover campos do formulário |
-| `codigo_mec`, `cnpj`, `cep`, `bairro`, etc (Escola) | Não existem - simplificar formulário |
+### Fase 4 - Férias e Licenças
+1. Criar tabelas e fluxos de aprovação
+2. Integrar com folha
 
-## Sequência de Execução
+### Fase 5 - Relatórios Legais
+1. Implementar geradores RAIS, CAGED, GFIP, DIRF
+2. Integrar assinatura digital
 
-1. **Migração SQL** - Criar usuário admin com senha e role
-2. **Corrigir hooks** - `useHistoricoTransferencias.ts` (remover queries para tabelas inexistentes)
-3. **Corrigir componentes** - Atualizar referências de campos em ordem:
-   - Hooks primeiro (`useEducacaoStats` se ainda tiver erros)
-   - Diálogos (`AlunoDialog`, `NovaEscolaDialog`, `EventoCalendarioDialog`)
-   - Componentes de visualização
+---
 
-## Detalhes Técnicos
+## Conclusão
 
-### Migração para Criar Admin
-
-```sql
--- Inserir usuário na auth.users (simulando signup)
-INSERT INTO auth.users (
-  id,
-  email,
-  encrypted_password,
-  email_confirmed_at,
-  raw_user_meta_data
-) VALUES (
-  gen_random_uuid(),
-  'gabrielrocha725@gmail.com',
-  crypt('rocha290307', gen_salt('bf')),
-  now(),
-  '{"first_name": "Gabriel", "last_name": "Rocha"}'::jsonb
-);
-
--- Criar profile correspondente
-INSERT INTO public.profiles (id, email, first_name, last_name, role)
-SELECT id, email, 'Gabriel', 'Rocha', 'admin'
-FROM auth.users WHERE email = 'gabrielrocha725@gmail.com';
-
--- Atribuir role admin_municipal
-INSERT INTO public.user_secretaria_roles (user_id, role)
-SELECT id, 'admin_municipal'::secretaria_role
-FROM auth.users WHERE email = 'gabrielrocha725@gmail.com';
-```
-
-### Simplificação do AlunoDialog
-
-O formulário será reduzido para usar apenas campos existentes:
-- Nome, CPF, Data Nascimento, Endereço
-- Número Matrícula, Data Matrícula
-- Escola, Turma (usando `turma_id`)
-- Situação (usando `situacao`: ativo, transferido, etc.)
-- Responsável (nome, telefone, email)
-
-### Simplificação do NovaEscolaDialog
-
-O formulário será reduzido para:
-- Nome, Endereço, Telefone, Email
-- Diretor, Tipo, Capacidade
-
-## Resultado Esperado
-
-Após a implementação:
-1. Você poderá fazer login com `gabrielrocha725@gmail.com` / `rocha290307`
-2. Terá acesso como **Admin Municipal** (nível mais alto)
-3. Todos os erros de build serão resolvidos
-4. A aplicação funcionará com o schema atual do banco
+O sistema possui uma **base sólida** com a estrutura de cargos, funções e vínculos funcionais bem definida. No entanto, os módulos operacionais críticos (folha de pagamento, frequência, férias) **não foram iniciados**. A implementação completa requer desenvolvimento substancial em aproximadamente 75% das funcionalidades especificadas.
 
