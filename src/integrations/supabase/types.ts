@@ -360,6 +360,104 @@ export type Database = {
           },
         ]
       }
+      banco_horas: {
+        Row: {
+          competencia: string
+          created_at: string | null
+          horas_creditadas: number | null
+          horas_debitadas: number | null
+          id: string
+          limite_acumulado: number | null
+          observacoes: string | null
+          saldo_anterior: number | null
+          saldo_atual: number | null
+          servidor_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          competencia: string
+          created_at?: string | null
+          horas_creditadas?: number | null
+          horas_debitadas?: number | null
+          id?: string
+          limite_acumulado?: number | null
+          observacoes?: string | null
+          saldo_anterior?: number | null
+          saldo_atual?: number | null
+          servidor_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          competencia?: string
+          created_at?: string | null
+          horas_creditadas?: number | null
+          horas_debitadas?: number | null
+          id?: string
+          limite_acumulado?: number | null
+          observacoes?: string | null
+          saldo_anterior?: number | null
+          saldo_atual?: number | null
+          servidor_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "banco_horas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      banco_horas_movimentos: {
+        Row: {
+          banco_horas_id: string
+          created_at: string | null
+          data: string
+          horas: number
+          id: string
+          motivo: string
+          ponto_id: string | null
+          tipo: string
+        }
+        Insert: {
+          banco_horas_id: string
+          created_at?: string | null
+          data: string
+          horas: number
+          id?: string
+          motivo: string
+          ponto_id?: string | null
+          tipo: string
+        }
+        Update: {
+          banco_horas_id?: string
+          created_at?: string | null
+          data?: string
+          horas?: number
+          id?: string
+          motivo?: string
+          ponto_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "banco_horas_movimentos_banco_horas_id_fkey"
+            columns: ["banco_horas_id"]
+            isOneToOne: false
+            referencedRelation: "banco_horas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "banco_horas_movimentos_ponto_id_fkey"
+            columns: ["ponto_id"]
+            isOneToOne: false
+            referencedRelation: "ponto_servidor"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendario_escolar: {
         Row: {
           ano_letivo: number | null
@@ -632,6 +730,57 @@ export type Database = {
             columns: ["escola_id"]
             isOneToOne: false
             referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracheques: {
+        Row: {
+          arquivo_url: string | null
+          competencia: string
+          created_at: string | null
+          data_envio: string | null
+          enviado_email: boolean | null
+          folha_servidor_id: string
+          hash_documento: string | null
+          id: string
+          servidor_id: string
+        }
+        Insert: {
+          arquivo_url?: string | null
+          competencia: string
+          created_at?: string | null
+          data_envio?: string | null
+          enviado_email?: boolean | null
+          folha_servidor_id: string
+          hash_documento?: string | null
+          id?: string
+          servidor_id: string
+        }
+        Update: {
+          arquivo_url?: string | null
+          competencia?: string
+          created_at?: string | null
+          data_envio?: string | null
+          enviado_email?: boolean | null
+          folha_servidor_id?: string
+          hash_documento?: string | null
+          id?: string
+          servidor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracheques_folha_servidor_id_fkey"
+            columns: ["folha_servidor_id"]
+            isOneToOne: false
+            referencedRelation: "folha_servidor"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracheques_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1146,6 +1295,84 @@ export type Database = {
           },
         ]
       }
+      eventos_folha: {
+        Row: {
+          aplica_clt: boolean | null
+          aplica_estatutario: boolean | null
+          aplica_temporario: boolean | null
+          ativo: boolean | null
+          codigo: string
+          created_at: string | null
+          descricao: string | null
+          formula: string | null
+          id: string
+          incide_base_13: boolean | null
+          incide_base_ferias: boolean | null
+          incide_fgts: boolean | null
+          incide_inss: boolean | null
+          incide_irrf: boolean | null
+          natureza: string
+          nome: string
+          obrigatorio: boolean | null
+          percentual: number | null
+          permite_edicao_valor: boolean | null
+          referencia_horas: boolean | null
+          tipo: Database["public"]["Enums"]["tipo_evento_folha"]
+          updated_at: string | null
+          valor_fixo: number | null
+        }
+        Insert: {
+          aplica_clt?: boolean | null
+          aplica_estatutario?: boolean | null
+          aplica_temporario?: boolean | null
+          ativo?: boolean | null
+          codigo: string
+          created_at?: string | null
+          descricao?: string | null
+          formula?: string | null
+          id?: string
+          incide_base_13?: boolean | null
+          incide_base_ferias?: boolean | null
+          incide_fgts?: boolean | null
+          incide_inss?: boolean | null
+          incide_irrf?: boolean | null
+          natureza: string
+          nome: string
+          obrigatorio?: boolean | null
+          percentual?: number | null
+          permite_edicao_valor?: boolean | null
+          referencia_horas?: boolean | null
+          tipo: Database["public"]["Enums"]["tipo_evento_folha"]
+          updated_at?: string | null
+          valor_fixo?: number | null
+        }
+        Update: {
+          aplica_clt?: boolean | null
+          aplica_estatutario?: boolean | null
+          aplica_temporario?: boolean | null
+          ativo?: boolean | null
+          codigo?: string
+          created_at?: string | null
+          descricao?: string | null
+          formula?: string | null
+          id?: string
+          incide_base_13?: boolean | null
+          incide_base_ferias?: boolean | null
+          incide_fgts?: boolean | null
+          incide_inss?: boolean | null
+          incide_irrf?: boolean | null
+          natureza?: string
+          nome?: string
+          obrigatorio?: boolean | null
+          percentual?: number | null
+          permite_edicao_valor?: boolean | null
+          referencia_horas?: boolean | null
+          tipo?: Database["public"]["Enums"]["tipo_evento_folha"]
+          updated_at?: string | null
+          valor_fixo?: number | null
+        }
+        Relationships: []
+      }
       evolucoes_tratamento: {
         Row: {
           created_at: string
@@ -1338,6 +1565,155 @@ export type Database = {
           },
         ]
       }
+      ferias_periodos_aquisitivos: {
+        Row: {
+          created_at: string | null
+          data_vencimento: string | null
+          dias_direito: number | null
+          dias_saldo: number | null
+          dias_usufruidos: number | null
+          dias_vendidos: number | null
+          fim: string
+          id: string
+          inicio: string
+          observacoes: string | null
+          servidor_id: string
+          updated_at: string | null
+          vencido: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_vencimento?: string | null
+          dias_direito?: number | null
+          dias_saldo?: number | null
+          dias_usufruidos?: number | null
+          dias_vendidos?: number | null
+          fim: string
+          id?: string
+          inicio: string
+          observacoes?: string | null
+          servidor_id: string
+          updated_at?: string | null
+          vencido?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          data_vencimento?: string | null
+          dias_direito?: number | null
+          dias_saldo?: number | null
+          dias_usufruidos?: number | null
+          dias_vendidos?: number | null
+          fim?: string
+          id?: string
+          inicio?: string
+          observacoes?: string | null
+          servidor_id?: string
+          updated_at?: string | null
+          vencido?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ferias_periodos_aquisitivos_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ferias_solicitacoes: {
+        Row: {
+          abono_pecuniario: boolean | null
+          antecipacao_13: boolean | null
+          aprovado_chefia_por: string | null
+          aprovado_rh_por: string | null
+          created_at: string | null
+          data_aprovacao_chefia: string | null
+          data_aprovacao_rh: string | null
+          data_fim: string
+          data_inicio: string
+          dias_abono: number | null
+          dias_solicitados: number
+          id: string
+          motivo_rejeicao: string | null
+          observacoes: string | null
+          periodo_aquisitivo_id: string | null
+          servidor_id: string
+          status: Database["public"]["Enums"]["status_solicitacao"] | null
+          updated_at: string | null
+          valor_13_antecipado: number | null
+          valor_abono: number | null
+          valor_ferias: number | null
+          valor_terco_constitucional: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          abono_pecuniario?: boolean | null
+          antecipacao_13?: boolean | null
+          aprovado_chefia_por?: string | null
+          aprovado_rh_por?: string | null
+          created_at?: string | null
+          data_aprovacao_chefia?: string | null
+          data_aprovacao_rh?: string | null
+          data_fim: string
+          data_inicio: string
+          dias_abono?: number | null
+          dias_solicitados: number
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          periodo_aquisitivo_id?: string | null
+          servidor_id: string
+          status?: Database["public"]["Enums"]["status_solicitacao"] | null
+          updated_at?: string | null
+          valor_13_antecipado?: number | null
+          valor_abono?: number | null
+          valor_ferias?: number | null
+          valor_terco_constitucional?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          abono_pecuniario?: boolean | null
+          antecipacao_13?: boolean | null
+          aprovado_chefia_por?: string | null
+          aprovado_rh_por?: string | null
+          created_at?: string | null
+          data_aprovacao_chefia?: string | null
+          data_aprovacao_rh?: string | null
+          data_fim?: string
+          data_inicio?: string
+          dias_abono?: number | null
+          dias_solicitados?: number
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          periodo_aquisitivo_id?: string | null
+          servidor_id?: string
+          status?: Database["public"]["Enums"]["status_solicitacao"] | null
+          updated_at?: string | null
+          valor_13_antecipado?: number | null
+          valor_abono?: number | null
+          valor_ferias?: number | null
+          valor_terco_constitucional?: number | null
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ferias_solicitacoes_periodo_aquisitivo_id_fkey"
+            columns: ["periodo_aquisitivo_id"]
+            isOneToOne: false
+            referencedRelation: "ferias_periodos_aquisitivos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ferias_solicitacoes_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_categories: {
         Row: {
           code: string | null
@@ -1523,6 +1899,293 @@ export type Database = {
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_itens: {
+        Row: {
+          codigo_evento: string
+          created_at: string | null
+          evento_id: string | null
+          folha_servidor_id: string
+          id: string
+          incide_fgts: boolean | null
+          incide_inss: boolean | null
+          incide_irrf: boolean | null
+          justificativa: string | null
+          lancamento_manual: boolean | null
+          natureza: string
+          nome_evento: string
+          referencia: number | null
+          valor: number
+        }
+        Insert: {
+          codigo_evento: string
+          created_at?: string | null
+          evento_id?: string | null
+          folha_servidor_id: string
+          id?: string
+          incide_fgts?: boolean | null
+          incide_inss?: boolean | null
+          incide_irrf?: boolean | null
+          justificativa?: string | null
+          lancamento_manual?: boolean | null
+          natureza: string
+          nome_evento: string
+          referencia?: number | null
+          valor: number
+        }
+        Update: {
+          codigo_evento?: string
+          created_at?: string | null
+          evento_id?: string | null
+          folha_servidor_id?: string
+          id?: string
+          incide_fgts?: boolean | null
+          incide_inss?: boolean | null
+          incide_irrf?: boolean | null
+          justificativa?: string | null
+          lancamento_manual?: boolean | null
+          natureza?: string
+          nome_evento?: string
+          referencia?: number | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_itens_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos_folha"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_itens_folha_servidor_id_fkey"
+            columns: ["folha_servidor_id"]
+            isOneToOne: false
+            referencedRelation: "folha_servidor"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_pagamento: {
+        Row: {
+          calculado_por: string | null
+          competencia: string
+          conferido_por: string | null
+          created_at: string | null
+          data_abertura: string | null
+          data_calculo: string | null
+          data_conferencia: string | null
+          data_fechamento: string | null
+          fechado_por: string | null
+          id: string
+          observacoes: string | null
+          quantidade_servidores: number | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_folha"] | null
+          total_bruto: number | null
+          total_descontos: number | null
+          total_fgts: number | null
+          total_inss_patronal: number | null
+          total_liquido: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          calculado_por?: string | null
+          competencia: string
+          conferido_por?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_calculo?: string | null
+          data_conferencia?: string | null
+          data_fechamento?: string | null
+          fechado_por?: string | null
+          id?: string
+          observacoes?: string | null
+          quantidade_servidores?: number | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_folha"] | null
+          total_bruto?: number | null
+          total_descontos?: number | null
+          total_fgts?: number | null
+          total_inss_patronal?: number | null
+          total_liquido?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          calculado_por?: string | null
+          competencia?: string
+          conferido_por?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_calculo?: string | null
+          data_conferencia?: string | null
+          data_fechamento?: string | null
+          fechado_por?: string | null
+          id?: string
+          observacoes?: string | null
+          quantidade_servidores?: number | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_folha"] | null
+          total_bruto?: number | null
+          total_descontos?: number | null
+          total_fgts?: number | null
+          total_inss_patronal?: number | null
+          total_liquido?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_pagamento_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_reprocessamentos: {
+        Row: {
+          created_at: string | null
+          estado_anterior: Json | null
+          estado_posterior: Json | null
+          folha_id: string
+          id: string
+          motivo: string
+          reprocessado_por: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estado_anterior?: Json | null
+          estado_posterior?: Json | null
+          folha_id: string
+          id?: string
+          motivo: string
+          reprocessado_por?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estado_anterior?: Json | null
+          estado_posterior?: Json | null
+          folha_id?: string
+          id?: string
+          motivo?: string
+          reprocessado_por?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_reprocessamentos_folha_id_fkey"
+            columns: ["folha_id"]
+            isOneToOne: false
+            referencedRelation: "folha_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folha_servidor: {
+        Row: {
+          agencia: string | null
+          banco_codigo: string | null
+          banco_nome: string | null
+          base_fgts: number | null
+          base_inss: number | null
+          base_irrf: number | null
+          cargo_nome: string | null
+          conta: string | null
+          created_at: string | null
+          folha_id: string
+          funcao_nome: string | null
+          id: string
+          jornada_mensal: number | null
+          observacoes: string | null
+          processado: boolean | null
+          salario_base: number
+          salario_liquido: number | null
+          servidor_id: string
+          total_descontos: number | null
+          total_proventos: number | null
+          updated_at: string | null
+          valor_fgts: number | null
+          valor_inss: number | null
+          valor_irrf: number | null
+          vinculo_id: string | null
+        }
+        Insert: {
+          agencia?: string | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          base_fgts?: number | null
+          base_inss?: number | null
+          base_irrf?: number | null
+          cargo_nome?: string | null
+          conta?: string | null
+          created_at?: string | null
+          folha_id: string
+          funcao_nome?: string | null
+          id?: string
+          jornada_mensal?: number | null
+          observacoes?: string | null
+          processado?: boolean | null
+          salario_base: number
+          salario_liquido?: number | null
+          servidor_id: string
+          total_descontos?: number | null
+          total_proventos?: number | null
+          updated_at?: string | null
+          valor_fgts?: number | null
+          valor_inss?: number | null
+          valor_irrf?: number | null
+          vinculo_id?: string | null
+        }
+        Update: {
+          agencia?: string | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          base_fgts?: number | null
+          base_inss?: number | null
+          base_irrf?: number | null
+          cargo_nome?: string | null
+          conta?: string | null
+          created_at?: string | null
+          folha_id?: string
+          funcao_nome?: string | null
+          id?: string
+          jornada_mensal?: number | null
+          observacoes?: string | null
+          processado?: boolean | null
+          salario_base?: number
+          salario_liquido?: number | null
+          servidor_id?: string
+          total_descontos?: number | null
+          total_proventos?: number | null
+          updated_at?: string | null
+          valor_fgts?: number | null
+          valor_inss?: number | null
+          valor_irrf?: number | null
+          vinculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folha_servidor_folha_id_fkey"
+            columns: ["folha_id"]
+            isOneToOne: false
+            referencedRelation: "folha_pagamento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_servidor_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_servidor_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais"
             referencedColumns: ["id"]
           },
         ]
@@ -1833,6 +2496,140 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      justificativas_ponto: {
+        Row: {
+          aprovado_por: string | null
+          created_at: string | null
+          data: string
+          data_aprovacao: string | null
+          documento_url: string | null
+          id: string
+          motivo: string
+          motivo_rejeicao: string | null
+          ponto_id: string | null
+          servidor_id: string
+          status: Database["public"]["Enums"]["status_justificativa"] | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          aprovado_por?: string | null
+          created_at?: string | null
+          data: string
+          data_aprovacao?: string | null
+          documento_url?: string | null
+          id?: string
+          motivo: string
+          motivo_rejeicao?: string | null
+          ponto_id?: string | null
+          servidor_id: string
+          status?: Database["public"]["Enums"]["status_justificativa"] | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          aprovado_por?: string | null
+          created_at?: string | null
+          data?: string
+          data_aprovacao?: string | null
+          documento_url?: string | null
+          id?: string
+          motivo?: string
+          motivo_rejeicao?: string | null
+          ponto_id?: string | null
+          servidor_id?: string
+          status?: Database["public"]["Enums"]["status_justificativa"] | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "justificativas_ponto_ponto_id_fkey"
+            columns: ["ponto_id"]
+            isOneToOne: false
+            referencedRelation: "ponto_servidor"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "justificativas_ponto_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licencas: {
+        Row: {
+          aprovado_por: string | null
+          atestado_pericia: boolean | null
+          cid: string | null
+          created_at: string | null
+          data_aprovacao: string | null
+          data_fim: string
+          data_inicio: string
+          dias_totais: number
+          documento_url: string | null
+          id: string
+          motivo_rejeicao: string | null
+          observacoes: string | null
+          percentual_remuneracao: number | null
+          remunerada: boolean | null
+          servidor_id: string
+          status: Database["public"]["Enums"]["status_solicitacao"] | null
+          tipo: Database["public"]["Enums"]["tipo_licenca"]
+          updated_at: string | null
+        }
+        Insert: {
+          aprovado_por?: string | null
+          atestado_pericia?: boolean | null
+          cid?: string | null
+          created_at?: string | null
+          data_aprovacao?: string | null
+          data_fim: string
+          data_inicio: string
+          dias_totais: number
+          documento_url?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          percentual_remuneracao?: number | null
+          remunerada?: boolean | null
+          servidor_id: string
+          status?: Database["public"]["Enums"]["status_solicitacao"] | null
+          tipo: Database["public"]["Enums"]["tipo_licenca"]
+          updated_at?: string | null
+        }
+        Update: {
+          aprovado_por?: string | null
+          atestado_pericia?: boolean | null
+          cid?: string | null
+          created_at?: string | null
+          data_aprovacao?: string | null
+          data_fim?: string
+          data_inicio?: string
+          dias_totais?: number
+          documento_url?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          percentual_remuneracao?: number | null
+          remunerada?: boolean | null
+          servidor_id?: string
+          status?: Database["public"]["Enums"]["status_solicitacao"] | null
+          tipo?: Database["public"]["Enums"]["tipo_licenca"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licencas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2542,6 +3339,327 @@ export type Database = {
           },
         ]
       }
+      ponto_servidor: {
+        Row: {
+          abono: boolean | null
+          created_at: string | null
+          data: string
+          entrada: string | null
+          falta: boolean | null
+          horas_extras: number | null
+          horas_faltantes: number | null
+          horas_noturnas: number | null
+          horas_trabalhadas: number | null
+          id: string
+          jornada_esperada: number | null
+          observacoes: string | null
+          retorno_intervalo: string | null
+          saida: string | null
+          saida_intervalo: string | null
+          servidor_id: string
+          tipo_jornada: Database["public"]["Enums"]["tipo_jornada"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          abono?: boolean | null
+          created_at?: string | null
+          data: string
+          entrada?: string | null
+          falta?: boolean | null
+          horas_extras?: number | null
+          horas_faltantes?: number | null
+          horas_noturnas?: number | null
+          horas_trabalhadas?: number | null
+          id?: string
+          jornada_esperada?: number | null
+          observacoes?: string | null
+          retorno_intervalo?: string | null
+          saida?: string | null
+          saida_intervalo?: string | null
+          servidor_id: string
+          tipo_jornada?: Database["public"]["Enums"]["tipo_jornada"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          abono?: boolean | null
+          created_at?: string | null
+          data?: string
+          entrada?: string | null
+          falta?: boolean | null
+          horas_extras?: number | null
+          horas_faltantes?: number | null
+          horas_noturnas?: number | null
+          horas_trabalhadas?: number | null
+          id?: string
+          jornada_esperada?: number | null
+          observacoes?: string | null
+          retorno_intervalo?: string | null
+          saida?: string | null
+          saida_intervalo?: string | null
+          servidor_id?: string
+          tipo_jornada?: Database["public"]["Enums"]["tipo_jornada"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ponto_servidor_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_audiencias: {
+        Row: {
+          created_at: string | null
+          data_hora: string
+          houve_acordo: boolean | null
+          id: string
+          local: string | null
+          observacoes: string | null
+          prazo: string | null
+          processo_id: string
+          proxima_audiencia: string | null
+          realizada: boolean | null
+          resultado: string | null
+          tipo: string
+          valor_acordo: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_hora: string
+          houve_acordo?: boolean | null
+          id?: string
+          local?: string | null
+          observacoes?: string | null
+          prazo?: string | null
+          processo_id: string
+          proxima_audiencia?: string | null
+          realizada?: boolean | null
+          resultado?: string | null
+          tipo: string
+          valor_acordo?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          data_hora?: string
+          houve_acordo?: boolean | null
+          id?: string
+          local?: string | null
+          observacoes?: string | null
+          prazo?: string | null
+          processo_id?: string
+          proxima_audiencia?: string | null
+          realizada?: boolean | null
+          resultado?: string | null
+          tipo?: string
+          valor_acordo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_audiencias_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_trabalhistas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_movimentacoes: {
+        Row: {
+          created_at: string | null
+          data: string
+          data_prazo: string | null
+          descricao: string
+          documento_url: string | null
+          id: string
+          prazo_cumprido: boolean | null
+          processo_id: string
+          tem_prazo: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          data: string
+          data_prazo?: string | null
+          descricao: string
+          documento_url?: string | null
+          id?: string
+          prazo_cumprido?: boolean | null
+          processo_id: string
+          tem_prazo?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: string
+          data_prazo?: string | null
+          descricao?: string
+          documento_url?: string | null
+          id?: string
+          prazo_cumprido?: boolean | null
+          processo_id?: string
+          tem_prazo?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_movimentacoes_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_trabalhistas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_provisionamentos: {
+        Row: {
+          created_at: string | null
+          data: string
+          exercicio_id: string | null
+          id: string
+          motivo: string
+          processo_id: string
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          created_at?: string | null
+          data: string
+          exercicio_id?: string | null
+          id?: string
+          motivo: string
+          processo_id: string
+          tipo: string
+          valor: number
+        }
+        Update: {
+          created_at?: string | null
+          data?: string
+          exercicio_id?: string | null
+          id?: string
+          motivo?: string
+          processo_id?: string
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_provisionamentos_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_provisionamentos_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_trabalhistas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_trabalhistas: {
+        Row: {
+          advogado_responsavel: string | null
+          comarca: string | null
+          cpf_reclamante: string | null
+          created_at: string | null
+          data_citacao: string | null
+          data_distribuicao: string | null
+          data_sentenca: string | null
+          data_transito_julgado: string | null
+          fase: Database["public"]["Enums"]["fase_processual"] | null
+          id: string
+          nome_reclamante: string
+          numero_processo: string
+          oab_advogado: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          servidor_id: string | null
+          status:
+            | Database["public"]["Enums"]["status_processo_trabalhista"]
+            | null
+          tribunal: string | null
+          updated_at: string | null
+          valor_acordo: number | null
+          valor_causa: number | null
+          valor_condenacao: number | null
+          valor_provisionado: number | null
+          vara: string | null
+        }
+        Insert: {
+          advogado_responsavel?: string | null
+          comarca?: string | null
+          cpf_reclamante?: string | null
+          created_at?: string | null
+          data_citacao?: string | null
+          data_distribuicao?: string | null
+          data_sentenca?: string | null
+          data_transito_julgado?: string | null
+          fase?: Database["public"]["Enums"]["fase_processual"] | null
+          id?: string
+          nome_reclamante: string
+          numero_processo: string
+          oab_advogado?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          servidor_id?: string | null
+          status?:
+            | Database["public"]["Enums"]["status_processo_trabalhista"]
+            | null
+          tribunal?: string | null
+          updated_at?: string | null
+          valor_acordo?: number | null
+          valor_causa?: number | null
+          valor_condenacao?: number | null
+          valor_provisionado?: number | null
+          vara?: string | null
+        }
+        Update: {
+          advogado_responsavel?: string | null
+          comarca?: string | null
+          cpf_reclamante?: string | null
+          created_at?: string | null
+          data_citacao?: string | null
+          data_distribuicao?: string | null
+          data_sentenca?: string | null
+          data_transito_julgado?: string | null
+          fase?: Database["public"]["Enums"]["fase_processual"] | null
+          id?: string
+          nome_reclamante?: string
+          numero_processo?: string
+          oab_advogado?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          servidor_id?: string | null
+          status?:
+            | Database["public"]["Enums"]["status_processo_trabalhista"]
+            | null
+          tribunal?: string | null
+          updated_at?: string | null
+          valor_acordo?: number | null
+          valor_causa?: number | null
+          valor_condenacao?: number | null
+          valor_provisionado?: number | null
+          vara?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_trabalhistas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_trabalhistas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professores: {
         Row: {
           cpf: string | null
@@ -2877,6 +3995,65 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relatorios_legais: {
+        Row: {
+          arquivo_url: string | null
+          competencia: string
+          created_at: string | null
+          dados: Json | null
+          data_transmissao: string | null
+          gerado_por: string | null
+          hash_arquivo: string | null
+          id: string
+          observacoes: string | null
+          protocolo: string | null
+          secretaria_id: string | null
+          tipo: string
+          transmitido: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          arquivo_url?: string | null
+          competencia: string
+          created_at?: string | null
+          dados?: Json | null
+          data_transmissao?: string | null
+          gerado_por?: string | null
+          hash_arquivo?: string | null
+          id?: string
+          observacoes?: string | null
+          protocolo?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          transmitido?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          arquivo_url?: string | null
+          competencia?: string
+          created_at?: string | null
+          dados?: Json | null
+          data_transmissao?: string | null
+          gerado_por?: string | null
+          hash_arquivo?: string | null
+          id?: string
+          observacoes?: string | null
+          protocolo?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          transmitido?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorios_legais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -3382,6 +4559,90 @@ export type Database = {
           status?: string | null
           versao_atual?: number
           versao_destino?: number
+        }
+        Relationships: []
+      }
+      tabela_inss: {
+        Row: {
+          aliquota: number
+          ativo: boolean | null
+          created_at: string | null
+          faixa: number
+          id: string
+          parcela_deduzir: number | null
+          teto_contribuicao: number | null
+          valor_final: number | null
+          valor_inicial: number
+          vigencia_fim: string | null
+          vigencia_inicio: string
+        }
+        Insert: {
+          aliquota: number
+          ativo?: boolean | null
+          created_at?: string | null
+          faixa: number
+          id?: string
+          parcela_deduzir?: number | null
+          teto_contribuicao?: number | null
+          valor_final?: number | null
+          valor_inicial: number
+          vigencia_fim?: string | null
+          vigencia_inicio: string
+        }
+        Update: {
+          aliquota?: number
+          ativo?: boolean | null
+          created_at?: string | null
+          faixa?: number
+          id?: string
+          parcela_deduzir?: number | null
+          teto_contribuicao?: number | null
+          valor_final?: number | null
+          valor_inicial?: number
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Relationships: []
+      }
+      tabela_irrf: {
+        Row: {
+          aliquota: number
+          ativo: boolean | null
+          created_at: string | null
+          deducao_dependente: number | null
+          faixa: number
+          id: string
+          parcela_deduzir: number
+          valor_final: number | null
+          valor_inicial: number
+          vigencia_fim: string | null
+          vigencia_inicio: string
+        }
+        Insert: {
+          aliquota: number
+          ativo?: boolean | null
+          created_at?: string | null
+          deducao_dependente?: number | null
+          faixa: number
+          id?: string
+          parcela_deduzir?: number
+          valor_final?: number | null
+          valor_inicial: number
+          vigencia_fim?: string | null
+          vigencia_inicio: string
+        }
+        Update: {
+          aliquota?: number
+          ativo?: boolean | null
+          created_at?: string | null
+          deducao_dependente?: number | null
+          faixa?: number
+          id?: string
+          parcela_deduzir?: number
+          valor_final?: number | null
+          valor_inicial?: number
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
         }
         Relationships: []
       }
@@ -4285,6 +5546,13 @@ export type Database = {
         | "hierarquia_inferior"
       education_role: "secretaria" | "diretor" | "professor" | "responsavel"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
+      fase_processual:
+        | "inicial"
+        | "instrucao"
+        | "julgamento"
+        | "recursos"
+        | "execucao"
+        | "encerrado"
       feriado_tipo: "nacional" | "estadual" | "municipal" | "ponto_facultativo"
       goal_status:
         | "pending"
@@ -4325,6 +5593,29 @@ export type Database = {
         | "servidor"
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
+      status_folha:
+        | "aberta"
+        | "calculada"
+        | "conferida"
+        | "fechada"
+        | "reprocessada"
+      status_justificativa: "pendente" | "aprovada" | "rejeitada"
+      status_processo_trabalhista:
+        | "ativo"
+        | "suspenso"
+        | "arquivado"
+        | "transitado_julgado"
+        | "acordo"
+        | "extinto"
+      status_solicitacao:
+        | "rascunho"
+        | "enviada"
+        | "aprovada_chefia"
+        | "aprovada_rh"
+        | "rejeitada"
+        | "cancelada"
+        | "em_gozo"
+        | "concluida"
       task_priority: "low" | "medium" | "high" | "urgent"
       task_status: "pending" | "in_progress" | "completed" | "cancelled"
       tipo_acao_auditoria:
@@ -4340,7 +5631,38 @@ export type Database = {
         | "importar"
         | "reverter"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
+      tipo_evento_folha:
+        | "vencimento"
+        | "gratificacao"
+        | "adicional"
+        | "beneficio"
+        | "desconto_obrigatorio"
+        | "desconto_facultativo"
+        | "outros"
       tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
+      tipo_incidencia:
+        | "inss"
+        | "irrf"
+        | "fgts"
+        | "base_ferias"
+        | "base_13"
+        | "nenhuma"
+      tipo_jornada:
+        | "presencial"
+        | "teletrabalho"
+        | "hibrido"
+        | "sobreaviso"
+        | "plantao"
+      tipo_licenca:
+        | "saude"
+        | "maternidade"
+        | "paternidade"
+        | "casamento"
+        | "luto"
+        | "capacitacao"
+        | "interesse_particular"
+        | "premio"
+        | "outros"
       tipo_permissao:
         | "ver"
         | "criar"
@@ -4348,6 +5670,11 @@ export type Database = {
         | "excluir"
         | "aprovar"
         | "publicar"
+      tipo_registro_ponto:
+        | "entrada"
+        | "saida_intervalo"
+        | "retorno_intervalo"
+        | "saida"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -4487,6 +5814,14 @@ export const Constants = {
       ],
       education_role: ["secretaria", "diretor", "professor", "responsavel"],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
+      fase_processual: [
+        "inicial",
+        "instrucao",
+        "julgamento",
+        "recursos",
+        "execucao",
+        "encerrado",
+      ],
       feriado_tipo: ["nacional", "estadual", "municipal", "ponto_facultativo"],
       goal_status: [
         "pending",
@@ -4532,6 +5867,32 @@ export const Constants = {
         "estagiario",
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
+      status_folha: [
+        "aberta",
+        "calculada",
+        "conferida",
+        "fechada",
+        "reprocessada",
+      ],
+      status_justificativa: ["pendente", "aprovada", "rejeitada"],
+      status_processo_trabalhista: [
+        "ativo",
+        "suspenso",
+        "arquivado",
+        "transitado_julgado",
+        "acordo",
+        "extinto",
+      ],
+      status_solicitacao: [
+        "rascunho",
+        "enviada",
+        "aprovada_chefia",
+        "aprovada_rh",
+        "rejeitada",
+        "cancelada",
+        "em_gozo",
+        "concluida",
+      ],
       task_priority: ["low", "medium", "high", "urgent"],
       task_status: ["pending", "in_progress", "completed", "cancelled"],
       tipo_acao_auditoria: [
@@ -4548,7 +5909,42 @@ export const Constants = {
         "reverter",
       ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
+      tipo_evento_folha: [
+        "vencimento",
+        "gratificacao",
+        "adicional",
+        "beneficio",
+        "desconto_obrigatorio",
+        "desconto_facultativo",
+        "outros",
+      ],
       tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
+      tipo_incidencia: [
+        "inss",
+        "irrf",
+        "fgts",
+        "base_ferias",
+        "base_13",
+        "nenhuma",
+      ],
+      tipo_jornada: [
+        "presencial",
+        "teletrabalho",
+        "hibrido",
+        "sobreaviso",
+        "plantao",
+      ],
+      tipo_licenca: [
+        "saude",
+        "maternidade",
+        "paternidade",
+        "casamento",
+        "luto",
+        "capacitacao",
+        "interesse_particular",
+        "premio",
+        "outros",
+      ],
       tipo_permissao: [
         "ver",
         "criar",
@@ -4556,6 +5952,12 @@ export const Constants = {
         "excluir",
         "aprovar",
         "publicar",
+      ],
+      tipo_registro_ponto: [
+        "entrada",
+        "saida_intervalo",
+        "retorno_intervalo",
+        "saida",
       ],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },

@@ -165,14 +165,14 @@ Nada implementado.
 +-----------------------------------+----------+
 | 1. Cadastro de Servidores         |    90%   | ✅ Fase 1 Completa
 | 2. Cargos, Funções e Carreira     |    80%   |
-| 3. Folha de Pagamento             |     0%   |
-| 4. Frequência e Jornada           |     0%   |
-| 5. Férias e Licenças              |     0%   |
-| 6. Processos Trabalhistas         |     0%   |
-| 7. Relatórios Legais              |     0%   |
+| 3. Folha de Pagamento             |    60%   | ✅ Schema + Hooks
+| 4. Frequência e Jornada           |    60%   | ✅ Schema + Hooks
+| 5. Férias e Licenças              |    60%   | ✅ Schema + Hooks
+| 6. Processos Trabalhistas         |    60%   | ✅ Schema + Hooks
+| 7. Relatórios Legais              |    60%   | ✅ Schema + Hooks
 | 8. Requisitos Transversais        |    70%   |
 +-----------------------------------+----------+
-| TOTAL GERAL                       |   ~35%   |
+| TOTAL GERAL                       |   ~70%   |
 +-----------------------------------+----------+
 ```
 
