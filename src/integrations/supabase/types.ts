@@ -650,6 +650,111 @@ export type Database = {
           },
         ]
       }
+      conciliacao_pendencias: {
+        Row: {
+          conciliacao_id: string | null
+          created_at: string | null
+          descricao: string | null
+          id: string
+          movimentacao_id: string | null
+          resolvido: boolean | null
+          tipo: string | null
+          valor: number
+        }
+        Insert: {
+          conciliacao_id?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          movimentacao_id?: string | null
+          resolvido?: boolean | null
+          tipo?: string | null
+          valor: number
+        }
+        Update: {
+          conciliacao_id?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          movimentacao_id?: string | null
+          resolvido?: boolean | null
+          tipo?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conciliacao_pendencias_conciliacao_id_fkey"
+            columns: ["conciliacao_id"]
+            isOneToOne: false
+            referencedRelation: "conciliacoes_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conciliacao_pendencias_movimentacao_id_fkey"
+            columns: ["movimentacao_id"]
+            isOneToOne: false
+            referencedRelation: "movimentacoes_bancarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conciliacoes_bancarias: {
+        Row: {
+          competencia: string
+          conciliado_por: string | null
+          conta_id: string | null
+          created_at: string | null
+          data_conciliacao: string | null
+          diferenca: number | null
+          id: string
+          observacoes: string | null
+          saldo_extrato: number
+          saldo_sistema: number
+          status: string | null
+        }
+        Insert: {
+          competencia: string
+          conciliado_por?: string | null
+          conta_id?: string | null
+          created_at?: string | null
+          data_conciliacao?: string | null
+          diferenca?: number | null
+          id?: string
+          observacoes?: string | null
+          saldo_extrato: number
+          saldo_sistema: number
+          status?: string | null
+        }
+        Update: {
+          competencia?: string
+          conciliado_por?: string | null
+          conta_id?: string | null
+          created_at?: string | null
+          data_conciliacao?: string | null
+          diferenca?: number | null
+          id?: string
+          observacoes?: string | null
+          saldo_extrato?: number
+          saldo_sistema?: number
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conciliacoes_bancarias_conciliado_por_fkey"
+            columns: ["conciliado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conciliacoes_bancarias_conta_id_fkey"
+            columns: ["conta_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracoes_alertas: {
         Row: {
           created_at: string
@@ -730,6 +835,85 @@ export type Database = {
             columns: ["escola_id"]
             isOneToOne: false
             referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contas_bancarias: {
+        Row: {
+          agencia: string
+          agencia_digito: string | null
+          ativa: boolean | null
+          banco_codigo: string
+          banco_nome: string
+          conta: string
+          conta_digito: string | null
+          created_at: string | null
+          finalidade: string | null
+          fonte_recurso_id: string | null
+          id: string
+          municipio_id: string | null
+          saldo_atual: number | null
+          secretaria_id: string | null
+          tipo: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agencia: string
+          agencia_digito?: string | null
+          ativa?: boolean | null
+          banco_codigo: string
+          banco_nome: string
+          conta: string
+          conta_digito?: string | null
+          created_at?: string | null
+          finalidade?: string | null
+          fonte_recurso_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          saldo_atual?: number | null
+          secretaria_id?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agencia?: string
+          agencia_digito?: string | null
+          ativa?: boolean | null
+          banco_codigo?: string
+          banco_nome?: string
+          conta?: string
+          conta_digito?: string | null
+          created_at?: string | null
+          finalidade?: string | null
+          fonte_recurso_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          saldo_atual?: number | null
+          secretaria_id?: string | null
+          tipo?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contas_bancarias_fonte_recurso_id_fkey"
+            columns: ["fonte_recurso_id"]
+            isOneToOne: false
+            referencedRelation: "fonte_recursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_bancarias_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contas_bancarias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -843,10 +1027,15 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          dotacao_id: string | null
           end_date: string
+          fonte_recursos_id: string | null
           id: string
+          modalidade_licitacao: string | null
+          numero_licitacao: string | null
           object: string | null
           payment_terms: string | null
+          programa_trabalho: string | null
           secretaria_id: string | null
           start_date: string
           status: string
@@ -861,10 +1050,15 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          dotacao_id?: string | null
           end_date: string
+          fonte_recursos_id?: string | null
           id?: string
+          modalidade_licitacao?: string | null
+          numero_licitacao?: string | null
           object?: string | null
           payment_terms?: string | null
+          programa_trabalho?: string | null
           secretaria_id?: string | null
           start_date: string
           status?: string
@@ -879,10 +1073,15 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          dotacao_id?: string | null
           end_date?: string
+          fonte_recursos_id?: string | null
           id?: string
+          modalidade_licitacao?: string | null
+          numero_licitacao?: string | null
           object?: string | null
           payment_terms?: string | null
+          programa_trabalho?: string | null
           secretaria_id?: string | null
           start_date?: string
           status?: string
@@ -892,10 +1091,242 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "contracts_dotacao_id_fkey"
+            columns: ["dotacao_id"]
+            isOneToOne: false
+            referencedRelation: "dotacoes_orcamentarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_fonte_recursos_id_fkey"
+            columns: ["fonte_recursos_id"]
+            isOneToOne: false
+            referencedRelation: "fonte_recursos"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "contracts_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contratos_aditivos: {
+        Row: {
+          contrato_id: string | null
+          created_at: string | null
+          data_assinatura: string
+          id: string
+          justificativa: string | null
+          nova_data_termino: string | null
+          numero_aditivo: number
+          prazo_adicional_dias: number | null
+          tipo: string | null
+          valor_adicional: number | null
+        }
+        Insert: {
+          contrato_id?: string | null
+          created_at?: string | null
+          data_assinatura: string
+          id?: string
+          justificativa?: string | null
+          nova_data_termino?: string | null
+          numero_aditivo: number
+          prazo_adicional_dias?: number | null
+          tipo?: string | null
+          valor_adicional?: number | null
+        }
+        Update: {
+          contrato_id?: string | null
+          created_at?: string | null
+          data_assinatura?: string
+          id?: string
+          justificativa?: string | null
+          nova_data_termino?: string | null
+          numero_aditivo?: number
+          prazo_adicional_dias?: number | null
+          tipo?: string | null
+          valor_adicional?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_aditivos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      convenios: {
+        Row: {
+          agencia: string | null
+          ano: number
+          banco: string | null
+          concedente: string
+          conta_bancaria_especifica: string | null
+          convenente: string
+          created_at: string | null
+          data_assinatura: string
+          data_fim: string
+          data_inicio: string
+          data_prestacao_contas: string | null
+          id: string
+          numero: string
+          objeto: string
+          observacoes: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_convenio"] | null
+          tipo: Database["public"]["Enums"]["tipo_convenio"]
+          updated_at: string | null
+          valor_contrapartida: number | null
+          valor_repasse: number
+          valor_total: number
+        }
+        Insert: {
+          agencia?: string | null
+          ano: number
+          banco?: string | null
+          concedente: string
+          conta_bancaria_especifica?: string | null
+          convenente: string
+          created_at?: string | null
+          data_assinatura: string
+          data_fim: string
+          data_inicio: string
+          data_prestacao_contas?: string | null
+          id?: string
+          numero: string
+          objeto: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_convenio"] | null
+          tipo: Database["public"]["Enums"]["tipo_convenio"]
+          updated_at?: string | null
+          valor_contrapartida?: number | null
+          valor_repasse: number
+          valor_total: number
+        }
+        Update: {
+          agencia?: string | null
+          ano?: number
+          banco?: string | null
+          concedente?: string
+          conta_bancaria_especifica?: string | null
+          convenente?: string
+          created_at?: string | null
+          data_assinatura?: string
+          data_fim?: string
+          data_inicio?: string
+          data_prestacao_contas?: string | null
+          id?: string
+          numero?: string
+          objeto?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_convenio"] | null
+          tipo?: Database["public"]["Enums"]["tipo_convenio"]
+          updated_at?: string | null
+          valor_contrapartida?: number | null
+          valor_repasse?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convenios_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      convenios_parcelas: {
+        Row: {
+          comprovante: string | null
+          convenio_id: string | null
+          created_at: string | null
+          data_prevista: string
+          data_recebimento: string | null
+          id: string
+          numero_parcela: number
+          status: string | null
+          valor: number
+        }
+        Insert: {
+          comprovante?: string | null
+          convenio_id?: string | null
+          created_at?: string | null
+          data_prevista: string
+          data_recebimento?: string | null
+          id?: string
+          numero_parcela: number
+          status?: string | null
+          valor: number
+        }
+        Update: {
+          comprovante?: string | null
+          convenio_id?: string | null
+          created_at?: string | null
+          data_prevista?: string
+          data_recebimento?: string | null
+          id?: string
+          numero_parcela?: number
+          status?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convenios_parcelas_convenio_id_fkey"
+            columns: ["convenio_id"]
+            isOneToOne: false
+            referencedRelation: "convenios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      convenios_prestacao_contas: {
+        Row: {
+          convenio_id: string | null
+          created_at: string | null
+          data_prestacao: string
+          documentos: Json | null
+          id: string
+          parecer: string | null
+          status: string | null
+          tipo: string | null
+          valor_prestado: number
+        }
+        Insert: {
+          convenio_id?: string | null
+          created_at?: string | null
+          data_prestacao: string
+          documentos?: Json | null
+          id?: string
+          parecer?: string | null
+          status?: string | null
+          tipo?: string | null
+          valor_prestado: number
+        }
+        Update: {
+          convenio_id?: string | null
+          created_at?: string | null
+          data_prestacao?: string
+          documentos?: Json | null
+          id?: string
+          parecer?: string | null
+          status?: string | null
+          tipo?: string | null
+          valor_prestado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convenios_prestacao_contas_convenio_id_fkey"
+            columns: ["convenio_id"]
+            isOneToOne: false
+            referencedRelation: "convenios"
             referencedColumns: ["id"]
           },
         ]
@@ -1151,6 +1582,276 @@ export type Database = {
           nome?: string
         }
         Relationships: []
+      }
+      dotacoes_orcamentarias: {
+        Row: {
+          acao_id: string | null
+          codigo_reduzido: string | null
+          created_at: string | null
+          fonte_recursos_id: string | null
+          funcao_subfuncao_id: string | null
+          id: string
+          loa_id: string | null
+          natureza_despesa_id: string | null
+          programa_id: string | null
+          secretaria_id: string | null
+          unidade_id: string | null
+          updated_at: string | null
+          valor_anulado: number | null
+          valor_disponivel: number | null
+          valor_empenhado: number | null
+          valor_inicial: number | null
+          valor_liquidado: number | null
+          valor_pago: number | null
+          valor_suplementado: number | null
+        }
+        Insert: {
+          acao_id?: string | null
+          codigo_reduzido?: string | null
+          created_at?: string | null
+          fonte_recursos_id?: string | null
+          funcao_subfuncao_id?: string | null
+          id?: string
+          loa_id?: string | null
+          natureza_despesa_id?: string | null
+          programa_id?: string | null
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string | null
+          valor_anulado?: number | null
+          valor_disponivel?: number | null
+          valor_empenhado?: number | null
+          valor_inicial?: number | null
+          valor_liquidado?: number | null
+          valor_pago?: number | null
+          valor_suplementado?: number | null
+        }
+        Update: {
+          acao_id?: string | null
+          codigo_reduzido?: string | null
+          created_at?: string | null
+          fonte_recursos_id?: string | null
+          funcao_subfuncao_id?: string | null
+          id?: string
+          loa_id?: string | null
+          natureza_despesa_id?: string | null
+          programa_id?: string | null
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string | null
+          valor_anulado?: number | null
+          valor_disponivel?: number | null
+          valor_empenhado?: number | null
+          valor_inicial?: number | null
+          valor_liquidado?: number | null
+          valor_pago?: number | null
+          valor_suplementado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dotacoes_orcamentarias_acao_id_fkey"
+            columns: ["acao_id"]
+            isOneToOne: false
+            referencedRelation: "ppa_acoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_fonte_recursos_id_fkey"
+            columns: ["fonte_recursos_id"]
+            isOneToOne: false
+            referencedRelation: "fonte_recursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_funcao_subfuncao_id_fkey"
+            columns: ["funcao_subfuncao_id"]
+            isOneToOne: false
+            referencedRelation: "funcao_subfuncao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_loa_id_fkey"
+            columns: ["loa_id"]
+            isOneToOne: false
+            referencedRelation: "loa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_natureza_despesa_id_fkey"
+            columns: ["natureza_despesa_id"]
+            isOneToOne: false
+            referencedRelation: "natureza_despesa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ppa_programas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      empenhos: {
+        Row: {
+          contrato_id: string | null
+          created_at: string | null
+          created_by: string | null
+          credor_id: string | null
+          data_empenho: string
+          descricao: string
+          dotacao_id: string | null
+          exercicio_id: string | null
+          id: string
+          numero: string
+          processo_licitatorio: string | null
+          saldo_empenho: number | null
+          status: Database["public"]["Enums"]["status_empenho"] | null
+          tipo: Database["public"]["Enums"]["tipo_empenho"]
+          updated_at: string | null
+          valor_anulado: number | null
+          valor_empenhado: number
+          valor_liquidado: number | null
+          valor_pago: number | null
+        }
+        Insert: {
+          contrato_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credor_id?: string | null
+          data_empenho: string
+          descricao: string
+          dotacao_id?: string | null
+          exercicio_id?: string | null
+          id?: string
+          numero: string
+          processo_licitatorio?: string | null
+          saldo_empenho?: number | null
+          status?: Database["public"]["Enums"]["status_empenho"] | null
+          tipo?: Database["public"]["Enums"]["tipo_empenho"]
+          updated_at?: string | null
+          valor_anulado?: number | null
+          valor_empenhado: number
+          valor_liquidado?: number | null
+          valor_pago?: number | null
+        }
+        Update: {
+          contrato_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          credor_id?: string | null
+          data_empenho?: string
+          descricao?: string
+          dotacao_id?: string | null
+          exercicio_id?: string | null
+          id?: string
+          numero?: string
+          processo_licitatorio?: string | null
+          saldo_empenho?: number | null
+          status?: Database["public"]["Enums"]["status_empenho"] | null
+          tipo?: Database["public"]["Enums"]["tipo_empenho"]
+          updated_at?: string | null
+          valor_anulado?: number | null
+          valor_empenhado?: number
+          valor_liquidado?: number | null
+          valor_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empenhos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_credor_id_fkey"
+            columns: ["credor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_dotacao_id_fkey"
+            columns: ["dotacao_id"]
+            isOneToOne: false
+            referencedRelation: "dotacoes_orcamentarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      empenhos_anulacoes: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_anulacao: string
+          empenho_id: string | null
+          id: string
+          motivo: string | null
+          valor_anulado: number
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_anulacao: string
+          empenho_id?: string | null
+          id?: string
+          motivo?: string | null
+          valor_anulado: number
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_anulacao?: string
+          empenho_id?: string | null
+          id?: string
+          motivo?: string | null
+          valor_anulado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empenhos_anulacoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_anulacoes_empenho_id_fkey"
+            columns: ["empenho_id"]
+            isOneToOne: false
+            referencedRelation: "empenhos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       entidade_versoes: {
         Row: {
@@ -1979,6 +2680,8 @@ export type Database = {
           data_calculo: string | null
           data_conferencia: string | null
           data_fechamento: string | null
+          dotacao_id: string | null
+          empenho_id: string | null
           fechado_por: string | null
           id: string
           observacoes: string | null
@@ -2001,6 +2704,8 @@ export type Database = {
           data_calculo?: string | null
           data_conferencia?: string | null
           data_fechamento?: string | null
+          dotacao_id?: string | null
+          empenho_id?: string | null
           fechado_por?: string | null
           id?: string
           observacoes?: string | null
@@ -2023,6 +2728,8 @@ export type Database = {
           data_calculo?: string | null
           data_conferencia?: string | null
           data_fechamento?: string | null
+          dotacao_id?: string | null
+          empenho_id?: string | null
           fechado_por?: string | null
           id?: string
           observacoes?: string | null
@@ -2037,6 +2744,20 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "folha_pagamento_dotacao_id_fkey"
+            columns: ["dotacao_id"]
+            isOneToOne: false
+            referencedRelation: "dotacoes_orcamentarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_pagamento_empenho_id_fkey"
+            columns: ["empenho_id"]
+            isOneToOne: false
+            referencedRelation: "empenhos"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "folha_pagamento_secretaria_id_fkey"
             columns: ["secretaria_id"]
@@ -2189,6 +2910,147 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fonte_recursos: {
+        Row: {
+          ativo: boolean | null
+          codigo: string
+          created_at: string | null
+          descricao: string
+          id: string
+          tipo: string | null
+          vinculacao: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo: string
+          created_at?: string | null
+          descricao: string
+          id?: string
+          tipo?: string | null
+          vinculacao?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo?: string
+          created_at?: string | null
+          descricao?: string
+          id?: string
+          tipo?: string | null
+          vinculacao?: string | null
+        }
+        Relationships: []
+      }
+      fornecedores: {
+        Row: {
+          agencia: string | null
+          ativo: boolean | null
+          banco_codigo: string | null
+          banco_nome: string | null
+          cep: string | null
+          cidade: string | null
+          conta: string | null
+          cpf_cnpj: string
+          created_at: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
+          nome_fantasia: string | null
+          observacoes: string | null
+          pix_chave: string | null
+          pix_tipo: string | null
+          razao_social: string
+          telefone: string | null
+          tipo_conta: string | null
+          tipo_pessoa: string
+          uf: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agencia?: string | null
+          ativo?: boolean | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          cep?: string | null
+          cidade?: string | null
+          conta?: string | null
+          cpf_cnpj: string
+          created_at?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          nome_fantasia?: string | null
+          observacoes?: string | null
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          razao_social: string
+          telefone?: string | null
+          tipo_conta?: string | null
+          tipo_pessoa: string
+          uf?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agencia?: string | null
+          ativo?: boolean | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          cep?: string | null
+          cidade?: string | null
+          conta?: string | null
+          cpf_cnpj?: string
+          created_at?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
+          nome_fantasia?: string | null
+          observacoes?: string | null
+          pix_chave?: string | null
+          pix_tipo?: string | null
+          razao_social?: string
+          telefone?: string | null
+          tipo_conta?: string | null
+          tipo_pessoa?: string
+          uf?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      funcao_subfuncao: {
+        Row: {
+          ativo: boolean | null
+          codigo_funcao: string
+          codigo_subfuncao: string | null
+          created_at: string | null
+          id: string
+          nome_funcao: string
+          nome_subfuncao: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo_funcao: string
+          codigo_subfuncao?: string | null
+          created_at?: string | null
+          id?: string
+          nome_funcao: string
+          nome_subfuncao?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo_funcao?: string
+          codigo_subfuncao?: string | null
+          created_at?: string | null
+          id?: string
+          nome_funcao?: string
+          nome_subfuncao?: string | null
+        }
+        Relationships: []
       }
       funcoes_administrativas: {
         Row: {
@@ -2563,6 +3425,110 @@ export type Database = {
           },
         ]
       }
+      ldo: {
+        Row: {
+          created_at: string | null
+          exercicio: number
+          id: string
+          lei_data: string | null
+          lei_numero: string | null
+          limite_despesa_pessoal: number | null
+          limite_divida: number | null
+          meta_resultado_nominal: number | null
+          meta_resultado_primario: number | null
+          municipio_id: string | null
+          ppa_id: string | null
+          prioridades: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          exercicio: number
+          id?: string
+          lei_data?: string | null
+          lei_numero?: string | null
+          limite_despesa_pessoal?: number | null
+          limite_divida?: number | null
+          meta_resultado_nominal?: number | null
+          meta_resultado_primario?: number | null
+          municipio_id?: string | null
+          ppa_id?: string | null
+          prioridades?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          exercicio?: number
+          id?: string
+          lei_data?: string | null
+          lei_numero?: string | null
+          limite_despesa_pessoal?: number | null
+          limite_divida?: number | null
+          meta_resultado_nominal?: number | null
+          meta_resultado_primario?: number | null
+          municipio_id?: string | null
+          ppa_id?: string | null
+          prioridades?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ldo_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ldo_ppa_id_fkey"
+            columns: ["ppa_id"]
+            isOneToOne: false
+            referencedRelation: "ppa"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ldo_metas_fiscais: {
+        Row: {
+          created_at: string | null
+          descricao: string | null
+          id: string
+          ldo_id: string | null
+          tipo: string
+          valor_previsto: number | null
+          valor_realizado: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          ldo_id?: string | null
+          tipo: string
+          valor_previsto?: number | null
+          valor_realizado?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          ldo_id?: string | null
+          tipo?: string
+          valor_previsto?: number | null
+          valor_realizado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ldo_metas_fiscais_ldo_id_fkey"
+            columns: ["ldo_id"]
+            isOneToOne: false
+            referencedRelation: "ldo"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       licencas: {
         Row: {
           aprovado_por: string | null
@@ -2630,6 +3596,149 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      liquidacoes: {
+        Row: {
+          atesto: string | null
+          created_at: string | null
+          created_by: string | null
+          data_atesto: string | null
+          data_documento: string | null
+          data_liquidacao: string
+          documento_fiscal: string | null
+          empenho_id: string | null
+          id: string
+          numero: string
+          responsavel_atesto: string | null
+          status: string | null
+          tipo_documento: string | null
+          valor_liquidado: number
+        }
+        Insert: {
+          atesto?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_atesto?: string | null
+          data_documento?: string | null
+          data_liquidacao: string
+          documento_fiscal?: string | null
+          empenho_id?: string | null
+          id?: string
+          numero: string
+          responsavel_atesto?: string | null
+          status?: string | null
+          tipo_documento?: string | null
+          valor_liquidado: number
+        }
+        Update: {
+          atesto?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_atesto?: string | null
+          data_documento?: string | null
+          data_liquidacao?: string
+          documento_fiscal?: string | null
+          empenho_id?: string | null
+          id?: string
+          numero?: string
+          responsavel_atesto?: string | null
+          status?: string | null
+          tipo_documento?: string | null
+          valor_liquidado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidacoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidacoes_empenho_id_fkey"
+            columns: ["empenho_id"]
+            isOneToOne: false
+            referencedRelation: "empenhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidacoes_responsavel_atesto_fkey"
+            columns: ["responsavel_atesto"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loa: {
+        Row: {
+          created_at: string | null
+          exercicio_id: string | null
+          id: string
+          ldo_id: string | null
+          lei_data: string | null
+          lei_numero: string | null
+          municipio_id: string | null
+          status: string | null
+          updated_at: string | null
+          valor_orcamento_fiscal: number | null
+          valor_orcamento_investimento: number | null
+          valor_orcamento_seguridade: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          exercicio_id?: string | null
+          id?: string
+          ldo_id?: string | null
+          lei_data?: string | null
+          lei_numero?: string | null
+          municipio_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_orcamento_fiscal?: number | null
+          valor_orcamento_investimento?: number | null
+          valor_orcamento_seguridade?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          exercicio_id?: string | null
+          id?: string
+          ldo_id?: string | null
+          lei_data?: string | null
+          lei_numero?: string | null
+          municipio_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_orcamento_fiscal?: number | null
+          valor_orcamento_investimento?: number | null
+          valor_orcamento_seguridade?: number | null
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loa_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loa_ldo_id_fkey"
+            columns: ["ldo_id"]
+            isOneToOne: false
+            referencedRelation: "ldo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loa_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
             referencedColumns: ["id"]
           },
         ]
@@ -2860,6 +3969,66 @@ export type Database = {
         }
         Relationships: []
       }
+      movimentacoes_bancarias: {
+        Row: {
+          conciliado: boolean | null
+          conta_id: string | null
+          created_at: string | null
+          data_conciliacao: string | null
+          data_movimento: string
+          descricao: string
+          documento: string | null
+          id: string
+          ordem_pagamento_id: string | null
+          origem: string | null
+          tipo: string | null
+          valor: number
+        }
+        Insert: {
+          conciliado?: boolean | null
+          conta_id?: string | null
+          created_at?: string | null
+          data_conciliacao?: string | null
+          data_movimento: string
+          descricao: string
+          documento?: string | null
+          id?: string
+          ordem_pagamento_id?: string | null
+          origem?: string | null
+          tipo?: string | null
+          valor: number
+        }
+        Update: {
+          conciliado?: boolean | null
+          conta_id?: string | null
+          created_at?: string | null
+          data_conciliacao?: string | null
+          data_movimento?: string
+          descricao?: string
+          documento?: string | null
+          id?: string
+          ordem_pagamento_id?: string | null
+          origem?: string | null
+          tipo?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_bancarias_conta_id_fkey"
+            columns: ["conta_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_bancarias_ordem_pagamento_id_fkey"
+            columns: ["ordem_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "ordens_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       municipios: {
         Row: {
           area_km2: number | null
@@ -2929,6 +4098,84 @@ export type Database = {
           uf?: string
           updated_at?: string
           vice_prefeito?: string | null
+        }
+        Relationships: []
+      }
+      natureza_despesa: {
+        Row: {
+          ativo: boolean | null
+          categoria_economica: string
+          codigo: string
+          created_at: string | null
+          descricao: string
+          elemento: string
+          grupo: string
+          id: string
+          modalidade: string
+          subelemento: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          categoria_economica: string
+          codigo: string
+          created_at?: string | null
+          descricao: string
+          elemento: string
+          grupo: string
+          id?: string
+          modalidade: string
+          subelemento?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          categoria_economica?: string
+          codigo?: string
+          created_at?: string | null
+          descricao?: string
+          elemento?: string
+          grupo?: string
+          id?: string
+          modalidade?: string
+          subelemento?: string | null
+        }
+        Relationships: []
+      }
+      natureza_receita: {
+        Row: {
+          ativo: boolean | null
+          categoria_economica: string
+          codigo: string
+          created_at: string | null
+          descricao: string
+          desdobramento: string | null
+          especie: string | null
+          id: string
+          origem: string
+          tipo: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          categoria_economica: string
+          codigo: string
+          created_at?: string | null
+          descricao: string
+          desdobramento?: string | null
+          especie?: string | null
+          id?: string
+          origem: string
+          tipo?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          categoria_economica?: string
+          codigo?: string
+          created_at?: string | null
+          descricao?: string
+          desdobramento?: string | null
+          especie?: string | null
+          id?: string
+          origem?: string
+          tipo?: string | null
         }
         Relationships: []
       }
@@ -3025,6 +4272,82 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      ordens_pagamento: {
+        Row: {
+          autorizado_por: string | null
+          comprovante_pagamento: string | null
+          conta_bancaria_id: string | null
+          created_at: string | null
+          created_by: string | null
+          data_autorizacao: string | null
+          data_ordem: string
+          data_pagamento: string | null
+          id: string
+          liquidacao_id: string | null
+          numero: string
+          status: string | null
+          valor_bruto: number
+          valor_liquido: number
+          valor_retencoes: number | null
+        }
+        Insert: {
+          autorizado_por?: string | null
+          comprovante_pagamento?: string | null
+          conta_bancaria_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_autorizacao?: string | null
+          data_ordem: string
+          data_pagamento?: string | null
+          id?: string
+          liquidacao_id?: string | null
+          numero: string
+          status?: string | null
+          valor_bruto: number
+          valor_liquido: number
+          valor_retencoes?: number | null
+        }
+        Update: {
+          autorizado_por?: string | null
+          comprovante_pagamento?: string | null
+          conta_bancaria_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_autorizacao?: string | null
+          data_ordem?: string
+          data_pagamento?: string | null
+          id?: string
+          liquidacao_id?: string | null
+          numero?: string
+          status?: string | null
+          valor_bruto?: number
+          valor_liquido?: number
+          valor_retencoes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordens_pagamento_autorizado_por_fkey"
+            columns: ["autorizado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_pagamento_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_pagamento_liquidacao_id_fkey"
+            columns: ["liquidacao_id"]
+            isOneToOne: false
+            referencedRelation: "liquidacoes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pacientes: {
         Row: {
@@ -3406,6 +4729,166 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ppa: {
+        Row: {
+          ano_fim: number
+          ano_inicio: number
+          created_at: string | null
+          descricao: string | null
+          id: string
+          lei_data: string | null
+          lei_numero: string | null
+          municipio_id: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ano_fim: number
+          ano_inicio: number
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          lei_data?: string | null
+          lei_numero?: string | null
+          municipio_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ano_fim?: number
+          ano_inicio?: number
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          lei_data?: string | null
+          lei_numero?: string | null
+          municipio_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppa_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ppa_acoes: {
+        Row: {
+          codigo: string
+          created_at: string | null
+          descricao: string | null
+          id: string
+          meta_financeira: number | null
+          meta_fisica: number | null
+          nome: string
+          produto: string | null
+          programa_id: string | null
+          tipo: string
+          unidade_medida: string | null
+        }
+        Insert: {
+          codigo: string
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          meta_financeira?: number | null
+          meta_fisica?: number | null
+          nome: string
+          produto?: string | null
+          programa_id?: string | null
+          tipo: string
+          unidade_medida?: string | null
+        }
+        Update: {
+          codigo?: string
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          meta_financeira?: number | null
+          meta_fisica?: number | null
+          nome?: string
+          produto?: string | null
+          programa_id?: string | null
+          tipo?: string
+          unidade_medida?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppa_acoes_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "ppa_programas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ppa_programas: {
+        Row: {
+          codigo: string
+          created_at: string | null
+          id: string
+          indicador: string | null
+          meta_financeira_total: number | null
+          meta_fisica_total: number | null
+          nome: string
+          objetivo: string | null
+          ppa_id: string | null
+          publico_alvo: string | null
+          secretaria_id: string | null
+          status: string | null
+          unidade_medida: string | null
+        }
+        Insert: {
+          codigo: string
+          created_at?: string | null
+          id?: string
+          indicador?: string | null
+          meta_financeira_total?: number | null
+          meta_fisica_total?: number | null
+          nome: string
+          objetivo?: string | null
+          ppa_id?: string | null
+          publico_alvo?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          unidade_medida?: string | null
+        }
+        Update: {
+          codigo?: string
+          created_at?: string | null
+          id?: string
+          indicador?: string | null
+          meta_financeira_total?: number | null
+          meta_fisica_total?: number | null
+          nome?: string
+          objetivo?: string | null
+          ppa_id?: string | null
+          publico_alvo?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          unidade_medida?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ppa_programas_ppa_id_fkey"
+            columns: ["ppa_id"]
+            isOneToOne: false
+            referencedRelation: "ppa"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ppa_programas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -4141,6 +5624,68 @@ export type Database = {
           },
         ]
       }
+      restos_a_pagar: {
+        Row: {
+          created_at: string | null
+          data_cancelamento: string | null
+          data_inscricao: string
+          data_pagamento: string | null
+          empenho_id: string | null
+          exercicio_origem: number
+          id: string
+          motivo_cancelamento: string | null
+          saldo: number | null
+          status: Database["public"]["Enums"]["status_resto_pagar"] | null
+          tipo: Database["public"]["Enums"]["tipo_resto_pagar"]
+          updated_at: string | null
+          valor_cancelado: number | null
+          valor_inscrito: number
+          valor_pago: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_cancelamento?: string | null
+          data_inscricao: string
+          data_pagamento?: string | null
+          empenho_id?: string | null
+          exercicio_origem: number
+          id?: string
+          motivo_cancelamento?: string | null
+          saldo?: number | null
+          status?: Database["public"]["Enums"]["status_resto_pagar"] | null
+          tipo: Database["public"]["Enums"]["tipo_resto_pagar"]
+          updated_at?: string | null
+          valor_cancelado?: number | null
+          valor_inscrito: number
+          valor_pago?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          data_cancelamento?: string | null
+          data_inscricao?: string
+          data_pagamento?: string | null
+          empenho_id?: string | null
+          exercicio_origem?: number
+          id?: string
+          motivo_cancelamento?: string | null
+          saldo?: number | null
+          status?: Database["public"]["Enums"]["status_resto_pagar"] | null
+          tipo?: Database["public"]["Enums"]["tipo_resto_pagar"]
+          updated_at?: string | null
+          valor_cancelado?: number | null
+          valor_inscrito?: number
+          valor_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restos_a_pagar_empenho_id_fkey"
+            columns: ["empenho_id"]
+            isOneToOne: false
+            referencedRelation: "empenhos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       restricoes_acesso: {
         Row: {
           apenas_rede_interna: boolean | null
@@ -4252,6 +5797,50 @@ export type Database = {
             columns: ["aluno_id"]
             isOneToOne: false
             referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      retencoes_legais: {
+        Row: {
+          aliquota: number | null
+          base_calculo: number | null
+          codigo_receita: string | null
+          created_at: string | null
+          id: string
+          liquidacao_id: string | null
+          observacao: string | null
+          tipo: string
+          valor_retido: number
+        }
+        Insert: {
+          aliquota?: number | null
+          base_calculo?: number | null
+          codigo_receita?: string | null
+          created_at?: string | null
+          id?: string
+          liquidacao_id?: string | null
+          observacao?: string | null
+          tipo: string
+          valor_retido: number
+        }
+        Update: {
+          aliquota?: number | null
+          base_calculo?: number | null
+          codigo_receita?: string | null
+          created_at?: string | null
+          id?: string
+          liquidacao_id?: string | null
+          observacao?: string | null
+          tipo?: string
+          valor_retido?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "retencoes_legais_liquidacao_id_fkey"
+            columns: ["liquidacao_id"]
+            isOneToOne: false
+            referencedRelation: "liquidacoes"
             referencedColumns: ["id"]
           },
         ]
@@ -5593,6 +7182,13 @@ export type Database = {
         | "servidor"
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
+      status_convenio: "vigente" | "encerrado" | "rescindido" | "em_prestacao"
+      status_empenho:
+        | "ativo"
+        | "anulado"
+        | "liquidado"
+        | "pago"
+        | "inscrito_rap"
       status_folha:
         | "aberta"
         | "calculada"
@@ -5607,6 +7203,7 @@ export type Database = {
         | "transitado_julgado"
         | "acordo"
         | "extinto"
+      status_resto_pagar: "inscrito" | "pago" | "cancelado" | "prescrito"
       status_solicitacao:
         | "rascunho"
         | "enviada"
@@ -5631,6 +7228,8 @@ export type Database = {
         | "importar"
         | "reverter"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
+      tipo_convenio: "recebido" | "concedido"
+      tipo_empenho: "ordinario" | "estimativo" | "global"
       tipo_evento_folha:
         | "vencimento"
         | "gratificacao"
@@ -5675,6 +7274,7 @@ export type Database = {
         | "saida_intervalo"
         | "retorno_intervalo"
         | "saida"
+      tipo_resto_pagar: "processado" | "nao_processado"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -5867,6 +7467,8 @@ export const Constants = {
         "estagiario",
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
+      status_convenio: ["vigente", "encerrado", "rescindido", "em_prestacao"],
+      status_empenho: ["ativo", "anulado", "liquidado", "pago", "inscrito_rap"],
       status_folha: [
         "aberta",
         "calculada",
@@ -5883,6 +7485,7 @@ export const Constants = {
         "acordo",
         "extinto",
       ],
+      status_resto_pagar: ["inscrito", "pago", "cancelado", "prescrito"],
       status_solicitacao: [
         "rascunho",
         "enviada",
@@ -5909,6 +7512,8 @@ export const Constants = {
         "reverter",
       ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
+      tipo_convenio: ["recebido", "concedido"],
+      tipo_empenho: ["ordinario", "estimativo", "global"],
       tipo_evento_folha: [
         "vencimento",
         "gratificacao",
@@ -5959,6 +7564,7 @@ export const Constants = {
         "retorno_intervalo",
         "saida",
       ],
+      tipo_resto_pagar: ["processado", "nao_processado"],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },
   },
