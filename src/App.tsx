@@ -28,6 +28,7 @@ import Transparencia from "@/pages/Transparencia";
 import GestaoEducacao from "@/pages/GestaoEducacao";
 import AdminRH from "@/pages/AdminRH";
 import Auditoria from "@/pages/Auditoria";
+import GestaoFinanceiraPublica from "@/pages/GestaoFinanceiraPublica";
 import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
@@ -233,6 +234,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoEducacao />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/gestao-financeira-publica"
+          element={
+            <RequireAuth>
+              <GestaoFinanceiraPublica />
             </RequireAuth>
           }
         />

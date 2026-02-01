@@ -34,7 +34,8 @@ import {
   Eye,
   GraduationCap,
   UserCog,
-  Shield
+  Shield,
+  Landmark
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ const secretariasItems = [
     label: "Financeiro", 
     path: "/financeiro",
     submenu: [
+      { icon: Landmark, label: "Gestão Financeira Pública", path: "/gestao-financeira-publica" },
       { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
       { icon: CalendarClock, label: "Pagamentos de Contratos", path: "/contratos/pagamentos" },
       { icon: ShoppingCart, label: "Compras e Licitações", path: "/compras/licitacoes" },
