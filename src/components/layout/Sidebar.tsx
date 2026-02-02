@@ -262,7 +262,7 @@ export const Sidebar = () => {
               {secretariasItems.map((item) => (
                 <div key={item.path} className="mb-1">
                   {/* Secretaria com submenu */}
-                  {item.submenu ? (
+                  {item.submenu && item.submenu.length > 0 ? (
                     <Collapsible
                       open={openSubmenus[item.label]}
                       onOpenChange={() => toggleSubmenu(item.label)}
