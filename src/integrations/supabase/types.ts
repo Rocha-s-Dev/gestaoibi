@@ -360,6 +360,69 @@ export type Database = {
           },
         ]
       }
+      baixas_manuais_iptu: {
+        Row: {
+          autorizado_por: string | null
+          created_at: string | null
+          data_baixa: string
+          documento_autorizacao: string | null
+          id: string
+          lancamento_id: string
+          motivo: string
+          numero_processo: string | null
+          observacoes: string | null
+          parcela_id: string
+          tipo_baixa: string
+          valor_baixado: number
+          valor_original: number
+        }
+        Insert: {
+          autorizado_por?: string | null
+          created_at?: string | null
+          data_baixa?: string
+          documento_autorizacao?: string | null
+          id?: string
+          lancamento_id: string
+          motivo: string
+          numero_processo?: string | null
+          observacoes?: string | null
+          parcela_id: string
+          tipo_baixa: string
+          valor_baixado: number
+          valor_original: number
+        }
+        Update: {
+          autorizado_por?: string | null
+          created_at?: string | null
+          data_baixa?: string
+          documento_autorizacao?: string | null
+          id?: string
+          lancamento_id?: string
+          motivo?: string
+          numero_processo?: string | null
+          observacoes?: string | null
+          parcela_id?: string
+          tipo_baixa?: string
+          valor_baixado?: number
+          valor_original?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "baixas_manuais_iptu_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "iptu_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "baixas_manuais_iptu_parcela_id_fkey"
+            columns: ["parcela_id"]
+            isOneToOne: false
+            referencedRelation: "iptu_parcelas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       banco_horas: {
         Row: {
           competencia: string
@@ -650,6 +713,59 @@ export type Database = {
           },
         ]
       }
+      carnes_iptu: {
+        Row: {
+          arquivo_pdf: string | null
+          chave_pix: string | null
+          codigo_barras: string | null
+          data_envio: string | null
+          data_geracao: string | null
+          forma_envio: string | null
+          id: string
+          lancamento_id: string
+          linha_digitavel: string | null
+          numero_carne: string
+          qrcode_pix: string | null
+          status: string | null
+        }
+        Insert: {
+          arquivo_pdf?: string | null
+          chave_pix?: string | null
+          codigo_barras?: string | null
+          data_envio?: string | null
+          data_geracao?: string | null
+          forma_envio?: string | null
+          id?: string
+          lancamento_id: string
+          linha_digitavel?: string | null
+          numero_carne: string
+          qrcode_pix?: string | null
+          status?: string | null
+        }
+        Update: {
+          arquivo_pdf?: string | null
+          chave_pix?: string | null
+          codigo_barras?: string | null
+          data_envio?: string | null
+          data_geracao?: string | null
+          forma_envio?: string | null
+          id?: string
+          lancamento_id?: string
+          linha_digitavel?: string | null
+          numero_carne?: string
+          qrcode_pix?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carnes_iptu_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "iptu_lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conciliacao_pendencias: {
         Row: {
           conciliacao_id: string | null
@@ -755,6 +871,156 @@ export type Database = {
           },
         ]
       }
+      config_inadimplencia: {
+        Row: {
+          ativo: boolean | null
+          correcao_monetaria: string | null
+          created_at: string | null
+          dias_para_divida_ativa: number | null
+          dias_para_notificacao: number | null
+          id: string
+          juros_mora_mensal: number | null
+          modelo_notificacao: string | null
+          multa_atraso_percentual: number | null
+          municipio_id: string | null
+          secretaria_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          correcao_monetaria?: string | null
+          created_at?: string | null
+          dias_para_divida_ativa?: number | null
+          dias_para_notificacao?: number | null
+          id?: string
+          juros_mora_mensal?: number | null
+          modelo_notificacao?: string | null
+          multa_atraso_percentual?: number | null
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          correcao_monetaria?: string | null
+          created_at?: string | null
+          dias_para_divida_ativa?: number | null
+          dias_para_notificacao?: number | null
+          id?: string
+          juros_mora_mensal?: number | null
+          modelo_notificacao?: string | null
+          multa_atraso_percentual?: number | null
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "config_inadimplencia_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "config_inadimplencia_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      config_lancamento_iptu: {
+        Row: {
+          aliquota_comercial: number | null
+          aliquota_industrial: number | null
+          aliquota_progressiva: boolean | null
+          aliquota_residencial: number | null
+          aliquota_territorial: number | null
+          bloqueado: boolean | null
+          created_at: string | null
+          data_bloqueio: string | null
+          data_vencimento_cota_unica: string
+          desconto_cota_unica: number | null
+          dia_vencimento_parcelas: number | null
+          exercicio: number
+          id: string
+          municipio_id: string | null
+          numero_parcelas: number | null
+          primeira_parcela_mes: number | null
+          secretaria_id: string | null
+          status: string | null
+          taxa_expediente: number | null
+          taxa_iluminacao: number | null
+          taxa_limpeza_publica: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          aliquota_comercial?: number | null
+          aliquota_industrial?: number | null
+          aliquota_progressiva?: boolean | null
+          aliquota_residencial?: number | null
+          aliquota_territorial?: number | null
+          bloqueado?: boolean | null
+          created_at?: string | null
+          data_bloqueio?: string | null
+          data_vencimento_cota_unica: string
+          desconto_cota_unica?: number | null
+          dia_vencimento_parcelas?: number | null
+          exercicio: number
+          id?: string
+          municipio_id?: string | null
+          numero_parcelas?: number | null
+          primeira_parcela_mes?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          taxa_expediente?: number | null
+          taxa_iluminacao?: number | null
+          taxa_limpeza_publica?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          aliquota_comercial?: number | null
+          aliquota_industrial?: number | null
+          aliquota_progressiva?: boolean | null
+          aliquota_residencial?: number | null
+          aliquota_territorial?: number | null
+          bloqueado?: boolean | null
+          created_at?: string | null
+          data_bloqueio?: string | null
+          data_vencimento_cota_unica?: string
+          desconto_cota_unica?: number | null
+          dia_vencimento_parcelas?: number | null
+          exercicio?: number
+          id?: string
+          municipio_id?: string | null
+          numero_parcelas?: number | null
+          primeira_parcela_mes?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          taxa_expediente?: number | null
+          taxa_iluminacao?: number | null
+          taxa_limpeza_publica?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "config_lancamento_iptu_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "config_lancamento_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       configuracoes_alertas: {
         Row: {
           created_at: string
@@ -784,6 +1050,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      consultas_cidadao: {
+        Row: {
+          cpf_cnpj: string
+          created_at: string | null
+          id: string
+          imovel_id: string | null
+          inscricao_imobiliaria: string | null
+          ip_address: unknown
+          resultado: Json | null
+          tipo: string
+          user_agent: string | null
+        }
+        Insert: {
+          cpf_cnpj: string
+          created_at?: string | null
+          id?: string
+          imovel_id?: string | null
+          inscricao_imobiliaria?: string | null
+          ip_address?: unknown
+          resultado?: Json | null
+          tipo: string
+          user_agent?: string | null
+        }
+        Update: {
+          cpf_cnpj?: string
+          created_at?: string | null
+          id?: string
+          imovel_id?: string | null
+          inscricao_imobiliaria?: string | null
+          ip_address?: unknown
+          resultado?: Json | null
+          tipo?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultas_cidadao_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       consumo_merenda: {
         Row: {
@@ -2433,6 +2743,60 @@ export type Database = {
           },
         ]
       }
+      fatores_correcao_iptu: {
+        Row: {
+          ativo: boolean | null
+          codigo: string
+          created_at: string | null
+          descricao: string
+          exercicio: number
+          fator: number
+          id: string
+          municipio_id: string | null
+          secretaria_id: string | null
+          tipo: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo: string
+          created_at?: string | null
+          descricao: string
+          exercicio: number
+          fator?: number
+          id?: string
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          tipo: string
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo?: string
+          created_at?: string | null
+          descricao?: string
+          exercicio?: number
+          fator?: number
+          id?: string
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fatores_correcao_iptu_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fatores_correcao_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feriados: {
         Row: {
           ativo: boolean
@@ -3652,9 +4016,138 @@ export type Database = {
           },
         ]
       }
+      historico_proprietarios: {
+        Row: {
+          cartorio: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_transferencia: string
+          documento_titulo: string | null
+          folha: string | null
+          id: string
+          imovel_id: string
+          livro: string | null
+          numero_matricula: string | null
+          observacoes: string | null
+          tipo_transferencia: string
+          user_id: string | null
+          valor_transacao: number | null
+        }
+        Insert: {
+          cartorio?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_transferencia: string
+          documento_titulo?: string | null
+          folha?: string | null
+          id?: string
+          imovel_id: string
+          livro?: string | null
+          numero_matricula?: string | null
+          observacoes?: string | null
+          tipo_transferencia: string
+          user_id?: string | null
+          valor_transacao?: number | null
+        }
+        Update: {
+          cartorio?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_transferencia?: string
+          documento_titulo?: string | null
+          folha?: string | null
+          id?: string
+          imovel_id?: string
+          livro?: string | null
+          numero_matricula?: string | null
+          observacoes?: string | null
+          tipo_transferencia?: string
+          user_id?: string | null
+          valor_transacao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_proprietarios_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_proprietarios_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      historico_valores_venais: {
+        Row: {
+          aliquota: number | null
+          area_construida: number | null
+          area_terreno: number | null
+          created_at: string | null
+          exercicio: number
+          fatores_aplicados: Json | null
+          fonte_calculo: string | null
+          id: string
+          imovel_id: string
+          responsavel_id: string | null
+          valor_m2_construcao: number | null
+          valor_m2_terreno: number | null
+          valor_venal_construcao: number | null
+          valor_venal_terreno: number | null
+          valor_venal_total: number
+        }
+        Insert: {
+          aliquota?: number | null
+          area_construida?: number | null
+          area_terreno?: number | null
+          created_at?: string | null
+          exercicio: number
+          fatores_aplicados?: Json | null
+          fonte_calculo?: string | null
+          id?: string
+          imovel_id: string
+          responsavel_id?: string | null
+          valor_m2_construcao?: number | null
+          valor_m2_terreno?: number | null
+          valor_venal_construcao?: number | null
+          valor_venal_terreno?: number | null
+          valor_venal_total: number
+        }
+        Update: {
+          aliquota?: number | null
+          area_construida?: number | null
+          area_terreno?: number | null
+          created_at?: string | null
+          exercicio?: number
+          fatores_aplicados?: Json | null
+          fonte_calculo?: string | null
+          id?: string
+          imovel_id?: string
+          responsavel_id?: string | null
+          valor_m2_construcao?: number | null
+          valor_m2_terreno?: number | null
+          valor_venal_construcao?: number | null
+          valor_venal_terreno?: number | null
+          valor_venal_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_valores_venais_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imoveis: {
         Row: {
           aliquota_iptu: number | null
+          ano_construcao: number | null
           area_construida: number | null
           area_terreno: number | null
           bairro: string
@@ -3663,10 +4156,18 @@ export type Database = {
           contribuinte_id: string | null
           created_at: string | null
           data_cadastro: string | null
+          data_isencao_fim: string | null
+          data_isencao_inicio: string | null
+          data_ultima_avaliacao: string | null
           distrito: string | null
+          estado_conservacao: string | null
+          frente_logradouro: number | null
           id: string
+          imune: boolean | null
           inscricao_imobiliaria: string
+          isento: boolean | null
           latitude: number | null
+          lei_isencao: string | null
           logradouro: string
           longitude: number | null
           lote: string | null
@@ -3674,13 +4175,19 @@ export type Database = {
           motivo_isencao: string | null
           municipio_id: string | null
           numero: string | null
+          observacoes: string | null
+          padrao_construtivo_id: string | null
           profundidade: number | null
           quadra: string | null
+          responsavel_tributario_id: string | null
           secretaria_id: string | null
           setor: string | null
+          situacao_terreno: string | null
           status: Database["public"]["Enums"]["status_imovel"] | null
           testada: number | null
+          tipo_imovel: Database["public"]["Enums"]["tipo_imovel"] | null
           tipo_uso: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          topografia: string | null
           updated_at: string | null
           valor_venal_construcao: number | null
           valor_venal_terreno: number | null
@@ -3688,6 +4195,7 @@ export type Database = {
         }
         Insert: {
           aliquota_iptu?: number | null
+          ano_construcao?: number | null
           area_construida?: number | null
           area_terreno?: number | null
           bairro: string
@@ -3696,10 +4204,18 @@ export type Database = {
           contribuinte_id?: string | null
           created_at?: string | null
           data_cadastro?: string | null
+          data_isencao_fim?: string | null
+          data_isencao_inicio?: string | null
+          data_ultima_avaliacao?: string | null
           distrito?: string | null
+          estado_conservacao?: string | null
+          frente_logradouro?: number | null
           id?: string
+          imune?: boolean | null
           inscricao_imobiliaria: string
+          isento?: boolean | null
           latitude?: number | null
+          lei_isencao?: string | null
           logradouro: string
           longitude?: number | null
           lote?: string | null
@@ -3707,13 +4223,19 @@ export type Database = {
           motivo_isencao?: string | null
           municipio_id?: string | null
           numero?: string | null
+          observacoes?: string | null
+          padrao_construtivo_id?: string | null
           profundidade?: number | null
           quadra?: string | null
+          responsavel_tributario_id?: string | null
           secretaria_id?: string | null
           setor?: string | null
+          situacao_terreno?: string | null
           status?: Database["public"]["Enums"]["status_imovel"] | null
           testada?: number | null
+          tipo_imovel?: Database["public"]["Enums"]["tipo_imovel"] | null
           tipo_uso?: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          topografia?: string | null
           updated_at?: string | null
           valor_venal_construcao?: number | null
           valor_venal_terreno?: number | null
@@ -3721,6 +4243,7 @@ export type Database = {
         }
         Update: {
           aliquota_iptu?: number | null
+          ano_construcao?: number | null
           area_construida?: number | null
           area_terreno?: number | null
           bairro?: string
@@ -3729,10 +4252,18 @@ export type Database = {
           contribuinte_id?: string | null
           created_at?: string | null
           data_cadastro?: string | null
+          data_isencao_fim?: string | null
+          data_isencao_inicio?: string | null
+          data_ultima_avaliacao?: string | null
           distrito?: string | null
+          estado_conservacao?: string | null
+          frente_logradouro?: number | null
           id?: string
+          imune?: boolean | null
           inscricao_imobiliaria?: string
+          isento?: boolean | null
           latitude?: number | null
+          lei_isencao?: string | null
           logradouro?: string
           longitude?: number | null
           lote?: string | null
@@ -3740,13 +4271,19 @@ export type Database = {
           motivo_isencao?: string | null
           municipio_id?: string | null
           numero?: string | null
+          observacoes?: string | null
+          padrao_construtivo_id?: string | null
           profundidade?: number | null
           quadra?: string | null
+          responsavel_tributario_id?: string | null
           secretaria_id?: string | null
           setor?: string | null
+          situacao_terreno?: string | null
           status?: Database["public"]["Enums"]["status_imovel"] | null
           testada?: number | null
+          tipo_imovel?: Database["public"]["Enums"]["tipo_imovel"] | null
           tipo_uso?: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          topografia?: string | null
           updated_at?: string | null
           valor_venal_construcao?: number | null
           valor_venal_terreno?: number | null
@@ -3765,6 +4302,20 @@ export type Database = {
             columns: ["municipio_id"]
             isOneToOne: false
             referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imoveis_padrao_construtivo_id_fkey"
+            columns: ["padrao_construtivo_id"]
+            isOneToOne: false
+            referencedRelation: "padroes_construtivos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imoveis_responsavel_tributario_id_fkey"
+            columns: ["responsavel_tributario_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
             referencedColumns: ["id"]
           },
           {
@@ -3835,57 +4386,81 @@ export type Database = {
       iptu_lancamentos: {
         Row: {
           aliquota: number
+          bloqueado: boolean | null
           contribuinte_id: string | null
           created_at: string | null
+          data_bloqueio: string | null
           data_lancamento: string | null
           data_vencimento_cota_unica: string | null
           desconto_cota_unica: number | null
           exercicio: number
           id: string
           imovel_id: string
+          isencao_percentual: number | null
+          lote_lancamento_id: string | null
           numero_parcelas: number | null
           status: Database["public"]["Enums"]["status_debito"] | null
+          taxa_expediente: number | null
+          taxa_iluminacao: number | null
+          taxa_limpeza: number | null
           updated_at: string | null
           valor_cota_unica: number | null
           valor_iptu: number
+          valor_isento: number | null
           valor_taxas: number | null
           valor_total: number
           valor_venal: number
         }
         Insert: {
           aliquota: number
+          bloqueado?: boolean | null
           contribuinte_id?: string | null
           created_at?: string | null
+          data_bloqueio?: string | null
           data_lancamento?: string | null
           data_vencimento_cota_unica?: string | null
           desconto_cota_unica?: number | null
           exercicio: number
           id?: string
           imovel_id: string
+          isencao_percentual?: number | null
+          lote_lancamento_id?: string | null
           numero_parcelas?: number | null
           status?: Database["public"]["Enums"]["status_debito"] | null
+          taxa_expediente?: number | null
+          taxa_iluminacao?: number | null
+          taxa_limpeza?: number | null
           updated_at?: string | null
           valor_cota_unica?: number | null
           valor_iptu: number
+          valor_isento?: number | null
           valor_taxas?: number | null
           valor_total: number
           valor_venal: number
         }
         Update: {
           aliquota?: number
+          bloqueado?: boolean | null
           contribuinte_id?: string | null
           created_at?: string | null
+          data_bloqueio?: string | null
           data_lancamento?: string | null
           data_vencimento_cota_unica?: string | null
           desconto_cota_unica?: number | null
           exercicio?: number
           id?: string
           imovel_id?: string
+          isencao_percentual?: number | null
+          lote_lancamento_id?: string | null
           numero_parcelas?: number | null
           status?: Database["public"]["Enums"]["status_debito"] | null
+          taxa_expediente?: number | null
+          taxa_iluminacao?: number | null
+          taxa_limpeza?: number | null
           updated_at?: string | null
           valor_cota_unica?: number | null
           valor_iptu?: number
+          valor_isento?: number | null
           valor_taxas?: number | null
           valor_total?: number
           valor_venal?: number
@@ -3905,19 +4480,34 @@ export type Database = {
             referencedRelation: "imoveis"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "iptu_lancamentos_lote_lancamento_id_fkey"
+            columns: ["lote_lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "lotes_lancamento_iptu"
+            referencedColumns: ["id"]
+          },
         ]
       }
       iptu_parcelas: {
         Row: {
           codigo_barras: string | null
+          correcao: number | null
           created_at: string | null
           data_pagamento: string | null
           data_vencimento: string
+          divida_ativa_id: string | null
           forma_pagamento: Database["public"]["Enums"]["forma_pagamento"] | null
+          honorarios: number | null
           id: string
+          inscrito_divida_ativa: boolean | null
+          juros: number | null
           lancamento_id: string
+          linha_digitavel: string | null
+          multa: number | null
           numero_parcela: number
           pix_copia_cola: string | null
+          qrcode_pix: string | null
           status: Database["public"]["Enums"]["status_debito"] | null
           updated_at: string | null
           valor: number
@@ -3929,16 +4519,24 @@ export type Database = {
         }
         Insert: {
           codigo_barras?: string | null
+          correcao?: number | null
           created_at?: string | null
           data_pagamento?: string | null
           data_vencimento: string
+          divida_ativa_id?: string | null
           forma_pagamento?:
             | Database["public"]["Enums"]["forma_pagamento"]
             | null
+          honorarios?: number | null
           id?: string
+          inscrito_divida_ativa?: boolean | null
+          juros?: number | null
           lancamento_id: string
+          linha_digitavel?: string | null
+          multa?: number | null
           numero_parcela: number
           pix_copia_cola?: string | null
+          qrcode_pix?: string | null
           status?: Database["public"]["Enums"]["status_debito"] | null
           updated_at?: string | null
           valor: number
@@ -3950,16 +4548,24 @@ export type Database = {
         }
         Update: {
           codigo_barras?: string | null
+          correcao?: number | null
           created_at?: string | null
           data_pagamento?: string | null
           data_vencimento?: string
+          divida_ativa_id?: string | null
           forma_pagamento?:
             | Database["public"]["Enums"]["forma_pagamento"]
             | null
+          honorarios?: number | null
           id?: string
+          inscrito_divida_ativa?: boolean | null
+          juros?: number | null
           lancamento_id?: string
+          linha_digitavel?: string | null
+          multa?: number | null
           numero_parcela?: number
           pix_copia_cola?: string | null
+          qrcode_pix?: string | null
           status?: Database["public"]["Enums"]["status_debito"] | null
           updated_at?: string | null
           valor?: number
@@ -3970,6 +4576,13 @@ export type Database = {
           valor_total_pago?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "iptu_parcelas_divida_ativa_id_fkey"
+            columns: ["divida_ativa_id"]
+            isOneToOne: false
+            referencedRelation: "divida_ativa"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "iptu_parcelas_lancamento_id_fkey"
             columns: ["lancamento_id"]
@@ -4588,6 +5201,66 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      lotes_lancamento_iptu: {
+        Row: {
+          created_at: string | null
+          data_geracao: string | null
+          erros: Json | null
+          exercicio: number
+          id: string
+          municipio_id: string | null
+          numero_lote: number
+          secretaria_id: string | null
+          status: string | null
+          total_imoveis: number | null
+          total_lancado: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_geracao?: string | null
+          erros?: Json | null
+          exercicio: number
+          id?: string
+          municipio_id?: string | null
+          numero_lote: number
+          secretaria_id?: string | null
+          status?: string | null
+          total_imoveis?: number | null
+          total_lancado?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_geracao?: string | null
+          erros?: Json | null
+          exercicio?: number
+          id?: string
+          municipio_id?: string | null
+          numero_lote?: number
+          secretaria_id?: string | null
+          status?: string | null
+          total_imoveis?: number | null
+          total_lancado?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lotes_lancamento_iptu_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_lancamento_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -5339,6 +6012,63 @@ export type Database = {
         }
         Relationships: []
       }
+      padroes_construtivos: {
+        Row: {
+          ativo: boolean | null
+          caracteristicas: Json | null
+          codigo: string
+          created_at: string | null
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          padrao: Database["public"]["Enums"]["padrao_construtivo"]
+          secretaria_id: string | null
+          valor_m2_base: number | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          caracteristicas?: Json | null
+          codigo: string
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          padrao: Database["public"]["Enums"]["padrao_construtivo"]
+          secretaria_id?: string | null
+          valor_m2_base?: number | null
+        }
+        Update: {
+          ativo?: boolean | null
+          caracteristicas?: Json | null
+          codigo?: string
+          created_at?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          padrao?: Database["public"]["Enums"]["padrao_construtivo"]
+          secretaria_id?: string | null
+          valor_m2_base?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "padroes_construtivos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "padroes_construtivos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pagamentos_tributarios: {
         Row: {
           arquivo_retorno: string | null
@@ -5864,6 +6594,87 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planta_generica_valores: {
+        Row: {
+          aprovado: boolean | null
+          bairro: string
+          codigo_logradouro: string
+          created_at: string | null
+          data_aprovacao: string | null
+          exercicio: number
+          fator_infraestrutura: number | null
+          fator_localizacao: number | null
+          id: string
+          lei_regulamentacao: string | null
+          logradouro: string
+          municipio_id: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          setor: string | null
+          updated_at: string | null
+          valor_m2_construcao: number | null
+          valor_m2_terreno: number
+          zona_fiscal: string | null
+        }
+        Insert: {
+          aprovado?: boolean | null
+          bairro: string
+          codigo_logradouro: string
+          created_at?: string | null
+          data_aprovacao?: string | null
+          exercicio: number
+          fator_infraestrutura?: number | null
+          fator_localizacao?: number | null
+          id?: string
+          lei_regulamentacao?: string | null
+          logradouro: string
+          municipio_id?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          setor?: string | null
+          updated_at?: string | null
+          valor_m2_construcao?: number | null
+          valor_m2_terreno: number
+          zona_fiscal?: string | null
+        }
+        Update: {
+          aprovado?: boolean | null
+          bairro?: string
+          codigo_logradouro?: string
+          created_at?: string | null
+          data_aprovacao?: string | null
+          exercicio?: number
+          fator_infraestrutura?: number | null
+          fator_localizacao?: number | null
+          id?: string
+          lei_regulamentacao?: string | null
+          logradouro?: string
+          municipio_id?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          setor?: string | null
+          updated_at?: string | null
+          valor_m2_construcao?: number | null
+          valor_m2_terreno?: number
+          zona_fiscal?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planta_generica_valores_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planta_generica_valores_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -7137,6 +7948,126 @@ export type Database = {
             columns: ["liquidacao_id"]
             isOneToOne: false
             referencedRelation: "liquidacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revisoes_iptu: {
+        Row: {
+          analista_id: string | null
+          contribuinte_id: string | null
+          created_at: string | null
+          data_analise: string | null
+          data_decisao: string | null
+          data_solicitacao: string
+          decisao: string | null
+          decisor_id: string | null
+          documentos: Json | null
+          exercicio: number
+          fundamentacao: string | null
+          id: string
+          imovel_id: string
+          lancamento_id: string | null
+          motivo: string
+          municipio_id: string | null
+          parecer: string | null
+          protocolo: string
+          recurso: boolean | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_revisao"] | null
+          tipo: Database["public"]["Enums"]["tipo_revisao_iptu"]
+          updated_at: string | null
+          valor_atual: number | null
+          valor_pleiteado: number | null
+        }
+        Insert: {
+          analista_id?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_analise?: string | null
+          data_decisao?: string | null
+          data_solicitacao?: string
+          decisao?: string | null
+          decisor_id?: string | null
+          documentos?: Json | null
+          exercicio: number
+          fundamentacao?: string | null
+          id?: string
+          imovel_id: string
+          lancamento_id?: string | null
+          motivo: string
+          municipio_id?: string | null
+          parecer?: string | null
+          protocolo: string
+          recurso?: boolean | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_revisao"] | null
+          tipo: Database["public"]["Enums"]["tipo_revisao_iptu"]
+          updated_at?: string | null
+          valor_atual?: number | null
+          valor_pleiteado?: number | null
+        }
+        Update: {
+          analista_id?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_analise?: string | null
+          data_decisao?: string | null
+          data_solicitacao?: string
+          decisao?: string | null
+          decisor_id?: string | null
+          documentos?: Json | null
+          exercicio?: number
+          fundamentacao?: string | null
+          id?: string
+          imovel_id?: string
+          lancamento_id?: string | null
+          motivo?: string
+          municipio_id?: string | null
+          parecer?: string | null
+          protocolo?: string
+          recurso?: boolean | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_revisao"] | null
+          tipo?: Database["public"]["Enums"]["tipo_revisao_iptu"]
+          updated_at?: string | null
+          valor_atual?: number | null
+          valor_pleiteado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revisoes_iptu_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revisoes_iptu_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revisoes_iptu_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "iptu_lancamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revisoes_iptu_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "revisoes_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -8460,6 +9391,13 @@ export type Database = {
         | "enfermeiro"
         | "recepcionista"
         | "agente_saude"
+      padrao_construtivo:
+        | "luxo"
+        | "alto"
+        | "medio"
+        | "baixo"
+        | "popular"
+        | "precario"
       papel_sistemico:
         | "admin_municipal"
         | "secretario"
@@ -8542,6 +9480,12 @@ export type Database = {
         | "acordo"
         | "extinto"
       status_resto_pagar: "inscrito" | "pago" | "cancelado" | "prescrito"
+      status_revisao:
+        | "pendente"
+        | "em_analise"
+        | "deferida"
+        | "indeferida"
+        | "cancelada"
       status_solicitacao:
         | "rascunho"
         | "enviada"
@@ -8579,6 +9523,7 @@ export type Database = {
         | "outros"
       tipo_fiscalizacao: "programada" | "denuncia" | "oficio" | "revisao"
       tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
+      tipo_imovel: "urbano" | "rural" | "edificado" | "terreno"
       tipo_incidencia:
         | "inss"
         | "irrf"
@@ -8615,6 +9560,13 @@ export type Database = {
         | "retorno_intervalo"
         | "saida"
       tipo_resto_pagar: "processado" | "nao_processado"
+      tipo_revisao_iptu:
+        | "valor_venal"
+        | "aliquota"
+        | "isencao"
+        | "imunidade"
+        | "area"
+        | "uso"
       tipo_tributo:
         | "iptu"
         | "iss"
@@ -8801,6 +9753,14 @@ export const Constants = {
         "recepcionista",
         "agente_saude",
       ],
+      padrao_construtivo: [
+        "luxo",
+        "alto",
+        "medio",
+        "baixo",
+        "popular",
+        "precario",
+      ],
       papel_sistemico: [
         "admin_municipal",
         "secretario",
@@ -8888,6 +9848,13 @@ export const Constants = {
         "extinto",
       ],
       status_resto_pagar: ["inscrito", "pago", "cancelado", "prescrito"],
+      status_revisao: [
+        "pendente",
+        "em_analise",
+        "deferida",
+        "indeferida",
+        "cancelada",
+      ],
       status_solicitacao: [
         "rascunho",
         "enviada",
@@ -8928,6 +9895,7 @@ export const Constants = {
       ],
       tipo_fiscalizacao: ["programada", "denuncia", "oficio", "revisao"],
       tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
+      tipo_imovel: ["urbano", "rural", "edificado", "terreno"],
       tipo_incidencia: [
         "inss",
         "irrf",
@@ -8969,6 +9937,14 @@ export const Constants = {
         "saida",
       ],
       tipo_resto_pagar: ["processado", "nao_processado"],
+      tipo_revisao_iptu: [
+        "valor_venal",
+        "aliquota",
+        "isencao",
+        "imunidade",
+        "area",
+        "uso",
+      ],
       tipo_tributo: [
         "iptu",
         "iss",
