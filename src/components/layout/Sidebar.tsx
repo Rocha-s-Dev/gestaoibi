@@ -35,7 +35,11 @@ import {
   GraduationCap,
   UserCog,
   Shield,
-  Landmark
+  Landmark,
+  Car,
+  Tractor,
+  Route,
+  Handshake
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -98,7 +102,22 @@ const secretariasItems = [
       { icon: FileText, label: "Gestão de Projetos e Eventos", path: "/cultura/projetos" },
       { icon: Target, label: "Programas de Incentivo", path: "/cultura/incentivos" },
       { icon: MapPin, label: "Infraestrutura Cultural", path: "/cultura/infraestrutura" },
+      { icon: Route, label: "Turismo e Roteiros", path: "/turismo-cultura" },
     ]
+  },
+  // Secretaria de Transportes e Trânsito
+  {
+    icon: Car,
+    label: "Transportes e Trânsito",
+    path: "/transportes",
+    submenu: []
+  },
+  // Secretaria de Agricultura
+  {
+    icon: Tractor,
+    label: "Agricultura",
+    path: "/agricultura",
+    submenu: []
   },
   // Secretaria Municipal de Infraestrutura e Serviços Públicos
   {
