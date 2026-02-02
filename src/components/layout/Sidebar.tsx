@@ -64,6 +64,7 @@ const secretariasItems = [
     path: "/financeiro",
     submenu: [
       { icon: Landmark, label: "Gestão Financeira Pública", path: "/gestao-financeira-publica" },
+      { icon: Scale, label: "Arrecadação Tributária", path: "/arrecadacao-tributaria" },
       { icon: FileText, label: "Relatórios Financeiros", path: "/financeiro/relatorios" },
       { icon: CalendarClock, label: "Pagamentos de Contratos", path: "/contratos/pagamentos" },
       { icon: ShoppingCart, label: "Compras e Licitações", path: "/compras/licitacoes" },
