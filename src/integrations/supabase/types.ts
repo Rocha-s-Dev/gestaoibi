@@ -14,6 +14,85 @@ export type Database = {
   }
   public: {
     Tables: {
+      abastecimentos: {
+        Row: {
+          created_at: string | null
+          data_abastecimento: string
+          id: string
+          km_anterior: number | null
+          km_atual: number
+          litros: number
+          media_km_litro: number | null
+          motorista_id: string | null
+          numero_cupom: string | null
+          observacoes: string | null
+          posto: string | null
+          secretaria_id: string | null
+          tipo_combustivel: string
+          valor_litro: number
+          valor_total: number
+          veiculo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_abastecimento: string
+          id?: string
+          km_anterior?: number | null
+          km_atual: number
+          litros: number
+          media_km_litro?: number | null
+          motorista_id?: string | null
+          numero_cupom?: string | null
+          observacoes?: string | null
+          posto?: string | null
+          secretaria_id?: string | null
+          tipo_combustivel: string
+          valor_litro: number
+          valor_total: number
+          veiculo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_abastecimento?: string
+          id?: string
+          km_anterior?: number | null
+          km_atual?: number
+          litros?: number
+          media_km_litro?: number | null
+          motorista_id?: string | null
+          numero_cupom?: string | null
+          observacoes?: string | null
+          posto?: string | null
+          secretaria_id?: string | null
+          tipo_combustivel?: string
+          valor_litro?: number
+          valor_total?: number
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "abastecimentos_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "abastecimentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "abastecimentos_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agendamentos: {
         Row: {
           created_at: string
@@ -80,6 +159,75 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agentes_culturais: {
+        Row: {
+          area_atuacao: string | null
+          ativo: boolean | null
+          cpf_cnpj: string | null
+          created_at: string | null
+          curriculo: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          portfolio_url: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          tipo_agente: string
+          updated_at: string | null
+        }
+        Insert: {
+          area_atuacao?: string | null
+          ativo?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          curriculo?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          portfolio_url?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo_agente: string
+          updated_at?: string | null
+        }
+        Update: {
+          area_atuacao?: string | null
+          ativo?: boolean | null
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          curriculo?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          portfolio_url?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo_agente?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agentes_culturais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agentes_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -217,6 +365,60 @@ export type Database = {
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alertas_frota: {
+        Row: {
+          created_at: string | null
+          data_limite: string | null
+          data_resolucao: string | null
+          descricao: string
+          id: string
+          km_limite: number | null
+          resolvido: boolean | null
+          resolvido_por: string | null
+          tipo: string
+          veiculo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_limite?: string | null
+          data_resolucao?: string | null
+          descricao: string
+          id?: string
+          km_limite?: number | null
+          resolvido?: boolean | null
+          resolvido_por?: string | null
+          tipo: string
+          veiculo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_limite?: string | null
+          data_resolucao?: string | null
+          descricao?: string
+          id?: string
+          km_limite?: number | null
+          resolvido?: boolean | null
+          resolvido_por?: string | null
+          tipo?: string
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_frota_resolvido_por_fkey"
+            columns: ["resolvido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_frota_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
             referencedColumns: ["id"]
           },
         ]
@@ -727,6 +929,111 @@ export type Database = {
           },
         ]
       }
+      beneficios_rurais: {
+        Row: {
+          aprovador_id: string | null
+          created_at: string | null
+          data_aprovacao: string | null
+          data_entrega: string | null
+          data_solicitacao: string
+          descricao: string | null
+          id: string
+          observacoes: string | null
+          produtor_id: string
+          programa_id: string
+          propriedade_id: string | null
+          quantidade: number | null
+          secretaria_id: string | null
+          status: string | null
+          termo_recebimento: string | null
+          tipo_beneficio: string
+          unidade: string | null
+          updated_at: string | null
+          valor_total: number | null
+          valor_unitario: number | null
+        }
+        Insert: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_aprovacao?: string | null
+          data_entrega?: string | null
+          data_solicitacao: string
+          descricao?: string | null
+          id?: string
+          observacoes?: string | null
+          produtor_id: string
+          programa_id: string
+          propriedade_id?: string | null
+          quantidade?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          termo_recebimento?: string | null
+          tipo_beneficio: string
+          unidade?: string | null
+          updated_at?: string | null
+          valor_total?: number | null
+          valor_unitario?: number | null
+        }
+        Update: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_aprovacao?: string | null
+          data_entrega?: string | null
+          data_solicitacao?: string
+          descricao?: string | null
+          id?: string
+          observacoes?: string | null
+          produtor_id?: string
+          programa_id?: string
+          propriedade_id?: string | null
+          quantidade?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          termo_recebimento?: string | null
+          tipo_beneficio?: string
+          unidade?: string | null
+          updated_at?: string | null
+          valor_total?: number | null
+          valor_unitario?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficios_rurais_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_rurais_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "produtores_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_rurais_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas_incentivo_rural"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_rurais_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendario_escolar: {
         Row: {
           ano_letivo: number | null
@@ -767,6 +1074,92 @@ export type Database = {
             columns: ["escola_id"]
             isOneToOne: false
             referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campanhas_educativas: {
+        Row: {
+          contrato_id: string | null
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          objetivo: string | null
+          orcamento: number | null
+          publico_alvo: string | null
+          responsavel_id: string | null
+          resultados: string | null
+          secretaria_id: string | null
+          status: string | null
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          contrato_id?: string | null
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          objetivo?: string | null
+          orcamento?: number | null
+          publico_alvo?: string | null
+          responsavel_id?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          contrato_id?: string | null
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          objetivo?: string | null
+          orcamento?: number | null
+          publico_alvo?: string | null
+          responsavel_id?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanhas_educativas_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campanhas_educativas_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campanhas_educativas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campanhas_educativas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -1692,6 +2085,86 @@ export type Database = {
           },
         ]
       }
+      contratacoes_eventos: {
+        Row: {
+          autorizacao_id: string | null
+          contrato_id: string | null
+          created_at: string | null
+          data_autorizacao: string | null
+          descricao: string
+          evento_id: string
+          fornecedor_cnpj: string | null
+          fornecedor_nome: string | null
+          id: string
+          observacoes: string | null
+          secretaria_id: string | null
+          status: string | null
+          tipo_contratacao: string
+          valor: number
+        }
+        Insert: {
+          autorizacao_id?: string | null
+          contrato_id?: string | null
+          created_at?: string | null
+          data_autorizacao?: string | null
+          descricao: string
+          evento_id: string
+          fornecedor_cnpj?: string | null
+          fornecedor_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo_contratacao: string
+          valor: number
+        }
+        Update: {
+          autorizacao_id?: string | null
+          contrato_id?: string | null
+          created_at?: string | null
+          data_autorizacao?: string | null
+          descricao?: string
+          evento_id?: string
+          fornecedor_cnpj?: string | null
+          fornecedor_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo_contratacao?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratacoes_eventos_autorizacao_id_fkey"
+            columns: ["autorizacao_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratacoes_eventos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratacoes_eventos_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos_municipais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratacoes_eventos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contratos_aditivos: {
         Row: {
           contrato_id: string | null
@@ -1888,6 +2361,86 @@ export type Database = {
           },
           {
             foreignKeyName: "contribuintes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      controle_pragas_doencas: {
+        Row: {
+          area_afetada_hectares: number | null
+          created_at: string | null
+          cultura_id: string | null
+          data_identificacao: string
+          id: string
+          laudo_id: string | null
+          nivel_infestacao: string | null
+          nome_praga_doenca: string
+          produto_utilizado: string | null
+          propriedade_id: string
+          resultado: string | null
+          secretaria_id: string | null
+          tipo: string
+          tratamento_aplicado: string | null
+        }
+        Insert: {
+          area_afetada_hectares?: number | null
+          created_at?: string | null
+          cultura_id?: string | null
+          data_identificacao: string
+          id?: string
+          laudo_id?: string | null
+          nivel_infestacao?: string | null
+          nome_praga_doenca: string
+          produto_utilizado?: string | null
+          propriedade_id: string
+          resultado?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          tratamento_aplicado?: string | null
+        }
+        Update: {
+          area_afetada_hectares?: number | null
+          created_at?: string | null
+          cultura_id?: string | null
+          data_identificacao?: string
+          id?: string
+          laudo_id?: string | null
+          nivel_infestacao?: string | null
+          nome_praga_doenca?: string
+          produto_utilizado?: string | null
+          propriedade_id?: string
+          resultado?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          tratamento_aplicado?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "controle_pragas_doencas_cultura_id_fkey"
+            columns: ["cultura_id"]
+            isOneToOne: false
+            referencedRelation: "culturas_safra"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "controle_pragas_doencas_laudo_id_fkey"
+            columns: ["laudo_id"]
+            isOneToOne: false
+            referencedRelation: "laudos_tecnicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "controle_pragas_doencas_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "controle_pragas_doencas_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -2095,6 +2648,81 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      culturas_safra: {
+        Row: {
+          area_plantada_hectares: number | null
+          created_at: string | null
+          cultura: string
+          data_colheita_prevista: string | null
+          data_colheita_real: string | null
+          data_plantio: string | null
+          id: string
+          observacoes: string | null
+          producao_estimada_toneladas: number | null
+          producao_real_toneladas: number | null
+          propriedade_id: string
+          safra: string
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_cultura"]
+          updated_at: string | null
+          valor_estimado: number | null
+          valor_real: number | null
+        }
+        Insert: {
+          area_plantada_hectares?: number | null
+          created_at?: string | null
+          cultura: string
+          data_colheita_prevista?: string | null
+          data_colheita_real?: string | null
+          data_plantio?: string | null
+          id?: string
+          observacoes?: string | null
+          producao_estimada_toneladas?: number | null
+          producao_real_toneladas?: number | null
+          propriedade_id: string
+          safra: string
+          secretaria_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_cultura"]
+          updated_at?: string | null
+          valor_estimado?: number | null
+          valor_real?: number | null
+        }
+        Update: {
+          area_plantada_hectares?: number | null
+          created_at?: string | null
+          cultura?: string
+          data_colheita_prevista?: string | null
+          data_colheita_real?: string | null
+          data_plantio?: string | null
+          id?: string
+          observacoes?: string | null
+          producao_estimada_toneladas?: number | null
+          producao_real_toneladas?: number | null
+          propriedade_id?: string
+          safra?: string
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_cultura"]
+          updated_at?: string | null
+          valor_estimado?: number | null
+          valor_real?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culturas_safra_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culturas_safra_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dados_bancarios: {
         Row: {
@@ -2381,6 +3009,95 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      diarias_deslocamentos: {
+        Row: {
+          aprovador_id: string | null
+          created_at: string | null
+          data_retorno: string | null
+          data_saida: string
+          destino: string
+          id: string
+          km_retorno: number | null
+          km_saida: number | null
+          motivo: string
+          motorista_id: string
+          numero_diaria: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          status: string | null
+          updated_at: string | null
+          valor_diaria: number | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_retorno?: string | null
+          data_saida: string
+          destino: string
+          id?: string
+          km_retorno?: number | null
+          km_saida?: number | null
+          motivo: string
+          motorista_id: string
+          numero_diaria?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_diaria?: number | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_retorno?: string | null
+          data_saida?: string
+          destino?: string
+          id?: string
+          km_retorno?: number | null
+          km_saida?: number | null
+          motivo?: string
+          motorista_id?: string
+          numero_diaria?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_diaria?: number | null
+          veiculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diarias_deslocamentos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diarias_deslocamentos_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diarias_deslocamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diarias_deslocamentos_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
             referencedColumns: ["id"]
           },
         ]
@@ -2839,6 +3556,148 @@ export type Database = {
         }
         Relationships: []
       }
+      equipamentos_culturais: {
+        Row: {
+          acessibilidade: boolean | null
+          ativo: boolean | null
+          capacidade: number | null
+          created_at: string | null
+          email: string | null
+          endereco: string | null
+          horario_funcionamento: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          responsavel: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          acessibilidade?: boolean | null
+          ativo?: boolean | null
+          capacidade?: number | null
+          created_at?: string | null
+          email?: string | null
+          endereco?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          responsavel?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          acessibilidade?: boolean | null
+          ativo?: boolean | null
+          capacidade?: number | null
+          created_at?: string | null
+          email?: string | null
+          endereco?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          responsavel?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipamentos_culturais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "equipamentos_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escalas_motoristas: {
+        Row: {
+          created_at: string | null
+          data: string
+          hora_fim: string | null
+          hora_inicio: string | null
+          id: string
+          motorista_id: string
+          observacoes: string | null
+          rota: string | null
+          secretaria_id: string | null
+          turno: string | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          motorista_id: string
+          observacoes?: string | null
+          rota?: string | null
+          secretaria_id?: string | null
+          turno?: string | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          motorista_id?: string
+          observacoes?: string | null
+          rota?: string | null
+          secretaria_id?: string | null
+          turno?: string | null
+          veiculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escalas_motoristas_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escalas_motoristas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escalas_motoristas_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escolas: {
         Row: {
           capacidade: number | null
@@ -3008,6 +3867,114 @@ export type Database = {
           valor_fixo?: number | null
         }
         Relationships: []
+      }
+      eventos_municipais: {
+        Row: {
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          exercicio_id: string | null
+          id: string
+          justificativa: string | null
+          local_externo: string | null
+          local_id: string | null
+          municipio_id: string | null
+          nome: string
+          orcamento_previsto: number | null
+          orcamento_realizado: number | null
+          publico_estimado: number | null
+          publico_real: number | null
+          responsavel_id: string | null
+          resultados: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_evento"] | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio: string
+          descricao?: string | null
+          exercicio_id?: string | null
+          id?: string
+          justificativa?: string | null
+          local_externo?: string | null
+          local_id?: string | null
+          municipio_id?: string | null
+          nome: string
+          orcamento_previsto?: number | null
+          orcamento_realizado?: number | null
+          publico_estimado?: number | null
+          publico_real?: number | null
+          responsavel_id?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_evento"] | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          exercicio_id?: string | null
+          id?: string
+          justificativa?: string | null
+          local_externo?: string | null
+          local_id?: string | null
+          municipio_id?: string | null
+          nome?: string
+          orcamento_previsto?: number | null
+          orcamento_realizado?: number | null
+          publico_estimado?: number | null
+          publico_real?: number | null
+          responsavel_id?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_evento"] | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_municipais_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_municipais_local_id_fkey"
+            columns: ["local_id"]
+            isOneToOne: false
+            referencedRelation: "equipamentos_culturais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_municipais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_municipais_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_municipais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       evolucoes_tratamento: {
         Row: {
@@ -3201,6 +4168,81 @@ export type Database = {
           },
           {
             foreignKeyName: "fatores_correcao_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feiras_livres: {
+        Row: {
+          ativa: boolean | null
+          base_legal: string | null
+          capacidade_barracas: number | null
+          created_at: string | null
+          dias_funcionamento: string | null
+          endereco: string
+          horario_fim: string | null
+          horario_inicio: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          municipio_id: string | null
+          nome: string
+          responsavel: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ativa?: boolean | null
+          base_legal?: string | null
+          capacidade_barracas?: number | null
+          created_at?: string | null
+          dias_funcionamento?: string | null
+          endereco: string
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome: string
+          responsavel?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ativa?: boolean | null
+          base_legal?: string | null
+          capacidade_barracas?: number | null
+          created_at?: string | null
+          dias_funcionamento?: string | null
+          endereco?: string
+          horario_fim?: string | null
+          horario_inicio?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome?: string
+          responsavel?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feiras_livres_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feiras_livres_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -3822,6 +4864,89 @@ export type Database = {
           },
           {
             foreignKeyName: "fiscalizacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fiscalizacoes_feiras: {
+        Row: {
+          auto_infracao: string | null
+          created_at: string | null
+          data_fiscalizacao: string
+          feira_id: string
+          fiscal_id: string | null
+          id: string
+          irregularidades_encontradas: string | null
+          observacoes: string | null
+          penalidades_aplicadas: string | null
+          permissionario_id: string | null
+          prazo_regularizacao: string | null
+          resultado: string | null
+          secretaria_id: string | null
+          tipo: string
+          valor_multa: number | null
+        }
+        Insert: {
+          auto_infracao?: string | null
+          created_at?: string | null
+          data_fiscalizacao: string
+          feira_id: string
+          fiscal_id?: string | null
+          id?: string
+          irregularidades_encontradas?: string | null
+          observacoes?: string | null
+          penalidades_aplicadas?: string | null
+          permissionario_id?: string | null
+          prazo_regularizacao?: string | null
+          resultado?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          valor_multa?: number | null
+        }
+        Update: {
+          auto_infracao?: string | null
+          created_at?: string | null
+          data_fiscalizacao?: string
+          feira_id?: string
+          fiscal_id?: string | null
+          id?: string
+          irregularidades_encontradas?: string | null
+          observacoes?: string | null
+          penalidades_aplicadas?: string | null
+          permissionario_id?: string | null
+          prazo_regularizacao?: string | null
+          resultado?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          valor_multa?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscalizacoes_feiras_feira_id_fkey"
+            columns: ["feira_id"]
+            isOneToOne: false
+            referencedRelation: "feiras_livres"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_feiras_fiscal_id_fkey"
+            columns: ["fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_feiras_permissionario_id_fkey"
+            columns: ["permissionario_id"]
+            isOneToOne: false
+            referencedRelation: "permissionarios_feiras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_feiras_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -4451,6 +5576,78 @@ export type Database = {
           },
         ]
       }
+      grupos_culturais: {
+        Row: {
+          ativo: boolean | null
+          created_at: string | null
+          data_fundacao: string | null
+          email: string | null
+          endereco_sede: string | null
+          genero_artistico: string | null
+          historico: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          numero_integrantes: number | null
+          representante: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          created_at?: string | null
+          data_fundacao?: string | null
+          email?: string | null
+          endereco_sede?: string | null
+          genero_artistico?: string | null
+          historico?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          numero_integrantes?: number | null
+          representante?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          created_at?: string | null
+          data_fundacao?: string | null
+          email?: string | null
+          endereco_sede?: string | null
+          genero_artistico?: string | null
+          historico?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          numero_integrantes?: number | null
+          representante?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grupos_culturais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grupos_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guias_iss: {
         Row: {
           codigo_barras: string | null
@@ -4740,6 +5937,163 @@ export type Database = {
           },
         ]
       }
+      horarios_linhas: {
+        Row: {
+          created_at: string | null
+          dia_semana: number | null
+          horario: string
+          id: string
+          linha_id: string
+          observacoes: string | null
+          ponto_id: string | null
+          tipo_dia: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dia_semana?: number | null
+          horario: string
+          id?: string
+          linha_id: string
+          observacoes?: string | null
+          ponto_id?: string | null
+          tipo_dia?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dia_semana?: number | null
+          horario?: string
+          id?: string
+          linha_id?: string
+          observacoes?: string | null
+          ponto_id?: string | null
+          tipo_dia?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horarios_linhas_linha_id_fkey"
+            columns: ["linha_id"]
+            isOneToOne: false
+            referencedRelation: "linhas_transporte"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horarios_linhas_ponto_id_fkey"
+            columns: ["ponto_id"]
+            isOneToOne: false
+            referencedRelation: "pontos_parada"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      horas_maquina: {
+        Row: {
+          area_trabalhada_hectares: number | null
+          created_at: string | null
+          data_servico: string
+          hora_fim: string | null
+          hora_inicio: string | null
+          horas_trabalhadas: number
+          id: string
+          observacoes: string | null
+          operador_id: string | null
+          percentual_subsidio: number | null
+          produtor_id: string
+          programa_id: string | null
+          propriedade_id: string
+          secretaria_id: string | null
+          subsidiado: boolean | null
+          tipo_servico: string
+          valor_hora: number | null
+          valor_total: number | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          area_trabalhada_hectares?: number | null
+          created_at?: string | null
+          data_servico: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          horas_trabalhadas: number
+          id?: string
+          observacoes?: string | null
+          operador_id?: string | null
+          percentual_subsidio?: number | null
+          produtor_id: string
+          programa_id?: string | null
+          propriedade_id: string
+          secretaria_id?: string | null
+          subsidiado?: boolean | null
+          tipo_servico: string
+          valor_hora?: number | null
+          valor_total?: number | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          area_trabalhada_hectares?: number | null
+          created_at?: string | null
+          data_servico?: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          horas_trabalhadas?: number
+          id?: string
+          observacoes?: string | null
+          operador_id?: string | null
+          percentual_subsidio?: number | null
+          produtor_id?: string
+          programa_id?: string | null
+          propriedade_id?: string
+          secretaria_id?: string | null
+          subsidiado?: boolean | null
+          tipo_servico?: string
+          valor_hora?: number | null
+          valor_total?: number | null
+          veiculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horas_maquina_operador_id_fkey"
+            columns: ["operador_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "produtores_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas_incentivo_rural"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imoveis: {
         Row: {
           aliquota_iptu: number | null
@@ -4975,6 +6329,85 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      indicadores_turismo: {
+        Row: {
+          ano: number
+          created_at: string | null
+          eventos_realizados: number | null
+          exercicio_id: string | null
+          fonte_dados: string | null
+          id: string
+          mes: number
+          municipio_id: string | null
+          observacoes: string | null
+          ocupacao_hoteleira_percentual: number | null
+          pernoites_estimados: number | null
+          receita_estimada: number | null
+          secretaria_id: string | null
+          visitantes_estimados: number | null
+          visitantes_internacionais: number | null
+          visitantes_nacionais: number | null
+        }
+        Insert: {
+          ano: number
+          created_at?: string | null
+          eventos_realizados?: number | null
+          exercicio_id?: string | null
+          fonte_dados?: string | null
+          id?: string
+          mes: number
+          municipio_id?: string | null
+          observacoes?: string | null
+          ocupacao_hoteleira_percentual?: number | null
+          pernoites_estimados?: number | null
+          receita_estimada?: number | null
+          secretaria_id?: string | null
+          visitantes_estimados?: number | null
+          visitantes_internacionais?: number | null
+          visitantes_nacionais?: number | null
+        }
+        Update: {
+          ano?: number
+          created_at?: string | null
+          eventos_realizados?: number | null
+          exercicio_id?: string | null
+          fonte_dados?: string | null
+          id?: string
+          mes?: number
+          municipio_id?: string | null
+          observacoes?: string | null
+          ocupacao_hoteleira_percentual?: number | null
+          pernoites_estimados?: number | null
+          receita_estimada?: number | null
+          secretaria_id?: string | null
+          visitantes_estimados?: number | null
+          visitantes_internacionais?: number | null
+          visitantes_nacionais?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indicadores_turismo_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "indicadores_turismo_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "indicadores_turismo_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -5498,6 +6931,86 @@ export type Database = {
           },
         ]
       }
+      laudos_tecnicos: {
+        Row: {
+          arquivo_pdf: string | null
+          created_at: string | null
+          cultura: string | null
+          diagnostico: string
+          id: string
+          numero: string
+          prazo_atendimento: string | null
+          propriedade_id: string
+          recomendacoes: string | null
+          secretaria_id: string | null
+          status: string | null
+          tecnico_id: string | null
+          tipo: string
+          visita_id: string | null
+        }
+        Insert: {
+          arquivo_pdf?: string | null
+          created_at?: string | null
+          cultura?: string | null
+          diagnostico: string
+          id?: string
+          numero: string
+          prazo_atendimento?: string | null
+          propriedade_id: string
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tecnico_id?: string | null
+          tipo: string
+          visita_id?: string | null
+        }
+        Update: {
+          arquivo_pdf?: string | null
+          created_at?: string | null
+          cultura?: string | null
+          diagnostico?: string
+          id?: string
+          numero?: string
+          prazo_atendimento?: string | null
+          propriedade_id?: string
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tecnico_id?: string | null
+          tipo?: string
+          visita_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "laudos_tecnicos_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laudos_tecnicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laudos_tecnicos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laudos_tecnicos_visita_id_fkey"
+            columns: ["visita_id"]
+            isOneToOne: false
+            referencedRelation: "visitas_tecnicas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ldo: {
         Row: {
           created_at: string | null
@@ -5669,6 +7182,82 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      linhas_transporte: {
+        Row: {
+          ativa: boolean | null
+          codigo: string
+          contrato_id: string | null
+          created_at: string | null
+          empresa_operadora: string | null
+          extensao_km: number | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          secretaria_id: string | null
+          tarifa_atual: number | null
+          tempo_estimado_minutos: number | null
+          tipo: Database["public"]["Enums"]["tipo_linha_transporte"]
+          updated_at: string | null
+        }
+        Insert: {
+          ativa?: boolean | null
+          codigo: string
+          contrato_id?: string | null
+          created_at?: string | null
+          empresa_operadora?: string | null
+          extensao_km?: number | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tarifa_atual?: number | null
+          tempo_estimado_minutos?: number | null
+          tipo: Database["public"]["Enums"]["tipo_linha_transporte"]
+          updated_at?: string | null
+        }
+        Update: {
+          ativa?: boolean | null
+          codigo?: string
+          contrato_id?: string | null
+          created_at?: string | null
+          empresa_operadora?: string | null
+          extensao_km?: number | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tarifa_atual?: number | null
+          tempo_estimado_minutos?: number | null
+          tipo?: Database["public"]["Enums"]["tipo_linha_transporte"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "linhas_transporte_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linhas_transporte_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "linhas_transporte_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -5999,6 +7588,84 @@ export type Database = {
           },
         ]
       }
+      manutencoes_veiculos: {
+        Row: {
+          created_at: string | null
+          data_entrada: string
+          data_saida: string | null
+          descricao: string
+          fornecedor_cnpj: string | null
+          fornecedor_nome: string | null
+          garantia_dias: number | null
+          id: string
+          km_realizacao: number | null
+          numero_nota_fiscal: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at: string | null
+          valor_mao_obra: number | null
+          valor_pecas: number | null
+          valor_total: number | null
+          veiculo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_entrada: string
+          data_saida?: string | null
+          descricao: string
+          fornecedor_cnpj?: string | null
+          fornecedor_nome?: string | null
+          garantia_dias?: number | null
+          id?: string
+          km_realizacao?: number | null
+          numero_nota_fiscal?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at?: string | null
+          valor_mao_obra?: number | null
+          valor_pecas?: number | null
+          valor_total?: number | null
+          veiculo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_entrada?: string
+          data_saida?: string | null
+          descricao?: string
+          fornecedor_cnpj?: string | null
+          fornecedor_nome?: string | null
+          garantia_dias?: number | null
+          id?: string
+          km_realizacao?: number | null
+          numero_nota_fiscal?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at?: string | null
+          valor_mao_obra?: number | null
+          valor_pecas?: number | null
+          valor_total?: number | null
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manutencoes_veiculos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manutencoes_veiculos_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           attachment: Json | null
@@ -6170,6 +7837,156 @@ export type Database = {
           rota_base?: string | null
         }
         Relationships: []
+      }
+      motoristas: {
+        Row: {
+          ativo: boolean | null
+          cnh_categoria: string
+          cnh_numero: string
+          cnh_pontos: number | null
+          cnh_validade: string
+          cpf: string | null
+          created_at: string | null
+          data_admissao: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          updated_at: string | null
+          user_id: string | null
+          vinculo_id: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          cnh_categoria: string
+          cnh_numero: string
+          cnh_pontos?: number | null
+          cnh_validade: string
+          cpf?: string | null
+          created_at?: string | null
+          data_admissao?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          vinculo_id?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          cnh_categoria?: string
+          cnh_numero?: string
+          cnh_pontos?: number | null
+          cnh_validade?: string
+          cpf?: string | null
+          created_at?: string | null
+          data_admissao?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          vinculo_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "motoristas_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      motoristas_veiculos: {
+        Row: {
+          autorizado_por: string | null
+          created_at: string | null
+          data_autorizacao: string | null
+          data_revogacao: string | null
+          id: string
+          motorista_id: string
+          observacoes: string | null
+          veiculo_id: string
+        }
+        Insert: {
+          autorizado_por?: string | null
+          created_at?: string | null
+          data_autorizacao?: string | null
+          data_revogacao?: string | null
+          id?: string
+          motorista_id: string
+          observacoes?: string | null
+          veiculo_id: string
+        }
+        Update: {
+          autorizado_por?: string | null
+          created_at?: string | null
+          data_autorizacao?: string | null
+          data_revogacao?: string | null
+          id?: string
+          motorista_id?: string
+          observacoes?: string | null
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "motoristas_veiculos_autorizado_por_fkey"
+            columns: ["autorizado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_veiculos_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_veiculos_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       movimentacoes_bancarias: {
         Row: {
@@ -6677,6 +8494,81 @@ export type Database = {
         }
         Relationships: []
       }
+      ocorrencias_transito: {
+        Row: {
+          agente_responsavel: string | null
+          boletim_ocorrencia: string | null
+          created_at: string | null
+          data_ocorrencia: string
+          descricao: string | null
+          id: string
+          latitude: number | null
+          localizacao: string
+          longitude: number | null
+          municipio_id: string | null
+          numero: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          tipo: string
+          veiculos_envolvidos: number | null
+          vitimas: number | null
+          vitimas_fatais: number | null
+        }
+        Insert: {
+          agente_responsavel?: string | null
+          boletim_ocorrencia?: string | null
+          created_at?: string | null
+          data_ocorrencia: string
+          descricao?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao: string
+          longitude?: number | null
+          municipio_id?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          veiculos_envolvidos?: number | null
+          vitimas?: number | null
+          vitimas_fatais?: number | null
+        }
+        Update: {
+          agente_responsavel?: string | null
+          boletim_ocorrencia?: string | null
+          created_at?: string | null
+          data_ocorrencia?: string
+          descricao?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string
+          longitude?: number | null
+          municipio_id?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          veiculos_envolvidos?: number | null
+          vitimas?: number | null
+          vitimas_fatais?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocorrencias_transito_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ocorrencias_transito_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ordens_pagamento: {
         Row: {
           autorizado_por: string | null
@@ -6749,6 +8641,108 @@ export type Database = {
             columns: ["liquidacao_id"]
             isOneToOne: false
             referencedRelation: "liquidacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ordens_servico_frota: {
+        Row: {
+          created_at: string | null
+          data_abertura: string | null
+          data_fechamento: string | null
+          descricao_problema: string
+          diagnostico: string | null
+          id: string
+          km_abertura: number | null
+          manutencao_id: string | null
+          numero: string
+          observacoes: string | null
+          prioridade: string | null
+          responsavel_id: string | null
+          secretaria_id: string | null
+          solicitante_id: string | null
+          solucao_aplicada: string | null
+          status: Database["public"]["Enums"]["status_ordem_servico"] | null
+          tipo: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at: string | null
+          veiculo_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_abertura?: string | null
+          data_fechamento?: string | null
+          descricao_problema: string
+          diagnostico?: string | null
+          id?: string
+          km_abertura?: number | null
+          manutencao_id?: string | null
+          numero: string
+          observacoes?: string | null
+          prioridade?: string | null
+          responsavel_id?: string | null
+          secretaria_id?: string | null
+          solicitante_id?: string | null
+          solucao_aplicada?: string | null
+          status?: Database["public"]["Enums"]["status_ordem_servico"] | null
+          tipo: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at?: string | null
+          veiculo_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_abertura?: string | null
+          data_fechamento?: string | null
+          descricao_problema?: string
+          diagnostico?: string | null
+          id?: string
+          km_abertura?: number | null
+          manutencao_id?: string | null
+          numero?: string
+          observacoes?: string | null
+          prioridade?: string | null
+          responsavel_id?: string | null
+          secretaria_id?: string | null
+          solicitante_id?: string | null
+          solucao_aplicada?: string | null
+          status?: Database["public"]["Enums"]["status_ordem_servico"] | null
+          tipo?: Database["public"]["Enums"]["tipo_manutencao"]
+          updated_at?: string | null
+          veiculo_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ordens_servico_frota_manutencao_id_fkey"
+            columns: ["manutencao_id"]
+            isOneToOne: false
+            referencedRelation: "manutencoes_veiculos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_frota_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_frota_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_frota_solicitante_id_fkey"
+            columns: ["solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_frota_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
             referencedColumns: ["id"]
           },
         ]
@@ -7045,6 +9039,93 @@ export type Database = {
           },
         ]
       }
+      parceiros_turismo: {
+        Row: {
+          ativo: boolean | null
+          capacidade: number | null
+          certificacoes: string | null
+          classificacao: string | null
+          cnpj: string | null
+          convenio: boolean | null
+          created_at: string | null
+          desconto_percentual: number | null
+          descricao: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          municipio_id: string | null
+          nome: string
+          secretaria_id: string | null
+          telefone: string | null
+          tipo: Database["public"]["Enums"]["tipo_parceiro_turismo"]
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          capacidade?: number | null
+          certificacoes?: string | null
+          classificacao?: string | null
+          cnpj?: string | null
+          convenio?: boolean | null
+          created_at?: string | null
+          desconto_percentual?: number | null
+          descricao?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome: string
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo: Database["public"]["Enums"]["tipo_parceiro_turismo"]
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          capacidade?: number | null
+          certificacoes?: string | null
+          classificacao?: string | null
+          cnpj?: string | null
+          convenio?: boolean | null
+          created_at?: string | null
+          desconto_percentual?: number | null
+          descricao?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome?: string
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_parceiro_turismo"]
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parceiros_turismo_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parceiros_turismo_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       parcelamento_parcelas: {
         Row: {
           codigo_barras: string | null
@@ -7282,6 +9363,88 @@ export type Database = {
             columns: ["exercicio_id"]
             isOneToOne: false
             referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      permissionarios_feiras: {
+        Row: {
+          alvara_numero: string | null
+          alvara_validade: string | null
+          ativo: boolean | null
+          cpf_cnpj: string
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          feira_id: string
+          id: string
+          nome: string
+          numero_barraca: string | null
+          observacoes: string | null
+          produtor_id: string | null
+          produtos_comercializados: string | null
+          secretaria_id: string | null
+          taxa_mensal: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          alvara_numero?: string | null
+          alvara_validade?: string | null
+          ativo?: boolean | null
+          cpf_cnpj: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          feira_id: string
+          id?: string
+          nome: string
+          numero_barraca?: string | null
+          observacoes?: string | null
+          produtor_id?: string | null
+          produtos_comercializados?: string | null
+          secretaria_id?: string | null
+          taxa_mensal?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          alvara_numero?: string | null
+          alvara_validade?: string | null
+          ativo?: boolean | null
+          cpf_cnpj?: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          feira_id?: string
+          id?: string
+          nome?: string
+          numero_barraca?: string | null
+          observacoes?: string | null
+          produtor_id?: string | null
+          produtos_comercializados?: string | null
+          secretaria_id?: string | null
+          taxa_mensal?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "permissionarios_feiras_feira_id_fkey"
+            columns: ["feira_id"]
+            isOneToOne: false
+            referencedRelation: "feiras_livres"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "permissionarios_feiras_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "produtores_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "permissionarios_feiras_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -7566,6 +9729,166 @@ export type Database = {
           },
         ]
       }
+      pontos_parada: {
+        Row: {
+          acessivel: boolean | null
+          ativo: boolean | null
+          created_at: string | null
+          endereco: string | null
+          id: string
+          latitude: number | null
+          linha_id: string | null
+          longitude: number | null
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          ordem_na_linha: number | null
+          possui_abrigo: boolean | null
+          secretaria_id: string | null
+        }
+        Insert: {
+          acessivel?: boolean | null
+          ativo?: boolean | null
+          created_at?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          linha_id?: string | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          ordem_na_linha?: number | null
+          possui_abrigo?: boolean | null
+          secretaria_id?: string | null
+        }
+        Update: {
+          acessivel?: boolean | null
+          ativo?: boolean | null
+          created_at?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          linha_id?: string | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          ordem_na_linha?: number | null
+          possui_abrigo?: boolean | null
+          secretaria_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pontos_parada_linha_id_fkey"
+            columns: ["linha_id"]
+            isOneToOne: false
+            referencedRelation: "linhas_transporte"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_parada_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_parada_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pontos_turisticos: {
+        Row: {
+          acessibilidade: boolean | null
+          ativo: boolean | null
+          contato_telefone: string | null
+          created_at: string | null
+          descricao: string | null
+          endereco: string | null
+          foto_principal_url: string | null
+          gratuito: boolean | null
+          historico: string | null
+          horario_funcionamento: string | null
+          id: string
+          infraestrutura: string | null
+          latitude: number | null
+          longitude: number | null
+          municipio_id: string | null
+          nome: string
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_ponto_turistico"]
+          updated_at: string | null
+          valor_entrada: number | null
+          website: string | null
+        }
+        Insert: {
+          acessibilidade?: boolean | null
+          ativo?: boolean | null
+          contato_telefone?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          endereco?: string | null
+          foto_principal_url?: string | null
+          gratuito?: boolean | null
+          historico?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          infraestrutura?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome: string
+          secretaria_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_ponto_turistico"]
+          updated_at?: string | null
+          valor_entrada?: number | null
+          website?: string | null
+        }
+        Update: {
+          acessibilidade?: boolean | null
+          ativo?: boolean | null
+          contato_telefone?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          endereco?: string | null
+          foto_principal_url?: string | null
+          gratuito?: boolean | null
+          historico?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          infraestrutura?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          municipio_id?: string | null
+          nome?: string
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_ponto_turistico"]
+          updated_at?: string | null
+          valor_entrada?: number | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pontos_turisticos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_turisticos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ppa: {
         Row: {
           ano_fim: number
@@ -7719,6 +10042,89 @@ export type Database = {
           },
           {
             foreignKeyName: "ppa_programas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prestacoes_contas_eventos: {
+        Row: {
+          aprovador_id: string | null
+          created_at: string | null
+          data_prestacao: string
+          dificuldades: string | null
+          evento_id: string
+          id: string
+          licoes_aprendidas: string | null
+          parecer: string | null
+          responsavel_id: string | null
+          resumo_execucao: string | null
+          saldo_devolvido: number | null
+          secretaria_id: string | null
+          status: string | null
+          updated_at: string | null
+          valor_total_gasto: number
+        }
+        Insert: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_prestacao: string
+          dificuldades?: string | null
+          evento_id: string
+          id?: string
+          licoes_aprendidas?: string | null
+          parecer?: string | null
+          responsavel_id?: string | null
+          resumo_execucao?: string | null
+          saldo_devolvido?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_total_gasto: number
+        }
+        Update: {
+          aprovador_id?: string | null
+          created_at?: string | null
+          data_prestacao?: string
+          dificuldades?: string | null
+          evento_id?: string
+          id?: string
+          licoes_aprendidas?: string | null
+          parecer?: string | null
+          responsavel_id?: string | null
+          resumo_execucao?: string | null
+          saldo_devolvido?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_total_gasto?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prestacoes_contas_eventos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prestacoes_contas_eventos_evento_id_fkey"
+            columns: ["evento_id"]
+            isOneToOne: false
+            referencedRelation: "eventos_municipais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prestacoes_contas_eventos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prestacoes_contas_eventos_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -8093,6 +10499,84 @@ export type Database = {
           },
         ]
       }
+      produtores_rurais: {
+        Row: {
+          agencia: string | null
+          ativo: boolean | null
+          banco: string | null
+          conta: string | null
+          cpf_cnpj: string
+          created_at: string | null
+          dap_numero: string | null
+          dap_validade: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          inscricao_estadual: string | null
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agencia?: string | null
+          ativo?: boolean | null
+          banco?: string | null
+          conta?: string | null
+          cpf_cnpj: string
+          created_at?: string | null
+          dap_numero?: string | null
+          dap_validade?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agencia?: string | null
+          ativo?: boolean | null
+          banco?: string | null
+          conta?: string | null
+          cpf_cnpj?: string
+          created_at?: string | null
+          dap_numero?: string | null
+          dap_validade?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          inscricao_estadual?: string | null
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtores_rurais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtores_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professores: {
         Row: {
           cpf: string | null
@@ -8328,6 +10812,88 @@ export type Database = {
           },
         ]
       }
+      programas_incentivo_rural: {
+        Row: {
+          ativo: boolean | null
+          base_legal: string | null
+          created_at: string | null
+          criterios_elegibilidade: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          documentacao_exigida: string | null
+          exercicio_id: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          orcamento_total: number | null
+          orcamento_utilizado: number | null
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_incentivo_rural"]
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          base_legal?: string | null
+          created_at?: string | null
+          criterios_elegibilidade?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          documentacao_exigida?: string | null
+          exercicio_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          orcamento_total?: number | null
+          orcamento_utilizado?: number | null
+          secretaria_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_incentivo_rural"]
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          base_legal?: string | null
+          created_at?: string | null
+          criterios_elegibilidade?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          documentacao_exigida?: string | null
+          exercicio_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          orcamento_total?: number | null
+          orcamento_utilizado?: number | null
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_incentivo_rural"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programas_incentivo_rural_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_incentivo_rural_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_incentivo_rural_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programas_refis: {
         Row: {
           ativo: boolean | null
@@ -8411,6 +10977,120 @@ export type Database = {
           },
           {
             foreignKeyName: "programas_refis_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projetos_culturais: {
+        Row: {
+          contrapartida: string | null
+          created_at: string | null
+          cronograma: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          edital_id: string | null
+          exercicio_id: string | null
+          grupo_id: string | null
+          id: string
+          justificativa: string | null
+          municipio_id: string | null
+          nota_avaliacao: number | null
+          objetivos: string | null
+          orcamento_aprovado: number | null
+          orcamento_solicitado: number | null
+          parecer: string | null
+          proponente_id: string | null
+          publico_alvo: string | null
+          secretaria_id: string | null
+          status: string | null
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          contrapartida?: string | null
+          created_at?: string | null
+          cronograma?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          edital_id?: string | null
+          exercicio_id?: string | null
+          grupo_id?: string | null
+          id?: string
+          justificativa?: string | null
+          municipio_id?: string | null
+          nota_avaliacao?: number | null
+          objetivos?: string | null
+          orcamento_aprovado?: number | null
+          orcamento_solicitado?: number | null
+          parecer?: string | null
+          proponente_id?: string | null
+          publico_alvo?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          contrapartida?: string | null
+          created_at?: string | null
+          cronograma?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          edital_id?: string | null
+          exercicio_id?: string | null
+          grupo_id?: string | null
+          id?: string
+          justificativa?: string | null
+          municipio_id?: string | null
+          nota_avaliacao?: number | null
+          objetivos?: string | null
+          orcamento_aprovado?: number | null
+          orcamento_solicitado?: number | null
+          parecer?: string | null
+          proponente_id?: string | null
+          publico_alvo?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projetos_culturais_exercicio_id_fkey"
+            columns: ["exercicio_id"]
+            isOneToOne: false
+            referencedRelation: "exercicios_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_culturais_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "grupos_culturais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_culturais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_culturais_proponente_id_fkey"
+            columns: ["proponente_id"]
+            isOneToOne: false
+            referencedRelation: "agentes_culturais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_culturais_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -8518,6 +11198,100 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      propriedades_rurais: {
+        Row: {
+          acesso: string | null
+          area_app_hectares: number | null
+          area_cultivavel_hectares: number | null
+          area_reserva_legal_hectares: number | null
+          area_total_hectares: number
+          codigo_car: string | null
+          created_at: string | null
+          id: string
+          latitude: number | null
+          localizacao: string | null
+          longitude: number | null
+          matricula_imovel: string | null
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          possui_agua_encanada: boolean | null
+          possui_energia: boolean | null
+          produtor_id: string
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_propriedade_rural"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          acesso?: string | null
+          area_app_hectares?: number | null
+          area_cultivavel_hectares?: number | null
+          area_reserva_legal_hectares?: number | null
+          area_total_hectares: number
+          codigo_car?: string | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string | null
+          longitude?: number | null
+          matricula_imovel?: string | null
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          possui_agua_encanada?: boolean | null
+          possui_energia?: boolean | null
+          produtor_id: string
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_propriedade_rural"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          acesso?: string | null
+          area_app_hectares?: number | null
+          area_cultivavel_hectares?: number | null
+          area_reserva_legal_hectares?: number | null
+          area_total_hectares?: number
+          codigo_car?: string | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string | null
+          longitude?: number | null
+          matricula_imovel?: string | null
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          possui_agua_encanada?: boolean | null
+          possui_energia?: boolean | null
+          produtor_id?: string
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_propriedade_rural"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "propriedades_rurais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propriedades_rurais_produtor_id_fkey"
+            columns: ["produtor_id"]
+            isOneToOne: false
+            referencedRelation: "produtores_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "propriedades_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -9062,6 +11836,123 @@ export type Database = {
           },
         ]
       }
+      roteiros_pontos: {
+        Row: {
+          created_at: string | null
+          id: string
+          observacoes: string | null
+          ordem: number
+          ponto_id: string
+          roteiro_id: string
+          tempo_permanencia_minutos: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem: number
+          ponto_id: string
+          roteiro_id: string
+          tempo_permanencia_minutos?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem?: number
+          ponto_id?: string
+          roteiro_id?: string
+          tempo_permanencia_minutos?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roteiros_pontos_ponto_id_fkey"
+            columns: ["ponto_id"]
+            isOneToOne: false
+            referencedRelation: "pontos_turisticos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roteiros_pontos_roteiro_id_fkey"
+            columns: ["roteiro_id"]
+            isOneToOne: false
+            referencedRelation: "roteiros_turisticos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roteiros_turisticos: {
+        Row: {
+          ativo: boolean | null
+          created_at: string | null
+          descricao: string | null
+          dificuldade: string | null
+          distancia_km: number | null
+          duracao_horas: number | null
+          id: string
+          inclui: string | null
+          melhor_epoca: string | null
+          municipio_id: string | null
+          nome: string
+          recomendacoes: string | null
+          secretaria_id: string | null
+          tipo: string
+          updated_at: string | null
+          valor_medio: number | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          created_at?: string | null
+          descricao?: string | null
+          dificuldade?: string | null
+          distancia_km?: number | null
+          duracao_horas?: number | null
+          id?: string
+          inclui?: string | null
+          melhor_epoca?: string | null
+          municipio_id?: string | null
+          nome: string
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          updated_at?: string | null
+          valor_medio?: number | null
+        }
+        Update: {
+          ativo?: boolean | null
+          created_at?: string | null
+          descricao?: string | null
+          dificuldade?: string | null
+          distancia_km?: number | null
+          duracao_horas?: number | null
+          id?: string
+          inclui?: string | null
+          melhor_epoca?: string | null
+          municipio_id?: string | null
+          nome?: string
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          updated_at?: string | null
+          valor_medio?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roteiros_turisticos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roteiros_turisticos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       secretarias: {
         Row: {
           bairro: string | null
@@ -9185,6 +12076,156 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "secretarias_historico_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      semaforos: {
+        Row: {
+          codigo: string
+          created_at: string | null
+          data_instalacao: string | null
+          estado: string | null
+          fabricante: string | null
+          id: string
+          latitude: number | null
+          localizacao: string
+          longitude: number | null
+          municipio_id: string | null
+          observacoes: string | null
+          secretaria_id: string | null
+          sincronizado: boolean | null
+          tempo_ciclo_segundos: number | null
+          tipo: string | null
+          ultima_manutencao: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          codigo: string
+          created_at?: string | null
+          data_instalacao?: string | null
+          estado?: string | null
+          fabricante?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao: string
+          longitude?: number | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          sincronizado?: boolean | null
+          tempo_ciclo_segundos?: number | null
+          tipo?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          codigo?: string
+          created_at?: string | null
+          data_instalacao?: string | null
+          estado?: string | null
+          fabricante?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string
+          longitude?: number | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          secretaria_id?: string | null
+          sincronizado?: boolean | null
+          tempo_ciclo_segundos?: number | null
+          tipo?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "semaforos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "semaforos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sinalizacao_viaria: {
+        Row: {
+          ativo: boolean | null
+          codigo: string | null
+          created_at: string | null
+          data_instalacao: string | null
+          descricao: string
+          estado_conservacao: string | null
+          id: string
+          latitude: number | null
+          localizacao: string | null
+          longitude: number | null
+          municipio_id: string | null
+          observacoes: string | null
+          proxima_manutencao: string | null
+          secretaria_id: string | null
+          tipo: Database["public"]["Enums"]["tipo_sinalizacao"]
+          ultima_manutencao: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          data_instalacao?: string | null
+          descricao: string
+          estado_conservacao?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string | null
+          longitude?: number | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          proxima_manutencao?: string | null
+          secretaria_id?: string | null
+          tipo: Database["public"]["Enums"]["tipo_sinalizacao"]
+          ultima_manutencao?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo?: string | null
+          created_at?: string | null
+          data_instalacao?: string | null
+          descricao?: string
+          estado_conservacao?: string | null
+          id?: string
+          latitude?: number | null
+          localizacao?: string | null
+          longitude?: number | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          proxima_manutencao?: string | null
+          secretaria_id?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_sinalizacao"]
+          ultima_manutencao?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sinalizacao_viaria_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sinalizacao_viaria_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -9394,6 +12435,72 @@ export type Database = {
           vigencia_inicio?: string
         }
         Relationships: []
+      }
+      tarifas_gratuidades: {
+        Row: {
+          ativa: boolean | null
+          base_legal: string | null
+          created_at: string | null
+          descricao: string | null
+          documentacao_exigida: string | null
+          id: string
+          municipio_id: string | null
+          percentual_desconto: number | null
+          secretaria_id: string | null
+          tipo: string
+          updated_at: string | null
+          valor_fixo: number | null
+          vigencia_fim: string | null
+          vigencia_inicio: string | null
+        }
+        Insert: {
+          ativa?: boolean | null
+          base_legal?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          documentacao_exigida?: string | null
+          id?: string
+          municipio_id?: string | null
+          percentual_desconto?: number | null
+          secretaria_id?: string | null
+          tipo: string
+          updated_at?: string | null
+          valor_fixo?: number | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string | null
+        }
+        Update: {
+          ativa?: boolean | null
+          base_legal?: string | null
+          created_at?: string | null
+          descricao?: string | null
+          documentacao_exigida?: string | null
+          id?: string
+          municipio_id?: string | null
+          percentual_desconto?: number | null
+          secretaria_id?: string | null
+          tipo?: string
+          updated_at?: string | null
+          valor_fixo?: number | null
+          vigencia_fim?: string | null
+          vigencia_inicio?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tarifas_gratuidades_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarifas_gratuidades_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_assignments: {
         Row: {
@@ -9990,6 +13097,118 @@ export type Database = {
           },
         ]
       }
+      veiculos_frota: {
+        Row: {
+          ano_fabricacao: number | null
+          ano_modelo: number | null
+          capacidade_tanque: number | null
+          chassi: string | null
+          combustivel: string | null
+          cor: string | null
+          created_at: string | null
+          data_aquisicao: string | null
+          data_ultima_revisao: string | null
+          data_vencimento_licenciamento: string | null
+          data_vencimento_seguro: string | null
+          hodometro_atual: number | null
+          id: string
+          km_proxima_revisao: number | null
+          marca: string | null
+          modelo: string
+          municipio_id: string | null
+          numero_patrimonio: string | null
+          observacoes: string | null
+          placa: string
+          renavam: string | null
+          secretaria_id: string | null
+          secretaria_responsavel_id: string | null
+          situacao: Database["public"]["Enums"]["situacao_veiculo"] | null
+          tipo: Database["public"]["Enums"]["tipo_veiculo"]
+          updated_at: string | null
+          valor_aquisicao: number | null
+        }
+        Insert: {
+          ano_fabricacao?: number | null
+          ano_modelo?: number | null
+          capacidade_tanque?: number | null
+          chassi?: string | null
+          combustivel?: string | null
+          cor?: string | null
+          created_at?: string | null
+          data_aquisicao?: string | null
+          data_ultima_revisao?: string | null
+          data_vencimento_licenciamento?: string | null
+          data_vencimento_seguro?: string | null
+          hodometro_atual?: number | null
+          id?: string
+          km_proxima_revisao?: number | null
+          marca?: string | null
+          modelo: string
+          municipio_id?: string | null
+          numero_patrimonio?: string | null
+          observacoes?: string | null
+          placa: string
+          renavam?: string | null
+          secretaria_id?: string | null
+          secretaria_responsavel_id?: string | null
+          situacao?: Database["public"]["Enums"]["situacao_veiculo"] | null
+          tipo: Database["public"]["Enums"]["tipo_veiculo"]
+          updated_at?: string | null
+          valor_aquisicao?: number | null
+        }
+        Update: {
+          ano_fabricacao?: number | null
+          ano_modelo?: number | null
+          capacidade_tanque?: number | null
+          chassi?: string | null
+          combustivel?: string | null
+          cor?: string | null
+          created_at?: string | null
+          data_aquisicao?: string | null
+          data_ultima_revisao?: string | null
+          data_vencimento_licenciamento?: string | null
+          data_vencimento_seguro?: string | null
+          hodometro_atual?: number | null
+          id?: string
+          km_proxima_revisao?: number | null
+          marca?: string | null
+          modelo?: string
+          municipio_id?: string | null
+          numero_patrimonio?: string | null
+          observacoes?: string | null
+          placa?: string
+          renavam?: string | null
+          secretaria_id?: string | null
+          secretaria_responsavel_id?: string | null
+          situacao?: Database["public"]["Enums"]["situacao_veiculo"] | null
+          tipo?: Database["public"]["Enums"]["tipo_veiculo"]
+          updated_at?: string | null
+          valor_aquisicao?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "veiculos_frota_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "veiculos_frota_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "veiculos_frota_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       veiculos_transporte: {
         Row: {
           ano: number | null
@@ -10148,6 +13367,76 @@ export type Database = {
           },
         ]
       }
+      visitas_tecnicas: {
+        Row: {
+          created_at: string | null
+          cultura_acompanhada: string | null
+          data_visita: string
+          descricao_atendimento: string | null
+          id: string
+          objetivo: string | null
+          propriedade_id: string
+          proxima_visita: string | null
+          recomendacoes: string | null
+          secretaria_id: string | null
+          status: string | null
+          tecnico_id: string | null
+          tipo_atendimento: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cultura_acompanhada?: string | null
+          data_visita: string
+          descricao_atendimento?: string | null
+          id?: string
+          objetivo?: string | null
+          propriedade_id: string
+          proxima_visita?: string | null
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tecnico_id?: string | null
+          tipo_atendimento?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cultura_acompanhada?: string | null
+          data_visita?: string
+          descricao_atendimento?: string | null
+          id?: string
+          objetivo?: string | null
+          propriedade_id?: string
+          proxima_visita?: string | null
+          recomendacoes?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tecnico_id?: string | null
+          tipo_atendimento?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitas_tecnicas_propriedade_id_fkey"
+            columns: ["propriedade_id"]
+            isOneToOne: false
+            referencedRelation: "propriedades_rurais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitas_tecnicas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitas_tecnicas_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -10156,6 +13445,10 @@ export type Database = {
       calcular_alteracoes: {
         Args: { estado_anterior: Json; estado_posterior: Json }
         Returns: Json
+      }
+      calcular_media_km_litro: {
+        Args: { p_veiculo_id: string }
+        Returns: number
       }
       criar_versao_entidade: {
         Args: {
@@ -10177,7 +13470,9 @@ export type Database = {
         Args: { p_declaracao_id: string }
         Returns: string
       }
+      gerar_numero_laudo_tecnico: { Args: never; Returns: string }
       gerar_numero_ordem_servico_fiscalizacao: { Args: never; Returns: string }
+      gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
@@ -10372,6 +13667,12 @@ export type Database = {
         | "servidor"
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
+      situacao_veiculo:
+        | "ativo"
+        | "manutencao"
+        | "baixado"
+        | "cedido"
+        | "alienado"
       status_convenio: "vigente" | "encerrado" | "rescindido" | "em_prestacao"
       status_debito:
         | "em_aberto"
@@ -10401,6 +13702,13 @@ export type Database = {
         | "liquidado"
         | "pago"
         | "inscrito_rap"
+      status_evento:
+        | "planejado"
+        | "aprovado"
+        | "em_execucao"
+        | "realizado"
+        | "cancelado"
+        | "adiado"
       status_fiscalizacao:
         | "agendada"
         | "em_andamento"
@@ -10415,6 +13723,12 @@ export type Database = {
       status_imovel: "ativo" | "inativo" | "isento" | "imune"
       status_iss: "ativo" | "suspenso" | "baixado" | "isento"
       status_justificativa: "pendente" | "aprovada" | "rejeitada"
+      status_ordem_servico:
+        | "aberta"
+        | "em_andamento"
+        | "aguardando_pecas"
+        | "concluida"
+        | "cancelada"
       status_parcelamento:
         | "ativo"
         | "em_dia"
@@ -10475,6 +13789,12 @@ export type Database = {
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
       tipo_contribuinte: "pessoa_fisica" | "pessoa_juridica"
       tipo_convenio: "recebido" | "concedido"
+      tipo_cultura:
+        | "temporaria"
+        | "permanente"
+        | "hortifruti"
+        | "pastagem"
+        | "florestal"
       tipo_empenho: "ordinario" | "estimativo" | "global"
       tipo_evento_folha:
         | "vencimento"
@@ -10487,6 +13807,12 @@ export type Database = {
       tipo_fiscalizacao: "programada" | "denuncia" | "oficio" | "revisao"
       tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
       tipo_imovel: "urbano" | "rural" | "edificado" | "terreno"
+      tipo_incentivo_rural:
+        | "insumos"
+        | "maquinario"
+        | "financeiro"
+        | "assistencia"
+        | "logistico"
       tipo_incidencia:
         | "inss"
         | "irrf"
@@ -10510,6 +13836,16 @@ export type Database = {
         | "interesse_particular"
         | "premio"
         | "outros"
+      tipo_linha_transporte: "urbana" | "rural" | "intermunicipal" | "escolar"
+      tipo_manutencao: "preventiva" | "corretiva" | "emergencial"
+      tipo_parceiro_turismo:
+        | "hotel"
+        | "pousada"
+        | "restaurante"
+        | "guia"
+        | "agencia"
+        | "transporte"
+        | "comercio"
       tipo_permissao:
         | "ver"
         | "criar"
@@ -10517,6 +13853,21 @@ export type Database = {
         | "excluir"
         | "aprovar"
         | "publicar"
+      tipo_ponto_turistico:
+        | "natural"
+        | "historico"
+        | "religioso"
+        | "cultural"
+        | "gastronomico"
+        | "ecoturismo"
+        | "aventura"
+      tipo_propriedade_rural:
+        | "pequena"
+        | "media"
+        | "grande"
+        | "assentamento"
+        | "quilombola"
+        | "indigena"
       tipo_registro_ponto:
         | "entrada"
         | "saida_intervalo"
@@ -10530,6 +13881,7 @@ export type Database = {
         | "imunidade"
         | "area"
         | "uso"
+      tipo_sinalizacao: "vertical" | "horizontal" | "semaforica" | "eletronica"
       tipo_tributo:
         | "iptu"
         | "iss"
@@ -10544,6 +13896,13 @@ export type Database = {
         | "industrial"
         | "misto"
         | "territorial"
+      tipo_veiculo:
+        | "leve"
+        | "pesado"
+        | "onibus"
+        | "maquina"
+        | "motocicleta"
+        | "utilitario"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -10758,6 +14117,13 @@ export const Constants = {
         "estagiario",
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
+      situacao_veiculo: [
+        "ativo",
+        "manutencao",
+        "baixado",
+        "cedido",
+        "alienado",
+      ],
       status_convenio: ["vigente", "encerrado", "rescindido", "em_prestacao"],
       status_debito: [
         "em_aberto",
@@ -10785,6 +14151,14 @@ export const Constants = {
         "cancelada",
       ],
       status_empenho: ["ativo", "anulado", "liquidado", "pago", "inscrito_rap"],
+      status_evento: [
+        "planejado",
+        "aprovado",
+        "em_execucao",
+        "realizado",
+        "cancelado",
+        "adiado",
+      ],
       status_fiscalizacao: [
         "agendada",
         "em_andamento",
@@ -10801,6 +14175,13 @@ export const Constants = {
       status_imovel: ["ativo", "inativo", "isento", "imune"],
       status_iss: ["ativo", "suspenso", "baixado", "isento"],
       status_justificativa: ["pendente", "aprovada", "rejeitada"],
+      status_ordem_servico: [
+        "aberta",
+        "em_andamento",
+        "aguardando_pecas",
+        "concluida",
+        "cancelada",
+      ],
       status_parcelamento: [
         "ativo",
         "em_dia",
@@ -10868,6 +14249,13 @@ export const Constants = {
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
       tipo_contribuinte: ["pessoa_fisica", "pessoa_juridica"],
       tipo_convenio: ["recebido", "concedido"],
+      tipo_cultura: [
+        "temporaria",
+        "permanente",
+        "hortifruti",
+        "pastagem",
+        "florestal",
+      ],
       tipo_empenho: ["ordinario", "estimativo", "global"],
       tipo_evento_folha: [
         "vencimento",
@@ -10881,6 +14269,13 @@ export const Constants = {
       tipo_fiscalizacao: ["programada", "denuncia", "oficio", "revisao"],
       tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
       tipo_imovel: ["urbano", "rural", "edificado", "terreno"],
+      tipo_incentivo_rural: [
+        "insumos",
+        "maquinario",
+        "financeiro",
+        "assistencia",
+        "logistico",
+      ],
       tipo_incidencia: [
         "inss",
         "irrf",
@@ -10907,6 +14302,17 @@ export const Constants = {
         "premio",
         "outros",
       ],
+      tipo_linha_transporte: ["urbana", "rural", "intermunicipal", "escolar"],
+      tipo_manutencao: ["preventiva", "corretiva", "emergencial"],
+      tipo_parceiro_turismo: [
+        "hotel",
+        "pousada",
+        "restaurante",
+        "guia",
+        "agencia",
+        "transporte",
+        "comercio",
+      ],
       tipo_permissao: [
         "ver",
         "criar",
@@ -10914,6 +14320,23 @@ export const Constants = {
         "excluir",
         "aprovar",
         "publicar",
+      ],
+      tipo_ponto_turistico: [
+        "natural",
+        "historico",
+        "religioso",
+        "cultural",
+        "gastronomico",
+        "ecoturismo",
+        "aventura",
+      ],
+      tipo_propriedade_rural: [
+        "pequena",
+        "media",
+        "grande",
+        "assentamento",
+        "quilombola",
+        "indigena",
       ],
       tipo_registro_ponto: [
         "entrada",
@@ -10930,6 +14353,7 @@ export const Constants = {
         "area",
         "uso",
       ],
+      tipo_sinalizacao: ["vertical", "horizontal", "semaforica", "eletronica"],
       tipo_tributo: [
         "iptu",
         "iss",
@@ -10945,6 +14369,14 @@ export const Constants = {
         "industrial",
         "misto",
         "territorial",
+      ],
+      tipo_veiculo: [
+        "leve",
+        "pesado",
+        "onibus",
+        "maquina",
+        "motocicleta",
+        "utilitario",
       ],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },
