@@ -1160,6 +1160,111 @@ export type Database = {
           },
         ]
       }
+      contribuintes: {
+        Row: {
+          ativo: boolean | null
+          bairro: string | null
+          celular: string | null
+          cep: string | null
+          cidade: string | null
+          cnae_principal: string | null
+          complemento: string | null
+          cpf_cnpj: string
+          created_at: string | null
+          data_abertura: string | null
+          data_nascimento: string | null
+          email: string | null
+          id: string
+          inscricao_municipal: string | null
+          logradouro: string | null
+          municipio_id: string | null
+          natureza_juridica: string | null
+          nome_fantasia: string | null
+          nome_razao_social: string
+          numero: string | null
+          observacoes: string | null
+          rg: string | null
+          secretaria_id: string | null
+          telefone: string | null
+          tipo: Database["public"]["Enums"]["tipo_contribuinte"]
+          uf: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          bairro?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cnae_principal?: string | null
+          complemento?: string | null
+          cpf_cnpj: string
+          created_at?: string | null
+          data_abertura?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          id?: string
+          inscricao_municipal?: string | null
+          logradouro?: string | null
+          municipio_id?: string | null
+          natureza_juridica?: string | null
+          nome_fantasia?: string | null
+          nome_razao_social: string
+          numero?: string | null
+          observacoes?: string | null
+          rg?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo: Database["public"]["Enums"]["tipo_contribuinte"]
+          uf?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          bairro?: string | null
+          celular?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cnae_principal?: string | null
+          complemento?: string | null
+          cpf_cnpj?: string
+          created_at?: string | null
+          data_abertura?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          id?: string
+          inscricao_municipal?: string | null
+          logradouro?: string | null
+          municipio_id?: string | null
+          natureza_juridica?: string | null
+          nome_fantasia?: string | null
+          nome_razao_social?: string
+          numero?: string | null
+          observacoes?: string | null
+          rg?: string | null
+          secretaria_id?: string | null
+          telefone?: string | null
+          tipo?: Database["public"]["Enums"]["tipo_contribuinte"]
+          uf?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contribuintes_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contribuintes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       convenios: {
         Row: {
           agencia: string | null
@@ -1582,6 +1687,115 @@ export type Database = {
           nome?: string
         }
         Relationships: []
+      }
+      divida_ativa: {
+        Row: {
+          contribuinte_id: string
+          created_at: string | null
+          data_ajuizamento: string | null
+          data_inscricao: string | null
+          data_vencimento_original: string | null
+          exercicio: number
+          id: string
+          municipio_id: string | null
+          numero_cda: string | null
+          numero_inscricao: string
+          numero_processo_judicial: string | null
+          observacoes: string | null
+          origem_id: string | null
+          origem_tabela: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_divida_ativa"] | null
+          tipo_tributo: Database["public"]["Enums"]["tipo_tributo"]
+          updated_at: string | null
+          valor_correcao: number | null
+          valor_custas: number | null
+          valor_honorarios: number | null
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_principal: number
+          valor_total: number
+          vara_juizo: string | null
+        }
+        Insert: {
+          contribuinte_id: string
+          created_at?: string | null
+          data_ajuizamento?: string | null
+          data_inscricao?: string | null
+          data_vencimento_original?: string | null
+          exercicio: number
+          id?: string
+          municipio_id?: string | null
+          numero_cda?: string | null
+          numero_inscricao: string
+          numero_processo_judicial?: string | null
+          observacoes?: string | null
+          origem_id?: string | null
+          origem_tabela?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_divida_ativa"] | null
+          tipo_tributo: Database["public"]["Enums"]["tipo_tributo"]
+          updated_at?: string | null
+          valor_correcao?: number | null
+          valor_custas?: number | null
+          valor_honorarios?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_principal: number
+          valor_total: number
+          vara_juizo?: string | null
+        }
+        Update: {
+          contribuinte_id?: string
+          created_at?: string | null
+          data_ajuizamento?: string | null
+          data_inscricao?: string | null
+          data_vencimento_original?: string | null
+          exercicio?: number
+          id?: string
+          municipio_id?: string | null
+          numero_cda?: string | null
+          numero_inscricao?: string
+          numero_processo_judicial?: string | null
+          observacoes?: string | null
+          origem_id?: string | null
+          origem_tabela?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_divida_ativa"] | null
+          tipo_tributo?: Database["public"]["Enums"]["tipo_tributo"]
+          updated_at?: string | null
+          valor_correcao?: number | null
+          valor_custas?: number | null
+          valor_honorarios?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_principal?: number
+          valor_total?: number
+          vara_juizo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "divida_ativa_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "divida_ativa_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "divida_ativa_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dotacoes_orcamentarias: {
         Row: {
@@ -2604,6 +2818,138 @@ export type Database = {
           },
         ]
       }
+      fiscalizacoes: {
+        Row: {
+          assinatura_contribuinte: string | null
+          assinatura_fiscal: string | null
+          auto_infracao: boolean | null
+          contribuinte_id: string | null
+          created_at: string | null
+          data_agendada: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          fiscal_id: string | null
+          fiscal_nome: string | null
+          fotos_urls: string[] | null
+          hora_agendada: string | null
+          id: string
+          imovel_id: string | null
+          irregularidades_detectadas: string[] | null
+          latitude_fim: number | null
+          latitude_inicio: number | null
+          longitude_fim: number | null
+          longitude_inicio: number | null
+          municipio_id: string | null
+          numero_auto_infracao: string | null
+          numero_ordem_servico: string
+          observacoes: string | null
+          secretaria_id: string | null
+          situacao_encontrada: string | null
+          status: Database["public"]["Enums"]["status_fiscalizacao"] | null
+          tipo: Database["public"]["Enums"]["tipo_fiscalizacao"]
+          updated_at: string | null
+          valor_multa: number | null
+        }
+        Insert: {
+          assinatura_contribuinte?: string | null
+          assinatura_fiscal?: string | null
+          auto_infracao?: boolean | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_agendada?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          fiscal_id?: string | null
+          fiscal_nome?: string | null
+          fotos_urls?: string[] | null
+          hora_agendada?: string | null
+          id?: string
+          imovel_id?: string | null
+          irregularidades_detectadas?: string[] | null
+          latitude_fim?: number | null
+          latitude_inicio?: number | null
+          longitude_fim?: number | null
+          longitude_inicio?: number | null
+          municipio_id?: string | null
+          numero_auto_infracao?: string | null
+          numero_ordem_servico: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          situacao_encontrada?: string | null
+          status?: Database["public"]["Enums"]["status_fiscalizacao"] | null
+          tipo: Database["public"]["Enums"]["tipo_fiscalizacao"]
+          updated_at?: string | null
+          valor_multa?: number | null
+        }
+        Update: {
+          assinatura_contribuinte?: string | null
+          assinatura_fiscal?: string | null
+          auto_infracao?: boolean | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_agendada?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          fiscal_id?: string | null
+          fiscal_nome?: string | null
+          fotos_urls?: string[] | null
+          hora_agendada?: string | null
+          id?: string
+          imovel_id?: string | null
+          irregularidades_detectadas?: string[] | null
+          latitude_fim?: number | null
+          latitude_inicio?: number | null
+          longitude_fim?: number | null
+          longitude_inicio?: number | null
+          municipio_id?: string | null
+          numero_auto_infracao?: string | null
+          numero_ordem_servico?: string
+          observacoes?: string | null
+          secretaria_id?: string | null
+          situacao_encontrada?: string | null
+          status?: Database["public"]["Enums"]["status_fiscalizacao"] | null
+          tipo?: Database["public"]["Enums"]["tipo_fiscalizacao"]
+          updated_at?: string | null
+          valor_multa?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscalizacoes_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_fiscal_id_fkey"
+            columns: ["fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       folha_itens: {
         Row: {
           codigo_evento: string
@@ -3306,6 +3652,130 @@ export type Database = {
           },
         ]
       }
+      imoveis: {
+        Row: {
+          aliquota_iptu: number | null
+          area_construida: number | null
+          area_terreno: number | null
+          bairro: string
+          cep: string | null
+          complemento: string | null
+          contribuinte_id: string | null
+          created_at: string | null
+          data_cadastro: string | null
+          distrito: string | null
+          id: string
+          inscricao_imobiliaria: string
+          latitude: number | null
+          logradouro: string
+          longitude: number | null
+          lote: string | null
+          matricula_cartorio: string | null
+          motivo_isencao: string | null
+          municipio_id: string | null
+          numero: string | null
+          profundidade: number | null
+          quadra: string | null
+          secretaria_id: string | null
+          setor: string | null
+          status: Database["public"]["Enums"]["status_imovel"] | null
+          testada: number | null
+          tipo_uso: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          updated_at: string | null
+          valor_venal_construcao: number | null
+          valor_venal_terreno: number | null
+          valor_venal_total: number | null
+        }
+        Insert: {
+          aliquota_iptu?: number | null
+          area_construida?: number | null
+          area_terreno?: number | null
+          bairro: string
+          cep?: string | null
+          complemento?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_cadastro?: string | null
+          distrito?: string | null
+          id?: string
+          inscricao_imobiliaria: string
+          latitude?: number | null
+          logradouro: string
+          longitude?: number | null
+          lote?: string | null
+          matricula_cartorio?: string | null
+          motivo_isencao?: string | null
+          municipio_id?: string | null
+          numero?: string | null
+          profundidade?: number | null
+          quadra?: string | null
+          secretaria_id?: string | null
+          setor?: string | null
+          status?: Database["public"]["Enums"]["status_imovel"] | null
+          testada?: number | null
+          tipo_uso?: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          updated_at?: string | null
+          valor_venal_construcao?: number | null
+          valor_venal_terreno?: number | null
+          valor_venal_total?: number | null
+        }
+        Update: {
+          aliquota_iptu?: number | null
+          area_construida?: number | null
+          area_terreno?: number | null
+          bairro?: string
+          cep?: string | null
+          complemento?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_cadastro?: string | null
+          distrito?: string | null
+          id?: string
+          inscricao_imobiliaria?: string
+          latitude?: number | null
+          logradouro?: string
+          longitude?: number | null
+          lote?: string | null
+          matricula_cartorio?: string | null
+          motivo_isencao?: string | null
+          municipio_id?: string | null
+          numero?: string | null
+          profundidade?: number | null
+          quadra?: string | null
+          secretaria_id?: string | null
+          setor?: string | null
+          status?: Database["public"]["Enums"]["status_imovel"] | null
+          testada?: number | null
+          tipo_uso?: Database["public"]["Enums"]["tipo_uso_imovel"] | null
+          updated_at?: string | null
+          valor_venal_construcao?: number | null
+          valor_venal_terreno?: number | null
+          valor_venal_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imoveis_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imoveis_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imoveis_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indicadores_saude: {
         Row: {
           categoria: string
@@ -3358,6 +3828,328 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iptu_lancamentos: {
+        Row: {
+          aliquota: number
+          contribuinte_id: string | null
+          created_at: string | null
+          data_lancamento: string | null
+          data_vencimento_cota_unica: string | null
+          desconto_cota_unica: number | null
+          exercicio: number
+          id: string
+          imovel_id: string
+          numero_parcelas: number | null
+          status: Database["public"]["Enums"]["status_debito"] | null
+          updated_at: string | null
+          valor_cota_unica: number | null
+          valor_iptu: number
+          valor_taxas: number | null
+          valor_total: number
+          valor_venal: number
+        }
+        Insert: {
+          aliquota: number
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_lancamento?: string | null
+          data_vencimento_cota_unica?: string | null
+          desconto_cota_unica?: number | null
+          exercicio: number
+          id?: string
+          imovel_id: string
+          numero_parcelas?: number | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor_cota_unica?: number | null
+          valor_iptu: number
+          valor_taxas?: number | null
+          valor_total: number
+          valor_venal: number
+        }
+        Update: {
+          aliquota?: number
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_lancamento?: string | null
+          data_vencimento_cota_unica?: string | null
+          desconto_cota_unica?: number | null
+          exercicio?: number
+          id?: string
+          imovel_id?: string
+          numero_parcelas?: number | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor_cota_unica?: number | null
+          valor_iptu?: number
+          valor_taxas?: number | null
+          valor_total?: number
+          valor_venal?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iptu_lancamentos_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iptu_lancamentos_imovel_id_fkey"
+            columns: ["imovel_id"]
+            isOneToOne: false
+            referencedRelation: "imoveis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iptu_parcelas: {
+        Row: {
+          codigo_barras: string | null
+          created_at: string | null
+          data_pagamento: string | null
+          data_vencimento: string
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"] | null
+          id: string
+          lancamento_id: string
+          numero_parcela: number
+          pix_copia_cola: string | null
+          status: Database["public"]["Enums"]["status_debito"] | null
+          updated_at: string | null
+          valor: number
+          valor_correcao: number | null
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_pago: number | null
+          valor_total_pago: number | null
+        }
+        Insert: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          lancamento_id: string
+          numero_parcela: number
+          pix_copia_cola?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor: number
+          valor_correcao?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_total_pago?: number | null
+        }
+        Update: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          lancamento_id?: string
+          numero_parcela?: number
+          pix_copia_cola?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor?: number
+          valor_correcao?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_total_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iptu_parcelas_lancamento_id_fkey"
+            columns: ["lancamento_id"]
+            isOneToOne: false
+            referencedRelation: "iptu_lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iss_contribuintes: {
+        Row: {
+          aliquota_iss: number | null
+          cnae_principal: string
+          cnae_secundarios: string[] | null
+          codigo_servico: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_encerramento: string | null
+          data_inicio_atividade: string | null
+          data_opcao_simples: string | null
+          descricao_atividade: string | null
+          id: string
+          inscricao_municipal: string | null
+          motivo_encerramento: string | null
+          regime_tributacao: Database["public"]["Enums"]["regime_tributacao"]
+          retencao_iss: boolean | null
+          secretaria_id: string | null
+          simples_nacional: boolean | null
+          status: Database["public"]["Enums"]["status_iss"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          aliquota_iss?: number | null
+          cnae_principal: string
+          cnae_secundarios?: string[] | null
+          codigo_servico?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_encerramento?: string | null
+          data_inicio_atividade?: string | null
+          data_opcao_simples?: string | null
+          descricao_atividade?: string | null
+          id?: string
+          inscricao_municipal?: string | null
+          motivo_encerramento?: string | null
+          regime_tributacao: Database["public"]["Enums"]["regime_tributacao"]
+          retencao_iss?: boolean | null
+          secretaria_id?: string | null
+          simples_nacional?: boolean | null
+          status?: Database["public"]["Enums"]["status_iss"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          aliquota_iss?: number | null
+          cnae_principal?: string
+          cnae_secundarios?: string[] | null
+          codigo_servico?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_encerramento?: string | null
+          data_inicio_atividade?: string | null
+          data_opcao_simples?: string | null
+          descricao_atividade?: string | null
+          id?: string
+          inscricao_municipal?: string | null
+          motivo_encerramento?: string | null
+          regime_tributacao?: Database["public"]["Enums"]["regime_tributacao"]
+          retencao_iss?: boolean | null
+          secretaria_id?: string | null
+          simples_nacional?: boolean | null
+          status?: Database["public"]["Enums"]["status_iss"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iss_contribuintes_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iss_contribuintes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iss_guias: {
+        Row: {
+          aliquota: number
+          base_calculo: number
+          codigo_barras: string | null
+          competencia: string
+          created_at: string | null
+          data_pagamento: string | null
+          data_vencimento: string
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"] | null
+          id: string
+          iss_contribuinte_id: string
+          numero_guia: number
+          pix_copia_cola: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_debito"] | null
+          updated_at: string | null
+          valor_deducoes: number | null
+          valor_iss: number
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_pago: number | null
+          valor_servicos: number
+          valor_total_pago: number | null
+        }
+        Insert: {
+          aliquota: number
+          base_calculo: number
+          codigo_barras?: string | null
+          competencia: string
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          iss_contribuinte_id: string
+          numero_guia?: number
+          pix_copia_cola?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor_deducoes?: number | null
+          valor_iss: number
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_servicos: number
+          valor_total_pago?: number | null
+        }
+        Update: {
+          aliquota?: number
+          base_calculo?: number
+          codigo_barras?: string | null
+          competencia?: string
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          iss_contribuinte_id?: string
+          numero_guia?: number
+          pix_copia_cola?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor_deducoes?: number | null
+          valor_iss?: number
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_servicos?: number
+          valor_total_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iss_guias_iss_contribuinte_id_fkey"
+            columns: ["iss_contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "iss_contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iss_guias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -4179,6 +4971,129 @@ export type Database = {
         }
         Relationships: []
       }
+      nfse: {
+        Row: {
+          aliquota: number
+          base_calculo: number
+          codigo_servico: string
+          codigo_verificacao: string
+          competencia: string
+          created_at: string | null
+          data_cancelamento: string | null
+          data_emissao: string | null
+          descricao_servico: string
+          id: string
+          iss_contribuinte_id: string
+          iss_retido: boolean | null
+          motivo_cancelamento: string | null
+          numero_nfse: number
+          prestador_cpf_cnpj: string
+          prestador_razao_social: string
+          secretaria_id: string | null
+          status: string | null
+          tomador_cpf_cnpj: string | null
+          tomador_email: string | null
+          tomador_endereco: string | null
+          tomador_razao_social: string | null
+          updated_at: string | null
+          valor_cofins: number | null
+          valor_csll: number | null
+          valor_deducoes: number | null
+          valor_inss: number | null
+          valor_ir: number | null
+          valor_iss: number
+          valor_liquido: number
+          valor_pis: number | null
+          valor_servicos: number
+          xml_nfse: string | null
+        }
+        Insert: {
+          aliquota: number
+          base_calculo: number
+          codigo_servico: string
+          codigo_verificacao: string
+          competencia: string
+          created_at?: string | null
+          data_cancelamento?: string | null
+          data_emissao?: string | null
+          descricao_servico: string
+          id?: string
+          iss_contribuinte_id: string
+          iss_retido?: boolean | null
+          motivo_cancelamento?: string | null
+          numero_nfse?: number
+          prestador_cpf_cnpj: string
+          prestador_razao_social: string
+          secretaria_id?: string | null
+          status?: string | null
+          tomador_cpf_cnpj?: string | null
+          tomador_email?: string | null
+          tomador_endereco?: string | null
+          tomador_razao_social?: string | null
+          updated_at?: string | null
+          valor_cofins?: number | null
+          valor_csll?: number | null
+          valor_deducoes?: number | null
+          valor_inss?: number | null
+          valor_ir?: number | null
+          valor_iss: number
+          valor_liquido: number
+          valor_pis?: number | null
+          valor_servicos: number
+          xml_nfse?: string | null
+        }
+        Update: {
+          aliquota?: number
+          base_calculo?: number
+          codigo_servico?: string
+          codigo_verificacao?: string
+          competencia?: string
+          created_at?: string | null
+          data_cancelamento?: string | null
+          data_emissao?: string | null
+          descricao_servico?: string
+          id?: string
+          iss_contribuinte_id?: string
+          iss_retido?: boolean | null
+          motivo_cancelamento?: string | null
+          numero_nfse?: number
+          prestador_cpf_cnpj?: string
+          prestador_razao_social?: string
+          secretaria_id?: string | null
+          status?: string | null
+          tomador_cpf_cnpj?: string | null
+          tomador_email?: string | null
+          tomador_endereco?: string | null
+          tomador_razao_social?: string | null
+          updated_at?: string | null
+          valor_cofins?: number | null
+          valor_csll?: number | null
+          valor_deducoes?: number | null
+          valor_inss?: number | null
+          valor_ir?: number | null
+          valor_iss?: number
+          valor_liquido?: number
+          valor_pis?: number | null
+          valor_servicos?: number
+          xml_nfse?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfse_iss_contribuinte_id_fkey"
+            columns: ["iss_contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "iss_contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notas: {
         Row: {
           aluno_id: string
@@ -4424,6 +5339,103 @@ export type Database = {
         }
         Relationships: []
       }
+      pagamentos_tributarios: {
+        Row: {
+          arquivo_retorno: string | null
+          cartao_autorizacao: string | null
+          cartao_nsu: string | null
+          codigo_barras: string | null
+          comprovante_url: string | null
+          contribuinte_id: string | null
+          created_at: string | null
+          data_credito: string | null
+          data_pagamento: string | null
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"]
+          id: string
+          municipio_id: string | null
+          origem_id: string
+          pix_e2e: string | null
+          pix_txid: string | null
+          secretaria_id: string | null
+          tipo_origem: string
+          valor_desconto: number | null
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_original: number
+          valor_total: number
+        }
+        Insert: {
+          arquivo_retorno?: string | null
+          cartao_autorizacao?: string | null
+          cartao_nsu?: string | null
+          codigo_barras?: string | null
+          comprovante_url?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_credito?: string | null
+          data_pagamento?: string | null
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"]
+          id?: string
+          municipio_id?: string | null
+          origem_id: string
+          pix_e2e?: string | null
+          pix_txid?: string | null
+          secretaria_id?: string | null
+          tipo_origem: string
+          valor_desconto?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_original: number
+          valor_total: number
+        }
+        Update: {
+          arquivo_retorno?: string | null
+          cartao_autorizacao?: string | null
+          cartao_nsu?: string | null
+          codigo_barras?: string | null
+          comprovante_url?: string | null
+          contribuinte_id?: string | null
+          created_at?: string | null
+          data_credito?: string | null
+          data_pagamento?: string | null
+          forma_pagamento?: Database["public"]["Enums"]["forma_pagamento"]
+          id?: string
+          municipio_id?: string | null
+          origem_id?: string
+          pix_e2e?: string | null
+          pix_txid?: string | null
+          secretaria_id?: string | null
+          tipo_origem?: string
+          valor_desconto?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_original?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagamentos_tributarios_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pagamentos_tributarios_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pagamentos_tributarios_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       papeis_usuario: {
         Row: {
           created_at: string
@@ -4483,6 +5495,200 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parcelamento_parcelas: {
+        Row: {
+          codigo_barras: string | null
+          created_at: string | null
+          data_pagamento: string | null
+          data_vencimento: string
+          forma_pagamento: Database["public"]["Enums"]["forma_pagamento"] | null
+          id: string
+          numero_parcela: number
+          parcelamento_id: string
+          pix_copia_cola: string | null
+          status: Database["public"]["Enums"]["status_debito"] | null
+          updated_at: string | null
+          valor: number
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_pago: number | null
+          valor_total_pago: number | null
+        }
+        Insert: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          numero_parcela: number
+          parcelamento_id: string
+          pix_copia_cola?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor: number
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_total_pago?: number | null
+        }
+        Update: {
+          codigo_barras?: string | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento"]
+            | null
+          id?: string
+          numero_parcela?: number
+          parcelamento_id?: string
+          pix_copia_cola?: string | null
+          status?: Database["public"]["Enums"]["status_debito"] | null
+          updated_at?: string | null
+          valor?: number
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_total_pago?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parcelamento_parcelas_parcelamento_id_fkey"
+            columns: ["parcelamento_id"]
+            isOneToOne: false
+            referencedRelation: "parcelamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parcelamentos: {
+        Row: {
+          contribuinte_id: string
+          created_at: string | null
+          data_adesao: string | null
+          data_rescisao: string | null
+          debitos_ids: string[] | null
+          desconto_correcao: number | null
+          desconto_juros: number | null
+          desconto_multa: number | null
+          dia_vencimento: number | null
+          dividas_ativas_ids: string[] | null
+          id: string
+          motivo_rescisao: string | null
+          municipio_id: string | null
+          numero_parcelas: number
+          numero_termo: string
+          parcelas_atrasadas: number | null
+          parcelas_pagas: number | null
+          programa_refis_id: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_parcelamento"] | null
+          updated_at: string | null
+          valor_correcao_original: number | null
+          valor_entrada: number | null
+          valor_juros_original: number | null
+          valor_multa_original: number | null
+          valor_parcela: number
+          valor_principal: number
+          valor_total_original: number
+          valor_total_parcelado: number
+        }
+        Insert: {
+          contribuinte_id: string
+          created_at?: string | null
+          data_adesao?: string | null
+          data_rescisao?: string | null
+          debitos_ids?: string[] | null
+          desconto_correcao?: number | null
+          desconto_juros?: number | null
+          desconto_multa?: number | null
+          dia_vencimento?: number | null
+          dividas_ativas_ids?: string[] | null
+          id?: string
+          motivo_rescisao?: string | null
+          municipio_id?: string | null
+          numero_parcelas: number
+          numero_termo: string
+          parcelas_atrasadas?: number | null
+          parcelas_pagas?: number | null
+          programa_refis_id?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_parcelamento"] | null
+          updated_at?: string | null
+          valor_correcao_original?: number | null
+          valor_entrada?: number | null
+          valor_juros_original?: number | null
+          valor_multa_original?: number | null
+          valor_parcela: number
+          valor_principal: number
+          valor_total_original: number
+          valor_total_parcelado: number
+        }
+        Update: {
+          contribuinte_id?: string
+          created_at?: string | null
+          data_adesao?: string | null
+          data_rescisao?: string | null
+          debitos_ids?: string[] | null
+          desconto_correcao?: number | null
+          desconto_juros?: number | null
+          desconto_multa?: number | null
+          dia_vencimento?: number | null
+          dividas_ativas_ids?: string[] | null
+          id?: string
+          motivo_rescisao?: string | null
+          municipio_id?: string | null
+          numero_parcelas?: number
+          numero_termo?: string
+          parcelas_atrasadas?: number | null
+          parcelas_pagas?: number | null
+          programa_refis_id?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_parcelamento"] | null
+          updated_at?: string | null
+          valor_correcao_original?: number | null
+          valor_entrada?: number | null
+          valor_juros_original?: number | null
+          valor_multa_original?: number | null
+          valor_parcela?: number
+          valor_principal?: number
+          valor_total_original?: number
+          valor_total_parcelado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parcelamentos_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parcelamentos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parcelamentos_programa_refis_id_fkey"
+            columns: ["programa_refis_id"]
+            isOneToOne: false
+            referencedRelation: "programas_refis"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parcelamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -5374,6 +6580,96 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      programas_refis: {
+        Row: {
+          ativo: boolean | null
+          created_at: string | null
+          data_fim: string
+          data_inicio: string
+          decreto_numero: string | null
+          desconto_correcao: number | null
+          desconto_honorarios: number | null
+          desconto_juros: number | null
+          desconto_multa: number | null
+          entrada_minima: number | null
+          id: string
+          lei_numero: string | null
+          municipio_id: string | null
+          nome: string
+          parcelas_maxima: number | null
+          parcelas_minima: number | null
+          secretaria_id: string | null
+          tributos_incluidos:
+            | Database["public"]["Enums"]["tipo_tributo"][]
+            | null
+          updated_at: string | null
+          valor_parcela_minima: number | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          created_at?: string | null
+          data_fim: string
+          data_inicio: string
+          decreto_numero?: string | null
+          desconto_correcao?: number | null
+          desconto_honorarios?: number | null
+          desconto_juros?: number | null
+          desconto_multa?: number | null
+          entrada_minima?: number | null
+          id?: string
+          lei_numero?: string | null
+          municipio_id?: string | null
+          nome: string
+          parcelas_maxima?: number | null
+          parcelas_minima?: number | null
+          secretaria_id?: string | null
+          tributos_incluidos?:
+            | Database["public"]["Enums"]["tipo_tributo"][]
+            | null
+          updated_at?: string | null
+          valor_parcela_minima?: number | null
+        }
+        Update: {
+          ativo?: boolean | null
+          created_at?: string | null
+          data_fim?: string
+          data_inicio?: string
+          decreto_numero?: string | null
+          desconto_correcao?: number | null
+          desconto_honorarios?: number | null
+          desconto_juros?: number | null
+          desconto_multa?: number | null
+          entrada_minima?: number | null
+          id?: string
+          lei_numero?: string | null
+          municipio_id?: string | null
+          nome?: string
+          parcelas_maxima?: number | null
+          parcelas_minima?: number | null
+          secretaria_id?: string | null
+          tributos_incluidos?:
+            | Database["public"]["Enums"]["tipo_tributo"][]
+            | null
+          updated_at?: string | null
+          valor_parcela_minima?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programas_refis_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_refis_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -7143,6 +8439,13 @@ export type Database = {
         | "execucao"
         | "encerrado"
       feriado_tipo: "nacional" | "estadual" | "municipal" | "ponto_facultativo"
+      forma_pagamento:
+        | "boleto"
+        | "pix"
+        | "cartao_credito"
+        | "cartao_debito"
+        | "dinheiro"
+        | "debito_automatico"
       goal_status:
         | "pending"
         | "in_progress"
@@ -7172,6 +8475,11 @@ export type Database = {
         | "celetista"
         | "temporario"
         | "comissionado"
+      regime_tributacao:
+        | "simples_nacional"
+        | "lucro_presumido"
+        | "lucro_real"
+        | "mei"
       secretaria_role:
         | "admin_municipal"
         | "secretario"
@@ -7183,19 +8491,49 @@ export type Database = {
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
       status_convenio: "vigente" | "encerrado" | "rescindido" | "em_prestacao"
+      status_debito:
+        | "em_aberto"
+        | "vencido"
+        | "pago"
+        | "parcelado"
+        | "inscrito_divida_ativa"
+        | "executado"
+        | "prescrito"
+        | "cancelado"
+      status_divida_ativa:
+        | "inscrita"
+        | "parcelada"
+        | "em_execucao"
+        | "suspensa"
+        | "quitada"
+        | "prescrita"
+        | "cancelada"
       status_empenho:
         | "ativo"
         | "anulado"
         | "liquidado"
         | "pago"
         | "inscrito_rap"
+      status_fiscalizacao:
+        | "agendada"
+        | "em_andamento"
+        | "concluida"
+        | "cancelada"
       status_folha:
         | "aberta"
         | "calculada"
         | "conferida"
         | "fechada"
         | "reprocessada"
+      status_imovel: "ativo" | "inativo" | "isento" | "imune"
+      status_iss: "ativo" | "suspenso" | "baixado" | "isento"
       status_justificativa: "pendente" | "aprovada" | "rejeitada"
+      status_parcelamento:
+        | "ativo"
+        | "em_dia"
+        | "atrasado"
+        | "rescindido"
+        | "quitado"
       status_processo_trabalhista:
         | "ativo"
         | "suspenso"
@@ -7228,6 +8566,7 @@ export type Database = {
         | "importar"
         | "reverter"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
+      tipo_contribuinte: "pessoa_fisica" | "pessoa_juridica"
       tipo_convenio: "recebido" | "concedido"
       tipo_empenho: "ordinario" | "estimativo" | "global"
       tipo_evento_folha:
@@ -7238,6 +8577,7 @@ export type Database = {
         | "desconto_obrigatorio"
         | "desconto_facultativo"
         | "outros"
+      tipo_fiscalizacao: "programada" | "denuncia" | "oficio" | "revisao"
       tipo_funcao: "comissionada" | "gratificada" | "cargo_em_comissao"
       tipo_incidencia:
         | "inss"
@@ -7275,6 +8615,20 @@ export type Database = {
         | "retorno_intervalo"
         | "saida"
       tipo_resto_pagar: "processado" | "nao_processado"
+      tipo_tributo:
+        | "iptu"
+        | "iss"
+        | "itbi"
+        | "taxas"
+        | "contribuicao_melhoria"
+        | "multas"
+        | "outros"
+      tipo_uso_imovel:
+        | "residencial"
+        | "comercial"
+        | "industrial"
+        | "misto"
+        | "territorial"
       unidade_tipo: "administrativa" | "operacional" | "tecnica"
     }
     CompositeTypes: {
@@ -7423,6 +8777,14 @@ export const Constants = {
         "encerrado",
       ],
       feriado_tipo: ["nacional", "estadual", "municipal", "ponto_facultativo"],
+      forma_pagamento: [
+        "boleto",
+        "pix",
+        "cartao_credito",
+        "cartao_debito",
+        "dinheiro",
+        "debito_automatico",
+      ],
       goal_status: [
         "pending",
         "in_progress",
@@ -7456,6 +8818,12 @@ export const Constants = {
         "temporario",
         "comissionado",
       ],
+      regime_tributacao: [
+        "simples_nacional",
+        "lucro_presumido",
+        "lucro_real",
+        "mei",
+      ],
       secretaria_role: [
         "admin_municipal",
         "secretario",
@@ -7468,7 +8836,32 @@ export const Constants = {
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
       status_convenio: ["vigente", "encerrado", "rescindido", "em_prestacao"],
+      status_debito: [
+        "em_aberto",
+        "vencido",
+        "pago",
+        "parcelado",
+        "inscrito_divida_ativa",
+        "executado",
+        "prescrito",
+        "cancelado",
+      ],
+      status_divida_ativa: [
+        "inscrita",
+        "parcelada",
+        "em_execucao",
+        "suspensa",
+        "quitada",
+        "prescrita",
+        "cancelada",
+      ],
       status_empenho: ["ativo", "anulado", "liquidado", "pago", "inscrito_rap"],
+      status_fiscalizacao: [
+        "agendada",
+        "em_andamento",
+        "concluida",
+        "cancelada",
+      ],
       status_folha: [
         "aberta",
         "calculada",
@@ -7476,7 +8869,16 @@ export const Constants = {
         "fechada",
         "reprocessada",
       ],
+      status_imovel: ["ativo", "inativo", "isento", "imune"],
+      status_iss: ["ativo", "suspenso", "baixado", "isento"],
       status_justificativa: ["pendente", "aprovada", "rejeitada"],
+      status_parcelamento: [
+        "ativo",
+        "em_dia",
+        "atrasado",
+        "rescindido",
+        "quitado",
+      ],
       status_processo_trabalhista: [
         "ativo",
         "suspenso",
@@ -7512,6 +8914,7 @@ export const Constants = {
         "reverter",
       ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
+      tipo_contribuinte: ["pessoa_fisica", "pessoa_juridica"],
       tipo_convenio: ["recebido", "concedido"],
       tipo_empenho: ["ordinario", "estimativo", "global"],
       tipo_evento_folha: [
@@ -7523,6 +8926,7 @@ export const Constants = {
         "desconto_facultativo",
         "outros",
       ],
+      tipo_fiscalizacao: ["programada", "denuncia", "oficio", "revisao"],
       tipo_funcao: ["comissionada", "gratificada", "cargo_em_comissao"],
       tipo_incidencia: [
         "inss",
@@ -7565,6 +8969,22 @@ export const Constants = {
         "saida",
       ],
       tipo_resto_pagar: ["processado", "nao_processado"],
+      tipo_tributo: [
+        "iptu",
+        "iss",
+        "itbi",
+        "taxas",
+        "contribuicao_melhoria",
+        "multas",
+        "outros",
+      ],
+      tipo_uso_imovel: [
+        "residencial",
+        "comercial",
+        "industrial",
+        "misto",
+        "territorial",
+      ],
       unidade_tipo: ["administrativa", "operacional", "tecnica"],
     },
   },

@@ -29,6 +29,7 @@ import GestaoEducacao from "@/pages/GestaoEducacao";
 import AdminRH from "@/pages/AdminRH";
 import Auditoria from "@/pages/Auditoria";
 import GestaoFinanceiraPublica from "@/pages/GestaoFinanceiraPublica";
+import ArrecadacaoTributaria from "@/pages/ArrecadacaoTributaria";
 import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
@@ -242,6 +243,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoFinanceiraPublica />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/arrecadacao-tributaria"
+          element={
+            <RequireAuth>
+              <ArrecadacaoTributaria />
             </RequireAuth>
           }
         />
