@@ -122,6 +122,105 @@ export type Database = {
           },
         ]
       }
+      alertas_fiscalizacao_iss: {
+        Row: {
+          analisado: boolean | null
+          analista_id: string | null
+          competencia: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_analise: string | null
+          data_geracao: string | null
+          descricao: string
+          diferenca: number | null
+          fiscalizacao_id: string | null
+          gera_fiscalizacao: boolean | null
+          id: string
+          municipio_id: string | null
+          resultado_analise: string | null
+          secretaria_id: string | null
+          tipo: string
+          valor_declarado: number | null
+          valor_esperado: number | null
+        }
+        Insert: {
+          analisado?: boolean | null
+          analista_id?: string | null
+          competencia?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_analise?: string | null
+          data_geracao?: string | null
+          descricao: string
+          diferenca?: number | null
+          fiscalizacao_id?: string | null
+          gera_fiscalizacao?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          resultado_analise?: string | null
+          secretaria_id?: string | null
+          tipo: string
+          valor_declarado?: number | null
+          valor_esperado?: number | null
+        }
+        Update: {
+          analisado?: boolean | null
+          analista_id?: string | null
+          competencia?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_analise?: string | null
+          data_geracao?: string | null
+          descricao?: string
+          diferenca?: number | null
+          fiscalizacao_id?: string | null
+          gera_fiscalizacao?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          resultado_analise?: string | null
+          secretaria_id?: string | null
+          tipo?: string
+          valor_declarado?: number | null
+          valor_esperado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_analista_id_fkey"
+            columns: ["analista_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_fiscalizacao_id_fkey"
+            columns: ["fiscalizacao_id"]
+            isOneToOne: false
+            referencedRelation: "fiscalizacao_iss"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_saude: {
         Row: {
           ativo: boolean | null
@@ -353,6 +452,113 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "auditoria_global_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      autos_infracao_iss: {
+        Row: {
+          contribuinte_id: string
+          created_at: string | null
+          data_ciencia: string | null
+          data_lavratura: string
+          data_limite_defesa: string | null
+          descricao_infracao: string
+          fiscalizacao_id: string | null
+          forma_ciencia: string | null
+          fundamentacao_legal: string | null
+          id: string
+          municipio_id: string | null
+          numero_auto: string
+          periodo_infracao_fim: string | null
+          periodo_infracao_inicio: string | null
+          prazo_defesa_dias: number | null
+          secretaria_id: string | null
+          status: string | null
+          tipo: string
+          updated_at: string | null
+          valor_juros: number | null
+          valor_multa: number
+          valor_principal: number
+          valor_total: number
+        }
+        Insert: {
+          contribuinte_id: string
+          created_at?: string | null
+          data_ciencia?: string | null
+          data_lavratura?: string
+          data_limite_defesa?: string | null
+          descricao_infracao: string
+          fiscalizacao_id?: string | null
+          forma_ciencia?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero_auto: string
+          periodo_infracao_fim?: string | null
+          periodo_infracao_inicio?: string | null
+          prazo_defesa_dias?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo: string
+          updated_at?: string | null
+          valor_juros?: number | null
+          valor_multa: number
+          valor_principal: number
+          valor_total: number
+        }
+        Update: {
+          contribuinte_id?: string
+          created_at?: string | null
+          data_ciencia?: string | null
+          data_lavratura?: string
+          data_limite_defesa?: string | null
+          descricao_infracao?: string
+          fiscalizacao_id?: string | null
+          forma_ciencia?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero_auto?: string
+          periodo_infracao_fim?: string | null
+          periodo_infracao_inicio?: string | null
+          prazo_defesa_dias?: number | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo?: string
+          updated_at?: string | null
+          valor_juros?: number | null
+          valor_multa?: number
+          valor_principal?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "autos_infracao_iss_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autos_infracao_iss_fiscalizacao_id_fkey"
+            columns: ["fiscalizacao_id"]
+            isOneToOne: false
+            referencedRelation: "fiscalizacao_iss"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autos_infracao_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autos_infracao_iss_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -931,6 +1137,69 @@ export type Database = {
           },
         ]
       }
+      config_iss: {
+        Row: {
+          created_at: string | null
+          dia_vencimento_guia: number | null
+          exercicio: number
+          id: string
+          juros_mora_mensal: number | null
+          multa_atraso_percentual: number | null
+          municipio_id: string | null
+          obriga_nfse_para_declaracao: boolean | null
+          permite_declaracao_sem_movimento: boolean | null
+          prazo_defesa_auto_dias: number | null
+          prazo_retificacao_dias: number | null
+          secretaria_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dia_vencimento_guia?: number | null
+          exercicio: number
+          id?: string
+          juros_mora_mensal?: number | null
+          multa_atraso_percentual?: number | null
+          municipio_id?: string | null
+          obriga_nfse_para_declaracao?: boolean | null
+          permite_declaracao_sem_movimento?: boolean | null
+          prazo_defesa_auto_dias?: number | null
+          prazo_retificacao_dias?: number | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dia_vencimento_guia?: number | null
+          exercicio?: number
+          id?: string
+          juros_mora_mensal?: number | null
+          multa_atraso_percentual?: number | null
+          municipio_id?: string | null
+          obriga_nfse_para_declaracao?: boolean | null
+          permite_declaracao_sem_movimento?: boolean | null
+          prazo_defesa_auto_dias?: number | null
+          prazo_retificacao_dias?: number | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "config_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "config_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       config_lancamento_iptu: {
         Row: {
           aliquota_comercial: number | null
@@ -1470,6 +1739,57 @@ export type Database = {
           },
         ]
       }
+      contribuinte_atividades: {
+        Row: {
+          aliquota_especifica: number | null
+          cnae_codigo: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          id: string
+          principal: boolean | null
+          servico_id: string | null
+        }
+        Insert: {
+          aliquota_especifica?: number | null
+          cnae_codigo?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          principal?: boolean | null
+          servico_id?: string | null
+        }
+        Update: {
+          aliquota_especifica?: number | null
+          cnae_codigo?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          principal?: boolean | null
+          servico_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contribuinte_atividades_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contribuinte_atividades_servico_id_fkey"
+            columns: ["servico_id"]
+            isOneToOne: false
+            referencedRelation: "lista_servicos_iss"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contribuintes: {
         Row: {
           ativo: boolean | null
@@ -1840,6 +2160,97 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      declaracoes_iss: {
+        Row: {
+          base_calculo: number | null
+          competencia: string
+          contribuinte_id: string
+          created_at: string | null
+          data_transmissao: string | null
+          data_vencimento: string | null
+          declaracao_retificadora_de: string | null
+          hash_declaracao: string | null
+          id: string
+          motivo_retificacao: string | null
+          municipio_id: string | null
+          numero_declaracao: string
+          secretaria_id: string | null
+          status: string | null
+          updated_at: string | null
+          valor_deducoes: number | null
+          valor_iss_devido: number | null
+          valor_iss_pagar: number | null
+          valor_iss_retido: number | null
+          valor_servicos_prestados: number | null
+        }
+        Insert: {
+          base_calculo?: number | null
+          competencia: string
+          contribuinte_id: string
+          created_at?: string | null
+          data_transmissao?: string | null
+          data_vencimento?: string | null
+          declaracao_retificadora_de?: string | null
+          hash_declaracao?: string | null
+          id?: string
+          motivo_retificacao?: string | null
+          municipio_id?: string | null
+          numero_declaracao: string
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_deducoes?: number | null
+          valor_iss_devido?: number | null
+          valor_iss_pagar?: number | null
+          valor_iss_retido?: number | null
+          valor_servicos_prestados?: number | null
+        }
+        Update: {
+          base_calculo?: number | null
+          competencia?: string
+          contribuinte_id?: string
+          created_at?: string | null
+          data_transmissao?: string | null
+          data_vencimento?: string | null
+          declaracao_retificadora_de?: string | null
+          hash_declaracao?: string | null
+          id?: string
+          motivo_retificacao?: string | null
+          municipio_id?: string | null
+          numero_declaracao?: string
+          secretaria_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_deducoes?: number | null
+          valor_iss_devido?: number | null
+          valor_iss_pagar?: number | null
+          valor_iss_retido?: number | null
+          valor_servicos_prestados?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "declaracoes_iss_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "declaracoes_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "declaracoes_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -3182,6 +3593,110 @@ export type Database = {
           },
         ]
       }
+      fiscalizacao_iss: {
+        Row: {
+          alertas_omissao: Json | null
+          conclusao: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string
+          diferenca_apurada: number | null
+          divergencias_encontradas: Json | null
+          fiscal_responsavel_id: string | null
+          id: string
+          motivo: string | null
+          municipio_id: string | null
+          numero_ordem_servico: string
+          periodo_fiscalizado_fim: string | null
+          periodo_fiscalizado_inicio: string | null
+          secretaria_id: string | null
+          status: string | null
+          tipo_fiscalizacao: string | null
+          total_iss_apurado: number | null
+          total_iss_declarado: number | null
+          total_servicos_apurados: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          alertas_omissao?: Json | null
+          conclusao?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          diferenca_apurada?: number | null
+          divergencias_encontradas?: Json | null
+          fiscal_responsavel_id?: string | null
+          id?: string
+          motivo?: string | null
+          municipio_id?: string | null
+          numero_ordem_servico: string
+          periodo_fiscalizado_fim?: string | null
+          periodo_fiscalizado_inicio?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo_fiscalizacao?: string | null
+          total_iss_apurado?: number | null
+          total_iss_declarado?: number | null
+          total_servicos_apurados?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          alertas_omissao?: Json | null
+          conclusao?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          diferenca_apurada?: number | null
+          divergencias_encontradas?: Json | null
+          fiscal_responsavel_id?: string | null
+          id?: string
+          motivo?: string | null
+          municipio_id?: string | null
+          numero_ordem_servico?: string
+          periodo_fiscalizado_fim?: string | null
+          periodo_fiscalizado_inicio?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo_fiscalizacao?: string | null
+          total_iss_apurado?: number | null
+          total_iss_declarado?: number | null
+          total_servicos_apurados?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscalizacao_iss_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacao_iss_fiscal_responsavel_id_fkey"
+            columns: ["fiscal_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacao_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacao_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fiscalizacoes: {
         Row: {
           assinatura_contribuinte: string | null
@@ -3932,6 +4447,87 @@ export type Database = {
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guias_iss: {
+        Row: {
+          codigo_barras: string | null
+          competencia: string
+          contribuinte_id: string
+          created_at: string | null
+          data_pagamento: string | null
+          data_vencimento: string
+          declaracao_id: string | null
+          id: string
+          linha_digitavel: string | null
+          numero_guia: string
+          qrcode_pix: string | null
+          status: string | null
+          updated_at: string | null
+          valor_correcao: number | null
+          valor_juros: number | null
+          valor_multa: number | null
+          valor_pago: number | null
+          valor_principal: number
+          valor_total: number
+        }
+        Insert: {
+          codigo_barras?: string | null
+          competencia: string
+          contribuinte_id: string
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento: string
+          declaracao_id?: string | null
+          id?: string
+          linha_digitavel?: string | null
+          numero_guia: string
+          qrcode_pix?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_correcao?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_principal: number
+          valor_total: number
+        }
+        Update: {
+          codigo_barras?: string | null
+          competencia?: string
+          contribuinte_id?: string
+          created_at?: string | null
+          data_pagamento?: string | null
+          data_vencimento?: string
+          declaracao_id?: string | null
+          id?: string
+          linha_digitavel?: string | null
+          numero_guia?: string
+          qrcode_pix?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_correcao?: number | null
+          valor_juros?: number | null
+          valor_multa?: number | null
+          valor_pago?: number | null
+          valor_principal?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guias_iss_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guias_iss_declaracao_id_fkey"
+            columns: ["declaracao_id"]
+            isOneToOne: false
+            referencedRelation: "declaracoes_iss"
             referencedColumns: ["id"]
           },
         ]
@@ -4767,6 +5363,78 @@ export type Database = {
           },
         ]
       }
+      itens_declaracao_iss: {
+        Row: {
+          aliquota: number
+          base_calculo: number
+          created_at: string | null
+          data_servico: string | null
+          declaracao_id: string
+          descricao_servico: string | null
+          id: string
+          iss_retido: boolean | null
+          local_prestacao: string | null
+          nfse_id: string | null
+          servico_id: string | null
+          tomador_cpf_cnpj: string | null
+          tomador_nome: string | null
+          valor_deducao: number | null
+          valor_iss: number
+          valor_servico: number
+        }
+        Insert: {
+          aliquota: number
+          base_calculo: number
+          created_at?: string | null
+          data_servico?: string | null
+          declaracao_id: string
+          descricao_servico?: string | null
+          id?: string
+          iss_retido?: boolean | null
+          local_prestacao?: string | null
+          nfse_id?: string | null
+          servico_id?: string | null
+          tomador_cpf_cnpj?: string | null
+          tomador_nome?: string | null
+          valor_deducao?: number | null
+          valor_iss: number
+          valor_servico: number
+        }
+        Update: {
+          aliquota?: number
+          base_calculo?: number
+          created_at?: string | null
+          data_servico?: string | null
+          declaracao_id?: string
+          descricao_servico?: string | null
+          id?: string
+          iss_retido?: boolean | null
+          local_prestacao?: string | null
+          nfse_id?: string | null
+          servico_id?: string | null
+          tomador_cpf_cnpj?: string | null
+          tomador_nome?: string | null
+          valor_deducao?: number | null
+          valor_iss?: number
+          valor_servico?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itens_declaracao_iss_declaracao_id_fkey"
+            columns: ["declaracao_id"]
+            isOneToOne: false
+            referencedRelation: "declaracoes_iss"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itens_declaracao_iss_servico_id_fkey"
+            columns: ["servico_id"]
+            isOneToOne: false
+            referencedRelation: "lista_servicos_iss"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       justificativas_ponto: {
         Row: {
           aprovado_por: string | null
@@ -5074,6 +5742,75 @@ export type Database = {
             columns: ["responsavel_atesto"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lista_servicos_iss: {
+        Row: {
+          aliquota_maxima: number | null
+          aliquota_minima: number | null
+          aliquota_padrao: number
+          ativo: boolean | null
+          base_calculo_descricao: string | null
+          codigo_lc116: string | null
+          codigo_municipal: string
+          created_at: string | null
+          deducoes_permitidas: Json | null
+          descricao: string
+          exige_retencao: boolean | null
+          id: string
+          municipio_id: string | null
+          secretaria_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          aliquota_maxima?: number | null
+          aliquota_minima?: number | null
+          aliquota_padrao?: number
+          ativo?: boolean | null
+          base_calculo_descricao?: string | null
+          codigo_lc116?: string | null
+          codigo_municipal: string
+          created_at?: string | null
+          deducoes_permitidas?: Json | null
+          descricao: string
+          exige_retencao?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          aliquota_maxima?: number | null
+          aliquota_minima?: number | null
+          aliquota_padrao?: number
+          ativo?: boolean | null
+          base_calculo_descricao?: string | null
+          codigo_lc116?: string | null
+          codigo_municipal?: string
+          created_at?: string | null
+          deducoes_permitidas?: Json | null
+          descricao?: string
+          exige_retencao?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          secretaria_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lista_servicos_iss_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_servicos_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -5494,6 +6231,54 @@ export type Database = {
           },
         ]
       }
+      movimentacoes_processo_fiscal: {
+        Row: {
+          anexos: Json | null
+          created_at: string | null
+          data_movimentacao: string | null
+          descricao: string
+          id: string
+          processo_id: string
+          responsavel_id: string | null
+          tipo: string
+        }
+        Insert: {
+          anexos?: Json | null
+          created_at?: string | null
+          data_movimentacao?: string | null
+          descricao: string
+          id?: string
+          processo_id: string
+          responsavel_id?: string | null
+          tipo: string
+        }
+        Update: {
+          anexos?: Json | null
+          created_at?: string | null
+          data_movimentacao?: string | null
+          descricao?: string
+          id?: string
+          processo_id?: string
+          responsavel_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_processo_fiscal_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_administrativos_fiscais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_processo_fiscal_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       municipios: {
         Row: {
           area_km2: number | null
@@ -5654,15 +6439,23 @@ export type Database = {
           created_at: string | null
           data_cancelamento: string | null
           data_emissao: string | null
+          desconto_condicionado: number | null
+          desconto_incondicionado: number | null
           descricao_servico: string
+          discriminacao: string | null
           id: string
           iss_contribuinte_id: string
           iss_retido: boolean | null
           motivo_cancelamento: string | null
+          municipio_incidencia: string | null
+          nfse_substituida_id: string | null
           numero_nfse: number
+          outras_retencoes: number | null
+          pdf_url: string | null
           prestador_cpf_cnpj: string
           prestador_razao_social: string
           secretaria_id: string | null
+          servico_id: string | null
           status: string | null
           tomador_cpf_cnpj: string | null
           tomador_email: string | null
@@ -5689,15 +6482,23 @@ export type Database = {
           created_at?: string | null
           data_cancelamento?: string | null
           data_emissao?: string | null
+          desconto_condicionado?: number | null
+          desconto_incondicionado?: number | null
           descricao_servico: string
+          discriminacao?: string | null
           id?: string
           iss_contribuinte_id: string
           iss_retido?: boolean | null
           motivo_cancelamento?: string | null
+          municipio_incidencia?: string | null
+          nfse_substituida_id?: string | null
           numero_nfse?: number
+          outras_retencoes?: number | null
+          pdf_url?: string | null
           prestador_cpf_cnpj: string
           prestador_razao_social: string
           secretaria_id?: string | null
+          servico_id?: string | null
           status?: string | null
           tomador_cpf_cnpj?: string | null
           tomador_email?: string | null
@@ -5724,15 +6525,23 @@ export type Database = {
           created_at?: string | null
           data_cancelamento?: string | null
           data_emissao?: string | null
+          desconto_condicionado?: number | null
+          desconto_incondicionado?: number | null
           descricao_servico?: string
+          discriminacao?: string | null
           id?: string
           iss_contribuinte_id?: string
           iss_retido?: boolean | null
           motivo_cancelamento?: string | null
+          municipio_incidencia?: string | null
+          nfse_substituida_id?: string | null
           numero_nfse?: number
+          outras_retencoes?: number | null
+          pdf_url?: string | null
           prestador_cpf_cnpj?: string
           prestador_razao_social?: string
           secretaria_id?: string | null
+          servico_id?: string | null
           status?: string | null
           tomador_cpf_cnpj?: string | null
           tomador_email?: string | null
@@ -5763,6 +6572,13 @@ export type Database = {
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_servico_id_fkey"
+            columns: ["servico_id"]
+            isOneToOne: false
+            referencedRelation: "lista_servicos_iss"
             referencedColumns: ["id"]
           },
         ]
@@ -6903,6 +7719,123 @@ export type Database = {
           },
           {
             foreignKeyName: "ppa_programas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_administrativos_fiscais: {
+        Row: {
+          auto_infracao_id: string | null
+          contribuinte_id: string
+          created_at: string | null
+          data_abertura: string
+          data_defesa: string | null
+          data_inscricao_divida_ativa: string | null
+          data_julgamento: string | null
+          data_recurso: string | null
+          decisao: string | null
+          decisao_recurso: string | null
+          defesa_anexos: Json | null
+          defesa_texto: string | null
+          divida_ativa_id: string | null
+          fundamentacao_decisao: string | null
+          id: string
+          inscrito_divida_ativa: boolean | null
+          municipio_id: string | null
+          numero_processo: string
+          recurso_texto: string | null
+          relator_id: string | null
+          secretaria_id: string | null
+          status: string | null
+          tem_recurso: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          auto_infracao_id?: string | null
+          contribuinte_id: string
+          created_at?: string | null
+          data_abertura?: string
+          data_defesa?: string | null
+          data_inscricao_divida_ativa?: string | null
+          data_julgamento?: string | null
+          data_recurso?: string | null
+          decisao?: string | null
+          decisao_recurso?: string | null
+          defesa_anexos?: Json | null
+          defesa_texto?: string | null
+          divida_ativa_id?: string | null
+          fundamentacao_decisao?: string | null
+          id?: string
+          inscrito_divida_ativa?: boolean | null
+          municipio_id?: string | null
+          numero_processo: string
+          recurso_texto?: string | null
+          relator_id?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tem_recurso?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          auto_infracao_id?: string | null
+          contribuinte_id?: string
+          created_at?: string | null
+          data_abertura?: string
+          data_defesa?: string | null
+          data_inscricao_divida_ativa?: string | null
+          data_julgamento?: string | null
+          data_recurso?: string | null
+          decisao?: string | null
+          decisao_recurso?: string | null
+          defesa_anexos?: Json | null
+          defesa_texto?: string | null
+          divida_ativa_id?: string | null
+          fundamentacao_decisao?: string | null
+          id?: string
+          inscrito_divida_ativa?: boolean | null
+          municipio_id?: string | null
+          numero_processo?: string
+          recurso_texto?: string | null
+          relator_id?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tem_recurso?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_administrativos_fiscais_auto_infracao_id_fkey"
+            columns: ["auto_infracao_id"]
+            isOneToOne: false
+            referencedRelation: "autos_infracao_iss"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_fiscais_contribuinte_id_fkey"
+            columns: ["contribuinte_id"]
+            isOneToOne: false
+            referencedRelation: "contribuintes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_fiscais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_fiscais_relator_id_fkey"
+            columns: ["relator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_fiscais_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
@@ -9235,6 +10168,17 @@ export type Database = {
         Returns: number
       }
       gerar_hash_auditoria: { Args: { dados: Json }; Returns: string }
+      gerar_numero_auto_infracao: { Args: never; Returns: string }
+      gerar_numero_declaracao_iss: {
+        Args: { p_competencia: string; p_contribuinte_id: string }
+        Returns: string
+      }
+      gerar_numero_guia_iss: {
+        Args: { p_declaracao_id: string }
+        Returns: string
+      }
+      gerar_numero_ordem_servico_fiscalizacao: { Args: never; Returns: string }
+      gerar_numero_processo_fiscal: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_unidade_ids: { Args: { _user_id: string }; Returns: string[] }
@@ -9438,6 +10382,11 @@ export type Database = {
         | "executado"
         | "prescrito"
         | "cancelado"
+      status_declaracao_iss:
+        | "rascunho"
+        | "transmitida"
+        | "retificada"
+        | "cancelada"
       status_divida_ativa:
         | "inscrita"
         | "parcelada"
@@ -9472,6 +10421,14 @@ export type Database = {
         | "atrasado"
         | "rescindido"
         | "quitado"
+      status_processo_fiscal:
+        | "aberto"
+        | "em_analise"
+        | "pendente_defesa"
+        | "julgado_procedente"
+        | "julgado_improcedente"
+        | "arquivado"
+        | "encaminhado_divida_ativa"
       status_processo_trabalhista:
         | "ativo"
         | "suspenso"
@@ -9509,6 +10466,12 @@ export type Database = {
         | "exportar"
         | "importar"
         | "reverter"
+      tipo_auto_infracao:
+        | "omissao_declaracao"
+        | "subfaturamento"
+        | "atividade_irregular"
+        | "descumprimento_obrigacao_acessoria"
+        | "outros"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
       tipo_contribuinte: "pessoa_fisica" | "pessoa_juridica"
       tipo_convenio: "recebido" | "concedido"
@@ -9806,6 +10769,12 @@ export const Constants = {
         "prescrito",
         "cancelado",
       ],
+      status_declaracao_iss: [
+        "rascunho",
+        "transmitida",
+        "retificada",
+        "cancelada",
+      ],
       status_divida_ativa: [
         "inscrita",
         "parcelada",
@@ -9838,6 +10807,15 @@ export const Constants = {
         "atrasado",
         "rescindido",
         "quitado",
+      ],
+      status_processo_fiscal: [
+        "aberto",
+        "em_analise",
+        "pendente_defesa",
+        "julgado_procedente",
+        "julgado_improcedente",
+        "arquivado",
+        "encaminhado_divida_ativa",
       ],
       status_processo_trabalhista: [
         "ativo",
@@ -9879,6 +10857,13 @@ export const Constants = {
         "exportar",
         "importar",
         "reverter",
+      ],
+      tipo_auto_infracao: [
+        "omissao_declaracao",
+        "subfaturamento",
+        "atividade_irregular",
+        "descumprimento_obrigacao_acessoria",
+        "outros",
       ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
       tipo_contribuinte: ["pessoa_fisica", "pessoa_juridica"],
