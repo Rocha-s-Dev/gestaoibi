@@ -33,6 +33,9 @@ import ArrecadacaoTributaria from "@/pages/ArrecadacaoTributaria";
 import MatriculaOnline from "@/pages/MatriculaOnline";
 import PortalResponsavelLogin from "@/pages/PortalResponsavelLogin";
 import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
+import GestaoTransportes from "@/pages/GestaoTransportes";
+import GestaoAgricultura from "@/pages/GestaoAgricultura";
+import GestaoTurismoCultura from "@/pages/GestaoTurismoCultura";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import { SecretariaProvider } from "@/contexts/SecretariaContext";
 import "./App.css";
@@ -267,6 +270,9 @@ export default function App() {
             </RequireAuth>
           }
         />
+        <Route path="/transportes" element={<RequireAuth><GestaoTransportes /></RequireAuth>} />
+        <Route path="/agricultura" element={<RequireAuth><GestaoAgricultura /></RequireAuth>} />
+        <Route path="/turismo-cultura" element={<RequireAuth><GestaoTurismoCultura /></RequireAuth>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
