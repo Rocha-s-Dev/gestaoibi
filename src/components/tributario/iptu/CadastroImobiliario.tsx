@@ -166,23 +166,23 @@ export function CadastroImobiliario() {
                 className="pl-10"
               />
             </div>
-            <Select value={filterBairro} onValueChange={setFilterBairro}>
+            <Select value={filterBairro || "all"} onValueChange={(v) => setFilterBairro(v === "all" ? "" : v)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Todos os bairros" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos os bairros</SelectItem>
+                <SelectItem value="all">Todos os bairros</SelectItem>
                 {bairros.map((b: string) => (
                   <SelectItem key={b} value={b}>{b}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <Select value={filterStatus || "all"} onValueChange={(v) => setFilterStatus(v === "all" ? "" : v)}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="ativo">Ativo</SelectItem>
                 <SelectItem value="inativo">Inativo</SelectItem>
                 <SelectItem value="isento">Isento</SelectItem>
