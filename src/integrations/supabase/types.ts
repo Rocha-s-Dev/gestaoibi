@@ -470,6 +470,70 @@ export type Database = {
           },
         ]
       }
+      alertas_vigencia_contratos: {
+        Row: {
+          analise_id: string | null
+          contrato_id: string | null
+          created_at: string
+          data_referencia: string
+          data_resolucao: string | null
+          descricao: string
+          dias_antecedencia: number | null
+          id: string
+          resolvido_por: string | null
+          status: string | null
+          tipo_alerta: string
+        }
+        Insert: {
+          analise_id?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          data_referencia: string
+          data_resolucao?: string | null
+          descricao: string
+          dias_antecedencia?: number | null
+          id?: string
+          resolvido_por?: string | null
+          status?: string | null
+          tipo_alerta: string
+        }
+        Update: {
+          analise_id?: string | null
+          contrato_id?: string | null
+          created_at?: string
+          data_referencia?: string
+          data_resolucao?: string | null
+          descricao?: string
+          dias_antecedencia?: number | null
+          id?: string
+          resolvido_por?: string | null
+          status?: string | null
+          tipo_alerta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_vigencia_contratos_analise_id_fkey"
+            columns: ["analise_id"]
+            isOneToOne: false
+            referencedRelation: "analises_juridicas_contratos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_vigencia_contratos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_vigencia_contratos_resolvido_por_fkey"
+            columns: ["resolvido_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alunos: {
         Row: {
           cpf: string | null
@@ -577,6 +641,110 @@ export type Database = {
             columns: ["rota_id"]
             isOneToOne: false
             referencedRelation: "rotas_transporte"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analises_juridicas_contratos: {
+        Row: {
+          advogado_nome: string | null
+          advogado_responsavel_id: string | null
+          clausulas_analisadas: Json | null
+          contrato_id: string | null
+          created_at: string
+          data_parecer: string | null
+          data_solicitacao: string
+          id: string
+          licitacao_numero: string | null
+          municipio_id: string | null
+          numero_parecer: string | null
+          objeto: string
+          observacoes: string | null
+          parecer_conclusivo: string
+          prazo_resposta: string | null
+          recomendacao: string | null
+          riscos_identificados: Json | null
+          secretaria_solicitante_id: string | null
+          status: string | null
+          tipo_analise: string
+          updated_at: string
+          valor_contrato: number | null
+        }
+        Insert: {
+          advogado_nome?: string | null
+          advogado_responsavel_id?: string | null
+          clausulas_analisadas?: Json | null
+          contrato_id?: string | null
+          created_at?: string
+          data_parecer?: string | null
+          data_solicitacao: string
+          id?: string
+          licitacao_numero?: string | null
+          municipio_id?: string | null
+          numero_parecer?: string | null
+          objeto: string
+          observacoes?: string | null
+          parecer_conclusivo: string
+          prazo_resposta?: string | null
+          recomendacao?: string | null
+          riscos_identificados?: Json | null
+          secretaria_solicitante_id?: string | null
+          status?: string | null
+          tipo_analise: string
+          updated_at?: string
+          valor_contrato?: number | null
+        }
+        Update: {
+          advogado_nome?: string | null
+          advogado_responsavel_id?: string | null
+          clausulas_analisadas?: Json | null
+          contrato_id?: string | null
+          created_at?: string
+          data_parecer?: string | null
+          data_solicitacao?: string
+          id?: string
+          licitacao_numero?: string | null
+          municipio_id?: string | null
+          numero_parecer?: string | null
+          objeto?: string
+          observacoes?: string | null
+          parecer_conclusivo?: string
+          prazo_resposta?: string | null
+          recomendacao?: string | null
+          riscos_identificados?: Json | null
+          secretaria_solicitante_id?: string | null
+          status?: string | null
+          tipo_analise?: string
+          updated_at?: string
+          valor_contrato?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analises_juridicas_contratos_advogado_responsavel_id_fkey"
+            columns: ["advogado_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analises_juridicas_contratos_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analises_juridicas_contratos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analises_juridicas_contratos_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -1757,6 +1925,92 @@ export type Database = {
           },
         ]
       }
+      consultas_juridicas: {
+        Row: {
+          advogado_designado_id: string | null
+          advogado_nome: string | null
+          assunto: string
+          created_at: string
+          descricao_consulta: string
+          id: string
+          municipio_id: string | null
+          numero_consulta: string
+          prazo_resposta: string | null
+          prioridade: string | null
+          secretaria_solicitante_id: string | null
+          solicitante_id: string | null
+          solicitante_nome: string | null
+          status: string | null
+          tipo_consulta: string | null
+          updated_at: string
+        }
+        Insert: {
+          advogado_designado_id?: string | null
+          advogado_nome?: string | null
+          assunto: string
+          created_at?: string
+          descricao_consulta: string
+          id?: string
+          municipio_id?: string | null
+          numero_consulta: string
+          prazo_resposta?: string | null
+          prioridade?: string | null
+          secretaria_solicitante_id?: string | null
+          solicitante_id?: string | null
+          solicitante_nome?: string | null
+          status?: string | null
+          tipo_consulta?: string | null
+          updated_at?: string
+        }
+        Update: {
+          advogado_designado_id?: string | null
+          advogado_nome?: string | null
+          assunto?: string
+          created_at?: string
+          descricao_consulta?: string
+          id?: string
+          municipio_id?: string | null
+          numero_consulta?: string
+          prazo_resposta?: string | null
+          prioridade?: string | null
+          secretaria_solicitante_id?: string | null
+          solicitante_id?: string | null
+          solicitante_nome?: string | null
+          status?: string | null
+          tipo_consulta?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultas_juridicas_advogado_designado_id_fkey"
+            columns: ["advogado_designado_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_juridicas_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_juridicas_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_juridicas_solicitante_id_fkey"
+            columns: ["solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consumo_merenda: {
         Row: {
           cardapio_id: string | null
@@ -2786,6 +3040,72 @@ export type Database = {
           {
             foreignKeyName: "dados_bancarios_servidor_id_fkey"
             columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decisoes_processo: {
+        Row: {
+          created_at: string
+          data_decisao: string
+          data_publicacao: string | null
+          dispositivo: string
+          ementa: string | null
+          fundamentacao: string
+          id: string
+          numero_decisao: string | null
+          permite_recurso: boolean | null
+          prazo_recurso_dias: number | null
+          processo_id: string
+          publicada: boolean | null
+          relator_id: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          data_decisao: string
+          data_publicacao?: string | null
+          dispositivo: string
+          ementa?: string | null
+          fundamentacao: string
+          id?: string
+          numero_decisao?: string | null
+          permite_recurso?: boolean | null
+          prazo_recurso_dias?: number | null
+          processo_id: string
+          publicada?: boolean | null
+          relator_id?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          data_decisao?: string
+          data_publicacao?: string | null
+          dispositivo?: string
+          ementa?: string | null
+          fundamentacao?: string
+          id?: string
+          numero_decisao?: string | null
+          permite_recurso?: boolean | null
+          prazo_recurso_dias?: number | null
+          processo_id?: string
+          publicada?: boolean | null
+          relator_id?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decisoes_processo_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_administrativos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decisoes_processo_relator_id_fkey"
+            columns: ["relator_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -7802,6 +8122,69 @@ export type Database = {
           },
         ]
       }
+      modelos_parecer: {
+        Row: {
+          ativo: boolean | null
+          categoria: string | null
+          conclusao_modelo: string
+          created_at: string
+          criado_por: string | null
+          ementa_modelo: string | null
+          fundamentacao_modelo: string
+          id: string
+          municipio_id: string | null
+          tags: Json | null
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean | null
+          categoria?: string | null
+          conclusao_modelo: string
+          created_at?: string
+          criado_por?: string | null
+          ementa_modelo?: string | null
+          fundamentacao_modelo: string
+          id?: string
+          municipio_id?: string | null
+          tags?: Json | null
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean | null
+          categoria?: string | null
+          conclusao_modelo?: string
+          created_at?: string
+          criado_por?: string | null
+          ementa_modelo?: string | null
+          fundamentacao_modelo?: string
+          id?: string
+          municipio_id?: string | null
+          tags?: Json | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modelos_parecer_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "modelos_parecer_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       modulos_sistema: {
         Row: {
           ativo: boolean | null
@@ -8044,6 +8427,60 @@ export type Database = {
             columns: ["ordem_pagamento_id"]
             isOneToOne: false
             referencedRelation: "ordens_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movimentacoes_processo: {
+        Row: {
+          created_at: string
+          data_movimentacao: string | null
+          descricao: string
+          documento_anexo: string | null
+          id: string
+          prazo_resposta: string | null
+          processo_id: string
+          responsavel_id: string | null
+          responsavel_nome: string | null
+          tipo: string
+        }
+        Insert: {
+          created_at?: string
+          data_movimentacao?: string | null
+          descricao: string
+          documento_anexo?: string | null
+          id?: string
+          prazo_resposta?: string | null
+          processo_id: string
+          responsavel_id?: string | null
+          responsavel_nome?: string | null
+          tipo: string
+        }
+        Update: {
+          created_at?: string
+          data_movimentacao?: string | null
+          descricao?: string
+          documento_anexo?: string | null
+          id?: string
+          prazo_resposta?: string | null
+          processo_id?: string
+          responsavel_id?: string | null
+          responsavel_nome?: string | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_processo_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_administrativos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_processo_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -9320,6 +9757,109 @@ export type Database = {
           },
         ]
       }
+      pareceres_juridicos: {
+        Row: {
+          advogado_id: string | null
+          advogado_nome: string | null
+          conclusao: string
+          consulta_id: string | null
+          created_at: string
+          data_parecer: string
+          ementa: string | null
+          fundamentacao_legal: string
+          id: string
+          municipio_id: string | null
+          numero_parecer: string
+          processo_id: string | null
+          reutilizavel: boolean | null
+          revisor_id: string | null
+          secretaria_id: string | null
+          tags: Json | null
+          tipo: string
+        }
+        Insert: {
+          advogado_id?: string | null
+          advogado_nome?: string | null
+          conclusao: string
+          consulta_id?: string | null
+          created_at?: string
+          data_parecer: string
+          ementa?: string | null
+          fundamentacao_legal: string
+          id?: string
+          municipio_id?: string | null
+          numero_parecer: string
+          processo_id?: string | null
+          reutilizavel?: boolean | null
+          revisor_id?: string | null
+          secretaria_id?: string | null
+          tags?: Json | null
+          tipo: string
+        }
+        Update: {
+          advogado_id?: string | null
+          advogado_nome?: string | null
+          conclusao?: string
+          consulta_id?: string | null
+          created_at?: string
+          data_parecer?: string
+          ementa?: string | null
+          fundamentacao_legal?: string
+          id?: string
+          municipio_id?: string | null
+          numero_parecer?: string
+          processo_id?: string | null
+          reutilizavel?: boolean | null
+          revisor_id?: string | null
+          secretaria_id?: string | null
+          tags?: Json | null
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pareceres_juridicos_advogado_id_fkey"
+            columns: ["advogado_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_consulta_id_fkey"
+            columns: ["consulta_id"]
+            isOneToOne: false
+            referencedRelation: "consultas_juridicas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos_administrativos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_revisor_id_fkey"
+            columns: ["revisor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       periodos_fiscais: {
         Row: {
           bloqueado_em: string | null
@@ -10126,6 +10666,97 @@ export type Database = {
           {
             foreignKeyName: "prestacoes_contas_eventos_secretaria_id_fkey"
             columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos_administrativos: {
+        Row: {
+          assunto: string
+          created_at: string
+          data_abertura: string
+          data_prazo: string | null
+          descricao: string | null
+          fundamentacao_legal: string | null
+          id: string
+          municipio_id: string | null
+          numero_processo: string
+          observacoes: string | null
+          partes_envolvidas: Json | null
+          prazo_dias: number | null
+          prioridade: string | null
+          protocolo_id: string | null
+          relator_id: string | null
+          relator_nome: string | null
+          secretaria_origem_id: string | null
+          status: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          assunto: string
+          created_at?: string
+          data_abertura?: string
+          data_prazo?: string | null
+          descricao?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero_processo: string
+          observacoes?: string | null
+          partes_envolvidas?: Json | null
+          prazo_dias?: number | null
+          prioridade?: string | null
+          protocolo_id?: string | null
+          relator_id?: string | null
+          relator_nome?: string | null
+          secretaria_origem_id?: string | null
+          status?: string | null
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          assunto?: string
+          created_at?: string
+          data_abertura?: string
+          data_prazo?: string | null
+          descricao?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero_processo?: string
+          observacoes?: string | null
+          partes_envolvidas?: Json | null
+          prazo_dias?: number | null
+          prioridade?: string | null
+          protocolo_id?: string | null
+          relator_id?: string | null
+          relator_nome?: string | null
+          secretaria_origem_id?: string | null
+          status?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_administrativos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_relator_id_fkey"
+            columns: ["relator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_secretaria_origem_id_fkey"
+            columns: ["secretaria_origem_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]

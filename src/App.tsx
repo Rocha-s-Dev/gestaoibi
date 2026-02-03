@@ -36,6 +36,7 @@ import PortalResponsavelDashboard from "@/pages/PortalResponsavelDashboard";
 import GestaoTransportes from "@/pages/GestaoTransportes";
 import GestaoAgricultura from "@/pages/GestaoAgricultura";
 import GestaoTurismoCultura from "@/pages/GestaoTurismoCultura";
+import Controladoria from "@/pages/Controladoria";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import { SecretariaProvider } from "@/contexts/SecretariaContext";
 import "./App.css";
@@ -273,6 +274,7 @@ export default function App() {
         <Route path="/transportes" element={<RequireAuth><GestaoTransportes /></RequireAuth>} />
         <Route path="/agricultura" element={<RequireAuth><GestaoAgricultura /></RequireAuth>} />
         <Route path="/turismo-cultura" element={<RequireAuth><GestaoTurismoCultura /></RequireAuth>} />
+        <Route path="/controladoria" element={<RequireAuth><Controladoria /></RequireAuth>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />

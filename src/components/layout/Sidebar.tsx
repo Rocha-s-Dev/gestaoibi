@@ -39,7 +39,8 @@ import {
   Car,
   Tractor,
   Route,
-  Handshake
+  Handshake,
+  Gavel
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ const mainMenuItems = [
   { icon: Bell, label: "Notificações", path: "/notificacoes" },
   { icon: UserCog, label: "RH e Permissões", path: "/admin/rh" },
   { icon: Shield, label: "Auditoria", path: "/admin/auditoria" },
+  { icon: Gavel, label: "Controladoria/Jurídico", path: "/controladoria" },
   { icon: Settings, label: "Configurações", path: "/configuracoes" },
 ];
 
