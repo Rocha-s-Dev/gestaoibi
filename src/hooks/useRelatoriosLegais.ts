@@ -99,25 +99,21 @@ export function useRelatoriosLegais() {
 
 async function gerarDadosRelatorio(tipo: string, competencia: string): Promise<Record<string, unknown>> {
   // Buscar dados base
-  const { data: servidores } = await supabase
-    .from("profiles")
-    .select(`
-      *,
-      vinculos:vinculos_funcionais(*, cargo:cargos_publicos(*))
-    `);
+  const servidoresQuery = supabase.from("profiles" as any).select("*");
+  const { data: servidores } = await servidoresQuery;
 
-  const { data: folha } = await supabase
-    .from("folha_servidor")
+  const { data: folha } = await (supabase
+    .from("folha_servidor" as any)
     .select("*")
     .gte("created_at", `${competencia}-01`)
-    .lt("created_at", `${competencia}-31`);
+    .lt("created_at", `${competencia}-31`) as any);
 
   switch (tipo) {
     case "RAIS":
       return {
         ano_base: new Date(competencia).getFullYear(),
-        total_servidores: servidores?.length || 0,
-        servidores: servidores?.map(s => ({
+        total_servidores: (servidores as any[])?.length || 0,
+        servidores: (servidores as any[])?.map((s: any) => ({
           cpf: s.cpf,
           nome: s.name,
           data_admissao: s.vinculos?.[0]?.data_admissao,
