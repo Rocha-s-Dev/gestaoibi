@@ -93,6 +93,151 @@ export type Database = {
           },
         ]
       }
+      acompanhamento_obras_prioritarias: {
+        Row: {
+          created_at: string | null
+          data_registro: string
+          descricao_progresso: string | null
+          documentos: Json | null
+          fotos: Json | null
+          id: string
+          obra_prioritaria_id: string
+          percentual_financeiro: number | null
+          percentual_fisico: number | null
+          problemas_identificados: string | null
+          providencias_tomadas: string | null
+          responsavel_registro_id: string | null
+          valor_medicao: number | null
+          videos: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_registro?: string
+          descricao_progresso?: string | null
+          documentos?: Json | null
+          fotos?: Json | null
+          id?: string
+          obra_prioritaria_id: string
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          problemas_identificados?: string | null
+          providencias_tomadas?: string | null
+          responsavel_registro_id?: string | null
+          valor_medicao?: number | null
+          videos?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          data_registro?: string
+          descricao_progresso?: string | null
+          documentos?: Json | null
+          fotos?: Json | null
+          id?: string
+          obra_prioritaria_id?: string
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          problemas_identificados?: string | null
+          providencias_tomadas?: string | null
+          responsavel_registro_id?: string | null
+          valor_medicao?: number | null
+          videos?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acompanhamento_obras_prioritarias_obra_prioritaria_id_fkey"
+            columns: ["obra_prioritaria_id"]
+            isOneToOne: false
+            referencedRelation: "obras_prioritarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agenda_governamental: {
+        Row: {
+          conflito_descricao: string | null
+          conflito_detectado: boolean | null
+          created_at: string | null
+          created_by: string | null
+          data_fim: string | null
+          data_inicio: string
+          decisoes_tomadas: string | null
+          descricao: string | null
+          documentos_apoio: Json | null
+          encaminhamentos: Json | null
+          endereco: string | null
+          id: string
+          local: string | null
+          municipio_id: string | null
+          participantes: Json | null
+          pauta: string | null
+          prioridade: string | null
+          publico: boolean | null
+          secretarias_envolvidas: string[] | null
+          status: string | null
+          tipo: string
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          conflito_descricao?: string | null
+          conflito_detectado?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio: string
+          decisoes_tomadas?: string | null
+          descricao?: string | null
+          documentos_apoio?: Json | null
+          encaminhamentos?: Json | null
+          endereco?: string | null
+          id?: string
+          local?: string | null
+          municipio_id?: string | null
+          participantes?: Json | null
+          pauta?: string | null
+          prioridade?: string | null
+          publico?: boolean | null
+          secretarias_envolvidas?: string[] | null
+          status?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          conflito_descricao?: string | null
+          conflito_detectado?: boolean | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          decisoes_tomadas?: string | null
+          descricao?: string | null
+          documentos_apoio?: Json | null
+          encaminhamentos?: Json | null
+          endereco?: string | null
+          id?: string
+          local?: string | null
+          municipio_id?: string | null
+          participantes?: Json | null
+          pauta?: string | null
+          prioridade?: string | null
+          publico?: boolean | null
+          secretarias_envolvidas?: string[] | null
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agenda_governamental_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agendamentos: {
         Row: {
           created_at: string
@@ -266,6 +411,90 @@ export type Database = {
             columns: ["aluno_id"]
             isOneToOne: false
             referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alertas_executivos: {
+        Row: {
+          acao_sugerida: string | null
+          categoria: string
+          created_at: string | null
+          dados_adicionais: Json | null
+          data_resolucao: string | null
+          descricao: string
+          entidade_id: string | null
+          entidade_origem: string | null
+          id: string
+          modulo_origem: string | null
+          municipio_id: string | null
+          prazo_acao: string | null
+          prioridade: string
+          resolucao: string | null
+          resolvido_por: string | null
+          secretaria_id: string | null
+          status: string | null
+          tipo: string
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          acao_sugerida?: string | null
+          categoria: string
+          created_at?: string | null
+          dados_adicionais?: Json | null
+          data_resolucao?: string | null
+          descricao: string
+          entidade_id?: string | null
+          entidade_origem?: string | null
+          id?: string
+          modulo_origem?: string | null
+          municipio_id?: string | null
+          prazo_acao?: string | null
+          prioridade: string
+          resolucao?: string | null
+          resolvido_por?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          acao_sugerida?: string | null
+          categoria?: string
+          created_at?: string | null
+          dados_adicionais?: Json | null
+          data_resolucao?: string | null
+          descricao?: string
+          entidade_id?: string | null
+          entidade_origem?: string | null
+          id?: string
+          modulo_origem?: string | null
+          municipio_id?: string | null
+          prazo_acao?: string | null
+          prioridade?: string
+          resolucao?: string | null
+          resolvido_por?: string | null
+          secretaria_id?: string | null
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_executivos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_executivos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
         ]
@@ -743,6 +972,127 @@ export type Database = {
           {
             foreignKeyName: "analises_juridicas_contratos_secretaria_solicitante_id_fkey"
             columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      atos_administrativos: {
+        Row: {
+          analise_juridica_id: string | null
+          aprovado_juridico: boolean | null
+          assinante_id: string | null
+          assinatura_digital: string | null
+          ato_revogador_id: string | null
+          conteudo: string
+          created_at: string | null
+          created_by: string | null
+          data_assinatura: string | null
+          data_parecer: string | null
+          data_publicacao: string | null
+          data_vigencia_fim: string | null
+          data_vigencia_inicio: string | null
+          diario_oficial_edicao: string | null
+          diario_oficial_pagina: string | null
+          ementa: string | null
+          fundamentacao_legal: string | null
+          id: string
+          municipio_id: string | null
+          numero: string
+          parecer_juridico: string | null
+          revogado: boolean | null
+          secretaria_origem_id: string | null
+          status: string | null
+          tipo: string
+          titulo: string
+          updated_at: string | null
+          url_publicacao: string | null
+          versao: number | null
+          versao_anterior_id: string | null
+        }
+        Insert: {
+          analise_juridica_id?: string | null
+          aprovado_juridico?: boolean | null
+          assinante_id?: string | null
+          assinatura_digital?: string | null
+          ato_revogador_id?: string | null
+          conteudo: string
+          created_at?: string | null
+          created_by?: string | null
+          data_assinatura?: string | null
+          data_parecer?: string | null
+          data_publicacao?: string | null
+          data_vigencia_fim?: string | null
+          data_vigencia_inicio?: string | null
+          diario_oficial_edicao?: string | null
+          diario_oficial_pagina?: string | null
+          ementa?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero: string
+          parecer_juridico?: string | null
+          revogado?: boolean | null
+          secretaria_origem_id?: string | null
+          status?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string | null
+          url_publicacao?: string | null
+          versao?: number | null
+          versao_anterior_id?: string | null
+        }
+        Update: {
+          analise_juridica_id?: string | null
+          aprovado_juridico?: boolean | null
+          assinante_id?: string | null
+          assinatura_digital?: string | null
+          ato_revogador_id?: string | null
+          conteudo?: string
+          created_at?: string | null
+          created_by?: string | null
+          data_assinatura?: string | null
+          data_parecer?: string | null
+          data_publicacao?: string | null
+          data_vigencia_fim?: string | null
+          data_vigencia_inicio?: string | null
+          diario_oficial_edicao?: string | null
+          diario_oficial_pagina?: string | null
+          ementa?: string | null
+          fundamentacao_legal?: string | null
+          id?: string
+          municipio_id?: string | null
+          numero?: string
+          parecer_juridico?: string | null
+          revogado?: boolean | null
+          secretaria_origem_id?: string | null
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string | null
+          url_publicacao?: string | null
+          versao?: number | null
+          versao_anterior_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atos_administrativos_analise_juridica_id_fkey"
+            columns: ["analise_juridica_id"]
+            isOneToOne: false
+            referencedRelation: "analises_juridicas_contratos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atos_administrativos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atos_administrativos_secretaria_origem_id_fkey"
+            columns: ["secretaria_origem_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
@@ -1529,6 +1879,86 @@ export type Database = {
             columns: ["lancamento_id"]
             isOneToOne: false
             referencedRelation: "iptu_lancamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comunicacoes_institucionais: {
+        Row: {
+          alcance: number | null
+          anexos: Json | null
+          canal: string | null
+          conteudo: string
+          created_at: string | null
+          created_by: string | null
+          data_evento: string | null
+          data_publicacao: string | null
+          engajamento: number | null
+          id: string
+          municipio_id: string | null
+          palavras_chave: string[] | null
+          rede_social: string | null
+          repercussao: string | null
+          resumo: string | null
+          sentimento: string | null
+          status: string | null
+          tipo: string
+          titulo: string
+          updated_at: string | null
+          veiculo: string | null
+        }
+        Insert: {
+          alcance?: number | null
+          anexos?: Json | null
+          canal?: string | null
+          conteudo: string
+          created_at?: string | null
+          created_by?: string | null
+          data_evento?: string | null
+          data_publicacao?: string | null
+          engajamento?: number | null
+          id?: string
+          municipio_id?: string | null
+          palavras_chave?: string[] | null
+          rede_social?: string | null
+          repercussao?: string | null
+          resumo?: string | null
+          sentimento?: string | null
+          status?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string | null
+          veiculo?: string | null
+        }
+        Update: {
+          alcance?: number | null
+          anexos?: Json | null
+          canal?: string | null
+          conteudo?: string
+          created_at?: string | null
+          created_by?: string | null
+          data_evento?: string | null
+          data_publicacao?: string | null
+          engajamento?: number | null
+          id?: string
+          municipio_id?: string | null
+          palavras_chave?: string[] | null
+          rede_social?: string | null
+          repercussao?: string | null
+          resumo?: string | null
+          sentimento?: string | null
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string | null
+          veiculo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comunicacoes_institucionais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
             referencedColumns: ["id"]
           },
         ]
@@ -6129,6 +6559,56 @@ export type Database = {
           },
         ]
       }
+      historico_metas_governo: {
+        Row: {
+          created_at: string | null
+          data_atualizacao: string
+          id: string
+          justificativa: string | null
+          meta_id: string
+          observacoes: string | null
+          orcamento_executado_anterior: number | null
+          orcamento_executado_novo: number | null
+          responsavel_id: string | null
+          valor_anterior: number | null
+          valor_novo: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_atualizacao?: string
+          id?: string
+          justificativa?: string | null
+          meta_id: string
+          observacoes?: string | null
+          orcamento_executado_anterior?: number | null
+          orcamento_executado_novo?: number | null
+          responsavel_id?: string | null
+          valor_anterior?: number | null
+          valor_novo?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          data_atualizacao?: string
+          id?: string
+          justificativa?: string | null
+          meta_id?: string
+          observacoes?: string | null
+          orcamento_executado_anterior?: number | null
+          orcamento_executado_novo?: number | null
+          responsavel_id?: string | null
+          valor_anterior?: number | null
+          valor_novo?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_metas_governo_meta_id_fkey"
+            columns: ["meta_id"]
+            isOneToOne: false
+            referencedRelation: "metas_plano_governo"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historico_proprietarios: {
         Row: {
           cartorio: string | null
@@ -8066,6 +8546,102 @@ export type Database = {
         }
         Relationships: []
       }
+      metas_plano_governo: {
+        Row: {
+          area: string
+          created_at: string | null
+          created_by: string | null
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          id: string
+          indicador_nome: string | null
+          indicador_unidade: string | null
+          justificativa_desvio: string | null
+          meta_valor: number | null
+          municipio_id: string | null
+          orcamento_executado: number | null
+          orcamento_previsto: number | null
+          prazo_alerta_dias: number | null
+          prioridade: string | null
+          proxima_atualizacao: string | null
+          secretaria_responsavel_id: string | null
+          status: string | null
+          titulo: string
+          ultima_atualizacao: string | null
+          updated_at: string | null
+          valor_atual: number | null
+          valor_inicial: number | null
+        }
+        Insert: {
+          area: string
+          created_at?: string | null
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          indicador_nome?: string | null
+          indicador_unidade?: string | null
+          justificativa_desvio?: string | null
+          meta_valor?: number | null
+          municipio_id?: string | null
+          orcamento_executado?: number | null
+          orcamento_previsto?: number | null
+          prazo_alerta_dias?: number | null
+          prioridade?: string | null
+          proxima_atualizacao?: string | null
+          secretaria_responsavel_id?: string | null
+          status?: string | null
+          titulo: string
+          ultima_atualizacao?: string | null
+          updated_at?: string | null
+          valor_atual?: number | null
+          valor_inicial?: number | null
+        }
+        Update: {
+          area?: string
+          created_at?: string | null
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          indicador_nome?: string | null
+          indicador_unidade?: string | null
+          justificativa_desvio?: string | null
+          meta_valor?: number | null
+          municipio_id?: string | null
+          orcamento_executado?: number | null
+          orcamento_previsto?: number | null
+          prazo_alerta_dias?: number | null
+          prioridade?: string | null
+          proxima_atualizacao?: string | null
+          secretaria_responsavel_id?: string | null
+          status?: string | null
+          titulo?: string
+          ultima_atualizacao?: string | null
+          updated_at?: string | null
+          valor_atual?: number | null
+          valor_inicial?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_plano_governo_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_plano_governo_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       metas_saude: {
         Row: {
           created_at: string
@@ -8930,6 +9506,118 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      obras_prioritarias: {
+        Row: {
+          alerta_atraso: boolean | null
+          contrato_id: string | null
+          created_at: string | null
+          created_by: string | null
+          data_fim_prevista: string | null
+          data_fim_real: string | null
+          data_inicio_prevista: string | null
+          data_inicio_real: string | null
+          descricao: string | null
+          destaque: boolean | null
+          dias_atraso: number | null
+          fonte_recurso: string | null
+          id: string
+          justificativa_atraso: string | null
+          localizacao: string | null
+          meta_governo_id: string | null
+          municipio_id: string | null
+          nome: string
+          obra_referencia_id: string | null
+          percentual_financeiro: number | null
+          percentual_fisico: number | null
+          prioridade: string | null
+          secretaria_responsavel_id: string | null
+          status: string | null
+          updated_at: string | null
+          valor_executado: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          alerta_atraso?: boolean | null
+          contrato_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fim_prevista?: string | null
+          data_fim_real?: string | null
+          data_inicio_prevista?: string | null
+          data_inicio_real?: string | null
+          descricao?: string | null
+          destaque?: boolean | null
+          dias_atraso?: number | null
+          fonte_recurso?: string | null
+          id?: string
+          justificativa_atraso?: string | null
+          localizacao?: string | null
+          meta_governo_id?: string | null
+          municipio_id?: string | null
+          nome: string
+          obra_referencia_id?: string | null
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          prioridade?: string | null
+          secretaria_responsavel_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_executado?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          alerta_atraso?: boolean | null
+          contrato_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fim_prevista?: string | null
+          data_fim_real?: string | null
+          data_inicio_prevista?: string | null
+          data_inicio_real?: string | null
+          descricao?: string | null
+          destaque?: boolean | null
+          dias_atraso?: number | null
+          fonte_recurso?: string | null
+          id?: string
+          justificativa_atraso?: string | null
+          localizacao?: string | null
+          meta_governo_id?: string | null
+          municipio_id?: string | null
+          nome?: string
+          obra_referencia_id?: string | null
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          prioridade?: string | null
+          secretaria_responsavel_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor_executado?: number | null
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_prioritarias_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obras_prioritarias_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obras_prioritarias_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ocorrencias_transito: {
         Row: {
@@ -11927,6 +12615,77 @@ export type Database = {
           },
         ]
       }
+      relatorios_executivos: {
+        Row: {
+          arquivo_hash: string | null
+          arquivo_url: string | null
+          assinado: boolean | null
+          assinatura_hash: string | null
+          conteudo: Json | null
+          created_at: string | null
+          created_by: string | null
+          data_assinatura: string | null
+          id: string
+          indicadores: Json | null
+          municipio_id: string | null
+          periodo_fim: string
+          periodo_inicio: string
+          status: string | null
+          sumario_executivo: string | null
+          tipo: string
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          arquivo_hash?: string | null
+          arquivo_url?: string | null
+          assinado?: boolean | null
+          assinatura_hash?: string | null
+          conteudo?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          data_assinatura?: string | null
+          id?: string
+          indicadores?: Json | null
+          municipio_id?: string | null
+          periodo_fim: string
+          periodo_inicio: string
+          status?: string | null
+          sumario_executivo?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          arquivo_hash?: string | null
+          arquivo_url?: string | null
+          assinado?: boolean | null
+          assinatura_hash?: string | null
+          conteudo?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          data_assinatura?: string | null
+          id?: string
+          indicadores?: Json | null
+          municipio_id?: string | null
+          periodo_fim?: string
+          periodo_inicio?: string
+          status?: string | null
+          sumario_executivo?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relatorios_executivos_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       relatorios_legais: {
         Row: {
           arquivo_url: string | null
@@ -14133,6 +14892,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_gabinete_access: { Args: { _user_id: string }; Returns: boolean }
       has_health_role: {
         Args: {
           _role: Database["public"]["Enums"]["health_role"]
