@@ -14277,6 +14277,9 @@ export type Database = {
         | "tecnico"
         | "operador"
         | "auditor"
+        | "prefeito"
+        | "vice_prefeito"
+        | "assessor_gabinete"
       periodo_tipo: "bimestre" | "trimestre" | "quadrimestre" | "semestre"
       regime_trabalho:
         | "estatutario"
@@ -14723,6 +14726,9 @@ export const Constants = {
         "tecnico",
         "operador",
         "auditor",
+        "prefeito",
+        "vice_prefeito",
+        "assessor_gabinete",
       ],
       periodo_tipo: ["bimestre", "trimestre", "quadrimestre", "semestre"],
       regime_trabalho: [
