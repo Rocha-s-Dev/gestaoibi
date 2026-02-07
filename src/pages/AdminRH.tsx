@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Layout } from "@/components/layout/Layout";
+import { RHDashboard } from "@/components/rh/RHDashboard";
 import { ServidoresManagement } from "@/components/admin/ServidoresManagement";
 import { CargosPublicosManagement } from "@/components/admin/CargosPublicosManagement";
 import { FuncoesAdministrativasManagement } from "@/components/admin/FuncoesAdministrativasManagement";
@@ -13,7 +14,8 @@ import { RelatoriosLegaisManagement } from "@/components/rh/RelatoriosLegaisMana
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { 
   Users, Briefcase, Award, Shield, Lock, 
-  Banknote, Clock, Palmtree, Gavel, FileSpreadsheet 
+  Banknote, Clock, Palmtree, Gavel, FileSpreadsheet,
+  LayoutDashboard
 } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -35,15 +37,15 @@ function AccessDenied() {
 }
 
 export default function AdminRH() {
-  const [activeTab, setActiveTab] = useState("servidores");
+  const [activeTab, setActiveTab] = useState("dashboard-rh");
 
   return (
     <Layout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Gestão de RH e Permissões</h1>
+          <h1 className="text-3xl font-bold">Departamento de Recursos Humanos</h1>
           <p className="text-muted-foreground">
-            Módulo completo de Recursos Humanos: servidores, folha, frequência, férias e relatórios legais
+            Núcleo central de gestão de usuários, vínculos funcionais, folha e permissões do sistema municipal
           </p>
         </div>
 
@@ -55,6 +57,10 @@ export default function AdminRH() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <ScrollArea className="w-full whitespace-nowrap">
               <TabsList className="inline-flex w-max">
+                <TabsTrigger value="dashboard-rh" className="flex items-center gap-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="hidden sm:inline">Central RH</span>
+                </TabsTrigger>
                 <TabsTrigger value="servidores" className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   <span className="hidden sm:inline">Servidores</span>
@@ -94,6 +100,10 @@ export default function AdminRH() {
               </TabsList>
               <ScrollBar orientation="horizontal" />
             </ScrollArea>
+
+            <TabsContent value="dashboard-rh" className="mt-6">
+              <RHDashboard />
+            </TabsContent>
 
             <TabsContent value="servidores" className="mt-6">
               <ServidoresManagement />
