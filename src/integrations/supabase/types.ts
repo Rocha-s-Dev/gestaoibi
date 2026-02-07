@@ -85,6 +85,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "abastecimentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "abastecimentos_veiculo_id_fkey"
             columns: ["veiculo_id"]
             isOneToOne: false
@@ -375,6 +382,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "agentes_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       alertas_educacionais: {
@@ -497,6 +511,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "alertas_executivos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       alertas_fiscalizacao_iss: {
@@ -569,6 +590,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "alertas_fiscalizacao_iss_analista_id_fkey"
+            columns: ["analista_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "alertas_fiscalizacao_iss_contribuinte_id_fkey"
             columns: ["contribuinte_id"]
             isOneToOne: false
@@ -595,6 +623,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_fiscalizacao_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -641,6 +676,13 @@ export type Database = {
             columns: ["resolvido_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_frota_resolvido_por_fkey"
+            columns: ["resolvido_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -759,6 +801,13 @@ export type Database = {
             columns: ["resolvido_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_vigencia_contratos_resolvido_por_fkey"
+            columns: ["resolvido_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -956,6 +1005,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "analises_juridicas_contratos_advogado_responsavel_id_fkey"
+            columns: ["advogado_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "analises_juridicas_contratos_contrato_id_fkey"
             columns: ["contrato_id"]
             isOneToOne: false
@@ -975,6 +1031,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analises_juridicas_contratos_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -1097,6 +1160,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "atos_administrativos_secretaria_origem_id_fkey"
+            columns: ["secretaria_origem_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       auditoria_global: {
@@ -1176,6 +1246,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auditoria_global_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -1283,6 +1360,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "autos_infracao_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -1395,6 +1479,13 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "banco_horas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -1523,6 +1614,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "beneficios_rurais_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "beneficios_rurais_produtor_id_fkey"
             columns: ["produtor_id"]
             isOneToOne: false
@@ -1549,6 +1647,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -1674,11 +1779,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "campanhas_educativas_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "campanhas_educativas_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campanhas_educativas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -1749,6 +1868,7 @@ export type Database = {
           permite_progressao_vertical: boolean | null
           regime: Database["public"]["Enums"]["regime_trabalho"]
           requisitos_adicionais: Json | null
+          secretaria_id: string | null
           status: string | null
           teto_remuneratorio: number | null
           tipo: Database["public"]["Enums"]["tipo_cargo"]
@@ -1780,6 +1900,7 @@ export type Database = {
           permite_progressao_vertical?: boolean | null
           regime?: Database["public"]["Enums"]["regime_trabalho"]
           requisitos_adicionais?: Json | null
+          secretaria_id?: string | null
           status?: string | null
           teto_remuneratorio?: number | null
           tipo?: Database["public"]["Enums"]["tipo_cargo"]
@@ -1811,6 +1932,7 @@ export type Database = {
           permite_progressao_vertical?: boolean | null
           regime?: Database["public"]["Enums"]["regime_trabalho"]
           requisitos_adicionais?: Json | null
+          secretaria_id?: string | null
           status?: string | null
           teto_remuneratorio?: number | null
           tipo?: Database["public"]["Enums"]["tipo_cargo"]
@@ -1827,6 +1949,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "municipios"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cargos_publicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cargos_publicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -2060,6 +2196,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "conciliacoes_bancarias_conciliado_por_fkey"
+            columns: ["conciliado_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "conciliacoes_bancarias_conta_id_fkey"
             columns: ["conta_id"]
             isOneToOne: false
@@ -2126,6 +2269,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "config_inadimplencia_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       config_iss: {
@@ -2188,6 +2338,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "config_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -2278,6 +2435,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "config_lancamento_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -2419,6 +2583,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "consultas_juridicas_advogado_designado_id_fkey"
+            columns: ["advogado_designado_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "consultas_juridicas_municipio_id_fkey"
             columns: ["municipio_id"]
             isOneToOne: false
@@ -2433,10 +2604,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "consultas_juridicas_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "consultas_juridicas_solicitante_id_fkey"
             columns: ["solicitante_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultas_juridicas_solicitante_id_fkey"
+            columns: ["solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -2572,6 +2757,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "contas_bancarias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       contracheques: {
@@ -2621,6 +2813,13 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracheques_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -2767,6 +2966,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "contracts_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       contratacoes_eventos: {
@@ -2827,6 +3033,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "contratacoes_eventos_autorizacao_id_fkey"
+            columns: ["autorizacao_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "contratacoes_eventos_contrato_id_fkey"
             columns: ["contrato_id"]
             isOneToOne: false
@@ -2846,6 +3059,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratacoes_eventos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -3050,6 +3270,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "contribuintes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       controle_pragas_doencas: {
@@ -3129,6 +3356,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "controle_pragas_doencas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -3212,6 +3446,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "convenios_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -3406,6 +3647,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "culturas_safra_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       dados_bancarios: {
@@ -3474,6 +3722,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dados_bancarios_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       decisoes_processo: {
@@ -3538,6 +3793,13 @@ export type Database = {
             columns: ["relator_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "decisoes_processo_relator_id_fkey"
+            columns: ["relator_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -3631,6 +3893,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "declaracoes_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       departments: {
@@ -3674,6 +3943,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "departments_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -3761,6 +4037,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dependentes_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       diarias_deslocamentos: {
@@ -3830,6 +4113,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "diarias_deslocamentos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "diarias_deslocamentos_motorista_id_fkey"
             columns: ["motorista_id"]
             isOneToOne: false
@@ -3842,6 +4132,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "diarias_deslocamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
           {
             foreignKeyName: "diarias_deslocamentos_veiculo_id_fkey"
@@ -3983,6 +4280,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "divida_ativa_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       dotacoes_orcamentarias: {
@@ -4100,11 +4404,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "dotacoes_orcamentarias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "dotacoes_orcamentarias_unidade_id_fkey"
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dotacoes_orcamentarias_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
           },
         ]
       }
@@ -4188,6 +4506,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "empenhos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "empenhos_credor_id_fkey"
             columns: ["credor_id"]
             isOneToOne: false
@@ -4244,6 +4569,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "empenhos_anulacoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -4382,6 +4714,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "equipamentos_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       escalas_motoristas: {
@@ -4438,6 +4777,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escalas_motoristas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
           {
             foreignKeyName: "escalas_motoristas_veiculo_id_fkey"
@@ -4718,11 +5064,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "eventos_municipais_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "eventos_municipais_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_municipais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -4923,6 +5283,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fatores_correcao_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       feiras_livres: {
@@ -4997,6 +5364,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "feiras_livres_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5101,6 +5475,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ferias_periodos_aquisitivos_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       ferias_solicitacoes: {
@@ -5194,6 +5575,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ferias_solicitacoes_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       financial_categories: {
@@ -5247,6 +5635,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_categories_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5303,6 +5698,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_goals_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5382,6 +5784,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5474,6 +5883,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "fiscalizacao_iss_fiscal_responsavel_id_fkey"
+            columns: ["fiscal_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fiscalizacao_iss_municipio_id_fkey"
             columns: ["municipio_id"]
             isOneToOne: false
@@ -5486,6 +5902,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacao_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5599,6 +6022,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "fiscalizacoes_fiscal_id_fkey"
+            columns: ["fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fiscalizacoes_imovel_id_fkey"
             columns: ["imovel_id"]
             isOneToOne: false
@@ -5618,6 +6048,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5689,6 +6126,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "fiscalizacoes_feiras_fiscal_id_fkey"
+            columns: ["fiscal_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "fiscalizacoes_feiras_permissionario_id_fkey"
             columns: ["permissionario_id"]
             isOneToOne: false
@@ -5701,6 +6145,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_feiras_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -5865,6 +6316,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "folha_pagamento_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       folha_reprocessamentos: {
@@ -6001,6 +6459,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_servidor_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "folha_servidor_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["vinculo_id"]
           },
           {
             foreignKeyName: "folha_servidor_vinculo_id_fkey"
@@ -6225,6 +6697,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "funcoes_administrativas_cargo_vinculado_id_fkey"
+            columns: ["cargo_vinculado_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["cargo_id"]
+          },
+          {
             foreignKeyName: "funcoes_administrativas_funcao_superior_id_fkey"
             columns: ["funcao_superior_id"]
             isOneToOne: false
@@ -6232,11 +6711,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "funcoes_administrativas_funcao_superior_id_fkey"
+            columns: ["funcao_superior_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["funcao_id"]
+          },
+          {
             foreignKeyName: "funcoes_administrativas_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funcoes_administrativas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -6324,6 +6817,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "goals_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       grupos_culturais: {
@@ -6395,6 +6895,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grupos_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -6537,6 +7044,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "historico_lotacoes_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["funcao_id"]
+          },
+          {
             foreignKeyName: "historico_lotacoes_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
@@ -6544,11 +7058,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "historico_lotacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "historico_lotacoes_unidade_id_fkey"
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["vinculo_id"]
           },
           {
             foreignKeyName: "historico_lotacoes_vinculo_id_fkey"
@@ -6737,6 +7272,54 @@ export type Database = {
           },
         ]
       }
+      historico_vinculos: {
+        Row: {
+          cargo_id: string | null
+          created_at: string | null
+          dados_anteriores: Json | null
+          dados_novos: Json | null
+          funcao_id: string | null
+          id: string
+          motivo: string | null
+          responsavel_id: string
+          secretaria_id: string | null
+          tipo_alteracao: string
+          unidade_id: string | null
+          user_id: string
+          vinculo_id: string
+        }
+        Insert: {
+          cargo_id?: string | null
+          created_at?: string | null
+          dados_anteriores?: Json | null
+          dados_novos?: Json | null
+          funcao_id?: string | null
+          id?: string
+          motivo?: string | null
+          responsavel_id: string
+          secretaria_id?: string | null
+          tipo_alteracao: string
+          unidade_id?: string | null
+          user_id: string
+          vinculo_id: string
+        }
+        Update: {
+          cargo_id?: string | null
+          created_at?: string | null
+          dados_anteriores?: Json | null
+          dados_novos?: Json | null
+          funcao_id?: string | null
+          id?: string
+          motivo?: string | null
+          responsavel_id?: string
+          secretaria_id?: string | null
+          tipo_alteracao?: string
+          unidade_id?: string | null
+          user_id?: string
+          vinculo_id?: string
+        }
+        Relationships: []
+      }
       horarios_linhas: {
         Row: {
           created_at: string | null
@@ -6884,6 +7467,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "horas_maquina_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
           {
             foreignKeyName: "horas_maquina_veiculo_id_fkey"
@@ -7075,6 +7665,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "imoveis_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       indicadores_saude: {
@@ -7209,6 +7806,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "indicadores_turismo_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -7500,6 +8104,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "iss_contribuintes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       iss_guias: {
@@ -7593,6 +8204,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iss_guias_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -7729,6 +8347,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "justificativas_ponto_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       laudos_tecnicos: {
@@ -7796,10 +8421,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "laudos_tecnicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "laudos_tecnicos_tecnico_id_fkey"
             columns: ["tecnico_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "laudos_tecnicos_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -7984,6 +8623,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "licencas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       linhas_transporte: {
@@ -8060,6 +8706,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "linhas_transporte_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       liquidacoes: {
@@ -8120,6 +8773,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "liquidacoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "liquidacoes_empenho_id_fkey"
             columns: ["empenho_id"]
             isOneToOne: false
@@ -8131,6 +8791,13 @@ export type Database = {
             columns: ["responsavel_atesto"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidacoes_responsavel_atesto_fkey"
+            columns: ["responsavel_atesto"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -8201,6 +8868,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lista_servicos_iss_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -8328,6 +9002,45 @@ export type Database = {
         }
         Relationships: []
       }
+      log_acessos_usuarios: {
+        Row: {
+          bloqueado: boolean | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          modulo_acessado: string | null
+          motivo_bloqueio: string | null
+          secretaria_acessada_id: string | null
+          tipo_acesso: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          bloqueado?: boolean | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          modulo_acessado?: string | null
+          motivo_bloqueio?: string | null
+          secretaria_acessada_id?: string | null
+          tipo_acesso: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          bloqueado?: boolean | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          modulo_acessado?: string | null
+          motivo_bloqueio?: string | null
+          secretaria_acessada_id?: string | null
+          tipo_acesso?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       lotes_lancamento_iptu: {
         Row: {
           created_at: string | null
@@ -8385,6 +9098,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_lancamento_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -8456,6 +9176,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manutencoes_veiculos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
           {
             foreignKeyName: "manutencoes_veiculos_veiculo_id_fkey"
@@ -8640,6 +9367,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "metas_plano_governo_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       metas_saude: {
@@ -8750,6 +9484,13 @@ export type Database = {
             columns: ["criado_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "modelos_parecer_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -8877,11 +9618,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "motoristas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "motoristas_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["vinculo_id"]
           },
           {
             foreignKeyName: "motoristas_vinculo_id_fkey"
@@ -8929,6 +9691,13 @@ export type Database = {
             columns: ["autorizado_por"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_veiculos_autorizado_por_fkey"
+            columns: ["autorizado_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -9059,6 +9828,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "movimentacoes_processo_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
       movimentacoes_processo_fiscal: {
@@ -9105,6 +9881,13 @@ export type Database = {
             columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_processo_fiscal_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -9405,6 +10188,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "nfse_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "nfse_servico_id_fkey"
             columns: ["servico_id"]
             isOneToOne: false
@@ -9617,6 +10407,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "obras_prioritarias_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       ocorrencias_transito: {
@@ -9692,6 +10489,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ocorrencias_transito_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       ordens_pagamento: {
@@ -9755,10 +10559,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ordens_pagamento_autorizado_por_fkey"
+            columns: ["autorizado_por"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ordens_pagamento_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_pagamento_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -9850,6 +10668,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ordens_servico_frota_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ordens_servico_frota_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
@@ -9857,10 +10682,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ordens_servico_frota_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "ordens_servico_frota_solicitante_id_fkey"
             columns: ["solicitante_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ordens_servico_frota_solicitante_id_fkey"
+            columns: ["solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
           {
@@ -10002,6 +10841,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "padroes_construtivos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       pagamentos_tributarios: {
@@ -10099,6 +10945,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "pagamentos_tributarios_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       papeis_usuario: {
@@ -10156,11 +11009,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "papeis_usuario_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "papeis_usuario_unidade_id_fkey"
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "papeis_usuario_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
           },
         ]
       }
@@ -10248,6 +11115,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parceiros_turismo_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -10443,6 +11317,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "parcelamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       pareceres_juridicos: {
@@ -10512,6 +11393,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pareceres_juridicos_advogado_id_fkey"
+            columns: ["advogado_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pareceres_juridicos_consulta_id_fkey"
             columns: ["consulta_id"]
             isOneToOne: false
@@ -10540,11 +11428,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pareceres_juridicos_revisor_id_fkey"
+            columns: ["revisor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pareceres_juridicos_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pareceres_juridicos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -10674,6 +11576,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "permissionarios_feiras_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -10884,6 +11793,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "planta_generica_valores_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       ponto_servidor: {
@@ -10953,6 +11869,13 @@ export type Database = {
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ponto_servidor_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -11027,6 +11950,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_parada_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -11114,6 +12044,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_turisticos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -11275,6 +12212,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "ppa_programas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       prestacoes_contas_eventos: {
@@ -11338,6 +12282,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "prestacoes_contas_eventos_aprovador_id_fkey"
+            columns: ["aprovador_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "prestacoes_contas_eventos_evento_id_fkey"
             columns: ["evento_id"]
             isOneToOne: false
@@ -11352,11 +12303,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "prestacoes_contas_eventos_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "prestacoes_contas_eventos_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prestacoes_contas_eventos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -11443,11 +12408,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "processos_administrativos_relator_id_fkey"
+            columns: ["relator_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "processos_administrativos_secretaria_origem_id_fkey"
             columns: ["secretaria_origem_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_secretaria_origem_id_fkey"
+            columns: ["secretaria_origem_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -11560,11 +12539,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "processos_administrativos_fiscais_relator_id_fkey"
+            columns: ["relator_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "processos_administrativos_fiscais_secretaria_id_fkey"
             columns: ["secretaria_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_administrativos_fiscais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -11810,10 +12803,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "processos_trabalhistas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "processos_trabalhistas_servidor_id_fkey"
             columns: ["servidor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_trabalhistas_servidor_id_fkey"
+            columns: ["servidor_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
@@ -11894,6 +12901,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "produtores_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       professores: {
@@ -11950,10 +12964,14 @@ export type Database = {
           cnh_validade: string | null
           cpf: string | null
           created_at: string
+          criado_pelo_rh: boolean | null
           ctps_numero: string | null
           ctps_serie: string | null
           ctps_uf: string | null
+          data_cadastro_rh: string | null
+          data_inativacao: string | null
           data_nascimento: string | null
+          data_ultimo_login: string | null
           department: string | null
           email: string | null
           endereco_bairro: string | null
@@ -11966,6 +12984,8 @@ export type Database = {
           estado_civil: string | null
           foto_url: string | null
           id: string
+          inativado_por: string | null
+          motivo_inativacao: string | null
           nacionalidade: string | null
           name: string | null
           naturalidade: string | null
@@ -11973,14 +12993,19 @@ export type Database = {
           nome_pai: string | null
           observacoes: string | null
           pis_pasep: string | null
+          primeiro_acesso: boolean | null
+          requer_troca_senha: boolean | null
           rg: string | null
           rg_orgao_emissor: string | null
           rg_uf: string | null
+          rh_responsavel_id: string | null
           role: string | null
           secao_eleitoral: string | null
           sexo: string | null
+          status_cadastral: string | null
           telefone_celular: string | null
           telefone_residencial: string | null
+          tipo_usuario: string | null
           titulo_eleitor: string | null
           updated_at: string
           user_id: string
@@ -11992,10 +13017,14 @@ export type Database = {
           cnh_validade?: string | null
           cpf?: string | null
           created_at?: string
+          criado_pelo_rh?: boolean | null
           ctps_numero?: string | null
           ctps_serie?: string | null
           ctps_uf?: string | null
+          data_cadastro_rh?: string | null
+          data_inativacao?: string | null
           data_nascimento?: string | null
+          data_ultimo_login?: string | null
           department?: string | null
           email?: string | null
           endereco_bairro?: string | null
@@ -12008,6 +13037,8 @@ export type Database = {
           estado_civil?: string | null
           foto_url?: string | null
           id?: string
+          inativado_por?: string | null
+          motivo_inativacao?: string | null
           nacionalidade?: string | null
           name?: string | null
           naturalidade?: string | null
@@ -12015,14 +13046,19 @@ export type Database = {
           nome_pai?: string | null
           observacoes?: string | null
           pis_pasep?: string | null
+          primeiro_acesso?: boolean | null
+          requer_troca_senha?: boolean | null
           rg?: string | null
           rg_orgao_emissor?: string | null
           rg_uf?: string | null
+          rh_responsavel_id?: string | null
           role?: string | null
           secao_eleitoral?: string | null
           sexo?: string | null
+          status_cadastral?: string | null
           telefone_celular?: string | null
           telefone_residencial?: string | null
+          tipo_usuario?: string | null
           titulo_eleitor?: string | null
           updated_at?: string
           user_id: string
@@ -12034,10 +13070,14 @@ export type Database = {
           cnh_validade?: string | null
           cpf?: string | null
           created_at?: string
+          criado_pelo_rh?: boolean | null
           ctps_numero?: string | null
           ctps_serie?: string | null
           ctps_uf?: string | null
+          data_cadastro_rh?: string | null
+          data_inativacao?: string | null
           data_nascimento?: string | null
+          data_ultimo_login?: string | null
           department?: string | null
           email?: string | null
           endereco_bairro?: string | null
@@ -12050,6 +13090,8 @@ export type Database = {
           estado_civil?: string | null
           foto_url?: string | null
           id?: string
+          inativado_por?: string | null
+          motivo_inativacao?: string | null
           nacionalidade?: string | null
           name?: string | null
           naturalidade?: string | null
@@ -12057,14 +13099,19 @@ export type Database = {
           nome_pai?: string | null
           observacoes?: string | null
           pis_pasep?: string | null
+          primeiro_acesso?: boolean | null
+          requer_troca_senha?: boolean | null
           rg?: string | null
           rg_orgao_emissor?: string | null
           rg_uf?: string | null
+          rh_responsavel_id?: string | null
           role?: string | null
           secao_eleitoral?: string | null
           sexo?: string | null
+          status_cadastral?: string | null
           telefone_celular?: string | null
           telefone_residencial?: string | null
+          tipo_usuario?: string | null
           titulo_eleitor?: string | null
           updated_at?: string
           user_id?: string
@@ -12211,6 +13258,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "programas_incentivo_rural_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       programas_refis: {
@@ -12300,6 +13354,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_refis_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -12414,6 +13475,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projetos_culturais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -12613,6 +13681,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "propriedades_rurais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       relatorios_executivos: {
@@ -12742,6 +13817,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "relatorios_legais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -13167,6 +14249,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "revisoes_iptu_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       rotas_transporte: {
@@ -13341,10 +14430,18 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "roteiros_turisticos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       secretarias: {
         Row: {
+          ativo: boolean | null
           bairro: string | null
           base_legal: string | null
           cep: string | null
@@ -13353,11 +14450,14 @@ export type Database = {
           cor_tema: string | null
           created_at: string
           data_criacao: string | null
+          data_inativacao: string | null
           email_institucional: string | null
           endereco: string | null
           icone: string | null
           id: string
+          inativado_por: string | null
           missao: string | null
+          motivo_inativacao: string | null
           municipio_id: string
           nivel_hierarquico: number
           nome: string
@@ -13371,6 +14471,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ativo?: boolean | null
           bairro?: string | null
           base_legal?: string | null
           cep?: string | null
@@ -13379,11 +14480,14 @@ export type Database = {
           cor_tema?: string | null
           created_at?: string
           data_criacao?: string | null
+          data_inativacao?: string | null
           email_institucional?: string | null
           endereco?: string | null
           icone?: string | null
           id?: string
+          inativado_por?: string | null
           missao?: string | null
+          motivo_inativacao?: string | null
           municipio_id: string
           nivel_hierarquico?: number
           nome: string
@@ -13397,6 +14501,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ativo?: boolean | null
           bairro?: string | null
           base_legal?: string | null
           cep?: string | null
@@ -13405,11 +14510,14 @@ export type Database = {
           cor_tema?: string | null
           created_at?: string
           data_criacao?: string | null
+          data_inativacao?: string | null
           email_institucional?: string | null
           endereco?: string | null
           icone?: string | null
           id?: string
+          inativado_por?: string | null
           missao?: string | null
+          motivo_inativacao?: string | null
           municipio_id?: string
           nivel_hierarquico?: number
           nome?: string
@@ -13470,6 +14578,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secretarias_historico_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -13546,6 +14661,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "semaforos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       sinalizacao_viaria: {
@@ -13620,6 +14742,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sinalizacao_viaria_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -13890,6 +15019,13 @@ export type Database = {
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "tarifas_gratuidades_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
         ]
       }
       task_assignments: {
@@ -13978,6 +15114,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -14257,11 +15400,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "unidades_administrativas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "unidades_administrativas_unidade_superior_id_fkey"
             columns: ["unidade_superior_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unidades_administrativas_unidade_superior_id_fkey"
+            columns: ["unidade_superior_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
           },
         ]
       }
@@ -14409,11 +15566,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "user_secretaria_roles_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "user_secretaria_roles_unidade_id_fkey"
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_secretaria_roles_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
           },
         ]
       }
@@ -14591,11 +15762,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "veiculos_frota_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "veiculos_frota_secretaria_responsavel_id_fkey"
             columns: ["secretaria_responsavel_id"]
             isOneToOne: false
             referencedRelation: "secretarias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "veiculos_frota_secretaria_responsavel_id_fkey"
+            columns: ["secretaria_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -14735,11 +15920,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vinculos_funcionais_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["cargo_id"]
+          },
+          {
             foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
             columns: ["funcao_id"]
             isOneToOne: false
             referencedRelation: "funcoes_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["funcao_id"]
           },
           {
             foreignKeyName: "vinculos_funcionais_secretaria_id_fkey"
@@ -14749,11 +15948,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "vinculos_funcionais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "vinculos_funcionais_unidade_id_fkey"
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_administrativas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
           },
         ]
       }
@@ -14819,17 +16032,62 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "visitas_tecnicas_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
             foreignKeyName: "visitas_tecnicas_tecnico_id_fkey"
             columns: ["tecnico_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "visitas_tecnicas_tecnico_id_fkey"
+            columns: ["tecnico_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      view_usuarios_rh: {
+        Row: {
+          cargo_id: string | null
+          cargo_nome: string | null
+          cpf: string | null
+          criado_pelo_rh: boolean | null
+          data_admissao: string | null
+          data_cadastro_rh: string | null
+          data_ultimo_login: string | null
+          email: string | null
+          funcao_id: string | null
+          funcao_nome: string | null
+          id: string | null
+          jornada_semanal: number | null
+          matricula: string | null
+          name: string | null
+          primeiro_acesso: boolean | null
+          regime: Database["public"]["Enums"]["regime_trabalho"] | null
+          requer_troca_senha: boolean | null
+          secretaria_id: string | null
+          secretaria_nome: string | null
+          secretaria_sigla: string | null
+          situacao_vinculo: string | null
+          status_cadastral: string | null
+          tipo_usuario: string | null
+          unidade_id: string | null
+          unidade_nome: string | null
+          user_id: string | null
+          vinculo_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calcular_alteracoes: {
@@ -14865,6 +16123,7 @@ export type Database = {
       gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
+      get_user_secretaria: { Args: { _user_id: string }; Returns: string }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_unidade_ids: { Args: { _user_id: string }; Returns: string[] }
       get_vinculo_funcional: {
@@ -14892,6 +16151,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_full_system_access: { Args: { _user_id: string }; Returns: boolean }
       has_gabinete_access: { Args: { _user_id: string }; Returns: boolean }
       has_health_role: {
         Args: {
@@ -14934,7 +16194,12 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_vinculo_funcional_ativo: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       is_admin_municipal: { Args: { _user_id: string }; Returns: boolean }
+      is_gestor_rh: { Args: { _user_id: string }; Returns: boolean }
       is_responsavel_of_student: {
         Args: { _aluno_id: string; _user_id: string }
         Returns: boolean
@@ -14942,6 +16207,11 @@ export type Database = {
       is_secretaria: { Args: { _user_id: string }; Returns: boolean }
       is_secretaria_saude: { Args: { _user_id: string }; Returns: boolean }
       is_secretario_of: {
+        Args: { _secretaria_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_usuario_regularizado: { Args: { _user_id: string }; Returns: boolean }
+      pode_acessar_secretaria: {
         Args: { _secretaria_id: string; _user_id: string }
         Returns: boolean
       }
