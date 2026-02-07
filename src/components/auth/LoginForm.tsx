@@ -64,11 +64,8 @@ export const LoginForm = () => {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Entrando..." : "Entrar"}
       </Button>
-      <p className="text-center text-sm text-gray-500 mt-4">
-        Não tem uma conta?{" "}
-        <Link to="/register" className="text-primary font-medium hover:underline">
-          Registre-se
-        </Link>
+      <p className="text-center text-sm text-muted-foreground mt-4">
+        O cadastro de novos usuários é realizado exclusivamente pelo Departamento de Recursos Humanos.
       </p>
     </form>
   );
