@@ -16090,6 +16090,18 @@ export type Database = {
       }
     }
     Functions: {
+      buscar_usuarios_rh: {
+        Args: { p_limit?: number; p_termo?: string }
+        Returns: {
+          cpf: string
+          email: string
+          matricula: string
+          nome: string
+          secretaria_atual: string
+          status_cadastral: string
+          user_id: string
+        }[]
+      }
       calcular_alteracoes: {
         Args: { estado_anterior: Json; estado_posterior: Json }
         Returns: Json
