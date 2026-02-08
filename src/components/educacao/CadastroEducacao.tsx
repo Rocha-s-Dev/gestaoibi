@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, Users, GraduationCap, School, BookOpen } from "lucide-react";
+import { Plus, Pencil, Trash2, Users, GraduationCap, School, BookOpen, Link2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -27,7 +26,7 @@ export function CadastroEducacao() {
   const [selectedAluno, setSelectedAluno] = useState(null);
 
   const { escolas, loading: escolasLoading, createEscola, updateEscola, deleteEscola } = useEscolas();
-  const { professores, loading: professoresLoading, createProfessor, updateProfessor, deleteProfessor } = useProfessores();
+  const { professores, loading: professoresLoading, vincularProfessor, updateProfessor, desvincularProfessor } = useProfessores();
   const { turmas, loading: turmasLoading, createTurma, updateTurma, deleteTurma } = useTurmas();
   const { alunos, loading: alunosLoading, createAluno, updateAluno, deleteAluno } = useAlunos();
 
@@ -43,25 +42,28 @@ export function CadastroEducacao() {
       setEscolaDialogOpen(false);
       setSelectedEscola(null);
     } catch (error) {
-      console.error('Erro ao salvar escola:', error);
+      console.error("Erro ao salvar escola:", error);
       toast.error("Erro ao salvar escola. Tente novamente.");
     }
   };
 
-  const handleProfessorSubmit = async (professorData: any) => {
+  const handleProfessorSubmit = async (data: { user_id: string; especialidade?: string; escola_id?: string; secretaria_id?: string }) => {
     try {
       if (selectedProfessor) {
-        await updateProfessor(selectedProfessor.id, professorData);
-        toast.success("Professor atualizado com sucesso!");
+        await updateProfessor(selectedProfessor.id, {
+          especialidade: data.especialidade,
+          escola_id: data.escola_id,
+        });
+        toast.success("Vínculo do professor atualizado com sucesso!");
       } else {
-        await createProfessor(professorData);
-        toast.success("Professor cadastrado com sucesso!");
+        await vincularProfessor(data);
+        toast.success("Professor vinculado com sucesso!");
       }
       setProfessorDialogOpen(false);
       setSelectedProfessor(null);
     } catch (error) {
-      console.error('Erro ao salvar professor:', error);
-      toast.error("Erro ao salvar professor. Tente novamente.");
+      console.error("Erro ao vincular professor:", error);
+      toast.error("Erro ao vincular professor. Tente novamente.");
     }
   };
 
@@ -77,7 +79,7 @@ export function CadastroEducacao() {
       setTurmaDialogOpen(false);
       setSelectedTurma(null);
     } catch (error) {
-      console.error('Erro ao salvar turma:', error);
+      console.error("Erro ao salvar turma:", error);
       toast.error("Erro ao salvar turma. Tente novamente.");
     }
   };
@@ -94,7 +96,7 @@ export function CadastroEducacao() {
       setAlunoDialogOpen(false);
       setSelectedAluno(null);
     } catch (error) {
-      console.error('Erro ao salvar aluno:', error);
+      console.error("Erro ao salvar aluno:", error);
       toast.error("Erro ao salvar aluno. Tente novamente.");
     }
   };
@@ -110,13 +112,13 @@ export function CadastroEducacao() {
     }
   };
 
-  const handleDeleteProfessor = async (id: string) => {
-    if (confirm("Tem certeza que deseja excluir este professor?")) {
+  const handleDesvincularProfessor = async (id: string) => {
+    if (confirm("Tem certeza que deseja desvincular este professor?")) {
       try {
-        await deleteProfessor(id);
-        toast.success("Professor excluído com sucesso!");
+        await desvincularProfessor(id);
+        toast.success("Professor desvinculado com sucesso!");
       } catch (error) {
-        toast.error("Erro ao excluir professor.");
+        toast.error("Erro ao desvincular professor.");
       }
     }
   };
@@ -174,6 +176,7 @@ export function CadastroEducacao() {
           </TabsTrigger>
         </TabsList>
 
+        {/* Escolas */}
         <TabsContent value="escolas" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">Escolas Cadastradas</h2>
@@ -182,11 +185,8 @@ export function CadastroEducacao() {
               Nova Escola
             </Button>
           </div>
-
           {escolasLoading ? (
-            <div className="text-center py-8">
-              <p>Carregando escolas...</p>
-            </div>
+            <div className="text-center py-8"><p>Carregando escolas...</p></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {escolas.map((escola) => (
@@ -199,25 +199,14 @@ export function CadastroEducacao() {
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{escola.endereco}</p>
                       <div className="flex items-center justify-between">
-                        <Badge variant={escola.tipo === 'municipal' ? 'default' : 'secondary'}>
-                          {escola.tipo || 'municipal'}
+                        <Badge variant={escola.tipo === "municipal" ? "default" : "secondary"}>
+                          {escola.tipo || "municipal"}
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedEscola(escola);
-                              setEscolaDialogOpen(true);
-                            }}
-                          >
+                          <Button size="sm" variant="outline" onClick={() => { setSelectedEscola(escola); setEscolaDialogOpen(true); }}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => handleDeleteEscola(escola.id)}
-                          >
+                          <Button size="sm" variant="destructive" onClick={() => handleDeleteEscola(escola.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -230,50 +219,58 @@ export function CadastroEducacao() {
           )}
         </TabsContent>
 
+        {/* Professores - agora vinculados do RH */}
         <TabsContent value="professores" className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold">Professores Cadastrados</h2>
-            <Button onClick={() => setProfessorDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Professor
+            <div>
+              <h2 className="text-2xl font-semibold">Professores Vinculados</h2>
+              <p className="text-sm text-muted-foreground">
+                Professores são servidores do RH vinculados à Secretaria de Educação
+              </p>
+            </div>
+            <Button onClick={() => { setSelectedProfessor(null); setProfessorDialogOpen(true); }}>
+              <Link2 className="h-4 w-4 mr-2" />
+              Vincular Professor do RH
             </Button>
           </div>
 
           {professoresLoading ? (
-            <div className="text-center py-8">
-              <p>Carregando professores...</p>
-            </div>
+            <div className="text-center py-8"><p>Carregando professores...</p></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {professores.map((professor) => (
                 <Card key={professor.id}>
                   <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        <Link2 className="h-3 w-3 mr-1" />
+                        Vínculo RH
+                      </Badge>
+                    </div>
                     <CardTitle className="text-lg">{professor.nome}</CardTitle>
-                    <CardDescription>{professor.formacao}</CardDescription>
+                    <CardDescription>{professor.especialidade || "Sem especialidade definida"}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{professor.email}</p>
-                      <p className="text-sm text-muted-foreground">{professor.telefone}</p>
+                      {professor.escola_principal && (
+                        <p className="text-sm text-muted-foreground">
+                          Escola: {professor.escola_principal.nome}
+                        </p>
+                      )}
                       <div className="flex items-center justify-between">
-                        <Badge variant={professor.status === 'ativo' ? 'default' : 'secondary'}>
-                          {professor.status}
-                        </Badge>
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
-                            onClick={() => {
-                              setSelectedProfessor(professor);
-                              setProfessorDialogOpen(true);
-                            }}
+                            onClick={() => { setSelectedProfessor(professor); setProfessorDialogOpen(true); }}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="destructive"
-                            onClick={() => handleDeleteProfessor(professor.id)}
+                            onClick={() => handleDesvincularProfessor(professor.id)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -283,10 +280,16 @@ export function CadastroEducacao() {
                   </CardContent>
                 </Card>
               ))}
+              {professores.length === 0 && (
+                <div className="col-span-full text-center py-8 text-muted-foreground">
+                  Nenhum professor vinculado. Use "Vincular Professor do RH" para adicionar.
+                </div>
+              )}
             </div>
           )}
         </TabsContent>
 
+        {/* Turmas */}
         <TabsContent value="turmas" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">Turmas Cadastradas</h2>
@@ -295,11 +298,8 @@ export function CadastroEducacao() {
               Nova Turma
             </Button>
           </div>
-
           {turmasLoading ? (
-            <div className="text-center py-8">
-              <p>Carregando turmas...</p>
-            </div>
+            <div className="text-center py-8"><p>Carregando turmas...</p></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {turmas.map((turma) => (
@@ -316,7 +316,7 @@ export function CadastroEducacao() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Modalidade:</span>
-                        <span className="capitalize">{turma.modalidade.replace('_', ' ')}</span>
+                        <span className="capitalize">{turma.modalidade.replace("_", " ")}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Capacidade:</span>
@@ -329,25 +329,14 @@ export function CadastroEducacao() {
                         </div>
                       )}
                       <div className="flex items-center justify-between pt-2">
-                        <Badge variant={turma.status === 'ativa' ? 'default' : 'secondary'}>
+                        <Badge variant={turma.status === "ativa" ? "default" : "secondary"}>
                           {turma.status}
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedTurma(turma);
-                              setTurmaDialogOpen(true);
-                            }}
-                          >
+                          <Button size="sm" variant="outline" onClick={() => { setSelectedTurma(turma); setTurmaDialogOpen(true); }}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => handleDeleteTurma(turma.id)}
-                          >
+                          <Button size="sm" variant="destructive" onClick={() => handleDeleteTurma(turma.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -360,6 +349,7 @@ export function CadastroEducacao() {
           )}
         </TabsContent>
 
+        {/* Alunos */}
         <TabsContent value="alunos" className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-semibold">Alunos Cadastrados</h2>
@@ -368,11 +358,8 @@ export function CadastroEducacao() {
               Novo Aluno
             </Button>
           </div>
-
           {alunosLoading ? (
-            <div className="text-center py-8">
-              <p>Carregando alunos...</p>
-            </div>
+            <div className="text-center py-8"><p>Carregando alunos...</p></div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {alunos.map((aluno) => (
@@ -385,11 +372,11 @@ export function CadastroEducacao() {
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Data Nascimento:</span>
-                        <span>{new Date(aluno.data_nascimento).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(aluno.data_nascimento).toLocaleDateString("pt-BR")}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Data Matrícula:</span>
-                        <span>{new Date(aluno.data_matricula).toLocaleDateString('pt-BR')}</span>
+                        <span>{new Date(aluno.data_matricula).toLocaleDateString("pt-BR")}</span>
                       </div>
                       {aluno.responsavel_telefone && (
                         <div className="flex justify-between text-sm">
@@ -398,25 +385,14 @@ export function CadastroEducacao() {
                         </div>
                       )}
                       <div className="flex items-center justify-between pt-2">
-                        <Badge variant={aluno.situacao === 'ativo' ? 'default' : 'secondary'}>
-                          {aluno.situacao || 'ativo'}
+                        <Badge variant={aluno.situacao === "ativo" ? "default" : "secondary"}>
+                          {aluno.situacao || "ativo"}
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => {
-                              setSelectedAluno(aluno);
-                              setAlunoDialogOpen(true);
-                            }}
-                          >
+                          <Button size="sm" variant="outline" onClick={() => { setSelectedAluno(aluno); setAlunoDialogOpen(true); }}>
                             <Pencil className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => handleDeleteAluno(aluno.id)}
-                          >
+                          <Button size="sm" variant="destructive" onClick={() => handleDeleteAluno(aluno.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>

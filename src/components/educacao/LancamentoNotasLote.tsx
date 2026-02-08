@@ -28,7 +28,7 @@ export function LancamentoNotasLote() {
   const [professorId, setProfessorId] = useState<string>("");
   const [bimestre, setBimestre] = useState<string>("1");
   const [tipoAvaliacao, setTipoAvaliacao] = useState<string>("prova");
-  const [dataAvaliacao, setDataAvaliacao] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [dataAvaliacao, setDataAvaliacao] = useState<string>(new Date().toISOString().split("T")[0]);
   const [notas, setNotas] = useState<NotaAluno[]>([]);
 
   const { escolas } = useEscolas();
@@ -41,16 +41,14 @@ export function LancamentoNotasLote() {
 
   const anoLetivo = new Date().getFullYear();
 
-  // Filtrar turmas pela escola selecionada
   const turmas = useMemo(() => {
     if (!escolaId) return [];
-    return todasTurmas?.filter(t => t.escola_id === escolaId) || [];
+    return todasTurmas?.filter((t) => t.escola_id === escolaId) || [];
   }, [todasTurmas, escolaId]);
 
-  // Filtrar alunos pela turma selecionada
   const alunos = useMemo(() => {
     if (!turmaId) return [];
-    return todosAlunos?.filter(a => a.turma_id === turmaId) || [];
+    return todosAlunos?.filter((a) => a.turma_id === turmaId) || [];
   }, [todosAlunos, turmaId]);
 
   useEffect(() => {
@@ -70,28 +68,16 @@ export function LancamentoNotasLote() {
 
   const handleNotaChange = (alunoId: string, valor: string) => {
     const notaValor = valor === "" ? null : parseFloat(valor);
-    setNotas((prev) =>
-      prev.map((n) =>
-        n.aluno_id === alunoId ? { ...n, nota: notaValor } : n
-      )
-    );
+    setNotas((prev) => prev.map((n) => (n.aluno_id === alunoId ? { ...n, nota: notaValor } : n)));
   };
 
   const handleObservacaoChange = (alunoId: string, valor: string) => {
-    setNotas((prev) =>
-      prev.map((n) =>
-        n.aluno_id === alunoId ? { ...n, observacoes: valor } : n
-      )
-    );
+    setNotas((prev) => prev.map((n) => (n.aluno_id === alunoId ? { ...n, observacoes: valor } : n)));
   };
 
   const handleSalvar = async () => {
     if (!turmaId || !disciplinaId || !professorId) {
-      toast({
-        title: "Erro",
-        description: "Selecione turma, disciplina e professor.",
-        variant: "destructive",
-      });
+      toast({ title: "Erro", description: "Selecione turma, disciplina e professor.", variant: "destructive" });
       return;
     }
 
@@ -111,11 +97,7 @@ export function LancamentoNotasLote() {
       }));
 
     if (notasParaSalvar.length === 0) {
-      toast({
-        title: "Aviso",
-        description: "Preencha pelo menos uma nota para salvar.",
-        variant: "destructive",
-      });
+      toast({ title: "Aviso", description: "Preencha pelo menos uma nota para salvar.", variant: "destructive" });
       return;
     }
 
@@ -129,24 +111,17 @@ export function LancamentoNotasLote() {
           <BookOpen className="h-5 w-5" />
           Lançamento de Notas em Lote
         </CardTitle>
-        <CardDescription>
-          Lance notas para todos os alunos da turma de uma vez
-        </CardDescription>
+        <CardDescription>Lance notas para todos os alunos da turma de uma vez</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Filtros */}
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
           <div className="space-y-2">
             <Label>Escola</Label>
             <Select value={escolaId} onValueChange={(v) => { setEscolaId(v); setTurmaId(""); }}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a escola" />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Selecione a escola" /></SelectTrigger>
               <SelectContent>
                 {escolas?.map((escola) => (
-                  <SelectItem key={escola.id} value={escola.id}>
-                    {escola.nome}
-                  </SelectItem>
+                  <SelectItem key={escola.id} value={escola.id}>{escola.nome}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -155,14 +130,10 @@ export function LancamentoNotasLote() {
           <div className="space-y-2">
             <Label>Turma</Label>
             <Select value={turmaId} onValueChange={setTurmaId} disabled={!escolaId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a turma" />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Selecione a turma" /></SelectTrigger>
               <SelectContent>
                 {turmas?.map((turma) => (
-                  <SelectItem key={turma.id} value={turma.id}>
-                    {turma.nome} - {turma.serie}
-                  </SelectItem>
+                  <SelectItem key={turma.id} value={turma.id}>{turma.nome} - {turma.serie}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -171,14 +142,10 @@ export function LancamentoNotasLote() {
           <div className="space-y-2">
             <Label>Disciplina</Label>
             <Select value={disciplinaId} onValueChange={setDisciplinaId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione a disciplina" />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Selecione a disciplina" /></SelectTrigger>
               <SelectContent>
                 {disciplinas?.map((disc) => (
-                  <SelectItem key={disc.id} value={disc.id}>
-                    {disc.nome}
-                  </SelectItem>
+                  <SelectItem key={disc.id} value={disc.id}>{disc.nome}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -187,14 +154,10 @@ export function LancamentoNotasLote() {
           <div className="space-y-2">
             <Label>Professor</Label>
             <Select value={professorId} onValueChange={setProfessorId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o professor" />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Selecione o professor" /></SelectTrigger>
               <SelectContent>
                 {professores?.map((prof) => (
-                  <SelectItem key={prof.id} value={prof.id}>
-                    {prof.nome}
-                  </SelectItem>
+                  <SelectItem key={prof.id} value={prof.id}>{prof.nome}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -203,9 +166,7 @@ export function LancamentoNotasLote() {
           <div className="space-y-2">
             <Label>Bimestre</Label>
             <Select value={bimestre} onValueChange={setBimestre}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="1">1º Bimestre</SelectItem>
                 <SelectItem value="2">2º Bimestre</SelectItem>
@@ -218,9 +179,7 @@ export function LancamentoNotasLote() {
           <div className="space-y-2">
             <Label>Tipo de Avaliação</Label>
             <Select value={tipoAvaliacao} onValueChange={setTipoAvaliacao}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
+              <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="prova">Prova</SelectItem>
                 <SelectItem value="trabalho">Trabalho</SelectItem>
@@ -232,15 +191,10 @@ export function LancamentoNotasLote() {
 
           <div className="space-y-2">
             <Label>Data da Avaliação</Label>
-            <Input
-              type="date"
-              value={dataAvaliacao}
-              onChange={(e) => setDataAvaliacao(e.target.value)}
-            />
+            <Input type="date" value={dataAvaliacao} onChange={(e) => setDataAvaliacao(e.target.value)} />
           </div>
         </div>
 
-        {/* Tabela de Notas */}
         {notas.length > 0 ? (
           <div className="rounded-md border">
             <Table>
@@ -259,14 +213,10 @@ export function LancamentoNotasLote() {
                     <TableCell>{nota.aluno_nome}</TableCell>
                     <TableCell>
                       <Input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
+                        type="number" min="0" max="10" step="0.1"
                         value={nota.nota ?? ""}
                         onChange={(e) => handleNotaChange(nota.aluno_id, e.target.value)}
-                        className="w-full"
-                        placeholder="0.0"
+                        className="w-full" placeholder="0.0"
                       />
                     </TableCell>
                     <TableCell>
@@ -294,11 +244,7 @@ export function LancamentoNotasLote() {
         {notas.length > 0 && (
           <div className="flex justify-end">
             <Button onClick={handleSalvar} disabled={isSaving}>
-              {isSaving ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
+              {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Salvar Notas
             </Button>
           </div>
