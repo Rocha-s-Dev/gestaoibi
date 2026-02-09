@@ -14,7 +14,7 @@ import { Professor } from "@/hooks/useProfessores";
 type ProfessorDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: { user_id: string; especialidade?: string; escola_id?: string; secretaria_id?: string }) => void;
+  onSubmit: (data: { user_id: string; especialidade?: string; escola_id?: string; secretaria_id?: string; funcao_educacional?: string }) => void;
   professor?: Professor | null;
 };
 
@@ -24,6 +24,7 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioRH | null>(null);
   const [especialidade, setEspecialidade] = useState(professor?.especialidade || "");
   const [escolaId, setEscolaId] = useState(professor?.escola_id || "");
+  const [funcaoEducacional, setFuncaoEducacional] = useState(professor?.funcao_educacional || "professor");
 
   const handleUsuarioSelecionado = (usuario: UsuarioRH) => {
     setUsuarioSelecionado(usuario);
@@ -38,12 +39,13 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
       user_id: userId,
       especialidade: especialidade || undefined,
       escola_id: escolaId || undefined,
+      funcao_educacional: funcaoEducacional,
     });
     
-    // Reset
     setUsuarioSelecionado(null);
     setEspecialidade("");
     setEscolaId("");
+    setFuncaoEducacional("professor");
     onOpenChange(false);
   };
 
@@ -56,17 +58,16 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="h-5 w-5" />
-              {isEditing ? "Editar Vínculo de Professor" : "Vincular Professor do RH"}
+              {isEditing ? "Editar Vínculo de Professor" : "Vincular Professor/Coordenador do RH"}
             </DialogTitle>
             <DialogDescription>
               {isEditing
-                ? "Atualize os dados do vínculo do professor."
-                : "Selecione um servidor cadastrado pelo RH e defina seu vínculo como professor."}
+                ? "Atualize os dados do vínculo."
+                : "Selecione um servidor cadastrado pelo RH e defina seu vínculo como professor ou coordenador."}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Seleção de Usuário do RH */}
             {!isEditing && (
               <div className="space-y-2">
                 <Label>Servidor do RH *</Label>
@@ -79,22 +80,12 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
                         <p className="text-sm text-muted-foreground">{usuarioSelecionado.email}</p>
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setVinculoDialogOpen(true)}
-                    >
+                    <Button type="button" variant="outline" size="sm" onClick={() => setVinculoDialogOpen(true)}>
                       Alterar
                     </Button>
                   </div>
                 ) : (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => setVinculoDialogOpen(true)}
-                  >
+                  <Button type="button" variant="outline" className="w-full justify-start" onClick={() => setVinculoDialogOpen(true)}>
                     <UserPlus className="h-4 w-4 mr-2" />
                     Selecionar Servidor do RH
                   </Button>
@@ -110,17 +101,27 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
                     <p className="font-medium">{professor.nome}</p>
                     <p className="text-sm text-muted-foreground">{professor.email}</p>
                     {professor.cpf && (
-                      <Badge variant="outline" className="text-xs mt-1">
-                        CPF: {professor.cpf}
-                      </Badge>
+                      <Badge variant="outline" className="text-xs mt-1">CPF: {professor.cpf}</Badge>
                     )}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Dados do vínculo */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="funcao_educacional">Função *</Label>
+                <Select value={funcaoEducacional} onValueChange={setFuncaoEducacional}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a função" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="professor">Professor(a)</SelectItem>
+                    <SelectItem value="coordenador">Coordenador(a)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="especialidade">Especialidade / Área</Label>
                 <Input
@@ -133,19 +134,14 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
 
               <div className="space-y-2">
                 <Label htmlFor="escola_id">Escola</Label>
-                <Select
-                  value={escolaId || "none"}
-                  onValueChange={(value) => setEscolaId(value === "none" ? "" : value)}
-                >
+                <Select value={escolaId || "none"} onValueChange={(v) => setEscolaId(v === "none" ? "" : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma escola" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Nenhuma escola</SelectItem>
                     {escolas.map((escola) => (
-                      <SelectItem key={escola.id} value={escola.id}>
-                        {escola.nome}
-                      </SelectItem>
+                      <SelectItem key={escola.id} value={escola.id}>{escola.nome}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -153,11 +149,9 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
             </div>
 
             <div className="flex justify-end space-x-2">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                Cancelar
-              </Button>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
               <Button type="submit" disabled={!isEditing && !usuarioSelecionado}>
-                {isEditing ? "Atualizar" : "Vincular"} Professor
+                {isEditing ? "Atualizar" : "Vincular"} {funcaoEducacional === "coordenador" ? "Coordenador" : "Professor"}
               </Button>
             </div>
           </form>
@@ -168,8 +162,8 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
         open={vinculoDialogOpen}
         onOpenChange={setVinculoDialogOpen}
         onUsuarioSelecionado={handleUsuarioSelecionado}
-        titulo="Selecionar Servidor para Professor"
-        descricao="Busque um servidor cadastrado pelo RH para vinculá-lo como professor."
+        titulo="Selecionar Servidor para Educação"
+        descricao="Busque um servidor cadastrado pelo RH para vinculá-lo como professor ou coordenador."
       />
     </>
   );

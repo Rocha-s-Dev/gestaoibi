@@ -12917,6 +12917,7 @@ export type Database = {
           email: string | null
           escola_id: string | null
           especialidade: string | null
+          funcao_educacional: string
           id: string
           nome: string
           telefone: string | null
@@ -12929,6 +12930,7 @@ export type Database = {
           email?: string | null
           escola_id?: string | null
           especialidade?: string | null
+          funcao_educacional?: string
           id?: string
           nome: string
           telefone?: string | null
@@ -12941,6 +12943,7 @@ export type Database = {
           email?: string | null
           escola_id?: string | null
           especialidade?: string | null
+          funcao_educacional?: string
           id?: string
           nome?: string
           telefone?: string | null
@@ -16272,7 +16275,12 @@ export type Database = {
         | "mesma_unidade"
         | "mesma_secretaria"
         | "hierarquia_inferior"
-      education_role: "secretaria" | "diretor" | "professor" | "responsavel"
+      education_role:
+        | "secretaria"
+        | "diretor"
+        | "professor"
+        | "responsavel"
+        | "coordenador"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
       fase_processual:
         | "inicial"
@@ -16717,7 +16725,13 @@ export const Constants = {
         "mesma_secretaria",
         "hierarquia_inferior",
       ],
-      education_role: ["secretaria", "diretor", "professor", "responsavel"],
+      education_role: [
+        "secretaria",
+        "diretor",
+        "professor",
+        "responsavel",
+        "coordenador",
+      ],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
       fase_processual: [
         "inicial",
