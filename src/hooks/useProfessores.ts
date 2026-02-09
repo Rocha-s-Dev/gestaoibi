@@ -7,6 +7,7 @@ export type Professor = {
   especialidade?: string | null;
   escola_id?: string | null;
   secretaria_id?: string | null;
+  funcao_educacional?: string | null;
   created_at?: string;
   updated_at?: string;
   // Joined from profiles
@@ -43,6 +44,7 @@ export function useProfessores() {
         especialidade: p.especialidade,
         escola_id: p.escola_id,
         secretaria_id: p.secretaria_id,
+        funcao_educacional: p.funcao_educacional || 'professor',
         created_at: p.created_at,
         updated_at: p.updated_at,
         nome: p.profiles?.name || "Sem nome",
@@ -82,7 +84,7 @@ export function useProfessores() {
     }
   };
 
-  const updateProfessor = async (id: string, data: Partial<{ especialidade: string; escola_id: string; secretaria_id: string }>) => {
+  const updateProfessor = async (id: string, data: Partial<{ especialidade: string; escola_id: string; secretaria_id: string; funcao_educacional: string }>) => {
     try {
       const { data: result, error } = await supabase
         .from("professores")

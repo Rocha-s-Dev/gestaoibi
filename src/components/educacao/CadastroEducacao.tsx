@@ -9,7 +9,6 @@ import { NovaEscolaDialog } from "./NovaEscolaDialog";
 import { ProfessorDialog } from "./ProfessorDialog";
 import { TurmaDialog } from "./TurmaDialog";
 import { AlunoDialog } from "./AlunoDialog";
-import { SistemaAcademico } from "./SistemaAcademico";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useProfessores } from "@/hooks/useProfessores";
 import { useTurmas } from "@/hooks/useTurmas";
@@ -47,12 +46,13 @@ export function CadastroEducacao() {
     }
   };
 
-  const handleProfessorSubmit = async (data: { user_id: string; especialidade?: string; escola_id?: string; secretaria_id?: string }) => {
+  const handleProfessorSubmit = async (data: { user_id: string; especialidade?: string; escola_id?: string; secretaria_id?: string; funcao_educacional?: string }) => {
     try {
       if (selectedProfessor) {
         await updateProfessor(selectedProfessor.id, {
           especialidade: data.especialidade,
           escola_id: data.escola_id,
+          funcao_educacional: data.funcao_educacional,
         });
         toast.success("Vínculo do professor atualizado com sucesso!");
       } else {
@@ -153,7 +153,7 @@ export function CadastroEducacao() {
       </div>
 
       <Tabs defaultValue="escolas" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="escolas" className="flex items-center gap-2">
             <School className="h-4 w-4" />
             Escolas
@@ -169,10 +169,6 @@ export function CadastroEducacao() {
           <TabsTrigger value="alunos" className="flex items-center gap-2">
             <GraduationCap className="h-4 w-4" />
             Alunos
-          </TabsTrigger>
-          <TabsTrigger value="sistema" className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            Sistema Acadêmico
           </TabsTrigger>
         </TabsList>
 
@@ -223,14 +219,14 @@ export function CadastroEducacao() {
         <TabsContent value="professores" className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-semibold">Professores Vinculados</h2>
+              <h2 className="text-2xl font-semibold">Professores e Coordenadores Vinculados</h2>
               <p className="text-sm text-muted-foreground">
-                Professores são servidores do RH vinculados à Secretaria de Educação
+                Servidores do RH vinculados à Secretaria de Educação
               </p>
             </div>
             <Button onClick={() => { setSelectedProfessor(null); setProfessorDialogOpen(true); }}>
               <Link2 className="h-4 w-4 mr-2" />
-              Vincular Professor do RH
+              Vincular do RH
             </Button>
           </div>
 
@@ -245,6 +241,9 @@ export function CadastroEducacao() {
                       <Badge variant="outline" className="text-xs">
                         <Link2 className="h-3 w-3 mr-1" />
                         Vínculo RH
+                      </Badge>
+                      <Badge variant={professor.funcao_educacional === 'coordenador' ? 'secondary' : 'default'} className="text-xs">
+                        {professor.funcao_educacional === 'coordenador' ? 'Coordenador(a)' : 'Professor(a)'}
                       </Badge>
                     </div>
                     <CardTitle className="text-lg">{professor.nome}</CardTitle>
@@ -405,9 +404,6 @@ export function CadastroEducacao() {
           )}
         </TabsContent>
 
-        <TabsContent value="sistema">
-          <SistemaAcademico />
-        </TabsContent>
       </Tabs>
 
       <NovaEscolaDialog

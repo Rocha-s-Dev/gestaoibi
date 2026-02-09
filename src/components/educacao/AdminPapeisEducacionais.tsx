@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Search, Plus, Trash2, Shield, UserCog, GraduationCap, School, Users, AlertTriangle } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Plus, Trash2, Shield, UserCog, GraduationCap, School, Users, AlertTriangle, Link2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
+import { UsuarioRH } from "@/hooks/useUsuariosRH";
 
-type EducationRole = 'secretaria' | 'diretor' | 'professor' | 'responsavel';
+type EducationRole = 'secretaria' | 'diretor' | 'coordenador' | 'professor' | 'responsavel';
 
 interface UserEducationRole {
   id: string;
@@ -22,6 +23,7 @@ interface UserEducationRole {
   role: EducationRole;
   escola_id: string | null;
   created_at: string;
+  profile?: { name: string; email: string } | null;
 }
 
 interface Escola {
@@ -29,14 +31,10 @@ interface Escola {
   nome: string;
 }
 
-interface Professor {
-  id: string;
-  nome: string;
-}
-
 const roleLabels: Record<EducationRole, string> = {
   secretaria: 'Secretaria',
   diretor: 'Diretor(a)',
+  coordenador: 'Coordenador(a)',
   professor: 'Professor(a)',
   responsavel: 'Responsável',
 };
@@ -44,6 +42,7 @@ const roleLabels: Record<EducationRole, string> = {
 const roleColors: Record<EducationRole, string> = {
   secretaria: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
   diretor: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  coordenador: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
   professor: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   responsavel: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
 };
@@ -51,6 +50,7 @@ const roleColors: Record<EducationRole, string> = {
 const roleIcons: Record<EducationRole, React.ReactNode> = {
   secretaria: <Shield className="h-4 w-4" />,
   diretor: <School className="h-4 w-4" />,
+  coordenador: <UserCog className="h-4 w-4" />,
   professor: <GraduationCap className="h-4 w-4" />,
   responsavel: <Users className="h-4 w-4" />,
 };
@@ -58,15 +58,14 @@ const roleIcons: Record<EducationRole, React.ReactNode> = {
 export function AdminPapeisEducacionais() {
   const [roles, setRoles] = useState<UserEducationRole[]>([]);
   const [escolas, setEscolas] = useState<Escola[]>([]);
-  const [professores, setProfessores] = useState<Professor[]>([]);
   const [loading, setLoading] = useState(true);
   const [tableExists, setTableExists] = useState(true);
-  const [busca, setBusca] = useState("");
   const [filtroRole, setFiltroRole] = useState<string>("todos");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [vinculoDialogOpen, setVinculoDialogOpen] = useState(false);
   
   // Form state
-  const [formEmail, setFormEmail] = useState("");
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioRH | null>(null);
   const [formRole, setFormRole] = useState<EducationRole | "">("");
   const [formEscolaId, setFormEscolaId] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
@@ -78,10 +77,9 @@ export function AdminPapeisEducacionais() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Try to fetch roles - table may not exist yet
       const { data: rolesResult, error: directError } = await supabase
         .from('user_education_roles' as any)
-        .select('*')
+        .select('*, profiles:user_id(name, email)')
         .order('created_at', { ascending: false });
 
       if (directError) {
@@ -95,20 +93,12 @@ export function AdminPapeisEducacionais() {
         setTableExists(true);
       }
 
-      // Fetch escolas
       const { data: escolasData } = await supabase
         .from('escolas')
         .select('id, nome')
         .order('nome');
 
-      // Fetch professores
-      const { data: professoresData } = await supabase
-        .from('professores')
-        .select('id, nome')
-        .order('nome');
-
       setEscolas(escolasData || []);
-      setProfessores(professoresData || []);
     } catch (err) {
       console.error('Erro ao carregar dados:', err);
     } finally {
@@ -117,36 +107,22 @@ export function AdminPapeisEducacionais() {
   };
 
   const handleAddRole = async () => {
-    if (!formEmail || !formRole) {
-      toast.error('Preencha email e papel');
+    if (!usuarioSelecionado || !formRole) {
+      toast.error('Selecione um servidor e o papel');
       return;
     }
 
-    if ((formRole === 'diretor' || formRole === 'professor') && !formEscolaId) {
+    if (['diretor', 'coordenador', 'professor'].includes(formRole) && !formEscolaId) {
       toast.error('Selecione a escola para este papel');
       return;
     }
 
     setSubmitting(true);
     try {
-      // Find user by email in profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', formEmail)
-        .maybeSingle();
-
-      if (profileError || !profileData) {
-        toast.error('Usuário não encontrado. Verifique se o email está correto e se o usuário já está cadastrado.');
-        setSubmitting(false);
-        return;
-      }
-
-      // Insert role
       const { error: insertError } = await supabase
         .from('user_education_roles' as any)
         .insert({
-          user_id: profileData.id,
+          user_id: usuarioSelecionado.user_id,
           role: formRole,
           escola_id: formEscolaId || null,
         });
@@ -183,7 +159,7 @@ export function AdminPapeisEducacionais() {
   };
 
   const resetForm = () => {
-    setFormEmail("");
+    setUsuarioSelecionado(null);
     setFormRole("");
     setFormEscolaId("");
   };
@@ -193,12 +169,11 @@ export function AdminPapeisEducacionais() {
     return true;
   });
 
+  const allRoles: EducationRole[] = ['secretaria', 'diretor', 'coordenador', 'professor', 'responsavel'];
+
   const estatisticas = {
     total: roles.length,
-    secretaria: roles.filter(r => r.role === 'secretaria').length,
-    diretor: roles.filter(r => r.role === 'diretor').length,
-    professor: roles.filter(r => r.role === 'professor').length,
-    responsavel: roles.filter(r => r.role === 'responsavel').length,
+    ...Object.fromEntries(allRoles.map(r => [r, roles.filter(x => x.role === r).length])),
   };
 
   if (!tableExists) {
@@ -207,9 +182,7 @@ export function AdminPapeisEducacionais() {
         <AlertTriangle className="h-4 w-4" />
         <AlertTitle>Migração Necessária</AlertTitle>
         <AlertDescription>
-          A tabela de papéis educacionais ainda não foi criada. Execute a migração SQL 
-          <code className="mx-1 px-1 bg-muted rounded">20260121_education_rls_policies.sql</code> 
-          no Supabase Dashboard para habilitar esta funcionalidade.
+          A tabela de papéis educacionais ainda não foi criada.
         </AlertDescription>
       </Alert>
     );
@@ -218,7 +191,7 @@ export function AdminPapeisEducacionais() {
   return (
     <div className="space-y-6">
       {/* Estatísticas */}
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total</CardTitle>
@@ -228,20 +201,20 @@ export function AdminPapeisEducacionais() {
             <div className="text-2xl font-bold">{estatisticas.total}</div>
           </CardContent>
         </Card>
-        {(['secretaria', 'diretor', 'professor', 'responsavel'] as EducationRole[]).map(role => (
+        {allRoles.map(role => (
           <Card key={role}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{roleLabels[role]}</CardTitle>
               {roleIcons[role]}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{estatisticas[role]}</div>
+              <div className="text-2xl font-bold">{(estatisticas as any)[role] || 0}</div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Lista de Papéis */}
+      {/* Lista */}
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -261,51 +234,35 @@ export function AdminPapeisEducacionais() {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Filtros */}
           <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Buscar..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                className="pl-9"
-              />
-            </div>
             <Select value={filtroRole} onValueChange={setFiltroRole}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Filtrar por papel" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos os papéis</SelectItem>
-                <SelectItem value="secretaria">Secretaria</SelectItem>
-                <SelectItem value="diretor">Diretor(a)</SelectItem>
-                <SelectItem value="professor">Professor(a)</SelectItem>
-                <SelectItem value="responsavel">Responsável</SelectItem>
+                {allRoles.map(r => (
+                  <SelectItem key={r} value={r}>{roleLabels[r]}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Tabela */}
           {loading ? (
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-16 w-full" />
-              ))}
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
           ) : rolesFiltrados.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Shield className="mb-4 h-12 w-12 text-muted-foreground" />
               <h3 className="text-lg font-medium">Nenhum papel atribuído</h3>
-              <p className="text-sm text-muted-foreground">
-                Clique em "Atribuir Papel" para começar.
-              </p>
+              <p className="text-sm text-muted-foreground">Clique em "Atribuir Papel" para começar.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Usuário</TableHead>
+                  <TableHead>Servidor</TableHead>
                   <TableHead>Papel</TableHead>
                   <TableHead>Escola</TableHead>
                   <TableHead>Data</TableHead>
@@ -315,8 +272,11 @@ export function AdminPapeisEducacionais() {
               <TableBody>
                 {rolesFiltrados.map((role) => (
                   <TableRow key={role.id}>
-                    <TableCell className="font-medium font-mono text-xs">
-                      {role.user_id.substring(0, 8)}...
+                    <TableCell className="font-medium">
+                      {(role as any).profiles?.name || role.user_id.substring(0, 8) + "..."}
+                      {(role as any).profiles?.email && (
+                        <span className="block text-xs text-muted-foreground">{(role as any).profiles.email}</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Badge className={roleColors[role.role]}>
@@ -346,9 +306,7 @@ export function AdminPapeisEducacionais() {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleRemoveRole(role.id)}>
-                              Remover
-                            </AlertDialogAction>
+                            <AlertDialogAction onClick={() => handleRemoveRole(role.id)}>Remover</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
@@ -361,71 +319,71 @@ export function AdminPapeisEducacionais() {
         </CardContent>
       </Card>
 
-      {/* Dialog para adicionar papel */}
+      {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Atribuir Papel Educacional</DialogTitle>
             <DialogDescription>
-              Selecione o usuário e o papel que deseja atribuir.
+              Selecione um servidor do RH e atribua o papel desejado.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email do Usuário</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="usuario@email.com"
-                value={formEmail}
-                onChange={(e) => setFormEmail(e.target.value)}
-              />
+              <Label>Servidor do RH *</Label>
+              {usuarioSelecionado ? (
+                <div className="flex items-center justify-between p-3 border rounded-md bg-muted/30">
+                  <div>
+                    <p className="font-medium">{usuarioSelecionado.nome}</p>
+                    <p className="text-sm text-muted-foreground">{usuarioSelecionado.email}</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => setVinculoDialogOpen(true)}>Alterar</Button>
+                </div>
+              ) : (
+                <Button variant="outline" className="w-full justify-start" onClick={() => setVinculoDialogOpen(true)}>
+                  <Link2 className="h-4 w-4 mr-2" />
+                  Selecionar Servidor do RH
+                </Button>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Papel</Label>
+              <Label>Papel *</Label>
               <Select value={formRole} onValueChange={(v) => setFormRole(v as EducationRole)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o papel" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="secretaria">
-                    <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" /> Secretaria (Acesso Total)
-                    </span>
+                    <span className="flex items-center gap-2"><Shield className="h-4 w-4" /> Secretaria (Acesso Total)</span>
                   </SelectItem>
                   <SelectItem value="diretor">
-                    <span className="flex items-center gap-2">
-                      <School className="h-4 w-4" /> Diretor(a) (Sua Escola)
-                    </span>
+                    <span className="flex items-center gap-2"><School className="h-4 w-4" /> Diretor(a)</span>
+                  </SelectItem>
+                  <SelectItem value="coordenador">
+                    <span className="flex items-center gap-2"><UserCog className="h-4 w-4" /> Coordenador(a)</span>
                   </SelectItem>
                   <SelectItem value="professor">
-                    <span className="flex items-center gap-2">
-                      <GraduationCap className="h-4 w-4" /> Professor(a) (Suas Turmas)
-                    </span>
+                    <span className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /> Professor(a)</span>
                   </SelectItem>
                   <SelectItem value="responsavel">
-                    <span className="flex items-center gap-2">
-                      <Users className="h-4 w-4" /> Responsável (Seus Filhos)
-                    </span>
+                    <span className="flex items-center gap-2"><Users className="h-4 w-4" /> Responsável</span>
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {(formRole === 'diretor' || formRole === 'professor') && (
+            {['diretor', 'coordenador', 'professor'].includes(formRole) && (
               <div className="space-y-2">
-                <Label htmlFor="escola">Escola</Label>
+                <Label>Escola *</Label>
                 <Select value={formEscolaId} onValueChange={setFormEscolaId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione a escola" />
                   </SelectTrigger>
                   <SelectContent>
                     {escolas.map((escola) => (
-                      <SelectItem key={escola.id} value={escola.id}>
-                        {escola.nome}
-                      </SelectItem>
+                      <SelectItem key={escola.id} value={escola.id}>{escola.nome}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -434,15 +392,21 @@ export function AdminPapeisEducacionais() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={handleAddRole} disabled={submitting}>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleAddRole} disabled={submitting || !usuarioSelecionado}>
               {submitting ? 'Atribuindo...' : 'Atribuir Papel'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <VincularUsuarioRH
+        open={vinculoDialogOpen}
+        onOpenChange={setVinculoDialogOpen}
+        onUsuarioSelecionado={(u) => { setUsuarioSelecionado(u); }}
+        titulo="Selecionar Servidor para Papel Educacional"
+        descricao="Busque um servidor cadastrado pelo RH."
+      />
     </div>
   );
 }
