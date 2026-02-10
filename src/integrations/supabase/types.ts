@@ -9545,19 +9545,14 @@ export type Database = {
           cnh_numero: string
           cnh_pontos: number | null
           cnh_validade: string
-          cpf: string | null
           created_at: string | null
           data_admissao: string | null
-          email: string | null
-          endereco: string | null
           id: string
           municipio_id: string | null
-          nome: string
           observacoes: string | null
           secretaria_id: string | null
-          telefone: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           vinculo_id: string | null
         }
         Insert: {
@@ -9566,19 +9561,14 @@ export type Database = {
           cnh_numero: string
           cnh_pontos?: number | null
           cnh_validade: string
-          cpf?: string | null
           created_at?: string | null
           data_admissao?: string | null
-          email?: string | null
-          endereco?: string | null
           id?: string
           municipio_id?: string | null
-          nome: string
           observacoes?: string | null
           secretaria_id?: string | null
-          telefone?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           vinculo_id?: string | null
         }
         Update: {
@@ -9587,19 +9577,14 @@ export type Database = {
           cnh_numero?: string
           cnh_pontos?: number | null
           cnh_validade?: string
-          cpf?: string | null
           created_at?: string | null
           data_admissao?: string | null
-          email?: string | null
-          endereco?: string | null
           id?: string
           municipio_id?: string | null
-          nome?: string
           observacoes?: string | null
           secretaria_id?: string | null
-          telefone?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           vinculo_id?: string | null
         }
         Relationships: [
@@ -13125,51 +13110,39 @@ export type Database = {
       profissionais_saude: {
         Row: {
           carga_horaria_semanal: number | null
-          cpf: string | null
           created_at: string
-          email: string | null
           especialidade: string | null
           id: string
-          nome: string
           registro_conselho: string | null
           status: string | null
-          telefone: string | null
           tipo_conselho: string | null
           unidade_id: string | null
           updated_at: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           carga_horaria_semanal?: number | null
-          cpf?: string | null
           created_at?: string
-          email?: string | null
           especialidade?: string | null
           id?: string
-          nome: string
           registro_conselho?: string | null
           status?: string | null
-          telefone?: string | null
           tipo_conselho?: string | null
           unidade_id?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           carga_horaria_semanal?: number | null
-          cpf?: string | null
           created_at?: string
-          email?: string | null
           especialidade?: string | null
           id?: string
-          nome?: string
           registro_conselho?: string | null
           status?: string | null
-          telefone?: string | null
           tipo_conselho?: string | null
           unidade_id?: string | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -13177,6 +13150,20 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profissionais_saude_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profissionais_saude_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
           },
         ]
