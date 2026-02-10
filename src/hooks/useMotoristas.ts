@@ -12,8 +12,11 @@ export function useMotoristas() {
     queryFn: async () => {
       let query = supabase
         .from("motoristas")
-        .select("*")
-        .order("nome");
+        .select(`
+          *,
+          profiles:user_id(id, name, email, cpf)
+        `)
+        .order("created_at", { ascending: false });
 
       if (secretariaAtiva?.id) {
         query = query.eq("secretaria_id", secretariaAtiva.id);
@@ -21,7 +24,13 @@ export function useMotoristas() {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+
+      return (data || []).map((m: any) => ({
+        ...m,
+        profile_nome: m.profiles?.name || "—",
+        profile_cpf: m.profiles?.cpf || "",
+        profile_email: m.profiles?.email || "",
+      }));
     },
   });
 
@@ -40,11 +49,11 @@ export function useMotoristas() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["motoristas"] });
-      toast.success("Motorista cadastrado com sucesso!");
+      toast.success("Motorista vinculado com sucesso!");
     },
     onError: (error) => {
-      console.error("Erro ao cadastrar motorista:", error);
-      toast.error("Erro ao cadastrar motorista");
+      console.error("Erro ao vincular motorista:", error);
+      toast.error("Erro ao vincular motorista");
     },
   });
 
@@ -87,7 +96,6 @@ export function useMotoristas() {
     },
   });
 
-  // Motoristas com CNH vencendo
   const { data: alertasCNH = [] } = useQuery({
     queryKey: ["motoristas_cnh_vencendo"],
     queryFn: async () => {
@@ -96,13 +104,19 @@ export function useMotoristas() {
 
       const { data, error } = await supabase
         .from("motoristas")
-        .select("id, nome, cnh_validade")
+        .select(`
+          id, cnh_validade,
+          profiles:user_id(name)
+        `)
         .eq("ativo", true)
         .lte("cnh_validade", dataLimite.toISOString().split("T")[0])
         .order("cnh_validade");
 
       if (error) throw error;
-      return data;
+      return (data || []).map((a: any) => ({
+        ...a,
+        nome: a.profiles?.name || "—",
+      }));
     },
   });
 

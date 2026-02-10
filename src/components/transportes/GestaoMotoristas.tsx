@@ -4,69 +4,58 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, AlertCircle } from "lucide-react";
+import { Plus, Search, AlertCircle, UserPlus } from "lucide-react";
 import { useMotoristas } from "@/hooks/useMotoristas";
 import { format } from "date-fns";
+import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
+import { UsuarioRH } from "@/hooks/useUsuariosRH";
 
 export function GestaoMotoristas() {
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  
+  const [vincularOpen, setVincularOpen] = useState(false);
+
   const { motoristas, isLoading, createMotorista, alertasCNH } = useMotoristas();
 
+  const [selectedUser, setSelectedUser] = useState<UsuarioRH | null>(null);
   const [novoMotorista, setNovoMotorista] = useState({
-    nome: "",
-    cpf: "",
     cnh_numero: "",
     cnh_categoria: "B",
     cnh_validade: "",
     cnh_pontos: 0,
-    telefone: "",
-    email: "",
   });
+
+  const handleUserSelected = (usuario: UsuarioRH) => {
+    setSelectedUser(usuario);
+    setVincularOpen(false);
+    setDialogOpen(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createMotorista.mutateAsync(novoMotorista);
-    setDialogOpen(false);
-    setNovoMotorista({
-      nome: "",
-      cpf: "",
-      cnh_numero: "",
-      cnh_categoria: "B",
-      cnh_validade: "",
-      cnh_pontos: 0,
-      telefone: "",
-      email: "",
+    if (!selectedUser) return;
+    await createMotorista.mutateAsync({
+      user_id: selectedUser.user_id,
+      ...novoMotorista,
     });
+    setDialogOpen(false);
+    setSelectedUser(null);
+    setNovoMotorista({ cnh_numero: "", cnh_categoria: "B", cnh_validade: "", cnh_pontos: 0 });
   };
 
   const filteredMotoristas = motoristas.filter(
     (m: any) =>
-      m.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.cpf?.includes(searchTerm)
+      m.profile_nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.profile_cpf?.includes(searchTerm)
   );
 
   const isCNHVencendo = (validade: string) => {
@@ -78,7 +67,6 @@ export function GestaoMotoristas() {
 
   return (
     <div className="space-y-6">
-      {/* Alertas de CNH */}
       {alertasCNH.length > 0 && (
         <Card className="border-orange-500">
           <CardHeader className="pb-2">
@@ -116,110 +104,10 @@ export function GestaoMotoristas() {
                   className="pl-8 w-64"
                 />
               </div>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Novo Motorista
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Cadastrar Motorista</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2 col-span-2">
-                        <Label>Nome Completo</Label>
-                        <Input
-                          value={novoMotorista.nome}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, nome: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>CPF</Label>
-                        <Input
-                          value={novoMotorista.cpf}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, cpf: e.target.value })}
-                          placeholder="000.000.000-00"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Telefone</Label>
-                        <Input
-                          value={novoMotorista.telefone}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, telefone: e.target.value })}
-                          placeholder="(00) 00000-0000"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Número CNH</Label>
-                        <Input
-                          value={novoMotorista.cnh_numero}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_numero: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Categoria CNH</Label>
-                        <Select
-                          value={novoMotorista.cnh_categoria}
-                          onValueChange={(v) => setNovoMotorista({ ...novoMotorista, cnh_categoria: v })}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="A">A - Motos</SelectItem>
-                            <SelectItem value="B">B - Carros</SelectItem>
-                            <SelectItem value="AB">AB - Motos e Carros</SelectItem>
-                            <SelectItem value="C">C - Caminhões</SelectItem>
-                            <SelectItem value="D">D - Ônibus</SelectItem>
-                            <SelectItem value="E">E - Carretas</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Validade CNH</Label>
-                        <Input
-                          type="date"
-                          value={novoMotorista.cnh_validade}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_validade: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Pontos na CNH</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="40"
-                          value={novoMotorista.cnh_pontos}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_pontos: parseInt(e.target.value) })}
-                        />
-                      </div>
-                      <div className="space-y-2 col-span-2">
-                        <Label>Email</Label>
-                        <Input
-                          type="email"
-                          value={novoMotorista.email}
-                          onChange={(e) => setNovoMotorista({ ...novoMotorista, email: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                      <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                        Cancelar
-                      </Button>
-                      <Button type="submit" disabled={createMotorista.isPending}>
-                        Cadastrar
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              <Button onClick={() => setVincularOpen(true)}>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Vincular Motorista
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -242,12 +130,12 @@ export function GestaoMotoristas() {
               <TableBody>
                 {filteredMotoristas.map((motorista: any) => (
                   <TableRow key={motorista.id}>
-                    <TableCell className="font-medium">{motorista.nome}</TableCell>
-                    <TableCell>{motorista.cpf}</TableCell>
+                    <TableCell className="font-medium">{motorista.profile_nome || "—"}</TableCell>
+                    <TableCell>{motorista.profile_cpf || "—"}</TableCell>
                     <TableCell>{motorista.cnh_numero}</TableCell>
                     <TableCell>{motorista.cnh_categoria}</TableCell>
                     <TableCell>
-                      <span className={isCNHVencendo(motorista.cnh_validade) ? "text-red-500 font-medium" : ""}>
+                      <span className={isCNHVencendo(motorista.cnh_validade) ? "text-destructive font-medium" : ""}>
                         {motorista.cnh_validade ? format(new Date(motorista.cnh_validade), "dd/MM/yyyy") : "-"}
                       </span>
                     </TableCell>
@@ -275,6 +163,79 @@ export function GestaoMotoristas() {
           )}
         </CardContent>
       </Card>
+
+      {/* Dialog para vincular usuário do RH */}
+      <VincularUsuarioRH
+        open={vincularOpen}
+        onOpenChange={setVincularOpen}
+        onUsuarioSelecionado={handleUserSelected}
+        titulo="Vincular Motorista"
+        descricao="Busque e selecione um servidor do RH para vincular como motorista."
+      />
+
+      {/* Dialog para dados complementares do motorista */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Dados do Motorista</DialogTitle>
+            <DialogDescription>
+              Servidor: <strong>{selectedUser?.nome}</strong> — Informe os dados de habilitação.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Número CNH</Label>
+                <Input
+                  value={novoMotorista.cnh_numero}
+                  onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_numero: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Categoria CNH</Label>
+                <Select
+                  value={novoMotorista.cnh_categoria}
+                  onValueChange={(v) => setNovoMotorista({ ...novoMotorista, cnh_categoria: v })}
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="A">A - Motos</SelectItem>
+                    <SelectItem value="B">B - Carros</SelectItem>
+                    <SelectItem value="AB">AB - Motos e Carros</SelectItem>
+                    <SelectItem value="C">C - Caminhões</SelectItem>
+                    <SelectItem value="D">D - Ônibus</SelectItem>
+                    <SelectItem value="E">E - Carretas</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Validade CNH</Label>
+                <Input
+                  type="date"
+                  value={novoMotorista.cnh_validade}
+                  onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_validade: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Pontos na CNH</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="40"
+                  value={novoMotorista.cnh_pontos}
+                  onChange={(e) => setNovoMotorista({ ...novoMotorista, cnh_pontos: parseInt(e.target.value) })}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
+              <Button type="submit" disabled={createMotorista.isPending}>Cadastrar</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
