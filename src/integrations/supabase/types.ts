@@ -16265,6 +16265,7 @@ export type Database = {
       education_role:
         | "secretaria"
         | "diretor"
+        | "vice_diretor"
         | "professor"
         | "responsavel"
         | "coordenador"
@@ -16715,6 +16716,7 @@ export const Constants = {
       education_role: [
         "secretaria",
         "diretor",
+        "vice_diretor",
         "professor",
         "responsavel",
         "coordenador",

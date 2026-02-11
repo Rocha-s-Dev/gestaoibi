@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,9 +21,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { User, FileText, MapPin, CreditCard, Users } from "lucide-react";
+import { User, FileText, MapPin, CreditCard, Users, AlertTriangle } from "lucide-react";
 import { DependentesTab } from "./DependentesTab";
 import { DadosBancariosTab } from "./DadosBancariosTab";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Profile {
   id: string;
@@ -62,6 +64,7 @@ interface Profile {
   endereco_uf?: string | null;
   endereco_cep?: string | null;
   observacoes?: string | null;
+  tipo_usuario?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -83,13 +86,11 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [activeTab, setActiveTab] = useState("pessoais");
-  
+
   const [formData, setFormData] = useState({
-    // Auth
     email: "",
     password: "",
     confirmPassword: "",
-    // Dados Pessoais
     firstName: "",
     lastName: "",
     cpf: "",
@@ -105,7 +106,6 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
     nome_pai: "",
     telefone_residencial: "",
     telefone_celular: "",
-    // Documentos
     pis_pasep: "",
     titulo_eleitor: "",
     zona_eleitoral: "",
@@ -116,7 +116,6 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
     cnh_numero: "",
     cnh_categoria: "",
     cnh_validade: "",
-    // Endereço
     endereco_logradouro: "",
     endereco_numero: "",
     endereco_complemento: "",
@@ -124,19 +123,20 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
     endereco_cidade: "",
     endereco_uf: "",
     endereco_cep: "",
-    // Profissional
-    department_id: "",
-    role: "employee",
+    tipo_usuario: "funcionario",
+    secretaria_id: "",
     observacoes: "",
   });
 
-  const { data: departments } = useQuery({
-    queryKey: ["departments"],
+  // Buscar secretarias para quando tipo_usuario = secretario
+  const { data: secretarias } = useQuery({
+    queryKey: ["secretarias_for_servidor"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("departments")
-        .select("*")
-        .order("name");
+        .from("secretarias")
+        .select("id, nome")
+        .eq("ativo", true)
+        .order("nome");
       if (error) throw error;
       return data || [];
     },
@@ -182,8 +182,8 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
         endereco_cidade: servidor.endereco_cidade || "",
         endereco_uf: servidor.endereco_uf || "",
         endereco_cep: servidor.endereco_cep || "",
-        department_id: servidor.department || "",
-        role: servidor.role,
+        tipo_usuario: servidor.tipo_usuario || "funcionario",
+        secretaria_id: "",
         observacoes: servidor.observacoes || "",
       });
     } else {
@@ -223,8 +223,8 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
         endereco_cidade: "",
         endereco_uf: "",
         endereco_cep: "",
-        department_id: "",
-        role: "employee",
+        tipo_usuario: "funcionario",
+        secretaria_id: "",
         observacoes: "",
       });
     }
@@ -234,7 +234,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
 
   const validatePasswords = () => {
     setPasswordError("");
-    
+
     if (!servidor) {
       if (!formData.password) {
         setPasswordError("Senha é obrigatória");
@@ -265,58 +265,75 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Validações obrigatórias
+    if (!formData.firstName.trim()) {
+      toast.error("Nome completo é obrigatório");
+      return;
+    }
+    if (!formData.cpf.trim()) {
+      toast.error("CPF é obrigatório");
+      return;
+    }
+    if (!formData.email.trim()) {
+      toast.error("Email institucional é obrigatório");
+      return;
+    }
+    if (!formData.telefone_celular.trim()) {
+      toast.error("Telefone é obrigatório");
+      return;
+    }
+
+    // REGRA: Secretário sem secretaria = PROIBIDO
+    if (formData.tipo_usuario === "secretario" && !formData.secretaria_id) {
+      toast.error("Secretário deve ter uma secretaria vinculada. É PROIBIDO criar secretário sem secretaria.");
+      return;
+    }
+
     if (!validatePasswords()) return;
-    
+
     setLoading(true);
 
     try {
-      const isValidUUID =
-        formData.department_id &&
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-          formData.department_id
-        );
-      const departmentValue = isValidUUID ? formData.department_id : null;
-
-      const profileData = {
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
-        email: formData.email || null,
-        department: departmentValue,
-        role: formData.role,
-        cpf: formData.cpf || null,
-        rg: formData.rg || null,
-        rg_orgao_emissor: formData.rg_orgao_emissor || null,
-        rg_uf: formData.rg_uf || null,
-        data_nascimento: formData.data_nascimento || null,
-        sexo: formData.sexo || null,
-        estado_civil: formData.estado_civil || null,
-        nacionalidade: formData.nacionalidade || null,
-        naturalidade: formData.naturalidade || null,
-        nome_mae: formData.nome_mae || null,
-        nome_pai: formData.nome_pai || null,
-        telefone_residencial: formData.telefone_residencial || null,
-        telefone_celular: formData.telefone_celular || null,
-        pis_pasep: formData.pis_pasep || null,
-        titulo_eleitor: formData.titulo_eleitor || null,
-        zona_eleitoral: formData.zona_eleitoral || null,
-        secao_eleitoral: formData.secao_eleitoral || null,
-        ctps_numero: formData.ctps_numero || null,
-        ctps_serie: formData.ctps_serie || null,
-        ctps_uf: formData.ctps_uf || null,
-        cnh_numero: formData.cnh_numero || null,
-        cnh_categoria: formData.cnh_categoria || null,
-        cnh_validade: formData.cnh_validade || null,
-        endereco_logradouro: formData.endereco_logradouro || null,
-        endereco_numero: formData.endereco_numero || null,
-        endereco_complemento: formData.endereco_complemento || null,
-        endereco_bairro: formData.endereco_bairro || null,
-        endereco_cidade: formData.endereco_cidade || null,
-        endereco_uf: formData.endereco_uf || null,
-        endereco_cep: formData.endereco_cep || null,
-        observacoes: formData.observacoes || null,
-      };
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
 
       if (servidor) {
+        // EDIÇÃO: atualizar profile diretamente
+        const profileData = {
+          name: fullName,
+          cpf: formData.cpf || null,
+          rg: formData.rg || null,
+          rg_orgao_emissor: formData.rg_orgao_emissor || null,
+          rg_uf: formData.rg_uf || null,
+          data_nascimento: formData.data_nascimento || null,
+          sexo: formData.sexo || null,
+          estado_civil: formData.estado_civil || null,
+          nacionalidade: formData.nacionalidade || null,
+          naturalidade: formData.naturalidade || null,
+          nome_mae: formData.nome_mae || null,
+          nome_pai: formData.nome_pai || null,
+          telefone_residencial: formData.telefone_residencial || null,
+          telefone_celular: formData.telefone_celular || null,
+          pis_pasep: formData.pis_pasep || null,
+          titulo_eleitor: formData.titulo_eleitor || null,
+          zona_eleitoral: formData.zona_eleitoral || null,
+          secao_eleitoral: formData.secao_eleitoral || null,
+          ctps_numero: formData.ctps_numero || null,
+          ctps_serie: formData.ctps_serie || null,
+          ctps_uf: formData.ctps_uf || null,
+          cnh_numero: formData.cnh_numero || null,
+          cnh_categoria: formData.cnh_categoria || null,
+          cnh_validade: formData.cnh_validade || null,
+          endereco_logradouro: formData.endereco_logradouro || null,
+          endereco_numero: formData.endereco_numero || null,
+          endereco_complemento: formData.endereco_complemento || null,
+          endereco_bairro: formData.endereco_bairro || null,
+          endereco_cidade: formData.endereco_cidade || null,
+          endereco_uf: formData.endereco_uf || null,
+          endereco_cep: formData.endereco_cep || null,
+          observacoes: formData.observacoes || null,
+        };
+
         const { error } = await supabase
           .from("profiles")
           .update(profileData as any)
@@ -327,36 +344,65 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
         if (formData.password) {
           const { error: pwError } = await supabase.functions.invoke(
             "update-user-password",
-            { body: { userId: servidor.id, password: formData.password } }
+            { body: { userId: servidor.user_id, password: formData.password } }
           );
           if (pwError) throw pwError;
         }
 
         toast.success("Servidor atualizado com sucesso!");
       } else {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-          options: {
-            data: {
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-            },
+        // CRIAÇÃO: usar edge function create-user-rh (REGRA INSTITUCIONAL)
+        const { data, error } = await supabase.functions.invoke("create-user-rh", {
+          body: {
+            email: formData.email,
+            password: formData.password,
+            name: fullName,
+            cpf: formData.cpf || null,
+            tipo_usuario: formData.tipo_usuario,
+            secretaria_id: formData.secretaria_id || null,
           },
         });
 
-        if (authError) throw authError;
+        if (error) throw error;
+        if (data?.error) throw new Error(data.error);
 
-        if (authData.user) {
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .update(profileData as any)
-            .eq("id", authData.user.id);
-
-          if (profileError) throw profileError;
+        // Atualizar profile com dados completos
+        if (data?.userId) {
+          await supabase.from("profiles").update({
+            telefone_celular: formData.telefone_celular || null,
+            telefone_residencial: formData.telefone_residencial || null,
+            rg: formData.rg || null,
+            rg_orgao_emissor: formData.rg_orgao_emissor || null,
+            rg_uf: formData.rg_uf || null,
+            data_nascimento: formData.data_nascimento || null,
+            sexo: formData.sexo || null,
+            estado_civil: formData.estado_civil || null,
+            nacionalidade: formData.nacionalidade || null,
+            naturalidade: formData.naturalidade || null,
+            nome_mae: formData.nome_mae || null,
+            nome_pai: formData.nome_pai || null,
+            pis_pasep: formData.pis_pasep || null,
+            titulo_eleitor: formData.titulo_eleitor || null,
+            zona_eleitoral: formData.zona_eleitoral || null,
+            secao_eleitoral: formData.secao_eleitoral || null,
+            ctps_numero: formData.ctps_numero || null,
+            ctps_serie: formData.ctps_serie || null,
+            ctps_uf: formData.ctps_uf || null,
+            cnh_numero: formData.cnh_numero || null,
+            cnh_categoria: formData.cnh_categoria || null,
+            cnh_validade: formData.cnh_validade || null,
+            endereco_logradouro: formData.endereco_logradouro || null,
+            endereco_numero: formData.endereco_numero || null,
+            endereco_complemento: formData.endereco_complemento || null,
+            endereco_bairro: formData.endereco_bairro || null,
+            endereco_cidade: formData.endereco_cidade || null,
+            endereco_uf: formData.endereco_uf || null,
+            endereco_cep: formData.endereco_cep || null,
+            observacoes: formData.observacoes || null,
+          } as any).eq("user_id", data.userId);
         }
 
-        toast.success("Servidor criado com sucesso!");
+        toast.success("Servidor criado com sucesso! Troca de senha será exigida no primeiro acesso.");
       }
 
       queryClient.invalidateQueries({ queryKey: ["profiles"] });
@@ -374,10 +420,15 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {servidor ? "Editar Servidor" : "Novo Servidor"}
+            {servidor ? "Editar Servidor" : "Novo Servidor (via RH)"}
           </DialogTitle>
+          <DialogDescription>
+            {servidor
+              ? "Atualize os dados do servidor."
+              : "O RH é o ÚNICO ponto de criação de usuários do sistema. Troca de senha será obrigatória no primeiro acesso."}
+          </DialogDescription>
         </DialogHeader>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="pessoais" className="flex items-center gap-1">
@@ -424,12 +475,13 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="cpf">CPF</Label>
+                  <Label htmlFor="cpf">CPF *</Label>
                   <Input
                     id="cpf"
                     value={formData.cpf}
                     onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
                     placeholder="000.000.000-00"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -499,7 +551,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email">Email Institucional *</Label>
                   <Input
                     id="email"
                     type="email"
@@ -510,12 +562,13 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="telefone_celular">Telefone Celular</Label>
+                  <Label htmlFor="telefone_celular">Telefone Celular *</Label>
                   <Input
                     id="telefone_celular"
                     value={formData.telefone_celular}
                     onChange={(e) => setFormData({ ...formData, telefone_celular: e.target.value })}
                     placeholder="(00) 00000-0000"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -530,32 +583,82 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               </div>
 
               {!servidor && (
-                <div className="border-t pt-4 mt-4">
-                  <h4 className="text-sm font-semibold mb-3">Informações de Acesso</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Senha *</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        required
-                      />
+                <>
+                  <div className="border-t pt-4 mt-4">
+                    <h4 className="text-sm font-semibold mb-3">Informações de Acesso</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Senha Temporária *</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          value={formData.confirmPassword}
+                          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                          required
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                        required
-                      />
+                    {passwordError && <p className="text-sm text-destructive mt-1">{passwordError}</p>}
+                    <p className="text-xs text-muted-foreground mt-2">
+                      O servidor será obrigado a trocar a senha no primeiro acesso.
+                    </p>
+                  </div>
+
+                  <div className="border-t pt-4 mt-4">
+                    <h4 className="text-sm font-semibold mb-3">Tipo de Usuário</h4>
+                    <Alert className="mb-3">
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertDescription>
+                        O RH define apenas a identidade-base. Cargos funcionais são vinculados pelas secretarias.
+                        Exceção: <strong>Secretário</strong> — atribuído exclusivamente aqui.
+                      </AlertDescription>
+                    </Alert>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="tipo_usuario">Tipo *</Label>
+                        <Select
+                          value={formData.tipo_usuario}
+                          onValueChange={(v) => setFormData({ ...formData, tipo_usuario: v, secretaria_id: "" })}
+                        >
+                          <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="funcionario">Funcionário</SelectItem>
+                            <SelectItem value="secretario">Secretário</SelectItem>
+                            <SelectItem value="administrador">Administrador</SelectItem>
+                            <SelectItem value="auditor">Auditor</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {formData.tipo_usuario === "secretario" && (
+                        <div className="space-y-2">
+                          <Label htmlFor="secretaria_id">Secretaria * (obrigatória)</Label>
+                          <Select value={formData.secretaria_id} onValueChange={(v) => setFormData({ ...formData, secretaria_id: v })}>
+                            <SelectTrigger><SelectValue placeholder="Selecione a secretaria" /></SelectTrigger>
+                            <SelectContent>
+                              {secretarias?.map((sec) => (
+                                <SelectItem key={sec.id} value={sec.id}>{sec.nome}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {!formData.secretaria_id && (
+                            <p className="text-xs text-destructive">Secretário sem secretaria é PROIBIDO.</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {passwordError && <p className="text-sm text-destructive mt-1">{passwordError}</p>}
-                </div>
+                </>
               )}
 
               {servidor && (
@@ -585,56 +688,17 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                   {passwordError && <p className="text-sm text-destructive mt-1">{passwordError}</p>}
                 </div>
               )}
-
-              <div className="border-t pt-4 mt-4">
-                <h4 className="text-sm font-semibold mb-3">Informações Profissionais</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="department_id">Departamento</Label>
-                    <Select value={formData.department_id} onValueChange={(v) => setFormData({ ...formData, department_id: v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Nenhum departamento</SelectItem>
-                        {departments?.map((dept) => (
-                          <SelectItem key={dept.id} value={dept.id}>{dept.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Cargo Sistema</Label>
-                    <Select value={formData.role} onValueChange={(v) => setFormData({ ...formData, role: v })}>
-                      <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="admin">Administrador</SelectItem>
-                        <SelectItem value="mayor">Prefeito</SelectItem>
-                        <SelectItem value="secretary">Secretário</SelectItem>
-                        <SelectItem value="employee">Funcionário</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
             </TabsContent>
 
             <TabsContent value="documentos" className="space-y-4 mt-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="rg">RG</Label>
-                  <Input
-                    id="rg"
-                    value={formData.rg}
-                    onChange={(e) => setFormData({ ...formData, rg: e.target.value })}
-                  />
+                  <Input id="rg" value={formData.rg} onChange={(e) => setFormData({ ...formData, rg: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="rg_orgao_emissor">Órgão Emissor</Label>
-                  <Input
-                    id="rg_orgao_emissor"
-                    value={formData.rg_orgao_emissor}
-                    onChange={(e) => setFormData({ ...formData, rg_orgao_emissor: e.target.value })}
-                    placeholder="SSP"
-                  />
+                  <Input id="rg_orgao_emissor" value={formData.rg_orgao_emissor} onChange={(e) => setFormData({ ...formData, rg_orgao_emissor: e.target.value })} placeholder="SSP" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="rg_uf">UF RG</Label>
@@ -650,54 +714,30 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="pis_pasep">PIS/PASEP</Label>
-                  <Input
-                    id="pis_pasep"
-                    value={formData.pis_pasep}
-                    onChange={(e) => setFormData({ ...formData, pis_pasep: e.target.value })}
-                  />
+                  <Input id="pis_pasep" value={formData.pis_pasep} onChange={(e) => setFormData({ ...formData, pis_pasep: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="titulo_eleitor">Título de Eleitor</Label>
-                  <Input
-                    id="titulo_eleitor"
-                    value={formData.titulo_eleitor}
-                    onChange={(e) => setFormData({ ...formData, titulo_eleitor: e.target.value })}
-                  />
+                  <Input id="titulo_eleitor" value={formData.titulo_eleitor} onChange={(e) => setFormData({ ...formData, titulo_eleitor: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="zona_eleitoral">Zona Eleitoral</Label>
-                  <Input
-                    id="zona_eleitoral"
-                    value={formData.zona_eleitoral}
-                    onChange={(e) => setFormData({ ...formData, zona_eleitoral: e.target.value })}
-                  />
+                  <Input id="zona_eleitoral" value={formData.zona_eleitoral} onChange={(e) => setFormData({ ...formData, zona_eleitoral: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="secao_eleitoral">Seção Eleitoral</Label>
-                  <Input
-                    id="secao_eleitoral"
-                    value={formData.secao_eleitoral}
-                    onChange={(e) => setFormData({ ...formData, secao_eleitoral: e.target.value })}
-                  />
+                  <Input id="secao_eleitoral" value={formData.secao_eleitoral} onChange={(e) => setFormData({ ...formData, secao_eleitoral: e.target.value })} />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="ctps_numero">CTPS Número</Label>
-                  <Input
-                    id="ctps_numero"
-                    value={formData.ctps_numero}
-                    onChange={(e) => setFormData({ ...formData, ctps_numero: e.target.value })}
-                  />
+                  <Input id="ctps_numero" value={formData.ctps_numero} onChange={(e) => setFormData({ ...formData, ctps_numero: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="ctps_serie">CTPS Série</Label>
-                  <Input
-                    id="ctps_serie"
-                    value={formData.ctps_serie}
-                    onChange={(e) => setFormData({ ...formData, ctps_serie: e.target.value })}
-                  />
+                  <Input id="ctps_serie" value={formData.ctps_serie} onChange={(e) => setFormData({ ...formData, ctps_serie: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="ctps_uf">CTPS UF</Label>
@@ -713,11 +753,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="cnh_numero">CNH Número</Label>
-                  <Input
-                    id="cnh_numero"
-                    value={formData.cnh_numero}
-                    onChange={(e) => setFormData({ ...formData, cnh_numero: e.target.value })}
-                  />
+                  <Input id="cnh_numero" value={formData.cnh_numero} onChange={(e) => setFormData({ ...formData, cnh_numero: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="cnh_categoria">CNH Categoria</Label>
@@ -735,12 +771,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="cnh_validade">CNH Validade</Label>
-                  <Input
-                    id="cnh_validade"
-                    type="date"
-                    value={formData.cnh_validade}
-                    onChange={(e) => setFormData({ ...formData, cnh_validade: e.target.value })}
-                  />
+                  <Input id="cnh_validade" type="date" value={formData.cnh_validade} onChange={(e) => setFormData({ ...formData, cnh_validade: e.target.value })} />
                 </div>
               </div>
             </TabsContent>
@@ -749,58 +780,33 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="endereco_cep">CEP</Label>
-                  <Input
-                    id="endereco_cep"
-                    value={formData.endereco_cep}
-                    onChange={(e) => setFormData({ ...formData, endereco_cep: e.target.value })}
-                    placeholder="00000-000"
-                  />
+                  <Input id="endereco_cep" value={formData.endereco_cep} onChange={(e) => setFormData({ ...formData, endereco_cep: e.target.value })} placeholder="00000-000" />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div className="space-y-2 sm:col-span-3">
                   <Label htmlFor="endereco_logradouro">Logradouro</Label>
-                  <Input
-                    id="endereco_logradouro"
-                    value={formData.endereco_logradouro}
-                    onChange={(e) => setFormData({ ...formData, endereco_logradouro: e.target.value })}
-                  />
+                  <Input id="endereco_logradouro" value={formData.endereco_logradouro} onChange={(e) => setFormData({ ...formData, endereco_logradouro: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endereco_numero">Número</Label>
-                  <Input
-                    id="endereco_numero"
-                    value={formData.endereco_numero}
-                    onChange={(e) => setFormData({ ...formData, endereco_numero: e.target.value })}
-                  />
+                  <Input id="endereco_numero" value={formData.endereco_numero} onChange={(e) => setFormData({ ...formData, endereco_numero: e.target.value })} />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="endereco_complemento">Complemento</Label>
-                  <Input
-                    id="endereco_complemento"
-                    value={formData.endereco_complemento}
-                    onChange={(e) => setFormData({ ...formData, endereco_complemento: e.target.value })}
-                  />
+                  <Input id="endereco_complemento" value={formData.endereco_complemento} onChange={(e) => setFormData({ ...formData, endereco_complemento: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endereco_bairro">Bairro</Label>
-                  <Input
-                    id="endereco_bairro"
-                    value={formData.endereco_bairro}
-                    onChange={(e) => setFormData({ ...formData, endereco_bairro: e.target.value })}
-                  />
+                  <Input id="endereco_bairro" value={formData.endereco_bairro} onChange={(e) => setFormData({ ...formData, endereco_bairro: e.target.value })} />
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="endereco_cidade">Cidade</Label>
-                  <Input
-                    id="endereco_cidade"
-                    value={formData.endereco_cidade}
-                    onChange={(e) => setFormData({ ...formData, endereco_cidade: e.target.value })}
-                  />
+                  <Input id="endereco_cidade" value={formData.endereco_cidade} onChange={(e) => setFormData({ ...formData, endereco_cidade: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="endereco_uf">UF</Label>
@@ -814,12 +820,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               </div>
               <div className="space-y-2">
                 <Label htmlFor="observacoes">Observações</Label>
-                <Textarea
-                  id="observacoes"
-                  value={formData.observacoes}
-                  onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
-                  rows={3}
-                />
+                <Textarea id="observacoes" value={formData.observacoes} onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })} rows={3} />
               </div>
             </TabsContent>
 

@@ -133,24 +133,26 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="escola_id">Escola</Label>
-                <Select value={escolaId || "none"} onValueChange={(v) => setEscolaId(v === "none" ? "" : v)}>
+                <Label htmlFor="escola_id">Escola *</Label>
+                <Select value={escolaId} onValueChange={setEscolaId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecione uma escola" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Nenhuma escola</SelectItem>
                     {escolas.map((escola) => (
                       <SelectItem key={escola.id} value={escola.id}>{escola.nome}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                {!escolaId && (
+                  <p className="text-xs text-destructive">Escola é obrigatória para Professor/Coordenador.</p>
+                )}
               </div>
             </div>
 
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-              <Button type="submit" disabled={!isEditing && !usuarioSelecionado}>
+              <Button type="submit" disabled={(!isEditing && !usuarioSelecionado) || !escolaId}>
                 {isEditing ? "Atualizar" : "Vincular"} {funcaoEducacional === "coordenador" ? "Coordenador" : "Professor"}
               </Button>
             </div>
