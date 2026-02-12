@@ -134,8 +134,8 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
     queryFn: async () => {
       const { data, error } = await supabase
         .from("secretarias")
-        .select("id, nome")
-        .eq("ativo", true)
+        .select("id, nome, sigla")
+        .eq("status", "ativa")
         .order("nome");
       if (error) throw error;
       return data || [];
