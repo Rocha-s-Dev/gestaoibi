@@ -1,9 +1,10 @@
-
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SatisfacaoPaciente } from "@/components/saude/SatisfacaoPaciente";
 import { AcompanhamentoTratamentos } from "@/components/saude/AcompanhamentoTratamentos";
+import { AgendamentoConsultas } from "@/components/saude/AgendamentoConsultas";
+import { ProntuarioEletronico } from "@/components/saude/ProntuarioEletronico";
 
 export default function AtendimentoPaciente() {
   return (
@@ -16,15 +17,43 @@ export default function AtendimentoPaciente() {
           </p>
         </header>
 
-        <Tabs defaultValue="satisfacao">
-          <TabsList className="grid w-full grid-cols-2 h-auto">
+        <Tabs defaultValue="agendamentos">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="agendamentos" className="text-sm p-3">
+              Agendamentos
+            </TabsTrigger>
+            <TabsTrigger value="prontuario" className="text-sm p-3">
+              Prontuário Eletrônico
+            </TabsTrigger>
             <TabsTrigger value="satisfacao" className="text-sm p-3">
-              Satisfação do Paciente
+              Satisfação
             </TabsTrigger>
             <TabsTrigger value="tratamentos" className="text-sm p-3">
-              Acompanhamento de Tratamentos
+              Tratamentos
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="agendamentos" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Agendamento de Consultas e Procedimentos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AgendamentoConsultas />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="prontuario" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Prontuário Eletrônico do Paciente (PEP)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProntuarioEletronico />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="satisfacao" className="mt-6">
             <Card>
