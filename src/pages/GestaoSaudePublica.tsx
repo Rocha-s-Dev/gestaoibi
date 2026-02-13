@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CadastroUnidadesSaude } from "@/components/saude/CadastroUnidadesSaude";
 import { MonitoramentoIndicadores } from "@/components/saude/MonitoramentoIndicadores";
 import { MetasSaudePublica } from "@/components/saude/MetasSaudePublica";
+import { CadastroPacientes } from "@/components/saude/CadastroPacientes";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import { useProfissionaisSaude } from "@/hooks/useProfissionaisSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
@@ -65,13 +66,21 @@ export default function GestaoSaudePublica() {
           </p>
         </header>
 
-        <Tabs defaultValue="unidades">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
+        <Tabs defaultValue="pacientes">
+          <TabsList className="grid w-full grid-cols-5 h-auto">
+            <TabsTrigger value="pacientes" className="text-sm p-3">Pacientes</TabsTrigger>
             <TabsTrigger value="unidades" className="text-sm p-3">Unidades de Saúde</TabsTrigger>
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-sm p-3">Indicadores</TabsTrigger>
             <TabsTrigger value="metas" className="text-sm p-3">Metas</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="pacientes" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Cadastro de Pacientes</CardTitle></CardHeader>
+              <CardContent><CadastroPacientes /></CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="unidades" className="mt-6">
             <Card>
@@ -166,7 +175,6 @@ export default function GestaoSaudePublica() {
           </TabsContent>
         </Tabs>
 
-        {/* Vincular Profissional do RH */}
         <VincularUsuarioRH
           open={vincularOpen}
           onOpenChange={setVincularOpen}
@@ -175,7 +183,6 @@ export default function GestaoSaudePublica() {
           descricao="Busque e selecione um servidor do RH para vincular como profissional de saúde."
         />
 
-        {/* Dialog dados complementares */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
