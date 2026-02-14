@@ -9543,6 +9543,129 @@ export type Database = {
           },
         ]
       }
+      manifestacoes_ouvidoria: {
+        Row: {
+          assunto: string
+          canal: string | null
+          created_at: string
+          data_abertura: string
+          data_conclusao: string | null
+          data_prazo: string | null
+          data_resposta: string | null
+          descricao: string
+          id: string
+          manifestante_anonimo: boolean | null
+          manifestante_cpf: string | null
+          manifestante_email: string | null
+          manifestante_nome: string | null
+          manifestante_telefone: string | null
+          municipio_id: string | null
+          observacoes_internas: string | null
+          prioridade: string | null
+          protocolo: string
+          responsavel_resposta_id: string | null
+          resposta: string | null
+          satisfacao_cidadao: number | null
+          secretaria_destino_id: string | null
+          secretaria_id: string | null
+          status: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          assunto: string
+          canal?: string | null
+          created_at?: string
+          data_abertura?: string
+          data_conclusao?: string | null
+          data_prazo?: string | null
+          data_resposta?: string | null
+          descricao: string
+          id?: string
+          manifestante_anonimo?: boolean | null
+          manifestante_cpf?: string | null
+          manifestante_email?: string | null
+          manifestante_nome?: string | null
+          manifestante_telefone?: string | null
+          municipio_id?: string | null
+          observacoes_internas?: string | null
+          prioridade?: string | null
+          protocolo: string
+          responsavel_resposta_id?: string | null
+          resposta?: string | null
+          satisfacao_cidadao?: number | null
+          secretaria_destino_id?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          assunto?: string
+          canal?: string | null
+          created_at?: string
+          data_abertura?: string
+          data_conclusao?: string | null
+          data_prazo?: string | null
+          data_resposta?: string | null
+          descricao?: string
+          id?: string
+          manifestante_anonimo?: boolean | null
+          manifestante_cpf?: string | null
+          manifestante_email?: string | null
+          manifestante_nome?: string | null
+          manifestante_telefone?: string | null
+          municipio_id?: string | null
+          observacoes_internas?: string | null
+          prioridade?: string | null
+          protocolo?: string
+          responsavel_resposta_id?: string | null
+          resposta?: string | null
+          satisfacao_cidadao?: number | null
+          secretaria_destino_id?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manifestacoes_ouvidoria_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manifestacoes_ouvidoria_secretaria_destino_id_fkey"
+            columns: ["secretaria_destino_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manifestacoes_ouvidoria_secretaria_destino_id_fkey"
+            columns: ["secretaria_destino_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "manifestacoes_ouvidoria_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manifestacoes_ouvidoria_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       manutencoes_veiculos: {
         Row: {
           created_at: string | null
@@ -12436,6 +12559,91 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      pontos_iluminacao: {
+        Row: {
+          altura_poste: number | null
+          bairro: string | null
+          codigo: string
+          coordenadas_geo: string | null
+          created_at: string
+          data_instalacao: string | null
+          estado: string
+          id: string
+          logradouro: string
+          municipio_id: string | null
+          numero: string | null
+          observacoes: string | null
+          potencia_watts: number | null
+          referencia: string | null
+          secretaria_id: string | null
+          tipo_luminaria: string | null
+          ultima_manutencao: string | null
+          updated_at: string
+        }
+        Insert: {
+          altura_poste?: number | null
+          bairro?: string | null
+          codigo: string
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_instalacao?: string | null
+          estado?: string
+          id?: string
+          logradouro: string
+          municipio_id?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          potencia_watts?: number | null
+          referencia?: string | null
+          secretaria_id?: string | null
+          tipo_luminaria?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string
+        }
+        Update: {
+          altura_poste?: number | null
+          bairro?: string | null
+          codigo?: string
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_instalacao?: string | null
+          estado?: string
+          id?: string
+          logradouro?: string
+          municipio_id?: string | null
+          numero?: string | null
+          observacoes?: string | null
+          potencia_watts?: number | null
+          referencia?: string | null
+          secretaria_id?: string | null
+          tipo_luminaria?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pontos_iluminacao_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_iluminacao_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pontos_iluminacao_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -15386,6 +15594,107 @@ export type Database = {
           },
         ]
       }
+      solicitacoes_iluminacao: {
+        Row: {
+          created_at: string
+          custo_reparo: number | null
+          data_abertura: string
+          data_conclusao: string | null
+          descricao: string | null
+          equipe_responsavel: string | null
+          id: string
+          logradouro: string | null
+          material_utilizado: string | null
+          municipio_id: string | null
+          observacoes: string | null
+          ponto_id: string | null
+          prioridade: string | null
+          protocolo: string
+          referencia: string | null
+          secretaria_id: string | null
+          solicitante_nome: string | null
+          solicitante_telefone: string | null
+          status: string
+          tipo_problema: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          custo_reparo?: number | null
+          data_abertura?: string
+          data_conclusao?: string | null
+          descricao?: string | null
+          equipe_responsavel?: string | null
+          id?: string
+          logradouro?: string | null
+          material_utilizado?: string | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          ponto_id?: string | null
+          prioridade?: string | null
+          protocolo: string
+          referencia?: string | null
+          secretaria_id?: string | null
+          solicitante_nome?: string | null
+          solicitante_telefone?: string | null
+          status?: string
+          tipo_problema: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          custo_reparo?: number | null
+          data_abertura?: string
+          data_conclusao?: string | null
+          descricao?: string | null
+          equipe_responsavel?: string | null
+          id?: string
+          logradouro?: string | null
+          material_utilizado?: string | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          ponto_id?: string | null
+          prioridade?: string | null
+          protocolo?: string
+          referencia?: string | null
+          secretaria_id?: string | null
+          solicitante_nome?: string | null
+          solicitante_telefone?: string | null
+          status?: string
+          tipo_problema?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solicitacoes_iluminacao_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_iluminacao_ponto_id_fkey"
+            columns: ["ponto_id"]
+            isOneToOne: false
+            referencedRelation: "pontos_iluminacao"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_iluminacao_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_iluminacao_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       solicitacoes_matricula: {
         Row: {
           cpf_aluno: string | null
@@ -16963,6 +17272,8 @@ export type Database = {
       gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
       gerar_protocolo_denuncia_ambiental: { Args: never; Returns: string }
+      gerar_protocolo_iluminacao: { Args: never; Returns: string }
+      gerar_protocolo_ouvidoria: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria: { Args: { _user_id: string }; Returns: string }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }

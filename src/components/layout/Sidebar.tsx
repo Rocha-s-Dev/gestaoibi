@@ -172,6 +172,7 @@ const secretariaMenuConfigs: SecretariaMenuConfig[] = [
     submenu: [
       { icon: FileText, label: "Gestão de Políticas Públicas", path: "/governo/politicas" },
       { icon: Eye, label: "Transparência", path: "/governo/transparencia" },
+      { icon: MessageSquare, label: "Ouvidoria Municipal", path: "/governo/ouvidoria" },
     ],
   },
 ];
