@@ -4009,6 +4009,103 @@ export type Database = {
           },
         ]
       }
+      denuncias_ambientais: {
+        Row: {
+          auto_infracao: string | null
+          coordenadas_geo: string | null
+          created_at: string
+          data_denuncia: string
+          data_vistoria: string | null
+          denunciante_anonimo: boolean | null
+          denunciante_nome: string | null
+          denunciante_telefone: string | null
+          descricao: string
+          fiscal_responsavel: string | null
+          fotos: Json | null
+          id: string
+          localizacao: string | null
+          municipio_id: string | null
+          parecer: string | null
+          prioridade: string | null
+          protocolo: string
+          providencias: string | null
+          secretaria_id: string | null
+          status: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          auto_infracao?: string | null
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_denuncia?: string
+          data_vistoria?: string | null
+          denunciante_anonimo?: boolean | null
+          denunciante_nome?: string | null
+          denunciante_telefone?: string | null
+          descricao: string
+          fiscal_responsavel?: string | null
+          fotos?: Json | null
+          id?: string
+          localizacao?: string | null
+          municipio_id?: string | null
+          parecer?: string | null
+          prioridade?: string | null
+          protocolo: string
+          providencias?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          auto_infracao?: string | null
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_denuncia?: string
+          data_vistoria?: string | null
+          denunciante_anonimo?: boolean | null
+          denunciante_nome?: string | null
+          denunciante_telefone?: string | null
+          descricao?: string
+          fiscal_responsavel?: string | null
+          fotos?: Json | null
+          id?: string
+          localizacao?: string | null
+          municipio_id?: string | null
+          parecer?: string | null
+          prioridade?: string | null
+          protocolo?: string
+          providencias?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "denuncias_ambientais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "denuncias_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "denuncias_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       departments: {
         Row: {
           code: string | null
@@ -8864,6 +8961,112 @@ export type Database = {
           },
         ]
       }
+      licenciamentos_ambientais: {
+        Row: {
+          area_total: number | null
+          atividade: string
+          condicionantes: string | null
+          coordenadas_geo: string | null
+          created_at: string
+          data_emissao: string | null
+          data_entrada: string
+          data_validade: string | null
+          descricao_empreendimento: string | null
+          documentos: Json | null
+          id: string
+          localizacao: string | null
+          municipio_id: string | null
+          numero_processo: string
+          observacoes: string | null
+          parecer_tecnico: string | null
+          requerente_cpf_cnpj: string | null
+          requerente_email: string | null
+          requerente_nome: string
+          requerente_telefone: string | null
+          secretaria_id: string | null
+          status: string
+          tecnico_responsavel: string | null
+          tipo_licenca: string
+          updated_at: string
+        }
+        Insert: {
+          area_total?: number | null
+          atividade: string
+          condicionantes?: string | null
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          data_entrada?: string
+          data_validade?: string | null
+          descricao_empreendimento?: string | null
+          documentos?: Json | null
+          id?: string
+          localizacao?: string | null
+          municipio_id?: string | null
+          numero_processo: string
+          observacoes?: string | null
+          parecer_tecnico?: string | null
+          requerente_cpf_cnpj?: string | null
+          requerente_email?: string | null
+          requerente_nome: string
+          requerente_telefone?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tecnico_responsavel?: string | null
+          tipo_licenca: string
+          updated_at?: string
+        }
+        Update: {
+          area_total?: number | null
+          atividade?: string
+          condicionantes?: string | null
+          coordenadas_geo?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          data_entrada?: string
+          data_validade?: string | null
+          descricao_empreendimento?: string | null
+          documentos?: Json | null
+          id?: string
+          localizacao?: string | null
+          municipio_id?: string | null
+          numero_processo?: string
+          observacoes?: string | null
+          parecer_tecnico?: string | null
+          requerente_cpf_cnpj?: string | null
+          requerente_email?: string | null
+          requerente_nome?: string
+          requerente_telefone?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tecnico_responsavel?: string | null
+          tipo_licenca?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licenciamentos_ambientais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenciamentos_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licenciamentos_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       linhas_transporte: {
         Row: {
           ativa: boolean | null
@@ -9522,6 +9725,86 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "conversations"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      metas_ambientais: {
+        Row: {
+          categoria: string
+          created_at: string
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          prazo: string
+          programa_id: string | null
+          secretaria_id: string | null
+          status: string
+          titulo: string
+          unidade_medida: string
+          updated_at: string
+          valor_atual: number
+          valor_meta: number
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          prazo: string
+          programa_id?: string | null
+          secretaria_id?: string | null
+          status?: string
+          titulo: string
+          unidade_medida?: string
+          updated_at?: string
+          valor_atual?: number
+          valor_meta?: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          prazo?: string
+          programa_id?: string | null
+          secretaria_id?: string | null
+          status?: string
+          titulo?: string
+          unidade_medida?: string
+          updated_at?: string
+          valor_atual?: number
+          valor_meta?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_ambientais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_ambientais_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas_sustentabilidade"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_ambientais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
           },
         ]
       }
@@ -13645,6 +13928,76 @@ export type Database = {
           },
         ]
       }
+      programas_sustentabilidade: {
+        Row: {
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          orcamento: number | null
+          responsavel: string | null
+          secretaria_id: string | null
+          status: string
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          orcamento?: number | null
+          responsavel?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          orcamento?: number | null
+          responsavel?: string | null
+          secretaria_id?: string | null
+          status?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "programas_sustentabilidade_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_sustentabilidade_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "programas_sustentabilidade_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       projetos_culturais: {
         Row: {
           contrapartida: string | null
@@ -16605,9 +16958,11 @@ export type Database = {
         Returns: string
       }
       gerar_numero_laudo_tecnico: { Args: never; Returns: string }
+      gerar_numero_licenciamento: { Args: never; Returns: string }
       gerar_numero_ordem_servico_fiscalizacao: { Args: never; Returns: string }
       gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
+      gerar_protocolo_denuncia_ambiental: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria: { Args: { _user_id: string }; Returns: string }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }

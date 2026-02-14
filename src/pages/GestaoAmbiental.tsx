@@ -1,21 +1,15 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgramasSustentabilidade } from "@/components/ambiental/ProgramasSustentabilidade";
 import { MetasAmbientais } from "@/components/ambiental/MetasAmbientais";
+import { LicenciamentoAmbiental } from "@/components/ambiental/LicenciamentoAmbiental";
+import { DenunciasAmbientais } from "@/components/ambiental/DenunciasAmbientais";
 
 export default function GestaoAmbiental() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const handleProgramaAdded = () => {
-    setRefreshTrigger((prev) => prev + 1);
-  };
-
-  const handleMetaAdded = () => {
-    setRefreshTrigger((prev) => prev + 1);
-  };
+  const handleRefresh = () => setRefreshTrigger((prev) => prev + 1);
 
   return (
     <Layout>
@@ -28,29 +22,45 @@ export default function GestaoAmbiental() {
         </header>
 
         <Tabs defaultValue="programas">
-          <TabsList className="grid w-full md:w-[800px] grid-cols-2">
-            <TabsTrigger value="programas">Programas de Sustentabilidade</TabsTrigger>
-            <TabsTrigger value="metas">Metas Ambientais</TabsTrigger>
+          <TabsList className="grid w-full md:w-[800px] grid-cols-4">
+            <TabsTrigger value="programas">Programas</TabsTrigger>
+            <TabsTrigger value="metas">Metas</TabsTrigger>
+            <TabsTrigger value="licenciamento">Licenciamento</TabsTrigger>
+            <TabsTrigger value="denuncias">Denúncias</TabsTrigger>
           </TabsList>
 
           <TabsContent value="programas" className="mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Programas de Sustentabilidade</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Programas de Sustentabilidade</CardTitle></CardHeader>
               <CardContent>
-                <ProgramasSustentabilidade refreshTrigger={refreshTrigger} onProgramaAdded={handleProgramaAdded} />
+                <ProgramasSustentabilidade refreshTrigger={refreshTrigger} onProgramaAdded={handleRefresh} />
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="metas" className="mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Metas Ambientais</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Metas Ambientais</CardTitle></CardHeader>
               <CardContent>
-                <MetasAmbientais refreshTrigger={refreshTrigger} onMetaAdded={handleMetaAdded} />
+                <MetasAmbientais refreshTrigger={refreshTrigger} onMetaAdded={handleRefresh} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="licenciamento" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Licenciamento Ambiental</CardTitle></CardHeader>
+              <CardContent>
+                <LicenciamentoAmbiental />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="denuncias" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Denúncias e Fiscalização Ambiental</CardTitle></CardHeader>
+              <CardContent>
+                <DenunciasAmbientais />
               </CardContent>
             </Card>
           </TabsContent>
