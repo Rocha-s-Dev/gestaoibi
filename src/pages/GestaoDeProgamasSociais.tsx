@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -6,6 +5,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BeneficiariosList } from "@/components/social/BeneficiariosList";
 import { AcompanhamentoProgramas } from "@/components/social/AcompanhamentoProgramas";
 import { MetasBeneficiarios } from "@/components/social/MetasBeneficiarios";
+import { DashboardSocial } from "@/components/social/DashboardSocial";
+import { UnidadesCRAS } from "@/components/social/UnidadesCRAS";
+import { CadUnicoFamilias } from "@/components/social/CadUnicoFamilias";
+import { AtendimentoSocialComponent } from "@/components/social/AtendimentoSocial";
+import { VisitasDomiciliares } from "@/components/social/VisitasDomiciliares";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -24,18 +28,53 @@ export default function GestaoDeProgramasSociais() {
           </p>
         </header>
 
-        <Tabs defaultValue="beneficiarios">
-          <TabsList className="grid w-full md:w-[800px] grid-cols-3">
-            <TabsTrigger value="beneficiarios">Cadastro de Beneficiários</TabsTrigger>
-            <TabsTrigger value="acompanhamento">Acompanhamento de Programas</TabsTrigger>
-            <TabsTrigger value="metas">Metas de Beneficiários</TabsTrigger>
+        <Tabs defaultValue="dashboard">
+          <TabsList className="flex flex-wrap h-auto gap-1">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="unidades">CRAS/CREAS</TabsTrigger>
+            <TabsTrigger value="cadunico">CadÚnico</TabsTrigger>
+            <TabsTrigger value="atendimentos">Atendimentos</TabsTrigger>
+            <TabsTrigger value="visitas">Visitas</TabsTrigger>
+            <TabsTrigger value="beneficiarios">Beneficiários</TabsTrigger>
+            <TabsTrigger value="acompanhamento">Programas</TabsTrigger>
+            <TabsTrigger value="metas">Metas</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="dashboard" className="mt-6">
+            <DashboardSocial />
+          </TabsContent>
+
+          <TabsContent value="unidades" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Unidades Socioassistenciais (CRAS/CREAS)</CardTitle></CardHeader>
+              <CardContent><UnidadesCRAS /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="cadunico" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Cadastro Único - Famílias</CardTitle></CardHeader>
+              <CardContent><CadUnicoFamilias /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="atendimentos" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Atendimento Social</CardTitle></CardHeader>
+              <CardContent><AtendimentoSocialComponent /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="visitas" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Visitas Domiciliares</CardTitle></CardHeader>
+              <CardContent><VisitasDomiciliares /></CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="beneficiarios" className="mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Cadastro de Beneficiários</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Cadastro de Beneficiários</CardTitle></CardHeader>
               <CardContent>
                 <BeneficiariosList refreshTrigger={refreshTrigger} onBeneficiarioAdded={handleBeneficiarioAdded} />
               </CardContent>
@@ -44,23 +83,15 @@ export default function GestaoDeProgramasSociais() {
 
           <TabsContent value="acompanhamento" className="mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Acompanhamento de Programas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AcompanhamentoProgramas />
-              </CardContent>
+              <CardHeader><CardTitle>Acompanhamento de Programas</CardTitle></CardHeader>
+              <CardContent><AcompanhamentoProgramas /></CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="metas" className="mt-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Metas de Beneficiários</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <MetasBeneficiarios />
-              </CardContent>
+              <CardHeader><CardTitle>Metas de Beneficiários</CardTitle></CardHeader>
+              <CardContent><MetasBeneficiarios /></CardContent>
             </Card>
           </TabsContent>
         </Tabs>

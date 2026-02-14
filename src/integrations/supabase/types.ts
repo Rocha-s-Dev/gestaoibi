@@ -1041,6 +1041,113 @@ export type Database = {
           },
         ]
       }
+      atendimentos_sociais: {
+        Row: {
+          created_at: string
+          data_atendimento: string
+          demanda: string
+          encaminhamentos: string | null
+          familia_id: string | null
+          id: string
+          municipio_id: string | null
+          observacoes: string | null
+          profissional_id: string | null
+          providencias: string | null
+          secretaria_id: string | null
+          sigilo: boolean | null
+          status: string
+          tipo_atendimento: string
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_atendimento?: string
+          demanda: string
+          encaminhamentos?: string | null
+          familia_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          observacoes?: string | null
+          profissional_id?: string | null
+          providencias?: string | null
+          secretaria_id?: string | null
+          sigilo?: boolean | null
+          status?: string
+          tipo_atendimento: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_atendimento?: string
+          demanda?: string
+          encaminhamentos?: string | null
+          familia_id?: string | null
+          id?: string
+          municipio_id?: string | null
+          observacoes?: string | null
+          profissional_id?: string | null
+          providencias?: string | null
+          secretaria_id?: string | null
+          sigilo?: boolean | null
+          status?: string
+          tipo_atendimento?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "atendimentos_sociais_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "atendimentos_sociais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       atos_administrativos: {
         Row: {
           analise_juridica_id: string | null
@@ -5231,6 +5338,131 @@ export type Database = {
           },
         ]
       }
+      familias_cadunico: {
+        Row: {
+          agua_encanada: boolean | null
+          bairro: string | null
+          cep: string | null
+          codigo_familiar: string | null
+          coleta_lixo: boolean | null
+          created_at: string
+          data_atualizacao: string | null
+          data_cadastro: string | null
+          endereco: string | null
+          energia_eletrica: boolean | null
+          esgoto_sanitario: boolean | null
+          id: string
+          municipio_id: string | null
+          nis_responsavel: string | null
+          observacoes: string | null
+          programas_vinculados: string[] | null
+          quantidade_membros: number | null
+          renda_familiar: number | null
+          renda_per_capita: number | null
+          responsavel_cpf: string | null
+          responsavel_data_nascimento: string | null
+          responsavel_nome: string
+          secretaria_id: string | null
+          situacao_moradia: string | null
+          status: string
+          telefone: string | null
+          tipo_construcao: string | null
+          unidade_referencia_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          agua_encanada?: boolean | null
+          bairro?: string | null
+          cep?: string | null
+          codigo_familiar?: string | null
+          coleta_lixo?: boolean | null
+          created_at?: string
+          data_atualizacao?: string | null
+          data_cadastro?: string | null
+          endereco?: string | null
+          energia_eletrica?: boolean | null
+          esgoto_sanitario?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          nis_responsavel?: string | null
+          observacoes?: string | null
+          programas_vinculados?: string[] | null
+          quantidade_membros?: number | null
+          renda_familiar?: number | null
+          renda_per_capita?: number | null
+          responsavel_cpf?: string | null
+          responsavel_data_nascimento?: string | null
+          responsavel_nome: string
+          secretaria_id?: string | null
+          situacao_moradia?: string | null
+          status?: string
+          telefone?: string | null
+          tipo_construcao?: string | null
+          unidade_referencia_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          agua_encanada?: boolean | null
+          bairro?: string | null
+          cep?: string | null
+          codigo_familiar?: string | null
+          coleta_lixo?: boolean | null
+          created_at?: string
+          data_atualizacao?: string | null
+          data_cadastro?: string | null
+          endereco?: string | null
+          energia_eletrica?: boolean | null
+          esgoto_sanitario?: boolean | null
+          id?: string
+          municipio_id?: string | null
+          nis_responsavel?: string | null
+          observacoes?: string | null
+          programas_vinculados?: string[] | null
+          quantidade_membros?: number | null
+          renda_familiar?: number | null
+          renda_per_capita?: number | null
+          responsavel_cpf?: string | null
+          responsavel_data_nascimento?: string | null
+          responsavel_nome?: string
+          secretaria_id?: string | null
+          situacao_moradia?: string | null
+          status?: string
+          telefone?: string | null
+          tipo_construcao?: string | null
+          unidade_referencia_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "familias_cadunico_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "familias_cadunico_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "familias_cadunico_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "familias_cadunico_unidade_referencia_id_fkey"
+            columns: ["unidade_referencia_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fatores_correcao_iptu: {
         Row: {
           ativo: boolean | null
@@ -9189,6 +9421,65 @@ export type Database = {
             columns: ["veiculo_id"]
             isOneToOne: false
             referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membros_familia: {
+        Row: {
+          cpf: string | null
+          created_at: string
+          data_nascimento: string | null
+          deficiencia: boolean | null
+          escolaridade: string | null
+          familia_id: string
+          id: string
+          nis: string | null
+          nome: string
+          ocupacao: string | null
+          parentesco: string | null
+          renda_individual: number | null
+          sexo: string | null
+          tipo_deficiencia: string | null
+        }
+        Insert: {
+          cpf?: string | null
+          created_at?: string
+          data_nascimento?: string | null
+          deficiencia?: boolean | null
+          escolaridade?: string | null
+          familia_id: string
+          id?: string
+          nis?: string | null
+          nome: string
+          ocupacao?: string | null
+          parentesco?: string | null
+          renda_individual?: number | null
+          sexo?: string | null
+          tipo_deficiencia?: string | null
+        }
+        Update: {
+          cpf?: string | null
+          created_at?: string
+          data_nascimento?: string | null
+          deficiencia?: boolean | null
+          escolaridade?: string | null
+          familia_id?: string
+          id?: string
+          nis?: string | null
+          nome?: string
+          ocupacao?: string | null
+          parentesco?: string | null
+          renda_individual?: number | null
+          sexo?: string | null
+          tipo_deficiencia?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membros_familia_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
             referencedColumns: ["id"]
           },
         ]
@@ -15463,6 +15754,99 @@ export type Database = {
         }
         Relationships: []
       }
+      unidades_socioassistenciais: {
+        Row: {
+          bairro: string | null
+          capacidade_atendimento: number | null
+          coordenador_id: string | null
+          created_at: string
+          email: string | null
+          endereco: string | null
+          horario_funcionamento: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          secretaria_id: string | null
+          servicos_oferecidos: string[] | null
+          status: string
+          telefone: string | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          bairro?: string | null
+          capacidade_atendimento?: number | null
+          coordenador_id?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          secretaria_id?: string | null
+          servicos_oferecidos?: string[] | null
+          status?: string
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          bairro?: string | null
+          capacidade_atendimento?: number | null
+          coordenador_id?: string | null
+          created_at?: string
+          email?: string | null
+          endereco?: string | null
+          horario_funcionamento?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          secretaria_id?: string | null
+          servicos_oferecidos?: string[] | null
+          status?: string
+          telefone?: string | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unidades_socioassistenciais_coordenador_id_fkey"
+            columns: ["coordenador_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "unidades_socioassistenciais_coordenador_id_fkey"
+            columns: ["coordenador_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "unidades_socioassistenciais_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unidades_socioassistenciais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unidades_socioassistenciais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       user_education_roles: {
         Row: {
           created_at: string
@@ -15957,6 +16341,106 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["unidade_id"]
+          },
+        ]
+      }
+      visitas_domiciliares: {
+        Row: {
+          created_at: string
+          data_visita: string
+          familia_id: string
+          hora_fim: string | null
+          hora_inicio: string | null
+          id: string
+          objetivo: string
+          profissional_id: string | null
+          providencias: string | null
+          proxima_visita: string | null
+          relato: string | null
+          secretaria_id: string | null
+          situacao_encontrada: string | null
+          status: string
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_visita: string
+          familia_id: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          objetivo: string
+          profissional_id?: string | null
+          providencias?: string | null
+          proxima_visita?: string | null
+          relato?: string | null
+          secretaria_id?: string | null
+          situacao_encontrada?: string | null
+          status?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_visita?: string
+          familia_id?: string
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          objetivo?: string
+          profissional_id?: string | null
+          providencias?: string | null
+          proxima_visita?: string | null
+          relato?: string | null
+          secretaria_id?: string | null
+          situacao_encontrada?: string | null
+          status?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitas_domiciliares_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitas_domiciliares_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "visitas_domiciliares_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "visitas_domiciliares_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitas_domiciliares_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "visitas_domiciliares_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
           },
         ]
       }
