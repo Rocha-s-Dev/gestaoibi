@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Users } from "lucide-react";
 import { ProgramasSustentabilidade } from "@/components/ambiental/ProgramasSustentabilidade";
 import { MetasAmbientais } from "@/components/ambiental/MetasAmbientais";
 import { LicenciamentoAmbiental } from "@/components/ambiental/LicenciamentoAmbiental";
 import { DenunciasAmbientais } from "@/components/ambiental/DenunciasAmbientais";
 import { DashboardAmbiental } from "@/components/ambiental/DashboardAmbiental";
+import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
 
 export default function GestaoAmbiental() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -24,12 +25,13 @@ export default function GestaoAmbiental() {
         </header>
 
         <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full md:w-[900px] grid-cols-5">
+          <TabsList className="grid w-full md:w-[1080px] grid-cols-6">
             <TabsTrigger value="dashboard"><LayoutDashboard className="h-4 w-4 mr-1" />Dashboard</TabsTrigger>
             <TabsTrigger value="programas">Programas</TabsTrigger>
             <TabsTrigger value="metas">Metas</TabsTrigger>
             <TabsTrigger value="licenciamento">Licenciamento</TabsTrigger>
             <TabsTrigger value="denuncias">Denúncias</TabsTrigger>
+            <TabsTrigger value="equipe"><Users className="h-4 w-4 mr-1" />Equipe</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-6"><DashboardAmbiental /></TabsContent>
@@ -56,6 +58,10 @@ export default function GestaoAmbiental() {
             <Card><CardHeader><CardTitle>Denúncias e Fiscalização Ambiental</CardTitle></CardHeader>
               <CardContent><DenunciasAmbientais /></CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="equipe" className="mt-6">
+            <EquipeSecretaria titulo="Equipe - Meio Ambiente" descricao="Fiscais ambientais, biólogos e técnicos da secretaria" />
           </TabsContent>
         </Tabs>
       </div>

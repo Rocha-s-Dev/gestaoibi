@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProjetosList } from "@/components/cultura/ProjetosList";
 import { CalendarioEventos } from "@/components/cultura/CalendarioEventos";
 import { MetasProjetos } from "@/components/cultura/MetasProjetos";
+import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
 
 export default function GestaoProjetos() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -25,7 +26,7 @@ export default function GestaoProjetos() {
         </header>
 
         <Tabs defaultValue="projetos">
-          <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+          <TabsList className="grid w-full grid-cols-1 md:grid-cols-4 h-auto">
             <TabsTrigger value="projetos" className="text-xs sm:text-sm p-2 sm:p-3">
               Cadastro e Acompanhamento
             </TabsTrigger>
@@ -34,6 +35,9 @@ export default function GestaoProjetos() {
             </TabsTrigger>
             <TabsTrigger value="metas" className="text-xs sm:text-sm p-2 sm:p-3">
               Metas de Projetos
+            </TabsTrigger>
+            <TabsTrigger value="equipe" className="text-xs sm:text-sm p-2 sm:p-3">
+              Equipe
             </TabsTrigger>
           </TabsList>
 
@@ -54,6 +58,10 @@ export default function GestaoProjetos() {
 
           <TabsContent value="metas" className="mt-6">
             <MetasProjetos />
+          </TabsContent>
+
+          <TabsContent value="equipe" className="mt-6">
+            <EquipeSecretaria titulo="Equipe - Cultura, Esporte e Lazer" descricao="Produtores culturais, instrutores esportivos e técnicos da secretaria" />
           </TabsContent>
         </Tabs>
       </div>
