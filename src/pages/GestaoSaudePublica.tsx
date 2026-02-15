@@ -13,10 +13,11 @@ import { CadastroUnidadesSaude } from "@/components/saude/CadastroUnidadesSaude"
 import { MonitoramentoIndicadores } from "@/components/saude/MonitoramentoIndicadores";
 import { MetasSaudePublica } from "@/components/saude/MetasSaudePublica";
 import { CadastroPacientes } from "@/components/saude/CadastroPacientes";
+import { SolicitacaoTFD } from "@/components/saude/SolicitacaoTFD";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import { useProfissionaisSaude } from "@/hooks/useProfissionaisSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
-import { UserPlus, Search, Stethoscope } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance } from "lucide-react";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -67,10 +68,11 @@ export default function GestaoSaudePublica() {
         </header>
 
         <Tabs defaultValue="pacientes">
-          <TabsList className="grid w-full grid-cols-5 h-auto">
+          <TabsList className="grid w-full grid-cols-6 h-auto">
             <TabsTrigger value="pacientes" className="text-sm p-3">Pacientes</TabsTrigger>
             <TabsTrigger value="unidades" className="text-sm p-3">Unidades de Saúde</TabsTrigger>
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
+            <TabsTrigger value="tfd" className="text-sm p-3 flex items-center gap-1"><Ambulance className="h-3 w-3" />TFD</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-sm p-3">Indicadores</TabsTrigger>
             <TabsTrigger value="metas" className="text-sm p-3">Metas</TabsTrigger>
           </TabsList>
@@ -157,6 +159,12 @@ export default function GestaoSaudePublica() {
                   </Table>
                 )}
               </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tfd" className="mt-6">
+            <Card>
+              <CardContent className="pt-6"><SolicitacaoTFD /></CardContent>
             </Card>
           </TabsContent>
 
