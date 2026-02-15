@@ -49,6 +49,8 @@ interface SecretariaContextType {
   municipio: Municipio | null;
   loading: boolean;
   isAdmin: boolean;
+  isPrefeito: boolean;
+  isGestorRH: boolean;
   setSecretariaAtiva: (secretaria: Secretaria | null) => void;
   refreshSecretarias: () => Promise<void>;
   hasAccessToSecretaria: (secretariaId: string) => boolean;
@@ -67,6 +69,8 @@ export function SecretariaProvider({ children }: { children: React.ReactNode }) 
   const [municipio, setMunicipio] = useState<Municipio | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isPrefeito, setIsPrefeito] = useState(false);
+  const [isGestorRH, setIsGestorRH] = useState(false);
 
   const fetchMunicipio = useCallback(async () => {
     try {
@@ -146,8 +150,25 @@ export function SecretariaProvider({ children }: { children: React.ReactNode }) 
       const adminRole = roles.find((r) => r.role === "admin_municipal");
       setIsAdmin(!!adminRole);
 
-      // If admin, show all secretarias; otherwise only assigned ones
-      if (adminRole) {
+      // Check for prefeito/gestor_rh via papeis_usuario
+      let papeisSet = new Set<string>();
+      try {
+        const { data: papeis } = await supabase
+          .from("papeis_usuario")
+          .select("papel")
+          .eq("user_id", session!.user.id)
+          .eq("is_active", true);
+        
+        papeisSet = new Set((papeis || []).map(p => p.papel));
+        setIsPrefeito(papeisSet.has("prefeito") || papeisSet.has("vice_prefeito"));
+        setIsGestorRH(papeisSet.has("gestor_rh"));
+      } catch {
+        setIsPrefeito(false);
+        setIsGestorRH(false);
+      }
+      // Prefeito also gets full access to all secretarias
+      const hasFullAccess = adminRole || papeisSet.has("prefeito") || papeisSet.has("vice_prefeito");
+      if (hasFullAccess) {
         setSecretariasDisponiveis(secretarias);
       } else {
         const userSecretariaIds = new Set(
@@ -159,7 +180,7 @@ export function SecretariaProvider({ children }: { children: React.ReactNode }) 
 
       // Restore last selected secretaria from storage
       const savedSecretariaId = localStorage.getItem(SECRETARIA_STORAGE_KEY);
-      const availableToSet = adminRole ? secretarias : secretarias.filter((s) => 
+      const availableToSet = hasFullAccess ? secretarias : secretarias.filter((s) => 
         roles.some((r) => r.secretaria_id === s.id)
       );
 
@@ -190,6 +211,8 @@ export function SecretariaProvider({ children }: { children: React.ReactNode }) 
       setUserRoles([]);
       setMunicipio(null);
       setIsAdmin(false);
+      setIsPrefeito(false);
+      setIsGestorRH(false);
       setLoading(false);
     }
   }, [session?.user?.id, refreshSecretarias]);
@@ -229,6 +252,8 @@ export function SecretariaProvider({ children }: { children: React.ReactNode }) 
         municipio,
         loading,
         isAdmin,
+        isPrefeito,
+        isGestorRH,
         setSecretariaAtiva,
         refreshSecretarias,
         hasAccessToSecretaria,
