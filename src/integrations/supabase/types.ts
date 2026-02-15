@@ -4250,6 +4250,53 @@ export type Database = {
           },
         ]
       }
+      destinos_tfd: {
+        Row: {
+          cidade_destino: string
+          created_at: string | null
+          endereco: string | null
+          horario_previsto: string | null
+          hospital_unidade: string | null
+          id: string
+          ordem: number
+          tipo_atendimento: string | null
+          uf_destino: string
+          viagem_id: string
+        }
+        Insert: {
+          cidade_destino: string
+          created_at?: string | null
+          endereco?: string | null
+          horario_previsto?: string | null
+          hospital_unidade?: string | null
+          id?: string
+          ordem?: number
+          tipo_atendimento?: string | null
+          uf_destino?: string
+          viagem_id: string
+        }
+        Update: {
+          cidade_destino?: string
+          created_at?: string | null
+          endereco?: string | null
+          horario_previsto?: string | null
+          hospital_unidade?: string | null
+          id?: string
+          ordem?: number
+          tipo_atendimento?: string | null
+          uf_destino?: string
+          viagem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "destinos_tfd_viagem_id_fkey"
+            columns: ["viagem_id"]
+            isOneToOne: false
+            referencedRelation: "viagens_tfd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       diarias_deslocamentos: {
         Row: {
           aprovador_id: string | null
@@ -11468,6 +11515,118 @@ export type Database = {
         }
         Relationships: []
       }
+      pacientes_tfd: {
+        Row: {
+          acompanhante_cpf: string | null
+          acompanhante_nome: string | null
+          acompanhante_parentesco: string | null
+          cartao_sus: string | null
+          cpf_paciente: string | null
+          created_at: string | null
+          destino_id: string | null
+          especialidade: string | null
+          id: string
+          nome_paciente: string
+          observacoes: string | null
+          paciente_id: string | null
+          tipo_atendimento: string | null
+          viagem_id: string
+        }
+        Insert: {
+          acompanhante_cpf?: string | null
+          acompanhante_nome?: string | null
+          acompanhante_parentesco?: string | null
+          cartao_sus?: string | null
+          cpf_paciente?: string | null
+          created_at?: string | null
+          destino_id?: string | null
+          especialidade?: string | null
+          id?: string
+          nome_paciente: string
+          observacoes?: string | null
+          paciente_id?: string | null
+          tipo_atendimento?: string | null
+          viagem_id: string
+        }
+        Update: {
+          acompanhante_cpf?: string | null
+          acompanhante_nome?: string | null
+          acompanhante_parentesco?: string | null
+          cartao_sus?: string | null
+          cpf_paciente?: string | null
+          created_at?: string | null
+          destino_id?: string | null
+          especialidade?: string | null
+          id?: string
+          nome_paciente?: string
+          observacoes?: string | null
+          paciente_id?: string | null
+          tipo_atendimento?: string | null
+          viagem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pacientes_tfd_destino_id_fkey"
+            columns: ["destino_id"]
+            isOneToOne: false
+            referencedRelation: "destinos_tfd"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pacientes_tfd_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pacientes_tfd_viagem_id_fkey"
+            columns: ["viagem_id"]
+            isOneToOne: false
+            referencedRelation: "viagens_tfd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pacientes_veiculo_tfd: {
+        Row: {
+          created_at: string | null
+          id: string
+          inclui_acompanhante: boolean | null
+          paciente_tfd_id: string
+          veiculo_tfd_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inclui_acompanhante?: boolean | null
+          paciente_tfd_id: string
+          veiculo_tfd_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inclui_acompanhante?: boolean | null
+          paciente_tfd_id?: string
+          veiculo_tfd_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pacientes_veiculo_tfd_paciente_tfd_id_fkey"
+            columns: ["paciente_tfd_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes_tfd"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pacientes_veiculo_tfd_veiculo_tfd_id_fkey"
+            columns: ["veiculo_tfd_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_tfd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       padroes_construtivos: {
         Row: {
           ativo: boolean | null
@@ -16820,6 +16979,67 @@ export type Database = {
           },
         ]
       }
+      veiculos_tfd: {
+        Row: {
+          capacidade_pacientes: number
+          created_at: string | null
+          designado_por: string | null
+          id: string
+          km_retorno: number | null
+          km_saida: number | null
+          motorista_id: string | null
+          observacoes: string | null
+          veiculo_id: string | null
+          viagem_id: string
+        }
+        Insert: {
+          capacidade_pacientes?: number
+          created_at?: string | null
+          designado_por?: string | null
+          id?: string
+          km_retorno?: number | null
+          km_saida?: number | null
+          motorista_id?: string | null
+          observacoes?: string | null
+          veiculo_id?: string | null
+          viagem_id: string
+        }
+        Update: {
+          capacidade_pacientes?: number
+          created_at?: string | null
+          designado_por?: string | null
+          id?: string
+          km_retorno?: number | null
+          km_saida?: number | null
+          motorista_id?: string | null
+          observacoes?: string | null
+          veiculo_id?: string | null
+          viagem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "veiculos_tfd_motorista_id_fkey"
+            columns: ["motorista_id"]
+            isOneToOne: false
+            referencedRelation: "motoristas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "veiculos_tfd_veiculo_id_fkey"
+            columns: ["veiculo_id"]
+            isOneToOne: false
+            referencedRelation: "veiculos_frota"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "veiculos_tfd_viagem_id_fkey"
+            columns: ["viagem_id"]
+            isOneToOne: false
+            referencedRelation: "viagens_tfd"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       veiculos_transporte: {
         Row: {
           ano: number | null
@@ -16858,6 +17078,117 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      viagens_tfd: {
+        Row: {
+          aprovado_por: string | null
+          created_at: string | null
+          custo_estimado: number | null
+          custo_real: number | null
+          data_aprovacao: string | null
+          data_retorno_real: string | null
+          data_solicitacao: string
+          data_viagem: string
+          diarias_valor: number | null
+          horario_retorno_previsto: string | null
+          horario_saida: string | null
+          id: string
+          motivo_cancelamento: string | null
+          municipio_id: string | null
+          observacoes: string | null
+          protocolo: string
+          relatorio_retorno: string | null
+          secretaria_saude_id: string | null
+          secretaria_transporte_id: string | null
+          solicitante_id: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          aprovado_por?: string | null
+          created_at?: string | null
+          custo_estimado?: number | null
+          custo_real?: number | null
+          data_aprovacao?: string | null
+          data_retorno_real?: string | null
+          data_solicitacao?: string
+          data_viagem: string
+          diarias_valor?: number | null
+          horario_retorno_previsto?: string | null
+          horario_saida?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          protocolo: string
+          relatorio_retorno?: string | null
+          secretaria_saude_id?: string | null
+          secretaria_transporte_id?: string | null
+          solicitante_id?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          aprovado_por?: string | null
+          created_at?: string | null
+          custo_estimado?: number | null
+          custo_real?: number | null
+          data_aprovacao?: string | null
+          data_retorno_real?: string | null
+          data_solicitacao?: string
+          data_viagem?: string
+          diarias_valor?: number | null
+          horario_retorno_previsto?: string | null
+          horario_saida?: string | null
+          id?: string
+          motivo_cancelamento?: string | null
+          municipio_id?: string | null
+          observacoes?: string | null
+          protocolo?: string
+          relatorio_retorno?: string | null
+          secretaria_saude_id?: string | null
+          secretaria_transporte_id?: string | null
+          solicitante_id?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "viagens_tfd_municipio_id_fkey"
+            columns: ["municipio_id"]
+            isOneToOne: false
+            referencedRelation: "municipios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viagens_tfd_secretaria_saude_id_fkey"
+            columns: ["secretaria_saude_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viagens_tfd_secretaria_saude_id_fkey"
+            columns: ["secretaria_saude_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "viagens_tfd_secretaria_transporte_id_fkey"
+            columns: ["secretaria_transporte_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viagens_tfd_secretaria_transporte_id_fkey"
+            columns: ["secretaria_transporte_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
       }
       vinculos_funcionais: {
         Row: {
@@ -17274,6 +17605,7 @@ export type Database = {
       gerar_protocolo_denuncia_ambiental: { Args: never; Returns: string }
       gerar_protocolo_iluminacao: { Args: never; Returns: string }
       gerar_protocolo_ouvidoria: { Args: never; Returns: string }
+      gerar_protocolo_tfd: { Args: never; Returns: string }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria: { Args: { _user_id: string }; Returns: string }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
