@@ -1,346 +1,266 @@
 
+# Resumo Completo do Sistema de Gestao Municipal
 
-# Analise Completa de Funcionalidades por Secretaria
+## 10 Secretarias Cadastradas
 
-## Visao Geral do Estado Atual vs. Funcionalidades Esperadas
-
----
-
-## 1. SMF - Secretaria Municipal de Financas
-
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Receitas e Despesas (CRUD) | /financeiro | TransactionForm, TransactionList |
-| Contratos (CRUD + aditivos) | /financeiro | ContractManagement, ContractForm, ContractList |
-| Compras e Licitacoes | /compras/licitacoes | BidDialog, BidForm, BidList |
-| Fornecedores (CRUD) | /financeiro | SupplierRegistration, SupplierList |
-| Pagamentos de Contratos | /contratos/pagamentos | PaymentTracking, ContractGoals |
-| Relatorios Financeiros | /financeiro/relatorios | Graficos Recharts, Metas Financeiras |
-| Gestao Financeira Publica | /gestao-financeira-publica | Empenho, Liquidacao, Convenios |
-| PPA / LDO / LOA | /gestao-financeira-publica | Planejamento orcamentario |
-| Classificacoes Orcamentarias | /gestao-financeira-publica | Naturezas de despesa, fontes, funcoes |
-| Restos a Pagar | /gestao-financeira-publica | Controle de inscritos |
-| Arrecadacao Tributaria | /arrecadacao-tributaria | Dashboard, IPTU, ISS, Divida Ativa |
-| IPTU Completo | /arrecadacao-tributaria | Cadastro imobiliario, lancamento, cobr., revisoes, relatorios, portal |
-| ISS/NFS-e Completo | /arrecadacao-tributaria | Declaracoes, NFS-e, fiscalizacao, lista servicos, relatorios |
-| Divida Ativa | /arrecadacao-tributaria | Inscricao e gestao |
-| Parcelamentos/REFIS | /arrecadacao-tributaria | Programas de regularizacao |
-| Fiscalizacao Tributaria | /arrecadacao-tributaria | Ordens de servico |
-| Contribuintes | /arrecadacao-tributaria | Cadastro PF/PJ |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Ordens de Pagamento | Alta | Modulo dedicado para emissao e aprovacao de OPs |
-| Exportacao PDF/Excel funcional | Media | Botoes existem mas exibem alert() placeholder |
-| Integracao Folha-Orcamento | Media | Vincular despesas de pessoal ao empenho automaticamente |
-| Conciliacao bancaria automatizada | Media | Leitura de extratos e conciliacao |
-| Prestacao de Contas TCE | Alta | Relatorios formatados para o Tribunal de Contas |
-| Boleto/PIX real | Baixa | Integracao com gateway (atualmente informativo) |
-
-**Nivel de completude: ~85%**
+| # | Sigla | Secretaria | Status |
+|---|-------|-----------|--------|
+| 1 | SMF | Sec. Municipal de Financas | Implementada |
+| 2 | SME | Sec. Municipal de Educacao | Implementada |
+| 3 | SMS | Sec. Municipal de Saude | Implementada |
+| 4 | SMISP | Sec. Municipal de Infraestrutura e Servicos Publicos | Implementada |
+| 5 | SMDS | Sec. Municipal de Desenvolvimento Social | Implementada |
+| 6 | SMMA | Sec. Municipal de Meio Ambiente | Implementada |
+| 7 | SMCEL | Sec. Municipal de Cultura, Esporte e Lazer | Implementada |
+| 8 | SMTT | Sec. Municipal de Transportes e Transito | Implementada |
+| 9 | SMAPA | Sec. Municipal de Agricultura, Pecuaria e Abastecimento | Implementada |
+| 10 | SMG | Sec. Municipal de Governo | Implementada |
 
 ---
 
-## 2. SMMA - Secretaria de Meio Ambiente
+## Modulos Administrativos (Acesso Admin/Prefeito)
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Gestao de Empreendimentos | /desenvolvimento/empresas | BusinessRegistration, BusinessList |
-| Projetos de Desenvolvimento | /desenvolvimento/empresas | DevelopmentProjectList |
-| Metas Economicas | /desenvolvimento/empresas | EconomicGoalsList |
-| Programas de Sustentabilidade | /desenvolvimento/ambiental | ProgramasSustentabilidade (CRUD) |
-| Metas Ambientais | /desenvolvimento/ambiental | MetasAmbientais (CRUD) |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Licenciamento Ambiental | Critica | Fluxo de solicitacao, analise e emissao de licencas (LP, LI, LO) |
-| Fiscalizacao Ambiental | Alta | Autos de infracao, multas, embargo |
-| Denuncias Ambientais | Alta | Canal de denuncias com protocolo e acompanhamento |
-| Areas de Preservacao | Media | Cadastro de APPs, reservas legais, unidades de conservacao |
-| Monitoramento de Qualidade | Media | Ar, agua, solo - indicadores ambientais |
-| Educacao Ambiental | Baixa | Campanhas e acoes educativas |
-| Arvores Urbanas / Podas | Media | Cadastro e solicitacoes de poda/supressao |
-| Coleta Seletiva | Media | Gestao de pontos de coleta, reciclagem |
-| Dashboard Ambiental | Alta | Painel com indicadores consolidados |
-
-**Nivel de completude: ~25%**
+| Modulo | Rota | Funcionalidades |
+|--------|------|-----------------|
+| RH e Permissoes | /admin/rh | 10 abas: Central RH, Servidores, Cargos, Funcoes, Folha de Pagamento, Frequencia/Ponto, Ferias/Licencas, Processos Trabalhistas, Relatorios Legais, Permissoes |
+| Auditoria | /admin/auditoria | Timeline imutavel com hash SHA-256, comparacao de versoes, reversoes controladas |
+| Controladoria/Juridico | /controladoria | Processos Administrativos, Analise de Contratos, Consultoria Juridica |
+| Gabinete do Prefeito | /gabinete-prefeito | Dashboard Estrategico, Agenda Governamental, Metas do Plano de Governo, Obras Prioritarias, Atos Administrativos, Comunicacao Institucional, Relatorios Executivos |
 
 ---
 
-## 3. SMDS - Secretaria de Desenvolvimento Social
+## Funcionalidades por Secretaria
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Cadastro de Beneficiarios | /social/programas | BeneficiariosList, BeneficiarioDialog |
-| Acompanhamento de Programas | /social/programas | AcompanhamentoProgramas |
-| Metas de Beneficiarios | /social/programas | MetasBeneficiarios |
+### 1. SMF - Financas
+**Rotas:** /gestao-financeira-publica, /arrecadacao-tributaria, /financeiro, /financeiro/relatorios, /contratos/pagamentos, /compras/licitacoes
 
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| CadUnico Municipal | Critica | Integracao/espelhamento do Cadastro Unico federal |
-| CRAS/CREAS | Critica | Cadastro de unidades e servicos socioassistenciais |
-| Atendimento Social | Alta | Registro de atendimentos individuais e familiares |
-| Visitas Domiciliares | Alta | Agendamento e registro de visitas |
-| Encaminhamentos | Alta | Rede de encaminhamento entre servicos |
-| Bolsa Familia / Aux. Brasil | Alta | Acompanhamento de condicionalidades |
-| Conselho Tutelar | Media | Integracao com demandas do conselho |
-| Acolhimento Institucional | Media | Gestao de abrigos e casas de passagem |
-| Servico de Convivencia | Media | SCFV - Grupos e oficinas |
-| Dashboard Social | Alta | Indicadores de vulnerabilidade e cobertura |
-| Relatorios MDS | Alta | Relatorios para o Ministerio (RMA, PMA) |
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Execucao Orcamentaria | Empenhos, Liquidacoes, Ordens de Pagamento |
+| PPA/LDO/LOA | Planejamento orcamentario completo |
+| Convenios | Gestao de convenios |
+| Classificacoes | Naturezas de despesa, fontes de recursos, funcoes/subfuncoes |
+| IPTU | Cadastro imobiliario, lancamento anual, cobranca, revisoes, portal cidadao, relatorios |
+| ISS | Declaracoes, fiscalizacao, lista de servicos, NFS-e, relatorios |
+| Divida Ativa | Gestao de dividas |
+| Parcelamentos | Controle de parcelamentos |
+| Contribuintes | Cadastro de contribuintes |
+| Contratos | Formulario, listagem, metas, pagamentos |
+| Compras/Licitacoes | Licitacoes, fornecedores |
+| Dashboard | Sim |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
-**Nivel de completude: ~20%**
+### 2. SME - Educacao
+**Rota:** /educacao/gestao
 
----
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard Educacional | KPIs consolidados |
+| Sistema Academico | Escolas, turmas, alunos, professores |
+| Matriculas | Solicitacoes online + gestao interna |
+| Transferencias | Entre escolas |
+| Historico Escolar | Visualizacao e emissao |
+| Notas | Lancamento avancado e em lote |
+| Faltas | Gestao e alertas |
+| Cadastro | Escolas, professores, funcionarios |
+| Alertas | Sistema automatizado de alertas educacionais |
+| Transporte Escolar | Rotas, veiculos, alunos vinculados |
+| Merenda | Cardapios, estoque, restricoes alimentares |
+| Relatorios | Diversos relatorios |
+| Planejamento | Estrategico educacional |
+| Indicadores | Indicadores educacionais |
+| Papeis | Administracao de papeis educacionais |
+| Portal do Responsavel | Login separado, notas, faltas, cardapio (/portal-responsavel) |
+| Matricula Online Publica | Formulario publico (/matricula-online) |
+| Vinculacao RH | SIM (Professores e Funcionarios via VincularUsuarioRH) |
 
-## 4. SMCEL - Cultura, Esporte e Lazer
+### 3. SMS - Saude
+**Rotas:** /saude/gestao, /saude/atendimento
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Projetos Culturais/Esportivos | /cultura/projetos | ProjetosList, ProjetoDialog, CalendarioEventos |
-| Metas de Projetos | /cultura/projetos | MetasProjetos |
-| Editais de Incentivo | /cultura/incentivos | GestaoEditais, EditalDialog |
-| Metas de Incentivo | /cultura/incentivos | MetasIncentivo |
-| Espacos Culturais/Esportivos | /cultura/infraestrutura | EspacosCulturais, EspacoCulturalDialog |
-| Reservas e Agendamentos | /cultura/infraestrutura | ReservasAgendamentos, ReservaDialog |
-| Turismo - Pontos Turisticos | /turismo-cultura | Listagem (sem CRUD completo) |
-| Turismo - Roteiros | /turismo-cultura | Listagem (sem CRUD completo) |
-| Turismo - Parceiros | /turismo-cultura | Listagem (sem CRUD completo) |
-| Turismo - Indicadores | /turismo-cultura | Listagem (sem CRUD completo) |
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Pacientes | Cadastro completo |
+| Unidades de Saude | Cadastro de UBS, hospitais, etc. |
+| Profissionais | Vinculacao de medicos/enfermeiros com conselho |
+| TFD | Solicitacao de viagens para tratamento fora do domicilio |
+| Indicadores | Monitoramento de indicadores de saude |
+| Metas | Metas de saude publica |
+| Atendimento | Prontuario eletronico, agendamento, tratamentos, satisfacao |
+| Dashboard | NAO implementado como aba separada |
+| Vinculacao RH | SIM (Profissionais de Saude via VincularUsuarioRH) |
 
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Turismo CRUD completo | Alta | Pontos turisticos, roteiros e parceiros so exibem contagem, sem formularios |
-| Patrimonio Cultural | Media | Cadastro de bens tombados e patrimonio imaterial |
-| Calendario Unificado | Media | Agenda publica de eventos culturais e esportivos |
-| Competicoes Esportivas | Media | Cadastro de campeonatos, chaves, resultados |
-| Biblioteca Municipal | Baixa | Acervo, emprestimos, devolucoes |
-| Artistas e Grupos Culturais | Media | Cadastro de artistas e coletivos |
-| Lei de Incentivo (Aldir Blanc, etc.) | Media | Gestao de editais federais |
-| Dashboard Cultural | Alta | Indicadores de acesso e participacao |
+### 4. SMISP - Infraestrutura e Servicos
+**Rotas:** /infraestrutura/obras, /infraestrutura/manutencao
 
-**Nivel de completude: ~55%**
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard Infraestrutura | KPIs de obras e iluminacao |
+| Cadastro de Obras | Registro e controle |
+| Acompanhamento de Obras | Monitoramento e documentacao |
+| Metas de Obras | Metas de conclusao |
+| Sistema de Chamadas | Solicitacoes de manutencao |
+| Iluminacao Publica | Pontos de luz e solicitacoes de reparo |
+| Metas de Manutencao | Metas de servicos |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
----
+### 5. SMDS - Desenvolvimento Social
+**Rota:** /social/programas
 
-## 5. SMTT - Transportes e Transito
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard Social | KPIs do social |
+| CRAS/CREAS | Cadastro de unidades socioassistenciais |
+| CadUnico | Cadastro Unico de familias |
+| Atendimentos | Registro de atendimentos sociais |
+| Visitas Domiciliares | Controle de visitas |
+| Beneficiarios | Cadastro e gestao |
+| Programas | Acompanhamento de programas sociais |
+| Metas | Metas de beneficiarios |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Gestao de Frota | /transportes | GestaoFrota |
-| Gestao de Motoristas | /transportes | GestaoMotoristas |
-| Transporte Publico | /transportes | TransportePublicoTab |
-| Transito | /transportes | TransitoTab |
+### 6. SMMA - Meio Ambiente
+**Rota:** /desenvolvimento/ambiental
 
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Manutencao de Veiculos | Alta | Agendamento, historico de manutencoes, custos por veiculo |
-| Abastecimento | Alta | Controle de combustivel por veiculo |
-| Sinalizacao Viaria | Media | Cadastro de placas, semaforos, faixas |
-| Autorizacoes de Transporte | Media | Alvaras de taxi, mototaxi, escolar privado |
-| Acidentes de Transito | Media | Registro e estatisticas de acidentes |
-| Dashboard de Frota | Alta | KPIs de consumo, km rodados, custos |
-| Multas e Infracoes | Media | Registro e gestao de multas municipais |
-| Itinerarios de Onibus | Media | Gestao de linhas e horarios |
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard Ambiental | KPIs ambientais |
+| Programas de Sustentabilidade | CRUD completo |
+| Metas Ambientais | Acompanhamento quantitativo |
+| Licenciamento Ambiental | LP, LI, LO com validade e pareceres |
+| Denuncias | Fiscalizacao ambiental com protocolo |
+| Empreendimentos | Gestao de empresas/empreendimentos |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
-**Nivel de completude: ~45%**
+### 7. SMCEL - Cultura, Esporte e Lazer
+**Rotas:** /cultura/projetos, /cultura/incentivos, /cultura/infraestrutura, /turismo-cultura
 
----
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Projetos e Eventos | CRUD de projetos culturais, calendario de eventos |
+| Editais | Gestao de editais culturais |
+| Incentivos | Programas de incentivo, metas |
+| Infraestrutura Cultural | Espacos culturais, reservas/agendamentos |
+| Turismo - Dashboard | KPIs de turismo |
+| Turismo - Pontos | Pontos turisticos |
+| Turismo - Roteiros | Roteiros turisticos |
+| Turismo - Parceiros | Parceiros do turismo |
+| Turismo - Indicadores | Indicadores de visitacao |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
-## 6. SMAPA - Agricultura, Pecuaria e Abastecimento
+### 8. SMTT - Transportes e Transito
+**Rota:** /transportes
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Produtores Rurais | /agricultura | ProdutoresRurais |
-| Propriedades Rurais | /agricultura | PropriedadesRurais |
-| Assistencia Tecnica | /agricultura | AssistenciaTecnica |
-| Programas de Incentivo Rural | /agricultura | ProgramasIncentivoRural |
-| Feiras Livres | /agricultura | FeirasLivres |
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard | KPIs de frota e motoristas |
+| Frota | Gestao da frota municipal |
+| Motoristas | Cadastro e vinculacao |
+| TFD | Designacao de veiculos para viagens medicas |
+| Transporte Publico | Gestao de transporte publico |
+| Transito | Gestao de transito |
+| Vinculacao RH | SIM (Motoristas via VincularUsuarioRH) |
 
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Defesa Animal/Sanitaria | Media | Cadastro de rebanho, vacinacao, GTA |
-| Maquinario Agricola | Alta | Cadastro e agendamento de uso de maquinas |
-| Abastecimento/CEASA | Media | Controle de abastecimento municipal |
-| DAP/CAF | Media | Declaracao de Aptidao ao Pronaf |
-| Producao e Safra | Media | Registro de producao por cultura/safra |
-| Dashboard Agricola | Alta | Indicadores de producao, area plantada |
-| Credito Rural | Baixa | Orientacao sobre linhas de credito |
+### 9. SMAPA - Agricultura
+**Rota:** /agricultura
 
-**Nivel de completude: ~55%**
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Dashboard | KPIs rurais |
+| Produtores Rurais | Cadastro |
+| Propriedades Rurais | Registro |
+| Assistencia Tecnica | Visitas e orientacoes |
+| Programas de Incentivo Rural | Incentivos ao produtor |
+| Feiras Livres | Gestao de feiras |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
----
+### 10. SMG - Governo
+**Rotas:** /governo/politicas, /governo/transparencia, /governo/ouvidoria
 
-## 7. SMISP - Infraestrutura e Servicos Publicos
-
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Cadastro de Obras | /infraestrutura/obras | CadastroObras, ObraDialog |
-| Acompanhamento de Obras | /infraestrutura/obras | AcompanhamentoObras, AcompanhamentoDialog |
-| Metas de Obras | /infraestrutura/obras | MetasObras, MetaObraDialog |
-| Sistema de Chamadas | /infraestrutura/manutencao | SistemaChamadas, ChamadaDialog |
-| Metas de Manutencao | /infraestrutura/manutencao | MetasManutencao, MetaManutencaoDialog |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Iluminacao Publica | Alta | Cadastro de pontos, solicitacoes de reparo, COSIP |
-| Limpeza Urbana | Alta | Roteiros de coleta, varrimento, capina |
-| Pavimentacao | Media | Cadastro de vias, condicao, recapeamento |
-| Drenagem e Saneamento | Media | Galerias, bocas de lobo, pontos de alagamento |
-| Cemiterios | Baixa | Cadastro de sepulturas, concessoes |
-| Predios Publicos | Media | Cadastro de imoveis, manutencao predial |
-| Medicoes de Obras | Alta | Boletins de medicao vinculados a contratos |
-| Fiscalizacao de Obras | Alta | Diario de obra, laudos, acompanhamento fotografico |
-| Dashboard de Infraestrutura | Alta | Indicadores de servicos e obras |
-
-**Nivel de completude: ~40%**
-
----
-
-## 8. SMS - Secretaria Municipal de Saude
-
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Unidades de Saude (CRUD) | /saude/gestao | CadastroUnidadesSaude, UnidadeSaudeDialog |
-| Profissionais de Saude (vinculo RH) | /saude/gestao | VincularUsuarioRH + formulario complementar |
-| Indicadores de Saude | /saude/gestao | MonitoramentoIndicadores |
-| Metas de Saude Publica | /saude/gestao | MetasSaudePublica, MetaSaudeDialog |
-| Satisfacao do Paciente | /saude/atendimento | SatisfacaoPaciente, PesquisaSatisfacaoDialog |
-| Acompanhamento de Tratamentos | /saude/atendimento | AcompanhamentoTratamentos, TratamentoDialog |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Prontuario Eletronico (PEP) | Critica | Registro clinico de pacientes, historico medico |
-| Agendamento de Consultas | Critica | Fila de espera, marcacao online, confirmacao |
-| Estoque de Medicamentos | Alta | Farmacia basica, controle de lotes e validade |
-| Vacinacao | Alta | Caderneta de vacinacao, campanhas, cobertura |
-| Vigilancia Epidemiologica | Alta | Notificacoes compulsorias, surtos, indicadores |
-| Vigilancia Sanitaria | Alta | Alvaras, fiscalizacao de estabelecimentos |
-| SAMU / Urgencia | Media | Registro de ocorrencias, despacho |
-| ESF / ACS | Alta | Estrategia Saude da Familia, visitas domiciliares |
-| Regulacao | Alta | Central de regulacao de leitos, exames, consultas especializadas |
-| Cadastro de Pacientes | Critica | Base de pacientes com CNS (Cartao SUS) |
-| Dashboard de Saude | Alta | Indicadores e-SUS, cobertura vacinal, mortalidade |
-| Relatorios SUS | Alta | BPA, FPO, RAAS para faturamento SUS |
-
-**Nivel de completude: ~25%**
+| Aba/Modulo | Descricao |
+|------------|-----------|
+| Cadastro de Politicas Publicas | CRUD |
+| Acompanhamento de Politicas | Monitoramento |
+| Metas de Politicas | Metas e indicadores |
+| Transparencia | Portal de transparencia e publicacao de relatorios |
+| Ouvidoria Municipal | Manifestacoes do cidadao com protocolo |
+| Vinculacao RH | NAO IMPLEMENTADA |
 
 ---
 
-## 9. SME - Secretaria Municipal de Educacao
+## Integracoes Entre Secretarias
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Dashboard Educacional | /educacao/gestao | DashboardEducacional |
-| Sistema Academico | /educacao/gestao | SistemaAcademico, DiarioClasse, BoletimEscolar |
-| Matriculas Online | /educacao/gestao + /matricula | GestaoSolicitacoesMatricula, FormularioMatricula |
-| Transferencias | /educacao/gestao | GestaoTransferencias |
-| Historico Escolar | /educacao/gestao | HistoricoEscolarView |
-| Notas Avancadas | /educacao/gestao | GestaoNotasAvancada, LancamentoNotasLote |
-| Faltas | /educacao/gestao | GestaoFaltas |
-| Cadastro (Escolas, Turmas, Alunos, Prof.) | /educacao/gestao | CadastroEducacao |
-| Alertas Educacionais | /educacao/gestao | AlertasEducacionais + Edge Function |
-| Transporte Escolar | /educacao/gestao | GestaoTransporte, RotaDialog, VeiculoDialog |
-| Merenda Escolar | /educacao/gestao | GestaoMerenda, CardapioDialog, EstoqueDialog |
-| Relatorios | /educacao/gestao | RelatoriosEducacao |
-| Planejamento Estrategico | /educacao/gestao | PlanejamentoEducacao |
-| Indicadores (IDEB, etc.) | /educacao/gestao | IndicadoresEducacionais |
-| Papeis Administrativos | /educacao/gestao | AdminPapeisEducacionais |
-| Portal do Responsavel | /portal-responsavel | Notas, Faltas, Cardapio, Documentos |
-| Calendario Escolar | incluso | CalendarioEscolar, Feriados |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Censo Escolar / Educacenso | Media | Exportacao de dados no formato MEC |
-| Formacao Continuada | Media | Cursos e capacitacoes para professores |
-| Biblioteca Escolar | Baixa | Acervo por escola |
-| FUNDEB | Media | Acompanhamento de recursos do FUNDEB |
-
-**Nivel de completude: ~90%**
+| Integracao | Secretarias Envolvidas | Status |
+|-----------|----------------------|--------|
+| TFD (Tratamento Fora do Domicilio) | SMS (Saude) cria solicitacao -> SMTT (Transportes) designa veiculos/motoristas | IMPLEMENTADA |
+| Identidade Centralizada (RH) | RH -> Todas as secretarias (via VincularUsuarioRH) | PARCIAL (ver abaixo) |
+| Transporte Escolar | SME (Educacao) gerencia rotas e veiculos escolares | IMPLEMENTADA (interno) |
+| Gabinete do Prefeito | Consolida KPIs de todas as secretarias | IMPLEMENTADA |
+| Auditoria Global | Registra acoes de todos os modulos | IMPLEMENTADA |
 
 ---
 
-## 10. SMG - Secretaria Municipal de Governo
+## Status da Vinculacao de Funcionarios (VincularUsuarioRH)
 
-### Implementado
-| Funcionalidade | Pagina | Componentes |
-|---|---|---|
-| Cadastro de Politicas Publicas | /governo/politicas | CadastroPoliticas, PoliticaDialog |
-| Acompanhamento de Politicas | /governo/politicas | AcompanhamentoPoliticas |
-| Metas de Politicas Publicas | /governo/politicas | MetasPoliticasPublicas, MetaPoliticaDialog |
-| Publicacao de Relatorios | /governo/transparencia | PublicacaoRelatorios, RelatorioDialog |
-| Portal da Transparencia | /governo/transparencia | PortalTransparencia, InformacaoDialog |
-| Gabinete do Prefeito | /gabinete-prefeito | Dashboard, Agenda, Metas, Obras, Atos, Comunicacao, Relatorios |
-
-### Faltando
-| Funcionalidade | Prioridade | Descricao |
-|---|---|---|
-| Diario Oficial Eletronico | Alta | Publicacao oficial de decretos, portarias, leis |
-| Ouvidoria Municipal | Alta | Canal de reclamacoes, sugestoes, denuncias com protocolo |
-| Protocolo Geral | Alta | Protocolo e tramitacao de documentos internos |
-| Gestao de Convenios (governo) | Media | Convenios com estado e uniao |
-| Relacoes Institucionais | Baixa | Gestao de agendas com outras esferas de governo |
-| LAI - Lei de Acesso a Informacao | Alta | Pedidos e respostas de acesso a informacao |
-| Legislacao Municipal | Media | Base de leis, decretos e portarias vigentes |
-
-**Nivel de completude: ~50%**
+| Secretaria | Vinculacao Implementada? | Cargos/Funcoes Especificos |
+|-----------|------------------------|---------------------------|
+| SME - Educacao | SIM | Professores, Coordenadores, Funcionarios |
+| SMS - Saude | SIM | Profissionais de Saude (CRM, COREN, etc.) |
+| SMTT - Transportes | SIM | Motoristas (CNH, categoria) |
+| SMF - Financas | NAO | Precisa criar |
+| SMISP - Infraestrutura | NAO | Precisa criar (engenheiros, fiscais) |
+| SMDS - Social | NAO | Precisa criar (assistentes sociais) |
+| SMMA - Meio Ambiente | NAO | Precisa criar (fiscais ambientais) |
+| SMCEL - Cultura | NAO | Precisa criar (produtores culturais) |
+| SMAPA - Agricultura | NAO | Precisa criar (tecnicos agricolas) |
+| SMG - Governo | NAO | Precisa criar (assessores) |
 
 ---
 
-## Resumo Comparativo
+## O Que Falta Para Apresentar aos Secretarios
+
+### Prioridade Alta (Bloqueante para uso)
+
+1. **Regras de Acesso Prefeito/RH** -- Ainda nao implementada a restricao do RH (so acessa modulo RH), nem a regra de que Admin cadastra Prefeito mas Admin nao aparece no RH
+2. **Vinculacao de Funcionarios nas 7 secretarias restantes** -- SMF, SMISP, SMDS, SMMA, SMCEL, SMAPA, SMG precisam da integracao com VincularUsuarioRH para que o secretario vincule sua equipe
+
+### Prioridade Media (Melhoria importante)
+
+3. **Dashboards faltantes** -- SMS (Saude) nao tem dashboard como aba dedicada com graficos (tem indicadores separados)
+4. **Exportacao PDF/CSV** -- O sistema de exportacao foi criado (ExportButtons), mas precisa ser integrado em todos os modulos que ainda nao o tem
+5. **Sistema de Mensagens entre secretarias** -- Existe a tela /mensagens mas precisa validar se funciona entre secretarios
+
+### Prioridade Baixa (Refinamento)
+
+6. **Diario Oficial / Publicacoes** -- Mencionado no roadmap mas nao implementado
+7. **Notificacoes automaticas entre secretarias** -- Ex: quando Saude cria TFD, Transporte recebe notificacao
+8. **Relatorios consolidados para o Prefeito** -- Dashboard do Gabinete puxa dados reais de todas as secretarias
+
+---
+
+## Secao Tecnica - Arquitetura de Vinculacao
+
+O componente `VincularUsuarioRH` usa a RPC `buscar_usuarios_rh` para pesquisar identidades do RH por nome, CPF, matricula ou email. O fluxo e:
 
 ```text
-+--------------------------------------+-------------+
-| Secretaria                           | Completude  |
-+--------------------------------------+-------------+
-| SMF  - Financas                      |     85%     |
-| SMMA - Meio Ambiente                 |     25%     |
-| SMDS - Desenvolvimento Social        |     20%     |
-| SMCEL - Cultura, Esporte e Lazer     |     55%     |
-| SMTT - Transportes e Transito        |     45%     |
-| SMAPA - Agricultura                  |     55%     |
-| SMISP - Infraestrutura              |     40%     |
-| SMS  - Saude                         |     25%     |
-| SME  - Educacao                      |     90%     |
-| SMG  - Governo                       |     50%     |
-+--------------------------------------+-------------+
-| MEDIA GERAL                          |     49%     |
-+--------------------------------------+-------------+
+RH cria usuario (Edge Function create-user-rh)
+      |
+      v
+Secretario acessa seu painel
+      |
+      v
+Clica "Vincular Funcionario"
+      |
+      v
+VincularUsuarioRH busca no RH
+      |
+      v
+Seleciona servidor -> preenche dados do cargo setorial
+      |
+      v
+Registro criado na tabela setorial (ex: profissionais_saude, motoristas, professores)
 ```
 
-## Prioridades Criticas (funcionalidades essenciais ausentes)
-
-1. **Saude**: Prontuario eletronico, agendamento de consultas, cadastro de pacientes
-2. **Social**: CadUnico, CRAS/CREAS, atendimento social
-3. **Meio Ambiente**: Licenciamento ambiental, fiscalizacao
-4. **Governo**: Diario Oficial, Ouvidoria, Protocolo Geral
-5. **Infraestrutura**: Iluminacao publica, medicoes de obra
-6. **Transportes**: Manutencao/abastecimento de veiculos
-
-## Proximos Passos Sugeridos
-
-A implementacao pode ser organizada em ondas de prioridade:
-
-- **Onda 1** (Critica): Saude (PEP + Agendamento + Pacientes), Social (CRAS + CadUnico), Meio Ambiente (Licenciamento)
-- **Onda 2** (Alta): Governo (Diario Oficial + Ouvidoria), Infraestrutura (Iluminacao + Medicoes), Transportes (Manutencao)
-- **Onda 3** (Media): Completar CRUD de Turismo, Dashboard em todas as secretarias, Relatorios padronizados
-- **Onda 4** (Refinamento): Integracoes entre modulos, exportacoes reais, dashboards consolidados
-
+Para implementar nas 7 secretarias restantes, cada uma precisa de:
+- Uma tabela setorial (ou uso direto do vinculo funcional existente)
+- Um hook de CRUD
+- Integracao do botao "Vincular Funcionario" no painel da secretaria
