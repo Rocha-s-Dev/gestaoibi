@@ -50,7 +50,7 @@ export default function AdminRH() {
         </div>
 
         <PermissionGuard
-          requiredRoles={["admin_municipal", "secretario"]}
+          requiredRoles={["admin_municipal", "secretario", "gestor_rh"]}
           requireAny
           fallback={<AccessDenied />}
         >

@@ -183,7 +183,7 @@ export const Sidebar = () => {
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({});
   const location = useLocation();
   const { signOut } = useAuth();
-  const { secretariasDisponiveis, isAdmin, loading } = useSecretariaContext();
+  const { secretariasDisponiveis, isAdmin, isPrefeito, isGestorRH, loading } = useSecretariaContext();
 
   // Filtrar as secretarias do menu com base nas que o usuário tem acesso
   const visibleSecretariaMenus = isAdmin
@@ -266,9 +266,18 @@ export const Sidebar = () => {
             </Link>
           ))}
 
-          {/* Itens administrativos (admin, RH, auditoria) */}
-          {isAdmin &&
-            adminMenuItems.map((item) => (
+          {/* Itens administrativos (admin, RH, auditoria, prefeito) */}
+          {(isAdmin || isPrefeito || isGestorRH) &&
+            adminMenuItems
+              .filter((item) => {
+                // Gestor RH only sees RH module
+                if (isGestorRH && !isAdmin && !isPrefeito) {
+                  return item.path === "/admin/rh";
+                }
+                // Prefeito and Admin see everything
+                return true;
+              })
+              .map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
