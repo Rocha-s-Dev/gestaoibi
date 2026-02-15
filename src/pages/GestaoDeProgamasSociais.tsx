@@ -10,6 +10,7 @@ import { UnidadesCRAS } from "@/components/social/UnidadesCRAS";
 import { CadUnicoFamilias } from "@/components/social/CadUnicoFamilias";
 import { AtendimentoSocialComponent } from "@/components/social/AtendimentoSocial";
 import { VisitasDomiciliares } from "@/components/social/VisitasDomiciliares";
+import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -38,6 +39,7 @@ export default function GestaoDeProgramasSociais() {
             <TabsTrigger value="beneficiarios">Beneficiários</TabsTrigger>
             <TabsTrigger value="acompanhamento">Programas</TabsTrigger>
             <TabsTrigger value="metas">Metas</TabsTrigger>
+            <TabsTrigger value="equipe">Equipe</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="mt-6">
@@ -93,6 +95,10 @@ export default function GestaoDeProgramasSociais() {
               <CardHeader><CardTitle>Metas de Beneficiários</CardTitle></CardHeader>
               <CardContent><MetasBeneficiarios /></CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="equipe" className="mt-6">
+            <EquipeSecretaria titulo="Equipe - Desenvolvimento Social" descricao="Assistentes sociais, psicólogos e técnicos da secretaria" />
           </TabsContent>
         </Tabs>
       </div>

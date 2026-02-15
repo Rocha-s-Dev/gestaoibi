@@ -7,6 +7,7 @@ import { EmpenhoManagement } from "@/components/financeiro/execucao/EmpenhoManag
 import { LiquidacaoManagement } from "@/components/financeiro/execucao/LiquidacaoManagement";
 import { ConveniosManagement } from "@/components/financeiro/execucao/ConveniosManagement";
 import { usePlanejamentoOrcamentario, useClassificacoesOrcamentarias, useRestosAPagar } from "@/hooks/useGestaoFinanceira";
+import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
 import { 
   FileText, 
   Receipt, 
@@ -16,7 +17,8 @@ import {
   Landmark,
   Calendar,
   BarChart3,
-  AlertTriangle
+  AlertTriangle,
+  Users
 } from "lucide-react";
 
 export default function GestaoFinanceiraPublica() {
@@ -146,6 +148,10 @@ export default function GestaoFinanceiraPublica() {
             <TabsTrigger value="classificacoes" className="flex items-center gap-1">
               <BarChart3 className="h-4 w-4" />
               Classificações
+            </TabsTrigger>
+            <TabsTrigger value="equipe" className="flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              Equipe
             </TabsTrigger>
           </TabsList>
 
@@ -325,6 +331,10 @@ export default function GestaoFinanceiraPublica() {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="equipe">
+              <EquipeSecretaria titulo="Equipe - Finanças" descricao="Funcionários vinculados à Secretaria Municipal de Finanças" />
             </TabsContent>
           </div>
         </Tabs>
