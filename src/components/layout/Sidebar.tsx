@@ -261,8 +261,8 @@ export const Sidebar = () => {
                 collapsed && "justify-center"
               )}
             >
-              <item.icon size={20} />
-              {!collapsed && <span className="ml-3">{item.label}</span>}
+              <item.icon size={20} className="shrink-0" />
+              {!collapsed && <span className="ml-3 truncate">{item.label}</span>}
             </Link>
           ))}
 
@@ -291,8 +291,8 @@ export const Sidebar = () => {
                   collapsed && "justify-center"
                 )}
               >
-                <item.icon size={20} />
-                {!collapsed && <span className="ml-3">{item.label}</span>}
+                <item.icon size={20} className="shrink-0" />
+                {!collapsed && <span className="ml-3 truncate">{item.label}</span>}
               </Link>
             ))}
 
@@ -313,9 +313,9 @@ export const Sidebar = () => {
                       : "text-muted-foreground"
                   )}
                 >
-                  <div className="flex items-center">
-                    <Building2 size={20} />
-                    <span className="ml-3">Secretarias</span>
+                   <div className="flex items-center min-w-0">
+                     <Building2 size={20} className="shrink-0" />
+                     <span className="ml-3 truncate">Secretarias</span>
                   </div>
                   {openSecretarias ? (
                     <ChevronUp size={16} />
@@ -323,7 +323,7 @@ export const Sidebar = () => {
                     <ChevronDown size={16} />
                   )}
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pl-6 space-y-1 mt-1">
+                <CollapsibleContent className="pl-4 space-y-1 mt-1">
                   {visibleSecretariaMenus.map((item) => (
                     <div key={item.basePath} className="mb-1">
                       {item.submenu.length > 0 ? (
@@ -344,9 +344,9 @@ export const Sidebar = () => {
                                 : "text-muted-foreground"
                             )}
                           >
-                            <div className="flex items-center">
-                              <item.icon size={18} />
-                              <span className="ml-3">{item.label}</span>
+                            <div className="flex items-center min-w-0">
+                              <item.icon size={18} className="shrink-0" />
+                              <span className="ml-3 truncate">{item.label}</span>
                             </div>
                             {openSubmenus[item.label] ? (
                               <ChevronUp size={14} />
@@ -354,7 +354,7 @@ export const Sidebar = () => {
                               <ChevronDown size={14} />
                             )}
                           </CollapsibleTrigger>
-                          <CollapsibleContent className="pl-6 space-y-1 mt-1">
+                          <CollapsibleContent className="pl-4 space-y-1 mt-1">
                             {item.submenu.map((subItem) => (
                               <Link
                                 key={subItem.path}
@@ -370,8 +370,8 @@ export const Sidebar = () => {
                                     : "text-muted-foreground"
                                 )}
                               >
-                                <subItem.icon size={16} />
-                                <span className="ml-3">{subItem.label}</span>
+                                <subItem.icon size={16} className="shrink-0" />
+                                <span className="ml-3 truncate">{subItem.label}</span>
                               </Link>
                             ))}
                           </CollapsibleContent>
@@ -388,8 +388,8 @@ export const Sidebar = () => {
                               : "text-muted-foreground"
                           )}
                         >
-                          <item.icon size={18} />
-                          <span className="ml-3">{item.label}</span>
+                          <item.icon size={18} className="shrink-0" />
+                          <span className="ml-3 truncate">{item.label}</span>
                         </Link>
                       )}
                     </div>
