@@ -4540,6 +4540,75 @@ export type Database = {
           },
         ]
       }
+      documentos_professores: {
+        Row: {
+          ano_letivo: number | null
+          arquivo_nome: string
+          arquivo_tamanho: number | null
+          arquivo_url: string
+          bimestre: number | null
+          created_at: string
+          descricao: string | null
+          disciplina: string | null
+          escola_id: string
+          id: string
+          professor_id: string
+          tipo_documento: string
+          titulo: string
+          turma_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          ano_letivo?: number | null
+          arquivo_nome: string
+          arquivo_tamanho?: number | null
+          arquivo_url: string
+          bimestre?: number | null
+          created_at?: string
+          descricao?: string | null
+          disciplina?: string | null
+          escola_id: string
+          id?: string
+          professor_id: string
+          tipo_documento?: string
+          titulo: string
+          turma_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ano_letivo?: number | null
+          arquivo_nome?: string
+          arquivo_tamanho?: number | null
+          arquivo_url?: string
+          bimestre?: number | null
+          created_at?: string
+          descricao?: string | null
+          disciplina?: string | null
+          escola_id?: string
+          id?: string
+          professor_id?: string
+          tipo_documento?: string
+          titulo?: string
+          turma_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_professores_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_professores_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dotacoes_orcamentarias: {
         Row: {
           acao_id: string | null

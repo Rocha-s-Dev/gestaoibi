@@ -1,22 +1,23 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Calendar, ClipboardCheck, GraduationCap, Users } from "lucide-react";
+import { BookOpen, Calendar, ClipboardCheck, GraduationCap, Upload } from "lucide-react";
 import { GestaoNotas } from "./GestaoNotas";
 import { GestaoFaltas } from "./GestaoFaltas";
 import { BoletimEscolar } from "./BoletimEscolar";
 import { CalendarioEscolar } from "./CalendarioEscolar";
+import { DocumentosProfessores } from "./DocumentosProfessores";
 
 export function SistemaAcademico() {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Sistema Acadêmico</h1>
-        <p className="text-muted-foreground">Gestão completa de notas, faltas, boletins e calendário escolar</p>
+        <p className="text-muted-foreground">Gestão completa de notas, faltas, boletins, calendário e documentos</p>
       </div>
 
       <Tabs defaultValue="notas" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="notas" className="flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
             Notas
@@ -32,6 +33,10 @@ export function SistemaAcademico() {
           <TabsTrigger value="calendario" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             Calendário
+          </TabsTrigger>
+          <TabsTrigger value="documentos" className="flex items-center gap-2">
+            <Upload className="h-4 w-4" />
+            Documentos
           </TabsTrigger>
         </TabsList>
 
@@ -99,6 +104,23 @@ export function SistemaAcademico() {
             </CardHeader>
             <CardContent>
               <CalendarioEscolar />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="documentos">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5" />
+                Documentos do Professor
+              </CardTitle>
+              <CardDescription>
+                Envie planos de aula, diários, avaliações, relatórios e outros documentos
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DocumentosProfessores />
             </CardContent>
           </Card>
         </TabsContent>
