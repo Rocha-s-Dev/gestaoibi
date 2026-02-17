@@ -6,6 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Escola } from "@/hooks/useEscolas";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+
+type DiretorOption = {
+  user_id: string;
+  nome: string;
+  role: string;
+};
 
 type NovaEscolaDialogProps = {
   open: boolean;
@@ -20,10 +28,46 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
     endereco: "",
     telefone: "",
     email: "",
-    diretor: "",
+    diretor_id: "",
+    vice_diretor_id: "",
     tipo: "municipal",
     capacidade: 0
   });
+
+  // Fetch directors and vice-directors from user_education_roles
+  const { data: diretores = [] } = useQuery<DiretorOption[]>({
+    queryKey: ["diretores_educacao"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("user_education_roles")
+        .select("user_id, role")
+        .in("role", ["diretor", "vice_diretor"]);
+
+      if (error) throw error;
+      if (!data || data.length === 0) return [];
+
+      // Fetch profile names
+      const userIds = [...new Set(data.map(d => d.user_id))];
+      const { data: profiles, error: profileError } = await supabase
+        .from("profiles")
+        .select("user_id, name")
+        .in("user_id", userIds);
+
+      if (profileError) throw profileError;
+
+      const nameMap = new Map((profiles || []).map(p => [p.user_id, p.name || "Sem nome"]));
+
+      return data.map(d => ({
+        user_id: d.user_id,
+        nome: nameMap.get(d.user_id) || "Sem nome",
+        role: d.role as string
+      }));
+    },
+    enabled: open,
+  });
+
+  const diretoresOnly = diretores.filter(d => d.role === "diretor");
+  const viceDiretoresOnly = diretores.filter(d => d.role === "vice_diretor");
 
   useEffect(() => {
     if (escola) {
@@ -32,7 +76,8 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
         endereco: escola.endereco || "",
         telefone: escola.telefone || "",
         email: escola.email || "",
-        diretor: escola.diretor || "",
+        diretor_id: escola.diretor_id || "",
+        vice_diretor_id: escola.vice_diretor_id || "",
         tipo: escola.tipo || "municipal",
         capacidade: escola.capacidade || 0
       });
@@ -42,7 +87,8 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
         endereco: "",
         telefone: "",
         email: "",
-        diretor: "",
+        diretor_id: "",
+        vice_diretor_id: "",
         tipo: "municipal",
         capacidade: 0
       });
@@ -51,11 +97,24 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    const submitData = {
+      nome: formData.nome,
+      endereco: formData.endereco || null,
+      telefone: formData.telefone || null,
+      email: formData.email || null,
+      diretor_id: formData.diretor_id || null,
+      vice_diretor_id: formData.vice_diretor_id || null,
+      tipo: formData.tipo,
+      capacidade: formData.capacidade || null,
+      // Keep legacy diretor field populated with the name for backwards compat
+      diretor: diretores.find(d => d.user_id === formData.diretor_id)?.nome || null,
+    };
+
     if (escola) {
-      onSubmit({ ...formData, id: escola.id });
+      onSubmit({ ...submitData, id: escola.id });
     } else {
-      onSubmit(formData);
+      onSubmit(submitData);
     }
   };
 
@@ -82,13 +141,23 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="diretor">Diretor(a)</Label>
-              <Input
-                id="diretor"
-                value={formData.diretor}
-                onChange={(e) => setFormData(prev => ({ ...prev, diretor: e.target.value }))}
-                placeholder="Nome do diretor"
-              />
+              <Label htmlFor="tipo">Tipo</Label>
+              <Select
+                value={formData.tipo}
+                onValueChange={(value) =>
+                  setFormData(prev => ({ ...prev, tipo: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="municipal">Municipal</SelectItem>
+                  <SelectItem value="estadual">Estadual</SelectItem>
+                  <SelectItem value="federal">Federal</SelectItem>
+                  <SelectItem value="privada">Privada</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -127,35 +196,69 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="tipo">Tipo</Label>
+              <Label>Diretor(a)</Label>
               <Select
-                value={formData.tipo}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, tipo: value }))
+                value={formData.diretor_id || "none"}
+                onValueChange={(value) =>
+                  setFormData(prev => ({ ...prev, diretor_id: value === "none" ? "" : value }))
                 }
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Selecione o diretor" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="municipal">Municipal</SelectItem>
-                  <SelectItem value="estadual">Estadual</SelectItem>
-                  <SelectItem value="federal">Federal</SelectItem>
-                  <SelectItem value="privada">Privada</SelectItem>
+                  <SelectItem value="none">Nenhum</SelectItem>
+                  {diretoresOnly.map((d) => (
+                    <SelectItem key={d.user_id} value={d.user_id}>
+                      {d.nome}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              {diretoresOnly.length === 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Nenhum diretor cadastrado nos Papéis Administrativos.
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="capacidade">Capacidade de Alunos</Label>
-              <Input
-                id="capacidade"
-                type="number"
-                value={formData.capacidade}
-                onChange={(e) => setFormData(prev => ({ ...prev, capacidade: parseInt(e.target.value) || 0 }))}
-                placeholder="0"
-              />
+              <Label>Vice-Diretor(a)</Label>
+              <Select
+                value={formData.vice_diretor_id || "none"}
+                onValueChange={(value) =>
+                  setFormData(prev => ({ ...prev, vice_diretor_id: value === "none" ? "" : value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o vice-diretor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Nenhum</SelectItem>
+                  {viceDiretoresOnly.map((d) => (
+                    <SelectItem key={d.user_id} value={d.user_id}>
+                      {d.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {viceDiretoresOnly.length === 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Nenhum vice-diretor cadastrado nos Papéis Administrativos.
+                </p>
+              )}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="capacidade">Capacidade de Alunos</Label>
+            <Input
+              id="capacidade"
+              type="number"
+              value={formData.capacidade}
+              onChange={(e) => setFormData(prev => ({ ...prev, capacidade: parseInt(e.target.value) || 0 }))}
+              placeholder="0"
+            />
           </div>
 
           <div className="flex justify-end space-x-2">

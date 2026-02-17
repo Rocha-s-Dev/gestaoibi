@@ -5119,6 +5119,7 @@ export type Database = {
           capacidade: number | null
           created_at: string
           diretor: string | null
+          diretor_id: string | null
           email: string | null
           endereco: string | null
           id: string
@@ -5126,11 +5127,13 @@ export type Database = {
           telefone: string | null
           tipo: string | null
           updated_at: string
+          vice_diretor_id: string | null
         }
         Insert: {
           capacidade?: number | null
           created_at?: string
           diretor?: string | null
+          diretor_id?: string | null
           email?: string | null
           endereco?: string | null
           id?: string
@@ -5138,11 +5141,13 @@ export type Database = {
           telefone?: string | null
           tipo?: string | null
           updated_at?: string
+          vice_diretor_id?: string | null
         }
         Update: {
           capacidade?: number | null
           created_at?: string
           diretor?: string | null
+          diretor_id?: string | null
           email?: string | null
           endereco?: string | null
           id?: string
@@ -5150,6 +5155,7 @@ export type Database = {
           telefone?: string | null
           tipo?: string | null
           updated_at?: string
+          vice_diretor_id?: string | null
         }
         Relationships: []
       }

@@ -9,6 +9,8 @@ export type Escola = {
   telefone?: string | null;
   email?: string | null;
   diretor?: string | null;
+  diretor_id?: string | null;
+  vice_diretor_id?: string | null;
   tipo?: string | null;
   capacidade?: number | null;
   created_at?: string;
