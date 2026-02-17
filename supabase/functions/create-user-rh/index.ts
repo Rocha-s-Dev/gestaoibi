@@ -14,26 +14,29 @@ serve(async (req) => {
   try {
     // Verify the calling user is admin or gestor_rh
     const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ error: "Não autorizado" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401
       });
     }
+
+    const token = authHeader.replace('Bearer ', '');
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Verify caller permissions
+    // Verify caller permissions using explicit token validation
     const supabaseUser = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const { data: { user: caller } } = await supabaseUser.auth.getUser();
-    if (!caller) {
+    const { data: { user: caller }, error: userError } = await supabaseUser.auth.getUser(token);
+    if (userError || !caller) {
+      console.error("JWT validation error:", userError);
       return new Response(JSON.stringify({ error: "Não autorizado" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401
       });
