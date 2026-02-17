@@ -5337,6 +5337,65 @@ export type Database = {
           },
         ]
       }
+      eventos_pedagogicos: {
+        Row: {
+          anexos: Json | null
+          ata: string | null
+          created_at: string
+          criado_por: string
+          data_evento: string
+          descricao: string | null
+          escola_id: string | null
+          hora_fim: string | null
+          hora_inicio: string | null
+          id: string
+          participantes: string[] | null
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          anexos?: Json | null
+          ata?: string | null
+          created_at?: string
+          criado_por: string
+          data_evento: string
+          descricao?: string | null
+          escola_id?: string | null
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          participantes?: string[] | null
+          tipo?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          anexos?: Json | null
+          ata?: string | null
+          created_at?: string
+          criado_por?: string
+          data_evento?: string
+          descricao?: string | null
+          escola_id?: string | null
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          participantes?: string[] | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_pedagogicos_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       evolucoes_tratamento: {
         Row: {
           created_at: string
@@ -8189,6 +8248,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      intervencoes_pedagogicas: {
+        Row: {
+          aluno_id: string
+          created_at: string
+          data_intervencao: string
+          descricao: string
+          escola_id: string | null
+          id: string
+          observacoes: string | null
+          responsavel_id: string
+          responsavel_nome: string | null
+          status: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          aluno_id: string
+          created_at?: string
+          data_intervencao?: string
+          descricao: string
+          escola_id?: string | null
+          id?: string
+          observacoes?: string | null
+          responsavel_id: string
+          responsavel_nome?: string | null
+          status?: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          aluno_id?: string
+          created_at?: string
+          data_intervencao?: string
+          descricao?: string
+          escola_id?: string | null
+          id?: string
+          observacoes?: string | null
+          responsavel_id?: string
+          responsavel_nome?: string | null
+          status?: string
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "intervencoes_pedagogicas_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "intervencoes_pedagogicas_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
           },
         ]
       }
