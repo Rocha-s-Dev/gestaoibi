@@ -40,7 +40,8 @@ import {
   Tractor,
   Route,
   Gavel,
-  Crown
+  Crown,
+  BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -162,6 +163,7 @@ const secretariaMenuConfigs: SecretariaMenuConfig[] = [
     basePath: "/educacao",
     submenu: [
       { icon: Users, label: "Gestão Administrativa", path: "/educacao/gestao" },
+      { icon: BookOpen, label: "Coordenação Pedagógica", path: "/educacao/coordenacao" },
     ],
   },
   {

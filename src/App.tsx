@@ -37,6 +37,7 @@ import GestaoAgricultura from "@/pages/GestaoAgricultura";
 import GestaoTurismoCultura from "@/pages/GestaoTurismoCultura";
 import Controladoria from "@/pages/Controladoria";
 import GabinetePrefeito from "@/pages/GabinetePrefeito";
+import CoordenacaoPedagogica from "@/pages/CoordenacaoPedagogica";
 import Ouvidoria from "@/pages/Ouvidoria";
 import { AuthProvider, RequireAuth } from "@/contexts/AuthContext";
 import { SecretariaProvider } from "@/contexts/SecretariaContext";
@@ -240,6 +241,14 @@ export default function App() {
           element={
             <RequireAuth>
               <GestaoEducacao />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/educacao/coordenacao"
+          element={
+            <RequireAuth>
+              <CoordenacaoPedagogica />
             </RequireAuth>
           }
         />
