@@ -2,7 +2,6 @@ import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CadastroEducacao } from "@/components/educacao/CadastroEducacao";
-import { SistemaAcademico } from "@/components/educacao/SistemaAcademico";
 import { RelatoriosEducacao } from "@/components/educacao/RelatoriosEducacao";
 import { PlanejamentoEducacao } from "@/components/educacao/PlanejamentoEducacao";
 import { DashboardEducacional } from "@/components/educacao/DashboardEducacional";
@@ -31,7 +30,6 @@ export default function GestaoEducacao() {
         <Tabs defaultValue="dashboard">
           <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="dashboard" className="text-xs md:text-sm p-2">Dashboard</TabsTrigger>
-            <TabsTrigger value="academico" className="text-xs md:text-sm p-2">Sistema Acadêmico</TabsTrigger>
             <TabsTrigger value="matriculas" className="text-xs md:text-sm p-2">Matrículas</TabsTrigger>
             <TabsTrigger value="transferencias" className="text-xs md:text-sm p-2">Transferências</TabsTrigger>
             <TabsTrigger value="historico" className="text-xs md:text-sm p-2">Histórico</TabsTrigger>
@@ -51,9 +49,8 @@ export default function GestaoEducacao() {
             <DashboardEducacional />
           </TabsContent>
 
-          <TabsContent value="academico" className="mt-6">
-            <SistemaAcademico />
-          </TabsContent>
+
+
 
           <TabsContent value="matriculas" className="mt-6">
             <GestaoSolicitacoesMatricula />
