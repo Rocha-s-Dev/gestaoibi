@@ -177,7 +177,7 @@ function DetalhesTFDDialog({ viagemId, open, onOpenChange }: { viagemId: string;
   const [addPaciente, setAddPaciente] = useState(false);
 
   const [destinoForm, setDestinoForm] = useState({ cidade_destino: "", uf_destino: "SP", hospital_unidade: "", tipo_atendimento: "consulta" as string, endereco: "" });
-  const [pacienteForm, setPacienteForm] = useState({ nome_paciente: "", cpf_paciente: "", cartao_sus: "", tipo_atendimento: "", especialidade: "", acompanhante_nome: "", acompanhante_cpf: "", destino_id: "" });
+  const [pacienteForm, setPacienteForm] = useState({ nome_paciente: "", cpf_paciente: "", cartao_sus: "", tipo_atendimento: "", especialidade: "", acompanhante_nome: "", acompanhante_cpf: "", destino_id: "", telefone: "", endereco: "", procedimento: "", local_atendimento: "", horario_atendimento: "" });
 
   const handleAddDestino = async () => {
     await createDestino.mutateAsync({ viagem_id: viagemId, ...destinoForm, ordem: destinos.length + 1 });
@@ -186,9 +186,9 @@ function DetalhesTFDDialog({ viagemId, open, onOpenChange }: { viagemId: string;
   };
 
   const handleAddPaciente = async () => {
-    await createPaciente.mutateAsync({ viagem_id: viagemId, ...pacienteForm, destino_id: pacienteForm.destino_id || null });
+    await createPaciente.mutateAsync({ viagem_id: viagemId, ...pacienteForm, destino_id: pacienteForm.destino_id || null, numero_ordem: pacientes.length + 1 });
     setAddPaciente(false);
-    setPacienteForm({ nome_paciente: "", cpf_paciente: "", cartao_sus: "", tipo_atendimento: "", especialidade: "", acompanhante_nome: "", acompanhante_cpf: "", destino_id: "" });
+    setPacienteForm({ nome_paciente: "", cpf_paciente: "", cartao_sus: "", tipo_atendimento: "", especialidade: "", acompanhante_nome: "", acompanhante_cpf: "", destino_id: "", telefone: "", endereco: "", procedimento: "", local_atendimento: "", horario_atendimento: "" });
   };
 
   return (
@@ -291,18 +291,36 @@ function DetalhesTFDDialog({ viagemId, open, onOpenChange }: { viagemId: string;
                     <Input value={pacienteForm.nome_paciente} onChange={(e) => setPacienteForm({ ...pacienteForm, nome_paciente: e.target.value })} />
                   </div>
                   <div className="space-y-1">
+                    <Label className="text-xs">Telefone</Label>
+                    <Input value={pacienteForm.telefone} onChange={(e) => setPacienteForm({ ...pacienteForm, telefone: e.target.value })} placeholder="(00) 00000-0000" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Endereço</Label>
+                    <Input value={pacienteForm.endereco} onChange={(e) => setPacienteForm({ ...pacienteForm, endereco: e.target.value })} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Procedimento</Label>
+                    <Input value={pacienteForm.procedimento} onChange={(e) => setPacienteForm({ ...pacienteForm, procedimento: e.target.value })} placeholder="Ex: Consulta cardiologia" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Local</Label>
+                    <Input value={pacienteForm.local_atendimento} onChange={(e) => setPacienteForm({ ...pacienteForm, local_atendimento: e.target.value })} placeholder="Hospital/Clínica" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Horário</Label>
+                    <Input type="time" value={pacienteForm.horario_atendimento} onChange={(e) => setPacienteForm({ ...pacienteForm, horario_atendimento: e.target.value })} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
                     <Label className="text-xs">CPF</Label>
                     <Input value={pacienteForm.cpf_paciente} onChange={(e) => setPacienteForm({ ...pacienteForm, cpf_paciente: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Cartão SUS</Label>
                     <Input value={pacienteForm.cartao_sus} onChange={(e) => setPacienteForm({ ...pacienteForm, cartao_sus: e.target.value })} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-1">
-                    <Label className="text-xs">Especialidade</Label>
-                    <Input value={pacienteForm.especialidade} onChange={(e) => setPacienteForm({ ...pacienteForm, especialidade: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs">Destino</Label>
@@ -314,10 +332,6 @@ function DetalhesTFDDialog({ viagemId, open, onOpenChange }: { viagemId: string;
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs">Tipo Atendimento</Label>
-                    <Input value={pacienteForm.tipo_atendimento} onChange={(e) => setPacienteForm({ ...pacienteForm, tipo_atendimento: e.target.value })} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -340,22 +354,26 @@ function DetalhesTFDDialog({ viagemId, open, onOpenChange }: { viagemId: string;
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>CPF</TableHead>
-                  <TableHead>Destino</TableHead>
-                  <TableHead>Especialidade</TableHead>
-                  <TableHead>Acompanhante</TableHead>
+                  <TableHead>Nº</TableHead>
+                  <TableHead>Paciente</TableHead>
+                  <TableHead>Telefone</TableHead>
+                  <TableHead>Endereço</TableHead>
+                  <TableHead>Procedimento</TableHead>
+                  <TableHead>Local</TableHead>
+                  <TableHead>Horário</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pacientes.map((p) => (
+                {pacientes.map((p, i) => (
                   <TableRow key={p.id}>
+                    <TableCell>{(p as any).numero_ordem || i + 1}</TableCell>
                     <TableCell className="font-medium">{p.nome_paciente}</TableCell>
-                    <TableCell>{p.cpf_paciente || "—"}</TableCell>
-                    <TableCell>{(p as any).destinos_tfd?.cidade_destino || "—"}</TableCell>
-                    <TableCell>{p.especialidade || "—"}</TableCell>
-                    <TableCell>{p.acompanhante_nome || "—"}</TableCell>
+                    <TableCell>{(p as any).telefone || "—"}</TableCell>
+                    <TableCell>{(p as any).endereco || "—"}</TableCell>
+                    <TableCell>{(p as any).procedimento || "—"}</TableCell>
+                    <TableCell>{(p as any).local_atendimento || "—"}</TableCell>
+                    <TableCell>{(p as any).horario_atendimento || "—"}</TableCell>
                     <TableCell>
                       <Button size="icon" variant="ghost" onClick={() => deletePaciente.mutate(p.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
