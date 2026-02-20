@@ -11718,11 +11718,17 @@ export type Database = {
           cpf_paciente: string | null
           created_at: string | null
           destino_id: string | null
+          endereco: string | null
           especialidade: string | null
+          horario_atendimento: string | null
           id: string
+          local_atendimento: string | null
           nome_paciente: string
+          numero_ordem: number | null
           observacoes: string | null
           paciente_id: string | null
+          procedimento: string | null
+          telefone: string | null
           tipo_atendimento: string | null
           viagem_id: string
         }
@@ -11734,11 +11740,17 @@ export type Database = {
           cpf_paciente?: string | null
           created_at?: string | null
           destino_id?: string | null
+          endereco?: string | null
           especialidade?: string | null
+          horario_atendimento?: string | null
           id?: string
+          local_atendimento?: string | null
           nome_paciente: string
+          numero_ordem?: number | null
           observacoes?: string | null
           paciente_id?: string | null
+          procedimento?: string | null
+          telefone?: string | null
           tipo_atendimento?: string | null
           viagem_id: string
         }
@@ -11750,11 +11762,17 @@ export type Database = {
           cpf_paciente?: string | null
           created_at?: string | null
           destino_id?: string | null
+          endereco?: string | null
           especialidade?: string | null
+          horario_atendimento?: string | null
           id?: string
+          local_atendimento?: string | null
           nome_paciente?: string
+          numero_ordem?: number | null
           observacoes?: string | null
           paciente_id?: string | null
+          procedimento?: string | null
+          telefone?: string | null
           tipo_atendimento?: string | null
           viagem_id?: string
         }
