@@ -14263,6 +14263,7 @@ export type Database = {
       profissionais_saude: {
         Row: {
           carga_horaria_semanal: number | null
+          cargo: Database["public"]["Enums"]["cargo_saude"]
           created_at: string
           especialidade: string | null
           id: string
@@ -14275,6 +14276,7 @@ export type Database = {
         }
         Insert: {
           carga_horaria_semanal?: number | null
+          cargo?: Database["public"]["Enums"]["cargo_saude"]
           created_at?: string
           especialidade?: string | null
           id?: string
@@ -14287,6 +14289,7 @@ export type Database = {
         }
         Update: {
           carga_horaria_semanal?: number | null
+          cargo?: Database["public"]["Enums"]["cargo_saude"]
           created_at?: string
           especialidade?: string | null
           id?: string
@@ -16748,6 +16751,7 @@ export type Database = {
           nome: string
           observacoes: string | null
           responsavel: string | null
+          responsavel_id: string | null
           status: string | null
           telefone: string | null
           tipo: string
@@ -16764,6 +16768,7 @@ export type Database = {
           nome: string
           observacoes?: string | null
           responsavel?: string | null
+          responsavel_id?: string | null
           status?: string | null
           telefone?: string | null
           tipo: string
@@ -16780,12 +16785,21 @@ export type Database = {
           nome?: string
           observacoes?: string | null
           responsavel?: string | null
+          responsavel_id?: string | null
           status?: string | null
           telefone?: string | null
           tipo?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "unidades_saude_responsavel_id_fkey"
+            columns: ["responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       unidades_socioassistenciais: {
         Row: {
@@ -17818,6 +17832,10 @@ export type Database = {
       gerar_protocolo_iluminacao: { Args: never; Returns: string }
       gerar_protocolo_ouvidoria: { Args: never; Returns: string }
       gerar_protocolo_tfd: { Args: never; Returns: string }
+      get_cargo_saude: {
+        Args: { _unidade_id?: string; _user_id: string }
+        Returns: Database["public"]["Enums"]["cargo_saude"]
+      }
       get_user_school_ids: { Args: { _user_id: string }; Returns: string[] }
       get_user_secretaria: { Args: { _user_id: string }; Returns: string }
       get_user_secretaria_ids: { Args: { _user_id: string }; Returns: string[] }
@@ -17831,6 +17849,13 @@ export type Database = {
           unidade_nome: string
           vinculo_id: string
         }[]
+      }
+      has_cargo_saude: {
+        Args: {
+          _cargo: Database["public"]["Enums"]["cargo_saude"]
+          _user_id: string
+        }
+        Returns: boolean
       }
       has_education_role: {
         Args: {
@@ -17907,8 +17932,16 @@ export type Database = {
         Returns: boolean
       }
       is_usuario_regularizado: { Args: { _user_id: string }; Returns: boolean }
+      pode_acessar_dados_clinicos: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       pode_acessar_secretaria: {
         Args: { _secretaria_id: string; _user_id: string }
+        Returns: boolean
+      }
+      pode_acessar_unidade_saude: {
+        Args: { _unidade_id: string; _user_id: string }
         Returns: boolean
       }
       registrar_auditoria: {
@@ -17948,6 +17981,19 @@ export type Database = {
       }
     }
     Enums: {
+      cargo_saude:
+        | "diretor_unidade"
+        | "coordenador_atencao_basica"
+        | "medico"
+        | "enfermeiro"
+        | "tecnico_enfermagem"
+        | "agente_comunitario_saude"
+        | "farmaceutico"
+        | "psicologo"
+        | "dentista"
+        | "recepcionista"
+        | "regulador_tfd"
+        | "auxiliar_administrativo"
       categoria_auditoria: "seguranca" | "dados" | "financeiro" | "documental"
       condicao_permissao:
         | "todos"
@@ -18398,6 +18444,20 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      cargo_saude: [
+        "diretor_unidade",
+        "coordenador_atencao_basica",
+        "medico",
+        "enfermeiro",
+        "tecnico_enfermagem",
+        "agente_comunitario_saude",
+        "farmaceutico",
+        "psicologo",
+        "dentista",
+        "recepcionista",
+        "regulador_tfd",
+        "auxiliar_administrativo",
+      ],
       categoria_auditoria: ["seguranca", "dados", "financeiro", "documental"],
       condicao_permissao: [
         "todos",

@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { CargoSaude } from "./useCargoSaude";
 
 export interface ProfissionalSaude {
   id: string;
   user_id: string;
+  cargo: CargoSaude;
   especialidade: string | null;
   registro_conselho: string | null;
   tipo_conselho: string | null;
@@ -12,10 +14,10 @@ export interface ProfissionalSaude {
   unidade_id: string | null;
   status: string | null;
   created_at: string;
-  // joined from profiles
   profile_nome: string;
   profile_cpf: string;
   profile_email: string;
+  unidade_nome: string | null;
 }
 
 export function useProfissionaisSaude(unidadeId?: string) {
@@ -28,7 +30,8 @@ export function useProfissionaisSaude(unidadeId?: string) {
         .from("profissionais_saude")
         .select(`
           *,
-          profiles:user_id(id, name, email, cpf)
+          profiles:user_id(id, name, email, cpf),
+          unidades_saude:unidade_id(id, nome)
         `)
         .order("created_at", { ascending: false });
 
@@ -44,6 +47,7 @@ export function useProfissionaisSaude(unidadeId?: string) {
         profile_nome: p.profiles?.name || "—",
         profile_cpf: p.profiles?.cpf || "",
         profile_email: p.profiles?.email || "",
+        unidade_nome: p.unidades_saude?.nome || null,
       })) as ProfissionalSaude[];
     },
   });
@@ -51,6 +55,7 @@ export function useProfissionaisSaude(unidadeId?: string) {
   const createProfissional = useMutation({
     mutationFn: async (data: {
       user_id: string;
+      cargo: CargoSaude;
       especialidade?: string;
       registro_conselho?: string;
       tipo_conselho?: string;
@@ -62,16 +67,21 @@ export function useProfissionaisSaude(unidadeId?: string) {
         .insert(data)
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        if (error.code === "23505") {
+          throw new Error("Este profissional já possui vínculo ativo nesta unidade.");
+        }
+        throw error;
+      }
       return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
       toast.success("Profissional vinculado com sucesso!");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Erro ao vincular profissional:", error);
-      toast.error("Erro ao vincular profissional de saúde");
+      toast.error(error.message || "Erro ao vincular profissional de saúde");
     },
   });
 

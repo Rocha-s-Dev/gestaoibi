@@ -16,45 +16,106 @@ import { CadastroPacientes } from "@/components/saude/CadastroPacientes";
 import { SolicitacaoTFD } from "@/components/saude/SolicitacaoTFD";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import { useProfissionaisSaude } from "@/hooks/useProfissionaisSaude";
+import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
-import { UserPlus, Search, Stethoscope, Ambulance } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit } from "lucide-react";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingProfissional, setEditingProfissional] = useState<any>(null);
   const [selectedUser, setSelectedUser] = useState<UsuarioRH | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
+    cargo: "" as CargoSaude | "",
     especialidade: "",
     registro_conselho: "",
     tipo_conselho: "CRM",
     carga_horaria_semanal: 40,
+    unidade_id: "",
   });
 
-  const { profissionais, isLoading, createProfissional } = useProfissionaisSaude();
+  const { profissionais, isLoading, createProfissional, updateProfissional } = useProfissionaisSaude();
+
+  const { data: unidades = [] } = useQuery({
+    queryKey: ["unidades_saude_list"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("unidades_saude").select("id, nome, tipo").order("nome");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   const handleUserSelected = (usuario: UsuarioRH) => {
     setSelectedUser(usuario);
+    setEditingProfissional(null);
     setVincularOpen(false);
     setDialogOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedUser) return;
-    await createProfissional.mutateAsync({
-      user_id: selectedUser.user_id,
-      ...formData,
+  const handleEdit = (prof: any) => {
+    setEditingProfissional(prof);
+    setSelectedUser(null);
+    setFormData({
+      cargo: prof.cargo || "",
+      especialidade: prof.especialidade || "",
+      registro_conselho: prof.registro_conselho || "",
+      tipo_conselho: prof.tipo_conselho || "CRM",
+      carga_horaria_semanal: prof.carga_horaria_semanal || 40,
+      unidade_id: prof.unidade_id || "",
     });
+    setDialogOpen(true);
+  };
+
+  const resetForm = () => {
     setDialogOpen(false);
     setSelectedUser(null);
-    setFormData({ especialidade: "", registro_conselho: "", tipo_conselho: "CRM", carga_horaria_semanal: 40 });
+    setEditingProfissional(null);
+    setFormData({
+      cargo: "",
+      especialidade: "",
+      registro_conselho: "",
+      tipo_conselho: "CRM",
+      carga_horaria_semanal: 40,
+      unidade_id: "",
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.cargo) return;
+
+    if (editingProfissional) {
+      await updateProfissional.mutateAsync({
+        id: editingProfissional.id,
+        cargo: formData.cargo,
+        especialidade: formData.especialidade || null,
+        registro_conselho: formData.registro_conselho || null,
+        tipo_conselho: formData.tipo_conselho || null,
+        carga_horaria_semanal: formData.carga_horaria_semanal,
+        unidade_id: formData.unidade_id || null,
+      });
+    } else if (selectedUser) {
+      await createProfissional.mutateAsync({
+        user_id: selectedUser.user_id,
+        cargo: formData.cargo as CargoSaude,
+        especialidade: formData.especialidade || undefined,
+        registro_conselho: formData.registro_conselho || undefined,
+        tipo_conselho: formData.tipo_conselho || undefined,
+        carga_horaria_semanal: formData.carga_horaria_semanal,
+        unidade_id: formData.unidade_id || undefined,
+      });
+    }
+    resetForm();
   };
 
   const filteredProfissionais = profissionais.filter(
     (p) =>
       p.profile_nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.especialidade?.toLowerCase().includes(searchTerm.toLowerCase())
+      p.especialidade?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.cargo && CARGOS_SAUDE_LABELS[p.cargo]?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -103,7 +164,7 @@ export default function GestaoSaudePublica() {
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Buscar profissional..."
+                        placeholder="Buscar profissional ou cargo..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-8 w-64"
@@ -125,11 +186,13 @@ export default function GestaoSaudePublica() {
                       <TableRow>
                         <TableHead>Nome</TableHead>
                         <TableHead>CPF</TableHead>
+                        <TableHead>Cargo</TableHead>
                         <TableHead>Especialidade</TableHead>
                         <TableHead>Conselho</TableHead>
-                        <TableHead>Registro</TableHead>
+                        <TableHead>Unidade</TableHead>
                         <TableHead>Carga Horária</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead className="w-10"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -137,20 +200,34 @@ export default function GestaoSaudePublica() {
                         <TableRow key={prof.id}>
                           <TableCell className="font-medium">{prof.profile_nome}</TableCell>
                           <TableCell>{prof.profile_cpf || "—"}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="whitespace-nowrap">
+                              {prof.cargo ? CARGOS_SAUDE_LABELS[prof.cargo] : "—"}
+                            </Badge>
+                          </TableCell>
                           <TableCell>{prof.especialidade || "—"}</TableCell>
-                          <TableCell>{prof.tipo_conselho || "—"}</TableCell>
-                          <TableCell>{prof.registro_conselho || "—"}</TableCell>
+                          <TableCell>
+                            {prof.tipo_conselho && prof.registro_conselho
+                              ? `${prof.tipo_conselho} ${prof.registro_conselho}`
+                              : "—"}
+                          </TableCell>
+                          <TableCell>{prof.unidade_nome || "—"}</TableCell>
                           <TableCell>{prof.carga_horaria_semanal ? `${prof.carga_horaria_semanal}h` : "—"}</TableCell>
                           <TableCell>
                             <Badge variant={prof.status === "ativo" ? "default" : "secondary"}>
                               {prof.status || "ativo"}
                             </Badge>
                           </TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(prof)}>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
                         </TableRow>
                       ))}
                       {filteredProfissionais.length === 0 && (
                         <TableRow>
-                          <TableCell colSpan={7} className="text-center text-muted-foreground">
+                          <TableCell colSpan={9} className="text-center text-muted-foreground">
                             Nenhum profissional encontrado
                           </TableCell>
                         </TableRow>
@@ -191,15 +268,57 @@ export default function GestaoSaudePublica() {
           descricao="Busque e selecione um servidor do RH para vincular como profissional de saúde."
         />
 
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        {/* Dialog de cadastro/edição de profissional */}
+        <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open) resetForm(); }}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>Dados Profissionais</DialogTitle>
+              <DialogTitle>{editingProfissional ? "Editar Profissional" : "Dados Profissionais"}</DialogTitle>
               <DialogDescription>
-                Servidor: <strong>{selectedUser?.nome}</strong> — Informe os dados profissionais.
+                {editingProfissional
+                  ? `Editando: ${editingProfissional.profile_nome}`
+                  : <>Servidor: <strong>{selectedUser?.nome}</strong> — Informe os dados profissionais.</>
+                }
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Cargo na Saúde <span className="text-destructive">*</span></Label>
+                <Select
+                  value={formData.cargo}
+                  onValueChange={(v) => setFormData({ ...formData, cargo: v as CargoSaude })}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o cargo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(Object.entries(CARGOS_SAUDE_LABELS) as [CargoSaude, string][]).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Unidade de Saúde <span className="text-destructive">*</span></Label>
+                <Select
+                  value={formData.unidade_id}
+                  onValueChange={(v) => setFormData({ ...formData, unidade_id: v })}
+                  required
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a unidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {unidades.map((u: any) => (
+                      <SelectItem key={u.id} value={u.id}>
+                        {u.nome} ({u.tipo})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Especialidade</Label>
@@ -207,7 +326,6 @@ export default function GestaoSaudePublica() {
                     value={formData.especialidade}
                     onChange={(e) => setFormData({ ...formData, especialidade: e.target.value })}
                     placeholder="Ex: Clínica Geral"
-                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -222,6 +340,7 @@ export default function GestaoSaudePublica() {
                       <SelectItem value="CREFITO">CREFITO</SelectItem>
                       <SelectItem value="CRP">CRP</SelectItem>
                       <SelectItem value="CRESS">CRESS</SelectItem>
+                      <SelectItem value="N/A">Não se aplica</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -230,7 +349,6 @@ export default function GestaoSaudePublica() {
                   <Input
                     value={formData.registro_conselho}
                     onChange={(e) => setFormData({ ...formData, registro_conselho: e.target.value })}
-                    required
                   />
                 </div>
                 <div className="space-y-2">
@@ -245,8 +363,13 @@ export default function GestaoSaudePublica() {
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-                <Button type="submit" disabled={createProfissional.isPending}>Vincular</Button>
+                <Button type="button" variant="outline" onClick={resetForm}>Cancelar</Button>
+                <Button
+                  type="submit"
+                  disabled={createProfissional.isPending || updateProfissional.isPending || !formData.cargo || !formData.unidade_id}
+                >
+                  {editingProfissional ? "Salvar" : "Vincular"}
+                </Button>
               </div>
             </form>
           </DialogContent>
