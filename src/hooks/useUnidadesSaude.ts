@@ -53,7 +53,7 @@ function mapFromDb(row: DbUnidade): UnidadeSaude {
 type CreateInput = Omit<Partial<UnidadeSaude>, "id"> & { responsavel_id?: string };
 type UpdateInput = CreateInput & { id: string };
 
-function mapToDb(data: CreateInput) {
+function mapToDb(data: CreateInput, profissionalId: string | null) {
   return {
     nome: data.nome,
     tipo: data.tipo,
@@ -62,11 +62,47 @@ function mapToDb(data: CreateInput) {
     horario_funcionamento: data.horarioFuncionamento as unknown as Record<string, unknown>,
     especialidades: data.especialidades,
     responsavel: data.responsavel,
-    responsavel_id: data.responsavel_id || null,
+    responsavel_id: profissionalId,
     capacidade_diaria: data.capacidade,
     status: data.status,
     observacoes: data.observacoes || null,
   };
+}
+
+/**
+ * Resolve o responsavel_id (user_id do RH) para um profissionais_saude.id válido.
+ * Se não existir registro, cria um com cargo diretor_unidade.
+ */
+async function resolveResponsavelId(userIdFromRH: string | undefined): Promise<string | null> {
+  if (!userIdFromRH) return null;
+
+  // Verificar se já existe profissional ativo para esse user_id
+  const { data: existing, error: fetchErr } = await supabase
+    .from("profissionais_saude")
+    .select("id")
+    .eq("user_id", userIdFromRH)
+    .eq("status", "ativo")
+    .limit(1)
+    .maybeSingle();
+
+  if (fetchErr) throw new Error("Erro ao verificar profissional: " + fetchErr.message);
+
+  if (existing) return existing.id;
+
+  // Criar novo profissional com cargo diretor_unidade
+  const { data: created, error: createErr } = await supabase
+    .from("profissionais_saude")
+    .insert({
+      user_id: userIdFromRH,
+      cargo: "diretor_unidade" as any,
+      status: "ativo",
+    })
+    .select("id")
+    .single();
+
+  if (createErr) throw new Error("Erro ao criar profissional de saúde: " + createErr.message);
+
+  return created.id;
 }
 
 export function useUnidadesSaude() {
@@ -87,13 +123,26 @@ export function useUnidadesSaude() {
 
   const createUnidade = useMutation({
     mutationFn: async (input: CreateInput) => {
-      const { error } = await supabase
+      const profissionalId = await resolveResponsavelId(input.responsavel_id);
+
+      const { data: created, error } = await supabase
         .from("unidades_saude")
-        .insert(mapToDb(input) as any);
+        .insert(mapToDb(input, profissionalId) as any)
+        .select("id")
+        .single();
       if (error) throw error;
+
+      // Vincular o profissional à unidade recém-criada
+      if (profissionalId && created) {
+        await supabase
+          .from("profissionais_saude")
+          .update({ unidade_id: created.id } as any)
+          .eq("id", profissionalId);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
       toast.success("Unidade criada com sucesso!");
     },
     onError: (err: Error) => {
@@ -104,14 +153,25 @@ export function useUnidadesSaude() {
   const updateUnidade = useMutation({
     mutationFn: async (input: UpdateInput) => {
       const { id, ...rest } = input;
+      const profissionalId = await resolveResponsavelId(rest.responsavel_id);
+
       const { error } = await supabase
         .from("unidades_saude")
-        .update(mapToDb(rest) as any)
+        .update(mapToDb(rest, profissionalId) as any)
         .eq("id", id);
       if (error) throw error;
+
+      // Vincular o profissional à unidade
+      if (profissionalId) {
+        await supabase
+          .from("profissionais_saude")
+          .update({ unidade_id: id } as any)
+          .eq("id", profissionalId);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
       toast.success("Unidade atualizada com sucesso!");
     },
     onError: (err: Error) => {
