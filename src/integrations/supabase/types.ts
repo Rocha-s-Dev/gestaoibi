@@ -247,6 +247,7 @@ export type Database = {
       }
       agendamentos: {
         Row: {
+          classificacao_risco: string | null
           created_at: string
           data_hora: string
           especialidade: string | null
@@ -262,6 +263,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          classificacao_risco?: string | null
           created_at?: string
           data_hora: string
           especialidade?: string | null
@@ -277,6 +279,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          classificacao_risco?: string | null
           created_at?: string
           data_hora?: string
           especialidade?: string | null
@@ -1038,6 +1041,74 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      aplicacoes_vacinas: {
+        Row: {
+          created_at: string
+          data_aplicacao: string
+          dose: number
+          id: string
+          lote: string | null
+          observacoes: string | null
+          paciente_id: string
+          profissional_id: string
+          unidade_id: string
+          vacina_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_aplicacao?: string
+          dose?: number
+          id?: string
+          lote?: string | null
+          observacoes?: string | null
+          paciente_id: string
+          profissional_id: string
+          unidade_id: string
+          vacina_id: string
+        }
+        Update: {
+          created_at?: string
+          data_aplicacao?: string
+          dose?: number
+          id?: string
+          lote?: string | null
+          observacoes?: string | null
+          paciente_id?: string
+          profissional_id?: string
+          unidade_id?: string
+          vacina_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aplicacoes_vacinas_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aplicacoes_vacinas_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aplicacoes_vacinas_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "aplicacoes_vacinas_vacina_id_fkey"
+            columns: ["vacina_id"]
+            isOneToOne: false
+            referencedRelation: "vacinas"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1908,6 +1979,53 @@ export type Database = {
           },
         ]
       }
+      campanhas_vacinacao: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          data_fim: string | null
+          data_inicio: string
+          id: string
+          meta_cobertura: number | null
+          nome: string
+          publico_alvo: string | null
+          updated_at: string
+          vacina_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio: string
+          id?: string
+          meta_cobertura?: number | null
+          nome: string
+          publico_alvo?: string | null
+          updated_at?: string
+          vacina_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string
+          id?: string
+          meta_cobertura?: number | null
+          nome?: string
+          publico_alvo?: string | null
+          updated_at?: string
+          vacina_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campanhas_vacinacao_vacina_id_fkey"
+            columns: ["vacina_id"]
+            isOneToOne: false
+            referencedRelation: "vacinas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cardapios: {
         Row: {
           calorias_estimadas: number | null
@@ -2581,6 +2699,47 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      consentimentos_lgpd: {
+        Row: {
+          consentido: boolean
+          created_at: string
+          data_consentimento: string
+          id: string
+          observacoes: string | null
+          paciente_id: string
+          responsavel_coleta_id: string | null
+          tipo_consentimento: string
+        }
+        Insert: {
+          consentido?: boolean
+          created_at?: string
+          data_consentimento?: string
+          id?: string
+          observacoes?: string | null
+          paciente_id: string
+          responsavel_coleta_id?: string | null
+          tipo_consentimento: string
+        }
+        Update: {
+          consentido?: boolean
+          created_at?: string
+          data_consentimento?: string
+          id?: string
+          observacoes?: string | null
+          paciente_id?: string
+          responsavel_coleta_id?: string | null
+          tipo_consentimento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consentimentos_lgpd_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       consultas_cidadao: {
         Row: {
@@ -4424,6 +4583,88 @@ export type Database = {
         }
         Relationships: []
       }
+      dispensacoes: {
+        Row: {
+          created_at: string
+          id: string
+          lote_id: string | null
+          medicamento_id: string
+          observacoes: string | null
+          paciente_id: string
+          profissional_id: string
+          prontuario_id: string | null
+          quantidade: number
+          unidade_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lote_id?: string | null
+          medicamento_id: string
+          observacoes?: string | null
+          paciente_id: string
+          profissional_id: string
+          prontuario_id?: string | null
+          quantidade: number
+          unidade_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lote_id?: string | null
+          medicamento_id?: string
+          observacoes?: string | null
+          paciente_id?: string
+          profissional_id?: string
+          prontuario_id?: string | null
+          quantidade?: number
+          unidade_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dispensacoes_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "lotes_medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispensacoes_medicamento_id_fkey"
+            columns: ["medicamento_id"]
+            isOneToOne: false
+            referencedRelation: "medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispensacoes_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispensacoes_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispensacoes_prontuario_id_fkey"
+            columns: ["prontuario_id"]
+            isOneToOne: false
+            referencedRelation: "prontuarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispensacoes_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       divida_ativa: {
         Row: {
           contribuinte_id: string
@@ -4903,6 +5144,86 @@ export type Database = {
             columns: ["empenho_id"]
             isOneToOne: false
             referencedRelation: "empenhos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encaminhamentos_saude: {
+        Row: {
+          created_at: string
+          data_agendamento: string | null
+          data_regulacao: string | null
+          especialidade: string
+          id: string
+          justificativa: string
+          medico_solicitante_id: string
+          observacoes: string | null
+          paciente_id: string
+          prioridade: string
+          status: string
+          unidade_destino_id: string | null
+          unidade_origem_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_agendamento?: string | null
+          data_regulacao?: string | null
+          especialidade: string
+          id?: string
+          justificativa: string
+          medico_solicitante_id: string
+          observacoes?: string | null
+          paciente_id: string
+          prioridade?: string
+          status?: string
+          unidade_destino_id?: string | null
+          unidade_origem_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_agendamento?: string | null
+          data_regulacao?: string | null
+          especialidade?: string
+          id?: string
+          justificativa?: string
+          medico_solicitante_id?: string
+          observacoes?: string | null
+          paciente_id?: string
+          prioridade?: string
+          status?: string
+          unidade_destino_id?: string | null
+          unidade_origem_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encaminhamentos_saude_medico_solicitante_id_fkey"
+            columns: ["medico_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_saude_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_saude_unidade_destino_id_fkey"
+            columns: ["unidade_destino_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_saude_unidade_origem_id_fkey"
+            columns: ["unidade_origem_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
             referencedColumns: ["id"]
           },
         ]
@@ -5521,6 +5842,73 @@ export type Database = {
             columns: ["tratamento_id"]
             isOneToOne: false
             referencedRelation: "tratamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exames_saude: {
+        Row: {
+          created_at: string
+          data_realizacao: string | null
+          id: string
+          justificativa: string | null
+          laudo_url: string | null
+          medico_solicitante_id: string
+          paciente_id: string
+          resultado: string | null
+          status: string
+          tipo: string
+          unidade_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_realizacao?: string | null
+          id?: string
+          justificativa?: string | null
+          laudo_url?: string | null
+          medico_solicitante_id: string
+          paciente_id: string
+          resultado?: string | null
+          status?: string
+          tipo: string
+          unidade_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_realizacao?: string | null
+          id?: string
+          justificativa?: string | null
+          laudo_url?: string | null
+          medico_solicitante_id?: string
+          paciente_id?: string
+          resultado?: string | null
+          status?: string
+          tipo?: string
+          unidade_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exames_saude_medico_solicitante_id_fkey"
+            columns: ["medico_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exames_saude_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exames_saude_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
             referencedColumns: ["id"]
           },
         ]
@@ -8184,6 +8572,47 @@ export type Database = {
           },
         ]
       }
+      indicadores_programas_saude: {
+        Row: {
+          competencia: string | null
+          created_at: string
+          id: string
+          meta: number | null
+          nome: string
+          programa_id: string
+          unidade_medida: string | null
+          valor_atual: number | null
+        }
+        Insert: {
+          competencia?: string | null
+          created_at?: string
+          id?: string
+          meta?: number | null
+          nome: string
+          programa_id: string
+          unidade_medida?: string | null
+          valor_atual?: number | null
+        }
+        Update: {
+          competencia?: string | null
+          created_at?: string
+          id?: string
+          meta?: number | null
+          nome?: string
+          programa_id?: string
+          unidade_medida?: string | null
+          valor_atual?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "indicadores_programas_saude_programa_id_fkey"
+            columns: ["programa_id"]
+            isOneToOne: false
+            referencedRelation: "programas_federais_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       indicadores_saude: {
         Row: {
           categoria: string
@@ -8323,6 +8752,76 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      internacoes: {
+        Row: {
+          created_at: string
+          data_alta: string | null
+          data_entrada: string
+          evolucao: string | null
+          id: string
+          leito: string | null
+          medico_responsavel_id: string
+          motivo_alta: string | null
+          motivo_internacao: string
+          paciente_id: string
+          status: string
+          unidade_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          data_alta?: string | null
+          data_entrada?: string
+          evolucao?: string | null
+          id?: string
+          leito?: string | null
+          medico_responsavel_id: string
+          motivo_alta?: string | null
+          motivo_internacao: string
+          paciente_id: string
+          status?: string
+          unidade_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          data_alta?: string | null
+          data_entrada?: string
+          evolucao?: string | null
+          id?: string
+          leito?: string | null
+          medico_responsavel_id?: string
+          motivo_alta?: string | null
+          motivo_internacao?: string
+          paciente_id?: string
+          status?: string
+          unidade_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internacoes_medico_responsavel_id_fkey"
+            columns: ["medico_responsavel_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internacoes_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internacoes_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -9624,6 +10123,64 @@ export type Database = {
           },
         ]
       }
+      log_acesso_prontuario: {
+        Row: {
+          acao: string
+          cargo: string
+          created_at: string
+          hash_registro: string
+          id: string
+          paciente_id: string
+          prontuario_id: string | null
+          unidade_id: string | null
+          user_id: string
+        }
+        Insert: {
+          acao: string
+          cargo: string
+          created_at?: string
+          hash_registro: string
+          id?: string
+          paciente_id: string
+          prontuario_id?: string | null
+          unidade_id?: string | null
+          user_id: string
+        }
+        Update: {
+          acao?: string
+          cargo?: string
+          created_at?: string
+          hash_registro?: string
+          id?: string
+          paciente_id?: string
+          prontuario_id?: string | null
+          unidade_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "log_acesso_prontuario_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "log_acesso_prontuario_prontuario_id_fkey"
+            columns: ["prontuario_id"]
+            isOneToOne: false
+            referencedRelation: "prontuarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "log_acesso_prontuario_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       log_acessos: {
         Row: {
           acao: string
@@ -9781,6 +10338,60 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      lotes_medicamentos: {
+        Row: {
+          created_at: string
+          data_validade: string
+          fornecedor: string | null
+          id: string
+          medicamento_id: string
+          nota_fiscal: string | null
+          numero_lote: string
+          quantidade_atual: number
+          quantidade_inicial: number
+          unidade_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_validade: string
+          fornecedor?: string | null
+          id?: string
+          medicamento_id: string
+          nota_fiscal?: string | null
+          numero_lote: string
+          quantidade_atual: number
+          quantidade_inicial: number
+          unidade_id: string
+        }
+        Update: {
+          created_at?: string
+          data_validade?: string
+          fornecedor?: string | null
+          id?: string
+          medicamento_id?: string
+          nota_fiscal?: string | null
+          numero_lote?: string
+          quantidade_atual?: number
+          quantidade_inicial?: number
+          unidade_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lotes_medicamentos_medicamento_id_fkey"
+            columns: ["medicamento_id"]
+            isOneToOne: false
+            referencedRelation: "medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lotes_medicamentos_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -9991,6 +10602,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      medicamentos: {
+        Row: {
+          apresentacao: string | null
+          ativo: boolean
+          codigo_interno: string | null
+          created_at: string
+          dosagem: string | null
+          estoque_minimo: number
+          id: string
+          nome: string
+          principio_ativo: string | null
+          unidade_medida: string
+          updated_at: string
+        }
+        Insert: {
+          apresentacao?: string | null
+          ativo?: boolean
+          codigo_interno?: string | null
+          created_at?: string
+          dosagem?: string | null
+          estoque_minimo?: number
+          id?: string
+          nome: string
+          principio_ativo?: string | null
+          unidade_medida?: string
+          updated_at?: string
+        }
+        Update: {
+          apresentacao?: string | null
+          ativo?: boolean
+          codigo_interno?: string | null
+          created_at?: string
+          dosagem?: string | null
+          estoque_minimo?: number
+          id?: string
+          nome?: string
+          principio_ativo?: string | null
+          unidade_medida?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       membros_familia: {
         Row: {
@@ -10695,6 +11348,71 @@ export type Database = {
             columns: ["ordem_pagamento_id"]
             isOneToOne: false
             referencedRelation: "ordens_pagamento"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movimentacoes_estoque: {
+        Row: {
+          created_at: string
+          id: string
+          lote_id: string | null
+          medicamento_id: string
+          motivo: string | null
+          profissional_id: string | null
+          quantidade: number
+          tipo: string
+          unidade_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lote_id?: string | null
+          medicamento_id: string
+          motivo?: string | null
+          profissional_id?: string | null
+          quantidade: number
+          tipo: string
+          unidade_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lote_id?: string | null
+          medicamento_id?: string
+          motivo?: string | null
+          profissional_id?: string | null
+          quantidade?: number
+          tipo?: string
+          unidade_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_estoque_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "lotes_medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_medicamento_id_fkey"
+            columns: ["medicamento_id"]
+            isOneToOne: false
+            referencedRelation: "medicamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais_saude"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movimentacoes_estoque_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
             referencedColumns: ["id"]
           },
         ]
@@ -14324,6 +15042,42 @@ export type Database = {
           },
         ]
       }
+      programas_federais_saude: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          id: string
+          meta_anual: number | null
+          nome: string
+          percentual_execucao: number | null
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          meta_anual?: number | null
+          nome: string
+          percentual_execucao?: number | null
+          tipo?: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          meta_anual?: number | null
+          nome?: string
+          percentual_execucao?: number | null
+          tipo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       programas_incentivo_rural: {
         Row: {
           ativo: boolean | null
@@ -17011,48 +17765,60 @@ export type Database = {
       }
       vacinas: {
         Row: {
+          ativo: boolean
           created_at: string
           data_aplicacao: string
           data_proxima_dose: string | null
           dose: string | null
+          doses_necessarias: number
           fabricante: string | null
           id: string
+          intervalo_doses_dias: number | null
           local_aplicacao: string | null
           lote: string | null
           nome_vacina: string
           observacoes: string | null
           paciente_id: string
           profissional_id: string | null
+          tipo: string | null
           unidade_id: string | null
         }
         Insert: {
+          ativo?: boolean
           created_at?: string
           data_aplicacao?: string
           data_proxima_dose?: string | null
           dose?: string | null
+          doses_necessarias?: number
           fabricante?: string | null
           id?: string
+          intervalo_doses_dias?: number | null
           local_aplicacao?: string | null
           lote?: string | null
           nome_vacina: string
           observacoes?: string | null
           paciente_id: string
           profissional_id?: string | null
+          tipo?: string | null
           unidade_id?: string | null
         }
         Update: {
+          ativo?: boolean
           created_at?: string
           data_aplicacao?: string
           data_proxima_dose?: string | null
           dose?: string | null
+          doses_necessarias?: number
           fabricante?: string | null
           id?: string
+          intervalo_doses_dias?: number | null
           local_aplicacao?: string | null
           lote?: string | null
           nome_vacina?: string
           observacoes?: string | null
           paciente_id?: string
           profissional_id?: string | null
+          tipo?: string | null
           unidade_id?: string | null
         }
         Relationships: [
