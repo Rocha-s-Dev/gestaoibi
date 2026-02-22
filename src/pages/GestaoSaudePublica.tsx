@@ -20,7 +20,9 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe } from "lucide-react";
+import { EstoqueFarmaceutico } from "@/components/saude/EstoqueFarmaceutico";
+import { VacinacaoModule } from "@/components/saude/VacinacaoModule";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -129,10 +131,12 @@ export default function GestaoSaudePublica() {
         </header>
 
         <Tabs defaultValue="pacientes">
-          <TabsList className="grid w-full grid-cols-6 h-auto">
+          <TabsList className="flex flex-wrap w-full h-auto gap-1">
             <TabsTrigger value="pacientes" className="text-sm p-3">Pacientes</TabsTrigger>
             <TabsTrigger value="unidades" className="text-sm p-3">Unidades de Saúde</TabsTrigger>
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
+            <TabsTrigger value="estoque" className="text-sm p-3 flex items-center gap-1"><Pill className="h-3 w-3" />Estoque</TabsTrigger>
+            <TabsTrigger value="vacinacao" className="text-sm p-3 flex items-center gap-1"><Syringe className="h-3 w-3" />Vacinação</TabsTrigger>
             <TabsTrigger value="tfd" className="text-sm p-3 flex items-center gap-1"><Ambulance className="h-3 w-3" />TFD</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-sm p-3">Indicadores</TabsTrigger>
             <TabsTrigger value="metas" className="text-sm p-3">Metas</TabsTrigger>
@@ -236,6 +240,20 @@ export default function GestaoSaudePublica() {
                   </Table>
                 )}
               </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="estoque" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Pill className="h-5 w-5" />Estoque Farmacêutico</CardTitle></CardHeader>
+              <CardContent><EstoqueFarmaceutico /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="vacinacao" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Syringe className="h-5 w-5" />Vacinação</CardTitle></CardHeader>
+              <CardContent><VacinacaoModule /></CardContent>
             </Card>
           </TabsContent>
 
