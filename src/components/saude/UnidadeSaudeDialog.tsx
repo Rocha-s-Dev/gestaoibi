@@ -10,16 +10,17 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { X, User } from "lucide-react";
-import { UnidadeSaude } from "./CadastroUnidadesSaude";
+import { X, User, Loader2 } from "lucide-react";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import type { UsuarioRH } from "@/hooks/useUsuariosRH";
+import type { UnidadeSaude } from "./CadastroUnidadesSaude";
 
 interface UnidadeSaudeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   unidade?: UnidadeSaude | null;
-  onUnidadeCreated: () => void;
+  onSave: (data: Omit<Partial<UnidadeSaude>, "id"> & { responsavel_id?: string }) => void;
+  isSaving?: boolean;
 }
 
 const tiposUnidade = [
@@ -39,15 +40,17 @@ const especialidadesDisponiveis = [
   "Psicologia", "Nutrição", "Fonoaudiologia",
 ];
 
-export function UnidadeSaudeDialog({ open, onOpenChange, unidade, onUnidadeCreated }: UnidadeSaudeDialogProps) {
-  const [formData, setFormData] = useState<Partial<UnidadeSaude>>({
-    nome: "", tipo: "UBS", endereco: "", telefone: "",
-    horarioFuncionamento: {
-      segunda: "08:00-17:00", terca: "08:00-17:00", quarta: "08:00-17:00",
-      quinta: "08:00-17:00", sexta: "08:00-17:00", sabado: "Fechado", domingo: "Fechado",
-    },
-    especialidades: [], responsavel: "", capacidade: 50, status: "ativo", observacoes: "",
-  });
+const defaultFormData: Partial<UnidadeSaude> = {
+  nome: "", tipo: "UBS", endereco: "", telefone: "",
+  horarioFuncionamento: {
+    segunda: "08:00-17:00", terca: "08:00-17:00", quarta: "08:00-17:00",
+    quinta: "08:00-17:00", sexta: "08:00-17:00", sabado: "Fechado", domingo: "Fechado",
+  },
+  especialidades: [], responsavel: "", capacidade: 50, status: "ativo", observacoes: "",
+};
+
+export function UnidadeSaudeDialog({ open, onOpenChange, unidade, onSave, isSaving }: UnidadeSaudeDialogProps) {
+  const [formData, setFormData] = useState<Partial<UnidadeSaude>>(defaultFormData);
   const [novaEspecialidade, setNovaEspecialidade] = useState("");
   const [vincularResponsavelOpen, setVincularResponsavelOpen] = useState(false);
   const [responsavelSelecionado, setResponsavelSelecionado] = useState<UsuarioRH | null>(null);
@@ -57,26 +60,18 @@ export function UnidadeSaudeDialog({ open, onOpenChange, unidade, onUnidadeCreat
       setFormData(unidade);
       setResponsavelSelecionado(null);
     } else {
-      setFormData({
-        nome: "", tipo: "UBS", endereco: "", telefone: "",
-        horarioFuncionamento: {
-          segunda: "08:00-17:00", terca: "08:00-17:00", quarta: "08:00-17:00",
-          quinta: "08:00-17:00", sexta: "08:00-17:00", sabado: "Fechado", domingo: "Fechado",
-        },
-        especialidades: [], responsavel: "", capacidade: 50, status: "ativo", observacoes: "",
-      });
+      setFormData(defaultFormData);
       setResponsavelSelecionado(null);
     }
-  }, [unidade]);
+  }, [unidade, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const dataToSave = {
+    onSave({
       ...formData,
       responsavel: responsavelSelecionado?.nome || formData.responsavel,
-    };
-    console.log("Dados da unidade:", dataToSave);
-    onUnidadeCreated();
+      responsavel_id: responsavelSelecionado?.user_id || undefined,
+    });
     onOpenChange(false);
   };
 
@@ -219,7 +214,7 @@ export function UnidadeSaudeDialog({ open, onOpenChange, unidade, onUnidadeCreat
                 {formData.especialidades?.map((especialidade, index) => (
                   <Badge key={index} variant="secondary" className="flex items-center gap-1">
                     {especialidade}
-                    <X size={14} className="cursor-pointer hover:text-red-600" onClick={() => removerEspecialidade(especialidade)} />
+                    <X size={14} className="cursor-pointer hover:text-destructive" onClick={() => removerEspecialidade(especialidade)} />
                   </Badge>
                 ))}
               </div>
@@ -232,7 +227,10 @@ export function UnidadeSaudeDialog({ open, onOpenChange, unidade, onUnidadeCreat
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-              <Button type="submit">{isEditing ? "Salvar Alterações" : "Criar Unidade"}</Button>
+              <Button type="submit" disabled={isSaving}>
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isEditing ? "Salvar Alterações" : "Criar Unidade"}
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
