@@ -1,62 +1,38 @@
 
 
-## Corrigir FK e Auto-vincular Responsavel como Profissional de Saude
+## Melhorias na Central RH e Edicao de Tipo de Usuario
 
-### Problema
-O campo `responsavel_id` em `unidades_saude` referencia `profissionais_saude(id)` (a PK da tabela de profissionais), mas o codigo atual envia o `user_id` do perfil RH. Isso causa a violacao de FK. Alem disso, o usuario selecionado pode nao ter registro na tabela `profissionais_saude`.
+### Problema 1: Tela Central RH com botao duplicado
+A tela "Central RH" tem um botao "Novo Usuario" com formulario completo, sendo que a aba "Servidores" ja oferece essa mesma funcionalidade. Isso causa confusao.
 
-### Solucao
+### Problema 2: Nao eh possivel editar o tipo de usuario (ex: secretario -> funcionario)
+No dialog de edicao do servidor (aba Servidores), o campo "Tipo de Usuario" so aparece na criacao (esta dentro de um bloco `{!servidor && (...)}`). Alem disso, o campo `tipo_usuario` nao esta incluido no payload de atualizacao do profile.
 
-**1. Migracao SQL: RLS para admin_municipal em profissionais_saude**
+---
 
-A tabela `profissionais_saude` nao possui politica para `admin_municipal`. Para que o admin possa inserir o profissional automaticamente, sera necessario adicionar uma politica RLS:
+### Alteracoes
 
-```sql
-CREATE POLICY "Admin municipal full access profissionais_saude"
-ON public.profissionais_saude
-FOR ALL
-TO authenticated
-USING (public.is_admin_municipal(auth.uid()))
-WITH CHECK (public.is_admin_municipal(auth.uid()));
-```
+**Arquivo 1: `src/components/rh/RHDashboard.tsx`**
+- Remover o botao "Novo Usuario", o Dialog de criacao, e todo o estado do formulario (`form`, `dialogOpen`, `handleCreateUser`)
+- Manter o dashboard de KPIs e a tabela de usuarios
+- Adicionar botao de visualizacao (icone olho) em cada linha da tabela, que abre o `ViewServidorDialog` para consulta rapida
+- Manter filtros de busca e status
 
-**2. Alterar `useUnidadesSaude.ts` - logica de criacao/atualizacao**
+**Arquivo 2: `src/components/admin/ServidorDialog.tsx`**
+- Mover a secao "Tipo de Usuario" (select de tipo + select de secretaria) para FORA do bloco `{!servidor && (...)}`, tornando-a visivel tambem no modo edicao
+- Adicionar `tipo_usuario` ao objeto `profileData` na logica de atualizacao (handleSubmit, modo edicao)
+- Quando o tipo for alterado de "secretario" para outro, limpar o `secretaria_id`
 
-No `createUnidade` e `updateUnidade`, antes de inserir/atualizar a unidade:
+### Detalhes tecnicos
 
-- Se um `responsavel_id` (que na verdade eh o `user_id` do perfil) foi informado:
-  1. Verificar se ja existe um registro em `profissionais_saude` para esse `user_id` com status ativo
-  2. Se nao existir, criar um novo registro com:
-     - `user_id`: o ID do perfil selecionado
-     - `cargo`: `diretor_unidade`
-     - `status`: `ativo`
-  3. Usar o `id` retornado de `profissionais_saude` como o `responsavel_id` na tabela `unidades_saude`
-  4. Apos criar a unidade, atualizar o `unidade_id` do profissional para vincular a unidade recem-criada
+No `ServidorDialog.tsx`:
+- A secao de "Tipo de Usuario" (linhas 617-660) sera extraida do bloco condicional `{!servidor}` e colocada como secao independente visivel sempre
+- No `handleSubmit`, modo edicao (linha 302), adicionar `tipo_usuario: formData.tipo_usuario` ao objeto `profileData`
+- O `useEffect` ja carrega o `tipo_usuario` atual do servidor (linha 185), entao o campo ja vira preenchido
 
-- Se nenhum responsavel foi selecionado, enviar `responsavel_id: null`
-
-**3. Fluxo completo**
-
-```text
-Usuario seleciona servidor do RH (user_id do profiles)
-       |
-       v
-Hook verifica se existe profissional_saude com esse user_id
-       |
-  Nao existe?  -->  Cria registro em profissionais_saude
-       |                cargo = diretor_unidade
-       |                status = ativo
-       v
-Usa profissionais_saude.id como responsavel_id
-       |
-       v
-Insere/atualiza unidades_saude com responsavel_id correto
-       |
-       v
-Atualiza profissional com unidade_id da unidade criada
-```
-
-### Arquivos modificados
-
-- `supabase/migrations/` - Nova migracao para RLS em profissionais_saude
-- `src/hooks/useUnidadesSaude.ts` - Logica de upsert do profissional antes de salvar a unidade
+No `RHDashboard.tsx`:
+- Importar `ViewServidorDialog` e `Eye` de lucide-react
+- Remover imports de `Dialog`, `DialogContent`, `DialogTrigger`, `UserPlus`, `Label`
+- Remover estado `form`, `dialogOpen` e funcao `handleCreateUser`
+- Substituir coluna "Acoes" para incluir apenas botao de visualizacao rapida
+- Manter acoes contextuais (Regularizar, Inativar, Reativar)
