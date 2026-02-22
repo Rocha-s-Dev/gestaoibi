@@ -20,9 +20,14 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield } from "lucide-react";
 import { EstoqueFarmaceutico } from "@/components/saude/EstoqueFarmaceutico";
 import { VacinacaoModule } from "@/components/saude/VacinacaoModule";
+import { EncaminhamentosSaude } from "@/components/saude/EncaminhamentosSaude";
+import { ExamesSaudeModule } from "@/components/saude/ExamesSaudeModule";
+import { InternacoesModule } from "@/components/saude/InternacoesModule";
+import { ProgramasFederaisModule } from "@/components/saude/ProgramasFederaisModule";
+import { LGPDSaudeModule } from "@/components/saude/LGPDSaudeModule";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -137,9 +142,14 @@ export default function GestaoSaudePublica() {
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
             <TabsTrigger value="estoque" className="text-sm p-3 flex items-center gap-1"><Pill className="h-3 w-3" />Estoque</TabsTrigger>
             <TabsTrigger value="vacinacao" className="text-sm p-3 flex items-center gap-1"><Syringe className="h-3 w-3" />Vacinação</TabsTrigger>
+            <TabsTrigger value="encaminhamentos" className="text-sm p-3 flex items-center gap-1"><ArrowRightLeft className="h-3 w-3" />Regulação</TabsTrigger>
+            <TabsTrigger value="exames" className="text-sm p-3 flex items-center gap-1"><FileText className="h-3 w-3" />Exames</TabsTrigger>
+            <TabsTrigger value="internacoes" className="text-sm p-3 flex items-center gap-1"><Bed className="h-3 w-3" />Internações</TabsTrigger>
             <TabsTrigger value="tfd" className="text-sm p-3 flex items-center gap-1"><Ambulance className="h-3 w-3" />TFD</TabsTrigger>
+            <TabsTrigger value="programas" className="text-sm p-3 flex items-center gap-1"><Building2 className="h-3 w-3" />Programas</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-sm p-3">Indicadores</TabsTrigger>
             <TabsTrigger value="metas" className="text-sm p-3">Metas</TabsTrigger>
+            <TabsTrigger value="lgpd" className="text-sm p-3 flex items-center gap-1"><Shield className="h-3 w-3" />LGPD</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pacientes" className="mt-6">
@@ -263,6 +273,34 @@ export default function GestaoSaudePublica() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="encaminhamentos" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><ArrowRightLeft className="h-5 w-5" />Regulação / Encaminhamentos</CardTitle></CardHeader>
+              <CardContent><EncaminhamentosSaude /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="exames" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" />Controle de Exames</CardTitle></CardHeader>
+              <CardContent><ExamesSaudeModule /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="internacoes" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Bed className="h-5 w-5" />Gestão de Internações</CardTitle></CardHeader>
+              <CardContent><InternacoesModule /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="programas" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Building2 className="h-5 w-5" />Programas Federais de Saúde</CardTitle></CardHeader>
+              <CardContent><ProgramasFederaisModule /></CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="indicadores" className="mt-6">
             <Card>
               <CardHeader><CardTitle>Acompanhamento de Indicadores de Saúde Pública</CardTitle></CardHeader>
@@ -274,6 +312,13 @@ export default function GestaoSaudePublica() {
             <Card>
               <CardHeader><CardTitle>Gestão de Metas de Saúde Pública</CardTitle></CardHeader>
               <CardContent><MetasSaudePublica /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="lgpd" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5" />Segurança e LGPD</CardTitle></CardHeader>
+              <CardContent><LGPDSaudeModule /></CardContent>
             </Card>
           </TabsContent>
         </Tabs>
