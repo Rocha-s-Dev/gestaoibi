@@ -1,11 +1,15 @@
-
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, MapPin, Clock, Users, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, MapPin, Clock, Users, Edit, Trash2, Loader2 } from "lucide-react";
 import { UnidadeSaudeDialog } from "./UnidadeSaudeDialog";
+import { useUnidadesSaude } from "@/hooks/useUnidadesSaude";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export interface UnidadeSaude {
   id: string;
@@ -29,131 +33,51 @@ export interface UnidadeSaude {
   observacoes?: string;
 }
 
-const unidadesMock: UnidadeSaude[] = [
-  {
-    id: "1",
-    nome: "UBS Centro",
-    tipo: "UBS",
-    endereco: "Rua Principal, 123 - Centro",
-    telefone: "(11) 1234-5678",
-    horarioFuncionamento: {
-      segunda: "08:00-17:00",
-      terca: "08:00-17:00",
-      quarta: "08:00-17:00",
-      quinta: "08:00-17:00",
-      sexta: "08:00-17:00",
-      sabado: "08:00-12:00",
-      domingo: "Fechado"
-    },
-    especialidades: ["Clínica Geral", "Pediatria", "Ginecologia"],
-    responsavel: "Dr. João Silva",
-    capacidade: 200,
-    status: "ativo",
-    observacoes: "Unidade principal do centro da cidade"
-  },
-  {
-    id: "2",
-    nome: "UPA 24h Norte",
-    tipo: "UPA",
-    endereco: "Av. Norte, 456 - Bairro Norte",
-    telefone: "(11) 9876-5432",
-    horarioFuncionamento: {
-      segunda: "24h",
-      terca: "24h",
-      quarta: "24h",
-      quinta: "24h",
-      sexta: "24h",
-      sabado: "24h",
-      domingo: "24h"
-    },
-    especialidades: ["Urgência e Emergência", "Ortopedia", "Cardiologia"],
-    responsavel: "Dr. Maria Santos",
-    capacidade: 100,
-    status: "ativo"
-  },
-  {
-    id: "3",
-    nome: "Hospital Municipal",
-    tipo: "Hospital",
-    endereco: "Rua da Saúde, 789 - Centro",
-    telefone: "(11) 2468-1357",
-    horarioFuncionamento: {
-      segunda: "24h",
-      terca: "24h",
-      quarta: "24h",
-      quinta: "24h",
-      sexta: "24h",
-      sabado: "24h",
-      domingo: "24h"
-    },
-    especialidades: ["Cirurgia Geral", "UTI", "Maternidade", "Pediatria"],
-    responsavel: "Dr. Carlos Oliveira",
-    capacidade: 150,
-    status: "ativo"
-  }
-];
-
-const tipoColors = {
+const tipoColors: Record<string, string> = {
   UBS: "bg-blue-100 text-blue-800",
   UPA: "bg-red-100 text-red-800",
   Hospital: "bg-green-100 text-green-800",
   Clinica: "bg-purple-100 text-purple-800",
   CAPS: "bg-yellow-100 text-yellow-800",
-  Laboratorio: "bg-orange-100 text-orange-800"
+  Laboratorio: "bg-orange-100 text-orange-800",
 };
 
-const statusColors = {
+const statusColors: Record<string, string> = {
   ativo: "bg-green-100 text-green-800",
   inativo: "bg-gray-100 text-gray-800",
-  manutencao: "bg-yellow-100 text-yellow-800"
+  manutencao: "bg-yellow-100 text-yellow-800",
 };
 
 export function CadastroUnidadesSaude() {
-  const [unidades, setUnidades] = useState<UnidadeSaude[]>(unidadesMock);
-  const [filteredUnidades, setFilteredUnidades] = useState<UnidadeSaude[]>(unidadesMock);
+  const { unidades, isLoading, createUnidade, updateUnidade, deleteUnidade } = useUnidadesSaude();
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUnidade, setSelectedUnidade] = useState<UnidadeSaude | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    if (!term) {
-      setFilteredUnidades(unidades);
-    } else {
-      const filtered = unidades.filter(
-        unidade =>
-          unidade.nome.toLowerCase().includes(term.toLowerCase()) ||
-          unidade.tipo.toLowerCase().includes(term.toLowerCase()) ||
-          unidade.endereco.toLowerCase().includes(term.toLowerCase()) ||
-          unidade.especialidades.some(esp => esp.toLowerCase().includes(term.toLowerCase()))
-      );
-      setFilteredUnidades(filtered);
-    }
-  };
-
-  const handleUnidadeCreated = () => {
-    // Aqui seria implementada a lógica de atualização da lista
-    console.log("Unidade criada/atualizada");
-  };
+  // Filtrar apenas ativas/manutenção por padrão e aplicar busca
+  const filteredUnidades = useMemo(() => {
+    const activeUnidades = unidades.filter((u) => u.status !== "inativo");
+    if (!searchTerm) return activeUnidades;
+    const term = searchTerm.toLowerCase();
+    return activeUnidades.filter(
+      (u) =>
+        u.nome.toLowerCase().includes(term) ||
+        u.tipo.toLowerCase().includes(term) ||
+        u.endereco.toLowerCase().includes(term) ||
+        u.especialidades.some((esp) => esp.toLowerCase().includes(term))
+    );
+  }, [unidades, searchTerm]);
 
   const handleEdit = (unidade: UnidadeSaude) => {
     setSelectedUnidade(unidade);
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    const updated = unidades.filter((u) => u.id !== id);
-    setUnidades(updated);
-    if (searchTerm) {
-      setFilteredUnidades(updated.filter(
-        (u) =>
-          u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          u.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          u.endereco.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          u.especialidades.some((esp) => esp.toLowerCase().includes(searchTerm.toLowerCase()))
-      ));
-    } else {
-      setFilteredUnidades(updated);
+  const handleConfirmDelete = () => {
+    if (deleteId) {
+      deleteUnidade.mutate(deleteId);
+      setDeleteId(null);
     }
   };
 
@@ -162,15 +86,23 @@ export function CadastroUnidadesSaude() {
     setDialogOpen(true);
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
           <Input
             placeholder="Buscar unidades..."
             value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -193,20 +125,10 @@ export function CadastroUnidadesSaude() {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(unidade)}
-                    className="h-8 w-8"
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => handleEdit(unidade)} className="h-8 w-8">
                     <Edit size={16} />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(unidade.id)}
-                    className="h-8 w-8 text-red-600 hover:text-red-700"
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => setDeleteId(unidade.id)} className="h-8 w-8 text-destructive hover:text-destructive">
                     <Trash2 size={16} />
                   </Button>
                 </div>
@@ -214,41 +136,35 @@ export function CadastroUnidadesSaude() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin size={16} />
                   <span>{unidade.endereco}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock size={16} />
                   <span>Seg-Sex: {unidade.horarioFuncionamento.segunda}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users size={16} />
                   <span>Capacidade: {unidade.capacidade} pacientes</span>
                 </div>
               </div>
-
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Especialidades:</p>
+                <p className="text-sm font-medium mb-2">Especialidades:</p>
                 <div className="flex flex-wrap gap-1">
                   {unidade.especialidades.slice(0, 3).map((esp, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      {esp}
-                    </Badge>
+                    <Badge key={index} variant="outline" className="text-xs">{esp}</Badge>
                   ))}
                   {unidade.especialidades.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{unidade.especialidades.length - 3} mais
-                    </Badge>
+                    <Badge variant="outline" className="text-xs">+{unidade.especialidades.length - 3} mais</Badge>
                   )}
                 </div>
               </div>
-
               <div className="pt-2 border-t">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   <span className="font-medium">Responsável:</span> {unidade.responsavel}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   <span className="font-medium">Telefone:</span> {unidade.telefone}
                 </p>
               </div>
@@ -259,7 +175,7 @@ export function CadastroUnidadesSaude() {
 
       {filteredUnidades.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-gray-500">Nenhuma unidade encontrada</p>
+          <p className="text-muted-foreground">Nenhuma unidade encontrada</p>
         </div>
       )}
 
@@ -267,8 +183,32 @@ export function CadastroUnidadesSaude() {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         unidade={selectedUnidade}
-        onUnidadeCreated={handleUnidadeCreated}
+        onSave={(data) => {
+          if (selectedUnidade) {
+            updateUnidade.mutate({ id: selectedUnidade.id, ...data });
+          } else {
+            createUnidade.mutate(data);
+          }
+        }}
+        isSaving={createUnidade.isPending || updateUnidade.isPending}
       />
+
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Desativar unidade de saúde?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A unidade será marcada como inativa e não aparecerá mais na listagem. Esta ação pode ser revertida editando o status da unidade.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Desativar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
