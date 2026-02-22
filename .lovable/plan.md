@@ -1,47 +1,30 @@
 
 
-## Conectar Unidades de Saude ao Banco de Dados
+## Corrigir Constraint de Chave Estrangeira em `unidades_saude`
 
-### Problema Identificado
-O componente `CadastroUnidadesSaude` usa dados mock (fictícios) em memoria local. Criar, editar e excluir unidades nao persiste no banco de dados. Ao navegar ou recarregar, os dados mock sempre reaparecem.
+### Problema
+O campo `responsavel_id` na tabela `unidades_saude` possui uma foreign key apontando para `profissionais_saude`. Porem, o componente `VincularUsuarioRH` seleciona usuarios do registro geral de RH (tabela `profiles`), que podem nao estar cadastrados como profissionais de saude. Isso causa o erro:
+
+> insert or update on table "unidades_saude" violates foreign key constraint "unidades_saude_responsavel_id_fkey"
 
 ### Solucao
 
-**1. Criar hook `useUnidadesSaude`**
-- Novo arquivo `src/hooks/useUnidadesSaude.ts`
-- Funcoes CRUD completas usando a tabela `unidades_saude` existente no banco
-- Mapeamento entre o formato do frontend (camelCase) e o formato do banco (snake_case)
-- Campos mapeados:
-  - `nome`, `tipo`, `endereco`, `telefone` (direto)
-  - `horarioFuncionamento` -> `horario_funcionamento` (JSONB)
-  - `especialidades` -> `especialidades` (ARRAY)
-  - `capacidade` -> `capacidade_diaria`
-  - `responsavel`, `responsavel_id`, `status`, `observacoes` (direto)
-- Usar React Query para cache e refetch automatico
-- Funcoes: `fetchUnidades`, `createUnidade`, `updateUnidade`, `deleteUnidade`
+**Migracaoo SQL:**
+1. Remover a foreign key existente `unidades_saude_responsavel_id_fkey` que aponta para `profissionais_saude`
+2. Criar uma nova foreign key no mesmo campo `responsavel_id` apontando para `profiles(user_id)`
 
-**2. Reescrever `CadastroUnidadesSaude.tsx`**
-- Remover todos os dados mock
-- Usar o hook `useUnidadesSaude` para buscar dados do banco
-- Busca/filtro feita localmente sobre os dados do banco
-- Exclusao chama `deleteUnidade` (DELETE real no banco)
-- Confirmacao antes de excluir (dialog de confirmacao)
-- Loading state enquanto carrega
-
-**3. Reescrever `UnidadeSaudeDialog.tsx`**
-- Receber funcoes `createUnidade` e `updateUnidade` do hook
-- No submit, chamar `createUnidade` ou `updateUnidade` com os dados mapeados
-- Salvar `responsavel_id` quando um responsavel eh selecionado via VincularUsuarioRH
-- Toast de sucesso/erro
+Isso permite que qualquer usuario registrado no sistema (via RH) possa ser designado como responsavel por uma unidade de saude, sem exigir que ele esteja previamente cadastrado na tabela `profissionais_saude`.
 
 ### Detalhes Tecnicos
 
-Esquema da tabela `unidades_saude` no banco:
-- `id` (uuid), `nome` (text), `tipo` (text), `endereco` (text)
-- `telefone` (text), `email` (text), `horario_funcionamento` (jsonb)
-- `especialidades` (text[]), `responsavel` (text), `responsavel_id` (uuid)
-- `capacidade_diaria` (integer), `status` (text), `observacoes` (text)
-- `created_at`, `updated_at` (timestamps)
+```sql
+ALTER TABLE public.unidades_saude
+  DROP CONSTRAINT unidades_saude_responsavel_id_fkey;
 
-Nenhuma alteracao no banco de dados eh necessaria -- a tabela ja existe com a estrutura correta e RLS habilitado.
+ALTER TABLE public.unidades_saude
+  ADD CONSTRAINT unidades_saude_responsavel_id_fkey
+  FOREIGN KEY (responsavel_id) REFERENCES public.profiles(user_id);
+```
+
+Nenhuma alteracao de codigo eh necessaria -- o hook `useUnidadesSaude` ja envia o `responsavel_id` corretamente a partir do `VincularUsuarioRH`.
 
