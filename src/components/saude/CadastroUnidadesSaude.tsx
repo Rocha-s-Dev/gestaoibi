@@ -142,8 +142,19 @@ export function CadastroUnidadesSaude() {
   };
 
   const handleDelete = (id: string) => {
-    // Aqui seria implementada a lógica de exclusão
-    console.log("Excluir unidade:", id);
+    const updated = unidades.filter((u) => u.id !== id);
+    setUnidades(updated);
+    if (searchTerm) {
+      setFilteredUnidades(updated.filter(
+        (u) =>
+          u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          u.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          u.endereco.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          u.especialidades.some((esp) => esp.toLowerCase().includes(searchTerm.toLowerCase()))
+      ));
+    } else {
+      setFilteredUnidades(updated);
+    }
   };
 
   const openNewUnidadeDialog = () => {
