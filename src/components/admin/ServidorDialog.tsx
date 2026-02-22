@@ -332,6 +332,7 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
           endereco_uf: formData.endereco_uf || null,
           endereco_cep: formData.endereco_cep || null,
           observacoes: formData.observacoes || null,
+          tipo_usuario: formData.tipo_usuario || "funcionario",
         };
 
         const { error } = await supabase
@@ -583,83 +584,81 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
               </div>
 
               {!servidor && (
-                <>
-                  <div className="border-t pt-4 mt-4">
-                    <h4 className="text-sm font-semibold mb-3">Informações de Acesso</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="password">Senha Temporária *</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          value={formData.password}
-                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          value={formData.confirmPassword}
-                          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                          required
-                        />
-                      </div>
+                <div className="border-t pt-4 mt-4">
+                  <h4 className="text-sm font-semibold mb-3">Informações de Acesso</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Senha Temporária *</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        required
+                      />
                     </div>
-                    {passwordError && <p className="text-sm text-destructive mt-1">{passwordError}</p>}
-                    <p className="text-xs text-muted-foreground mt-2">
-                      O servidor será obrigado a trocar a senha no primeiro acesso.
-                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+                  {passwordError && <p className="text-sm text-destructive mt-1">{passwordError}</p>}
+                  <p className="text-xs text-muted-foreground mt-2">
+                    O servidor será obrigado a trocar a senha no primeiro acesso.
+                  </p>
+                </div>
+              )}
+
+              <div className="border-t pt-4 mt-4">
+                <h4 className="text-sm font-semibold mb-3">Tipo de Usuário</h4>
+                <Alert className="mb-3">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    O RH define apenas a identidade-base. Cargos funcionais são vinculados pelas secretarias.
+                    Exceção: <strong>Secretário</strong> — atribuído exclusivamente aqui.
+                  </AlertDescription>
+                </Alert>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="tipo_usuario">Tipo *</Label>
+                    <Select
+                      value={formData.tipo_usuario}
+                      onValueChange={(v) => setFormData({ ...formData, tipo_usuario: v, secretaria_id: "" })}
+                    >
+                      <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="funcionario">Funcionário</SelectItem>
+                        <SelectItem value="secretario">Secretário</SelectItem>
+                        <SelectItem value="administrador">Administrador</SelectItem>
+                        <SelectItem value="auditor">Auditor</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  <div className="border-t pt-4 mt-4">
-                    <h4 className="text-sm font-semibold mb-3">Tipo de Usuário</h4>
-                    <Alert className="mb-3">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription>
-                        O RH define apenas a identidade-base. Cargos funcionais são vinculados pelas secretarias.
-                        Exceção: <strong>Secretário</strong> — atribuído exclusivamente aqui.
-                      </AlertDescription>
-                    </Alert>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="tipo_usuario">Tipo *</Label>
-                        <Select
-                          value={formData.tipo_usuario}
-                          onValueChange={(v) => setFormData({ ...formData, tipo_usuario: v, secretaria_id: "" })}
-                        >
-                          <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="funcionario">Funcionário</SelectItem>
-                            <SelectItem value="secretario">Secretário</SelectItem>
-                            <SelectItem value="administrador">Administrador</SelectItem>
-                            <SelectItem value="auditor">Auditor</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {formData.tipo_usuario === "secretario" && (
-                        <div className="space-y-2">
-                          <Label htmlFor="secretaria_id">Secretaria * (obrigatória)</Label>
-                          <Select value={formData.secretaria_id} onValueChange={(v) => setFormData({ ...formData, secretaria_id: v })}>
-                            <SelectTrigger><SelectValue placeholder="Selecione a secretaria" /></SelectTrigger>
-                            <SelectContent>
-                              {secretarias?.map((sec) => (
-                                <SelectItem key={sec.id} value={sec.id}>{sec.nome}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {!formData.secretaria_id && (
-                            <p className="text-xs text-destructive">Secretário sem secretaria é PROIBIDO.</p>
-                          )}
-                        </div>
+                  {formData.tipo_usuario === "secretario" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="secretaria_id">Secretaria * (obrigatória)</Label>
+                      <Select value={formData.secretaria_id} onValueChange={(v) => setFormData({ ...formData, secretaria_id: v })}>
+                        <SelectTrigger><SelectValue placeholder="Selecione a secretaria" /></SelectTrigger>
+                        <SelectContent>
+                          {secretarias?.map((sec) => (
+                            <SelectItem key={sec.id} value={sec.id}>{sec.nome}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {!formData.secretaria_id && (
+                        <p className="text-xs text-destructive">Secretário sem secretaria é PROIBIDO.</p>
                       )}
                     </div>
-                  </div>
-                </>
-              )}
+                  )}
+                </div>
+              </div>
 
               {servidor && (
                 <div className="border-t pt-4 mt-4">

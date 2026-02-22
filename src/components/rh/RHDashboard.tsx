@@ -1,46 +1,24 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useRHCentral, type NovoUsuarioRH } from "@/hooks/useRHCentral";
-import { useSecretarias } from "@/hooks/useSecretarias";
-import { useCargosPublicos } from "@/hooks/useCargosPublicos";
-import { toast } from "sonner";
+import { useRHCentral } from "@/hooks/useRHCentral";
+import { ViewServidorDialog } from "@/components/admin/ViewServidorDialog";
 import { 
-  Users, UserPlus, UserCheck, UserX, Clock, Shield, 
-  Search, AlertTriangle, CheckCircle2, XCircle, Building2,
-  BarChart3, RefreshCw
+  Users, UserCheck, UserX, Clock, Shield, 
+  Search, AlertTriangle, CheckCircle2, XCircle,
+  RefreshCw, Eye
 } from "lucide-react";
 
 export function RHDashboard() {
-  const { usuarios, isLoading, stats, criarUsuario, atualizarStatus, regularizarUsuario } = useRHCentral();
-  const { secretarias } = useSecretarias();
-  const { cargos } = useCargosPublicos();
+  const { usuarios, isLoading, stats, atualizarStatus, regularizarUsuario } = useRHCentral();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todos");
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  // Form state for new user
-  const [form, setForm] = useState<NovoUsuarioRH>({
-    email: "",
-    password: "",
-    name: "",
-    cpf: "",
-    tipo_usuario: "funcionario",
-    secretaria_id: "",
-    cargo_id: "",
-    regime: "estatutario",
-    data_admissao: new Date().toISOString().split("T")[0],
-    jornada_semanal: 40,
-    matricula: "",
-  });
+  const [viewServidor, setViewServidor] = useState<any>(null);
 
   const filteredUsers = usuarios.filter(u => {
     const matchSearch = !searchTerm || 
@@ -50,24 +28,6 @@ export function RHDashboard() {
     const matchStatus = statusFilter === "todos" || u.status_cadastral === statusFilter;
     return matchSearch && matchStatus;
   });
-
-  const handleCreateUser = async () => {
-    if (!form.email || !form.password || !form.name) {
-      toast.error("Preencha os campos obrigatórios: Nome, Email e Senha");
-      return;
-    }
-    if (form.tipo_usuario === 'secretario' && !form.secretaria_id) {
-      toast.error("Secretário deve ter uma secretaria vinculada");
-      return;
-    }
-    await criarUsuario.mutateAsync(form);
-    setDialogOpen(false);
-    setForm({
-      email: "", password: "", name: "", cpf: "", tipo_usuario: "funcionario",
-      secretaria_id: "", cargo_id: "", regime: "estatutario",
-      data_admissao: new Date().toISOString().split("T")[0], jornada_semanal: 40, matricula: "",
-    });
-  };
 
   const statusBadge = (status: string | null) => {
     switch (status) {
@@ -97,105 +57,22 @@ export function RHDashboard() {
         <Card><CardContent className="p-4 text-center"><AlertTriangle className="h-5 w-5 mx-auto mb-1 text-amber-600" /><p className="text-2xl font-bold">{stats.semVinculo}</p><p className="text-xs text-muted-foreground">Sem Vínculo</p></CardContent></Card>
       </div>
 
-      {/* Actions Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-        <div className="flex flex-1 gap-3 items-center w-full sm:w-auto">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Buscar por nome, email ou CPF..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="ativo">Ativos</SelectItem>
-              <SelectItem value="pendente_regularizacao">Pendentes</SelectItem>
-              <SelectItem value="inativo">Inativos</SelectItem>
-              <SelectItem value="bloqueado">Bloqueados</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+        <div className="relative flex-1 sm:max-w-xs">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Buscar por nome, email ou CPF..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-10" />
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button><UserPlus className="h-4 w-4 mr-2" />Novo Usuário</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Cadastrar Novo Usuário (RH)</DialogTitle>
-              <DialogDescription>Apenas o RH pode criar novos usuários no sistema.</DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div className="space-y-2">
-                <Label>Nome Completo *</Label>
-                <Input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} />
-              </div>
-              <div className="space-y-2">
-                <Label>Email *</Label>
-                <Input type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} />
-              </div>
-              <div className="space-y-2">
-                <Label>Senha Temporária *</Label>
-                <Input type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} placeholder="Mínimo 6 caracteres" />
-              </div>
-              <div className="space-y-2">
-                <Label>CPF</Label>
-                <Input value={form.cpf} onChange={(e) => setForm({...form, cpf: e.target.value})} placeholder="000.000.000-00" />
-              </div>
-              <div className="space-y-2">
-                <Label>Tipo de Usuário *</Label>
-                <Select value={form.tipo_usuario} onValueChange={(v: any) => setForm({...form, tipo_usuario: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="funcionario">Funcionário</SelectItem>
-                    <SelectItem value="secretario">Secretário</SelectItem>
-                    <SelectItem value="auditor">Auditor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Secretaria {form.tipo_usuario === 'secretario' ? '*' : ''}</Label>
-                <Select value={form.secretaria_id} onValueChange={(v) => setForm({...form, secretaria_id: v})}>
-                  <SelectTrigger><SelectValue placeholder="Selecionar secretaria" /></SelectTrigger>
-                  <SelectContent>
-                    {secretarias.filter(s => (s as any).ativo !== false).map(s => (
-                      <SelectItem key={s.id} value={s.id}>{s.sigla} - {s.nome}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Regime</Label>
-                <Select value={form.regime} onValueChange={(v) => setForm({...form, regime: v})}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="estatutario">Estatutário</SelectItem>
-                    <SelectItem value="celetista">Celetista</SelectItem>
-                    <SelectItem value="temporario">Temporário</SelectItem>
-                    <SelectItem value="comissionado">Comissionado</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Data de Admissão</Label>
-                <Input type="date" value={form.data_admissao} onChange={(e) => setForm({...form, data_admissao: e.target.value})} />
-              </div>
-              <div className="space-y-2">
-                <Label>Matrícula</Label>
-                <Input value={form.matricula} onChange={(e) => setForm({...form, matricula: e.target.value})} />
-              </div>
-              <div className="space-y-2">
-                <Label>Jornada Semanal (horas)</Label>
-                <Input type="number" value={form.jornada_semanal} onChange={(e) => setForm({...form, jornada_semanal: Number(e.target.value)})} />
-              </div>
-            </div>
-            <div className="flex justify-end gap-2 mt-6">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancelar</Button>
-              <Button onClick={handleCreateUser} disabled={criarUsuario.isPending}>
-                {criarUsuario.isPending ? "Criando..." : "Criar Usuário"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="ativo">Ativos</SelectItem>
+            <SelectItem value="pendente_regularizacao">Pendentes</SelectItem>
+            <SelectItem value="inativo">Inativos</SelectItem>
+            <SelectItem value="bloqueado">Bloqueados</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Users Table */}
@@ -238,6 +115,9 @@ export function RHDashboard() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <Button size="sm" variant="ghost" onClick={() => setViewServidor(user)} title="Visualizar">
+                          <Eye className="h-4 w-4" />
+                        </Button>
                         {user.status_cadastral === 'pendente_regularizacao' && (
                           <Button size="sm" variant="outline" onClick={() => regularizarUsuario.mutate(user.user_id)}>
                             <UserCheck className="h-3 w-3 mr-1" />Regularizar
@@ -270,6 +150,12 @@ export function RHDashboard() {
           </ScrollArea>
         </CardContent>
       </Card>
+
+      <ViewServidorDialog
+        open={!!viewServidor}
+        onOpenChange={(open) => !open && setViewServidor(null)}
+        servidor={viewServidor}
+      />
     </div>
   );
 }
