@@ -20,7 +20,11 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2 } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { EstoqueFarmaceutico } from "@/components/saude/EstoqueFarmaceutico";
 import { VacinacaoModule } from "@/components/saude/VacinacaoModule";
 import { EncaminhamentosSaude } from "@/components/saude/EncaminhamentosSaude";
@@ -44,7 +48,9 @@ export default function GestaoSaudePublica() {
     unidade_id: "",
   });
 
-  const { profissionais, isLoading, createProfissional, updateProfissional } = useProfissionaisSaude();
+  const { profissionais, isLoading, createProfissional, updateProfissional, deactivateProfissional } = useProfissionaisSaude();
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [profToDeactivate, setProfToDeactivate] = useState<{ id: string; nome: string } | null>(null);
 
   const { data: unidades = [] } = useQuery({
     queryKey: ["unidades_saude_list"],
@@ -233,9 +239,23 @@ export default function GestaoSaudePublica() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Button variant="ghost" size="icon" onClick={() => handleEdit(prof)}>
-                              <Edit className="h-4 w-4" />
-                            </Button>
+                            <div className="flex gap-1">
+                              <Button variant="ghost" size="icon" onClick={() => handleEdit(prof)}>
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              {prof.status === "ativo" && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setProfToDeactivate({ id: prof.id, nome: prof.profile_nome });
+                                    setDeactivateDialogOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -437,6 +457,33 @@ export default function GestaoSaudePublica() {
             </form>
           </DialogContent>
         </Dialog>
+
+        <AlertDialog open={deactivateDialogOpen} onOpenChange={setDeactivateDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Inativar Profissional</AlertDialogTitle>
+              <AlertDialogDescription>
+                Tem certeza que deseja inativar o profissional <strong>{profToDeactivate?.nome}</strong>? 
+                O vínculo será desativado mas os dados serão preservados. Isso não afeta o cadastro do servidor no RH.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (profToDeactivate) {
+                    deactivateProfissional.mutate(profToDeactivate.id);
+                    setDeactivateDialogOpen(false);
+                    setProfToDeactivate(null);
+                  }
+                }}
+                disabled={deactivateProfissional.isPending}
+              >
+                {deactivateProfissional.isPending ? "Inativando..." : "Inativar"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );

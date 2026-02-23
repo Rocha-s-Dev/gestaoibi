@@ -106,10 +106,29 @@ export function useProfissionaisSaude(unidadeId?: string) {
     },
   });
 
+  const deactivateProfissional = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("profissionais_saude")
+        .update({ status: "inativo" } as any)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
+      toast.success("Profissional inativado com sucesso!");
+    },
+    onError: (error) => {
+      console.error("Erro ao inativar profissional:", error);
+      toast.error("Erro ao inativar profissional");
+    },
+  });
+
   return {
     profissionais,
     isLoading,
     createProfissional,
     updateProfissional,
+    deactivateProfissional,
   };
 }
