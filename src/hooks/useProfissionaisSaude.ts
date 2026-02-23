@@ -108,6 +108,13 @@ export function useProfissionaisSaude(unidadeId?: string) {
 
   const deleteProfissional = useMutation({
     mutationFn: async (id: string) => {
+      // Remove referência como responsável de unidades antes de deletar
+      const { error: updateError } = await supabase
+        .from("unidades_saude")
+        .update({ responsavel_id: null })
+        .eq("responsavel_id", id);
+      if (updateError) throw updateError;
+
       const { error } = await supabase
         .from("profissionais_saude")
         .delete()
