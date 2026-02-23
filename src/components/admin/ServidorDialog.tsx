@@ -290,6 +290,12 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
       return;
     }
 
+    // REGRA: Gestor RH sem secretaria = PROIBIDO (precisa estar vinculado)
+    if (formData.tipo_usuario === "gestor_rh" && !formData.secretaria_id) {
+      toast.error("Gestor de RH deve ter uma secretaria vinculada.");
+      return;
+    }
+
     if (!validatePasswords()) return;
 
     setLoading(true);
@@ -635,13 +641,16 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                       <SelectContent>
                         <SelectItem value="funcionario">Funcionário</SelectItem>
                         <SelectItem value="secretario">Secretário</SelectItem>
-                        <SelectItem value="administrador">Administrador</SelectItem>
+                        <SelectItem value="gestor_rh">Gestor de RH</SelectItem>
+                        <SelectItem value="prefeito">Prefeito</SelectItem>
                         <SelectItem value="auditor">Auditor</SelectItem>
+                        <SelectItem value="juridico">Jurídico</SelectItem>
+                        <SelectItem value="administrador">Administrador</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {formData.tipo_usuario === "secretario" && (
+                  {(formData.tipo_usuario === "secretario" || formData.tipo_usuario === "gestor_rh") && (
                     <div className="space-y-2">
                       <Label htmlFor="secretaria_id">Secretaria * (obrigatória)</Label>
                       <Select value={formData.secretaria_id} onValueChange={(v) => setFormData({ ...formData, secretaria_id: v })}>
@@ -653,7 +662,9 @@ export function ServidorDialog({ open, onOpenChange, servidor }: ServidorDialogP
                         </SelectContent>
                       </Select>
                       {!formData.secretaria_id && (
-                        <p className="text-xs text-destructive">Secretário sem secretaria é PROIBIDO.</p>
+                        <p className="text-xs text-destructive">
+                          {formData.tipo_usuario === "secretario" ? "Secretário" : "Gestor de RH"} sem secretaria é PROIBIDO.
+                        </p>
                       )}
                     </div>
                   )}

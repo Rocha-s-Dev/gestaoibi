@@ -167,8 +167,8 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
       return <AccessDeniedScreen reason="inactive" />;
     }
 
-    // Admin always has access
-    if (userProfile.tipo_usuario === 'administrador') {
+    // Admin and Prefeito always have access
+    if (userProfile.tipo_usuario === 'administrador' || userProfile.tipo_usuario === 'prefeito') {
       return <>{children}</>;
     }
 

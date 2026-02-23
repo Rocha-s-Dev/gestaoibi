@@ -34,9 +34,12 @@ interface Profile {
 
 const tipoLabels: Record<string, { label: string; color: string }> = {
   administrador: { label: "Administrador", color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200" },
+  prefeito: { label: "Prefeito", color: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200" },
   secretario: { label: "Secretário", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
+  gestor_rh: { label: "Gestor de RH", color: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200" },
   funcionario: { label: "Funcionário", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
   auditor: { label: "Auditor", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
+  juridico: { label: "Jurídico", color: "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200" },
 };
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -63,6 +66,7 @@ export function ServidoresManagement() {
       const { data, error } = await supabase
         .from("profiles")
         .select("id, user_id, name, email, cpf, telefone_celular, status_cadastral, tipo_usuario, created_at, updated_at")
+        .neq("tipo_usuario", "administrador")
         .order("name");
 
       if (error) throw error;

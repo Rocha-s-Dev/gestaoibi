@@ -72,6 +72,16 @@ serve(async (req) => {
       });
     }
 
+    // Only admin can create prefeito
+    if (tipo_usuario === 'prefeito') {
+      const { data: isCallerAdmin } = await supabaseAdmin.rpc('is_admin_municipal', { _user_id: caller.id });
+      if (!isCallerAdmin) {
+        return new Response(JSON.stringify({ error: "Apenas administradores podem criar usuários do tipo Prefeito." }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403
+        });
+      }
+    }
+
     // 1. Create auth user
     const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
@@ -118,7 +128,10 @@ serve(async (req) => {
     // 3. Assign role
     const papel = tipo_usuario === 'secretario' ? 'secretario' 
       : tipo_usuario === 'administrador' ? 'admin_municipal'
+      : tipo_usuario === 'prefeito' ? 'prefeito'
       : tipo_usuario === 'auditor' ? 'auditor'
+      : tipo_usuario === 'gestor_rh' ? 'gestor_rh'
+      : tipo_usuario === 'juridico' ? 'servidor'
       : 'operador';
 
     await supabaseAdmin.from('papeis_usuario').insert({

@@ -38,7 +38,7 @@ export interface NovoUsuarioRH {
   password: string;
   name: string;
   cpf?: string;
-  tipo_usuario: 'administrador' | 'secretario' | 'funcionario' | 'auditor';
+  tipo_usuario: 'administrador' | 'prefeito' | 'secretario' | 'gestor_rh' | 'funcionario' | 'auditor' | 'juridico';
   secretaria_id?: string;
   cargo_id?: string;
   funcao_id?: string;
@@ -60,6 +60,7 @@ export function useRHCentral() {
       const { data, error } = await supabase
         .from("view_usuarios_rh" as any)
         .select("*")
+        .neq("tipo_usuario", "administrador")
         .order("name");
       if (error) throw error;
       return (data || []) as unknown as UsuarioRH[];
