@@ -49,7 +49,7 @@ export default function GestaoSaudePublica() {
   const { data: unidades = [] } = useQuery({
     queryKey: ["unidades_saude_list"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("unidades_saude").select("id, nome, tipo").order("nome");
+      const { data, error } = await supabase.from("unidades_saude").select("id, nome, tipo").neq("status", "inativo").order("nome");
       if (error) throw error;
       return data || [];
     },
