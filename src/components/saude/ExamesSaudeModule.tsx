@@ -44,7 +44,7 @@ export function ExamesSaudeModule() {
   });
   const { data: unidades = [] } = useQuery({
     queryKey: ["unidades_saude_list"],
-    queryFn: async () => { const { data } = await supabase.from("unidades_saude").select("id, nome").order("nome"); return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("unidades_saude").select("id, nome").neq("status", "inativo").order("nome"); return data || []; },
   });
 
   const filtered = exames.filter((e: any) =>
