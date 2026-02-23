@@ -76,11 +76,24 @@ function mapToDb(data: CreateInput, profissionalId: string | null) {
 async function resolveResponsavelId(userIdFromRH: string | undefined): Promise<string | null> {
   if (!userIdFromRH) return null;
 
-  // Verificar se já existe profissional ativo para esse user_id
+  // userIdFromRH é profiles.user_id (auth.users.id), mas a FK profissionais_saude.user_id
+  // referencia profiles.id (PK). Precisamos buscar o profiles.id correspondente.
+  const { data: profile, error: profileErr } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("user_id", userIdFromRH)
+    .maybeSingle();
+
+  if (profileErr) throw new Error("Erro ao buscar perfil: " + profileErr.message);
+  if (!profile) throw new Error("Perfil não encontrado para o usuário selecionado.");
+
+  const profileId = profile.id;
+
+  // Verificar se já existe profissional ativo para esse profile id
   const { data: existing, error: fetchErr } = await supabase
     .from("profissionais_saude")
     .select("id")
-    .eq("user_id", userIdFromRH)
+    .eq("user_id", profileId)
     .eq("status", "ativo")
     .limit(1)
     .maybeSingle();
@@ -93,7 +106,7 @@ async function resolveResponsavelId(userIdFromRH: string | undefined): Promise<s
   const { data: created, error: createErr } = await supabase
     .from("profissionais_saude")
     .insert({
-      user_id: userIdFromRH,
+      user_id: profileId,
       cargo: "diretor_unidade" as any,
       status: "ativo",
     })
