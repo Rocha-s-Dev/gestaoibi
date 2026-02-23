@@ -155,6 +155,7 @@ export function useUnidadesSaude() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: ["unidades_saude_list"] });
       queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
       toast.success("Unidade criada com sucesso!");
     },
@@ -184,6 +185,7 @@ export function useUnidadesSaude() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ queryKey: ["unidades_saude_list"] });
       queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
       toast.success("Unidade atualizada com sucesso!");
     },
