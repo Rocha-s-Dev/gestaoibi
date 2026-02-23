@@ -106,21 +106,21 @@ export function useProfissionaisSaude(unidadeId?: string) {
     },
   });
 
-  const deactivateProfissional = useMutation({
+  const deleteProfissional = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from("profissionais_saude")
-        .update({ status: "inativo" } as any)
+        .delete()
         .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profissionais_saude"] });
-      toast.success("Profissional inativado com sucesso!");
+      toast.success("Profissional removido com sucesso!");
     },
     onError: (error) => {
-      console.error("Erro ao inativar profissional:", error);
-      toast.error("Erro ao inativar profissional");
+      console.error("Erro ao remover profissional:", error);
+      toast.error("Erro ao remover profissional");
     },
   });
 
@@ -129,6 +129,6 @@ export function useProfissionaisSaude(unidadeId?: string) {
     isLoading,
     createProfissional,
     updateProfissional,
-    deactivateProfissional,
+    deleteProfissional,
   };
 }
