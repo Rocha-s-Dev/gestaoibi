@@ -189,12 +189,15 @@ export const Sidebar = () => {
   const { signOut } = useAuth();
   const { secretariasDisponiveis, isAdmin, isPrefeito, isGestorRH, loading } = useSecretariaContext();
 
-  // Filtrar as secretarias do menu com base nas que o usuário tem acesso
-  const visibleSecretariaMenus = isAdmin
-    ? secretariaMenuConfigs // Admin vê tudo
-    : secretariaMenuConfigs.filter((config) =>
-        secretariasDisponiveis.some((s) => s.sigla === config.sigla)
-      );
+  // Admin e Prefeito veem tudo; gestor_rh não vê secretarias
+  const hasFullAccess = isAdmin || isPrefeito;
+  const visibleSecretariaMenus = hasFullAccess
+    ? secretariaMenuConfigs
+    : isGestorRH
+      ? [] // gestor_rh não tem acesso a secretarias
+      : secretariaMenuConfigs.filter((config) =>
+          secretariasDisponiveis.some((s) => s.sigla === config.sigla)
+        );
 
   // Verificar se alguma rota das secretarias está ativa
   const isSecretariaRouteActive = visibleSecretariaMenus.some(
