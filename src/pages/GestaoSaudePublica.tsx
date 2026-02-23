@@ -48,9 +48,9 @@ export default function GestaoSaudePublica() {
     unidade_id: "",
   });
 
-  const { profissionais, isLoading, createProfissional, updateProfissional, deactivateProfissional } = useProfissionaisSaude();
-  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
-  const [profToDeactivate, setProfToDeactivate] = useState<{ id: string; nome: string } | null>(null);
+  const { profissionais, isLoading, createProfissional, updateProfissional, deleteProfissional } = useProfissionaisSaude();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [profToDelete, setProfToDelete] = useState<{ id: string; nome: string } | null>(null);
 
   const { data: unidades = [] } = useQuery({
     queryKey: ["unidades_saude_list"],
@@ -243,18 +243,16 @@ export default function GestaoSaudePublica() {
                               <Button variant="ghost" size="icon" onClick={() => handleEdit(prof)}>
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              {prof.status === "ativo" && (
-                                <Button
+                              <Button
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => {
-                                    setProfToDeactivate({ id: prof.id, nome: prof.profile_nome });
-                                    setDeactivateDialogOpen(true);
+                                    setProfToDelete({ id: prof.id, nome: prof.profile_nome });
+                                    setDeleteDialogOpen(true);
                                   }}
                                 >
                                   <Trash2 className="h-4 w-4 text-destructive" />
                                 </Button>
-                              )}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -458,28 +456,28 @@ export default function GestaoSaudePublica() {
           </DialogContent>
         </Dialog>
 
-        <AlertDialog open={deactivateDialogOpen} onOpenChange={setDeactivateDialogOpen}>
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Inativar Profissional</AlertDialogTitle>
+              <AlertDialogTitle>Remover Profissional</AlertDialogTitle>
               <AlertDialogDescription>
-                Tem certeza que deseja inativar o profissional <strong>{profToDeactivate?.nome}</strong>? 
-                O vínculo será desativado mas os dados serão preservados. Isso não afeta o cadastro do servidor no RH.
+                Tem certeza que deseja remover o profissional <strong>{profToDelete?.nome}</strong>? 
+                O registro será removido da equipe de saúde. Isso não afeta o cadastro do servidor no RH.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
-                  if (profToDeactivate) {
-                    deactivateProfissional.mutate(profToDeactivate.id);
-                    setDeactivateDialogOpen(false);
-                    setProfToDeactivate(null);
+                  if (profToDelete) {
+                    deleteProfissional.mutate(profToDelete.id);
+                    setDeleteDialogOpen(false);
+                    setProfToDelete(null);
                   }
                 }}
-                disabled={deactivateProfissional.isPending}
+                disabled={deleteProfissional.isPending}
               >
-                {deactivateProfissional.isPending ? "Inativando..." : "Inativar"}
+                {deleteProfissional.isPending ? "Removendo..." : "Remover"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
