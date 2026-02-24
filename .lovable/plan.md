@@ -1,38 +1,57 @@
 
 
-## Melhorias na Central RH e Edicao de Tipo de Usuario
+## Dashboard Principal Dinamico
 
-### Problema 1: Tela Central RH com botao duplicado
-A tela "Central RH" tem um botao "Novo Usuario" com formulario completo, sendo que a aba "Servidores" ja oferece essa mesma funcionalidade. Isso causa confusao.
+### Problema Atual
+A pagina `/dashboard` (Dashboard.tsx) exibe dados estaticos e ficticios (12 projetos, 148 funcionarios, etc.) sem conexao com o banco de dados e sem considerar o tipo de usuario logado.
 
-### Problema 2: Nao eh possivel editar o tipo de usuario (ex: secretario -> funcionario)
-No dialog de edicao do servidor (aba Servidores), o campo "Tipo de Usuario" so aparece na criacao (esta dentro de um bloco `{!servidor && (...)}`). Alem disso, o campo `tipo_usuario` nao esta incluido no payload de atualizacao do profile.
+### Abordagem
+Transformar o Dashboard para ser contextual, exibindo informacoes reais do banco de dados e adaptando o conteudo ao perfil do usuario:
 
----
+**1. Prefeito / Admin Municipal** - Visao executiva consolidada:
+- Total de servidores ativos (tabela `profiles`)
+- Total de secretarias ativas (tabela `secretarias`)
+- Metas do plano de governo com progresso (tabela `metas_plano_governo`)
+- Obras prioritarias em andamento (tabela `obras_prioritarias`)
+- Alertas criticos pendentes (tabela `alertas_executivos`)
+- Notificacoes recentes (tabela `notifications`)
+- Mensagens nao lidas (tabelas `conversations`/`messages`)
+- Graficos: metas por status, distribuicao por secretaria
 
-### Alteracoes
+**2. Gestor RH** - Visao de recursos humanos:
+- Total de servidores ativos
+- Servidores pendentes de regularizacao
+- Folhas de pagamento do mes (tabela `folha_pagamento`)
+- Notificacoes recentes
 
-**Arquivo 1: `src/components/rh/RHDashboard.tsx`**
-- Remover o botao "Novo Usuario", o Dialog de criacao, e todo o estado do formulario (`form`, `dialogOpen`, `handleCreateUser`)
-- Manter o dashboard de KPIs e a tabela de usuarios
-- Adicionar botao de visualizacao (icone olho) em cada linha da tabela, que abre o `ViewServidorDialog` para consulta rapida
-- Manter filtros de busca e status
+**3. Servidor / Secretario** - Visao setorial:
+- Dados resumidos da secretaria ativa (usando o `SecretariaContext`)
+- Metas da secretaria
+- Notificacoes e mensagens recentes
 
-**Arquivo 2: `src/components/admin/ServidorDialog.tsx`**
-- Mover a secao "Tipo de Usuario" (select de tipo + select de secretaria) para FORA do bloco `{!servidor && (...)}`, tornando-a visivel tambem no modo edicao
-- Adicionar `tipo_usuario` ao objeto `profileData` na logica de atualizacao (handleSubmit, modo edicao)
-- Quando o tipo for alterado de "secretario" para outro, limpar o `secretaria_id`
+### Detalhes Tecnicos
 
-### Detalhes tecnicos
+**Novo hook `src/hooks/useDashboardData.ts`**:
+- Consulta ao banco condicionada pelo tipo de usuario (via `useSecretariaContext` e `useAuth`)
+- Usa `@tanstack/react-query` para cache e loading states
+- Queries separadas para cada bloco de dados (servidores, metas, alertas, etc.)
 
-No `ServidorDialog.tsx`:
-- A secao de "Tipo de Usuario" (linhas 617-660) sera extraida do bloco condicional `{!servidor}` e colocada como secao independente visivel sempre
-- No `handleSubmit`, modo edicao (linha 302), adicionar `tipo_usuario: formData.tipo_usuario` ao objeto `profileData`
-- O `useEffect` ja carrega o `tipo_usuario` atual do servidor (linha 185), entao o campo ja vira preenchido
+**Reescrita de `src/pages/Dashboard.tsx`**:
+- Importa `useSecretariaContext` para `isAdmin`, `isPrefeito`, `isGestorRH`, `municipio`
+- Importa `useAuth` para `userProfile`
+- Exibe saudacao personalizada com nome do municipio
+- Renderiza cards e graficos diferentes conforme o papel:
+  - `isPrefeito || isAdmin`: painel executivo com KPIs consolidados, alertas criticos, progresso de metas de governo, e atalhos rapidos para modulos
+  - `isGestorRH`: painel focado em RH com servidores, folha de pagamento
+  - Demais: painel da secretaria ativa com resumo setorial
+- Reutiliza o componente `DashboardCard` existente e `DashboardSecretaria` para graficos
+- Secao de "Acoes Rapidas" com links para os modulos mais usados pelo tipo de usuario
+- Secao de atividade recente baseada em `notifications` reais
 
-No `RHDashboard.tsx`:
-- Importar `ViewServidorDialog` e `Eye` de lucide-react
-- Remover imports de `Dialog`, `DialogContent`, `DialogTrigger`, `UserPlus`, `Label`
-- Remover estado `form`, `dialogOpen` e funcao `handleCreateUser`
-- Substituir coluna "Acoes" para incluir apenas botao de visualizacao rapida
-- Manter acoes contextuais (Regularizar, Inativar, Reativar)
+**Sem alteracoes no banco de dados** - todas as tabelas necessarias ja existem.
+
+### Componentes Afetados
+- `src/pages/Dashboard.tsx` - reescrita completa
+- `src/hooks/useDashboardData.ts` - novo arquivo
+- `src/components/dashboard/DashboardCard.tsx` - sem alteracao (reutilizado)
+
