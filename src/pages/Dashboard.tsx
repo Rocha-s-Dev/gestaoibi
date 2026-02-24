@@ -4,6 +4,7 @@ import {
   LayoutDashboard, FileText, Heart, GraduationCap, Truck
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Layout } from "@/components/layout/Layout";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { DashboardSecretaria } from "@/components/shared/DashboardSecretaria";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -42,7 +43,8 @@ const Dashboard = () => {
   const municipioNome = dashboard.municipio?.nome || "Município";
 
   return (
-    <div className="space-y-6">
+    <Layout>
+    <div className="space-y-6 p-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">
@@ -279,6 +281,7 @@ const Dashboard = () => {
         </Card>
       )}
     </div>
+    </Layout>
   );
 };
 
