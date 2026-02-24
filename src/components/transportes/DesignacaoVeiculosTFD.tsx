@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useViagensTFD, useVeiculosTFD, usePacientesTFD, useDestinosTFD } from "@/hooks/useTFD";
 import { useFrotaMunicipal } from "@/hooks/useFrotaMunicipal";
 import { useMotoristas } from "@/hooks/useMotoristas";
-import { Ambulance, Car, Eye, Plus, Trash2, Users, CheckCircle, MapPin } from "lucide-react";
+import { Ambulance, Car, Eye, Plus, Trash2, Users, CheckCircle, MapPin, Printer } from "lucide-react";
+import { gerarPDFControleMarcacao } from "@/lib/tfdPdfGenerator";
 import { format } from "date-fns";
 
 const statusMap: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
@@ -79,6 +80,11 @@ export function DesignacaoVeiculosTFD() {
                         <Button size="sm" variant="outline" onClick={() => { setSelectedViagem(v.id); setDesignarOpen(true); }}>
                           <Car className="h-3 w-3 mr-1" />Designar
                         </Button>
+                        {["veiculos_designados", "em_andamento", "concluida"].includes(v.status) && (
+                          <Button size="sm" variant="outline" onClick={() => gerarPDFControleMarcacao(v.id)}>
+                            <Printer className="h-3 w-3 mr-1" />Imprimir
+                          </Button>
+                        )}
                         {v.status === "veiculos_designados" && (
                           <Button size="sm" onClick={() => handleIniciarViagem(v.id)}>Iniciar</Button>
                         )}
