@@ -289,14 +289,6 @@ export function EquipeSaude() {
     return nivel ? map[nivel] || nivel : "—";
   };
 
-  const cargosByNivel = cargos.reduce((acc, c) => {
-    const n = c.nivel;
-    if (!acc[n]) acc[n] = [];
-    acc[n].push(c);
-    return acc;
-  }, {} as Record<string, CargoSecretaria[]>);
-
-  const nivelOrder = ["estrategico", "gerencial", "operacional", "apoio"];
 
   return (
     <div className="space-y-4">
@@ -447,13 +439,11 @@ export function EquipeSaude() {
               >
                 <SelectTrigger><SelectValue placeholder="Selecione o cargo" /></SelectTrigger>
                 <SelectContent>
-                  {nivelOrder.map((nivel) =>
-                    cargosByNivel[nivel]?.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        [{nivelLabel(nivel)}] {c.nome}
-                      </SelectItem>
-                    ))
-                  )}
+                  {cargos.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.nome}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
