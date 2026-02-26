@@ -7421,6 +7421,13 @@ export type Database = {
             referencedRelation: "vinculos_funcionais"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "folha_servidor_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       fonte_recursos: {
@@ -8030,6 +8037,13 @@ export type Database = {
             columns: ["vinculo_id"]
             isOneToOne: false
             referencedRelation: "vinculos_funcionais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "historico_lotacoes_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais_view"
             referencedColumns: ["id"]
           },
         ]
@@ -11268,6 +11282,13 @@ export type Database = {
             columns: ["vinculo_id"]
             isOneToOne: false
             referencedRelation: "vinculos_funcionais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motoristas_vinculo_id_fkey"
+            columns: ["vinculo_id"]
+            isOneToOne: false
+            referencedRelation: "vinculos_funcionais_view"
             referencedColumns: ["id"]
           },
         ]
@@ -18235,6 +18256,7 @@ export type Database = {
           data_exercicio: string | null
           data_posse: string | null
           data_ultima_progressao: string | null
+          escola_id: string | null
           funcao_id: string | null
           horario_entrada: string | null
           horario_saida: string | null
@@ -18251,6 +18273,7 @@ export type Database = {
           secretaria_id: string | null
           situacao: string | null
           unidade_id: string | null
+          unidade_saude_id: string | null
           updated_at: string
           user_id: string
           vencimento_atual: number | null
@@ -18265,6 +18288,7 @@ export type Database = {
           data_exercicio?: string | null
           data_posse?: string | null
           data_ultima_progressao?: string | null
+          escola_id?: string | null
           funcao_id?: string | null
           horario_entrada?: string | null
           horario_saida?: string | null
@@ -18281,6 +18305,7 @@ export type Database = {
           secretaria_id?: string | null
           situacao?: string | null
           unidade_id?: string | null
+          unidade_saude_id?: string | null
           updated_at?: string
           user_id: string
           vencimento_atual?: number | null
@@ -18295,6 +18320,7 @@ export type Database = {
           data_exercicio?: string | null
           data_posse?: string | null
           data_ultima_progressao?: string | null
+          escola_id?: string | null
           funcao_id?: string | null
           horario_entrada?: string | null
           horario_saida?: string | null
@@ -18311,6 +18337,7 @@ export type Database = {
           secretaria_id?: string | null
           situacao?: string | null
           unidade_id?: string | null
+          unidade_saude_id?: string | null
           updated_at?: string
           user_id?: string
           vencimento_atual?: number | null
@@ -18335,6 +18362,13 @@ export type Database = {
             columns: ["cargo_secretaria_id"]
             isOneToOne: false
             referencedRelation: "cargos_secretaria"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
             referencedColumns: ["id"]
           },
           {
@@ -18378,6 +18412,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["unidade_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_saude_id_fkey"
+            columns: ["unidade_saude_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -18598,6 +18639,131 @@ export type Database = {
           vinculo_id: string | null
         }
         Relationships: []
+      }
+      vinculos_funcionais_view: {
+        Row: {
+          cargo_id: string | null
+          cargo_publico_codigo: string | null
+          cargo_publico_nome: string | null
+          cargo_secretaria_id: string | null
+          cargo_secretaria_nivel: string | null
+          cargo_secretaria_nome: string | null
+          classe_atual: string | null
+          created_at: string | null
+          data_admissao: string | null
+          data_afastamento: string | null
+          data_exercicio: string | null
+          data_posse: string | null
+          data_ultima_progressao: string | null
+          escola_id: string | null
+          escola_nome: string | null
+          funcao_codigo: string | null
+          funcao_id: string | null
+          funcao_nome: string | null
+          horario_entrada: string | null
+          horario_saida: string | null
+          id: string | null
+          is_primary: boolean | null
+          jornada_semanal: number | null
+          matricula: string | null
+          motivo_afastamento: string | null
+          nivel_atual: string | null
+          padrao_atual: string | null
+          previsao_retorno: string | null
+          profile_email: string | null
+          profile_nome: string | null
+          proxima_progressao: string | null
+          regime: Database["public"]["Enums"]["regime_trabalho"] | null
+          secretaria_id: string | null
+          secretaria_nome: string | null
+          situacao: string | null
+          unidade_id: string | null
+          unidade_nome: string | null
+          unidade_saude_id: string | null
+          unidade_saude_nome: string | null
+          updated_at: string | null
+          user_id: string | null
+          vencimento_atual: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vinculos_funcionais_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos_publicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["cargo_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_cargo_secretaria_id_fkey"
+            columns: ["cargo_secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "cargos_secretaria"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "funcoes_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
+            columns: ["funcao_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["funcao_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_administrativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["unidade_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_unidade_saude_id_fkey"
+            columns: ["unidade_saude_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
