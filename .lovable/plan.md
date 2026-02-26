@@ -1,37 +1,57 @@
 
 
-## Correção do Erro de Vínculo Funcional + Seleção de Local (Educação/Saúde)
+## Dashboard Principal Dinamico
 
-### Problema Principal
-A query do hook `useVinculosFuncionais` tenta fazer join `profiles:user_id(...)`, mas a FK de `vinculos_funcionais.user_id` aponta para `auth.users`, não para `profiles`. O PostgREST não consegue resolver esse join, retornando erro 400.
+### Problema Atual
+A pagina `/dashboard` (Dashboard.tsx) exibe dados estaticos e ficticios (12 projetos, 148 funcionarios, etc.) sem conexao com o banco de dados e sem considerar o tipo de usuario logado.
 
-### Problema Secundário
-Educação e Saúde precisam de seleção de local de trabalho (escola ou unidade de saúde) ao vincular funcionário.
+### Abordagem
+Transformar o Dashboard para ser contextual, exibindo informacoes reais do banco de dados e adaptando o conteudo ao perfil do usuario:
 
----
+**1. Prefeito / Admin Municipal** - Visao executiva consolidada:
+- Total de servidores ativos (tabela `profiles`)
+- Total de secretarias ativas (tabela `secretarias`)
+- Metas do plano de governo com progresso (tabela `metas_plano_governo`)
+- Obras prioritarias em andamento (tabela `obras_prioritarias`)
+- Alertas criticos pendentes (tabela `alertas_executivos`)
+- Notificacoes recentes (tabela `notifications`)
+- Mensagens nao lidas (tabelas `conversations`/`messages`)
+- Graficos: metas por status, distribuicao por secretaria
 
-### 1. Migração SQL
-- Adicionar colunas `escola_id` (FK → escolas) e `unidade_saude_id` (FK → unidades_saude) em `vinculos_funcionais`, ambas nullable
-- Criar uma view `vinculos_funcionais_view` que faz o join com profiles internamente (contornando a limitação de FK para auth.users), ou criar uma function RPC que retorna os dados com perfil incluído
+**2. Gestor RH** - Visao de recursos humanos:
+- Total de servidores ativos
+- Servidores pendentes de regularizacao
+- Folhas de pagamento do mes (tabela `folha_pagamento`)
+- Notificacoes recentes
 
-### 2. Corrigir `useVinculosFuncionais.ts`
-- Remover o join `profiles:user_id(...)` da query PostgREST (causa do erro 400)
-- Buscar dados de perfil separadamente usando a tabela `profiles` com os `user_id`s retornados, ou usar um RPC que já faça o join server-side
-- Manter os demais joins (cargos_publicos, funcoes_administrativas, secretarias, unidades_administrativas)
+**3. Servidor / Secretario** - Visao setorial:
+- Dados resumidos da secretaria ativa (usando o `SecretariaContext`)
+- Metas da secretaria
+- Notificacoes e mensagens recentes
 
-### 3. Atualizar `EquipeSecretaria.tsx`
-- No dialog de vinculação, detectar se a secretaria é SME (Educação) ou SMS (Saúde) usando o `secretariaId`
-- Se for SME: exibir select de "Local de Trabalho" com opções: "Secretaria (sede)" + lista de escolas cadastradas
-- Se for SMS: exibir select de "Local de Trabalho" com opções: "Secretaria (sede)" + lista de unidades de saúde cadastradas
-- Salvar o `escola_id` ou `unidade_saude_id` correspondente no vínculo
-- Exibir coluna "Local" na tabela de equipe
+### Detalhes Tecnicos
 
-### 4. Criar hooks auxiliares (se necessário)
-- Reutilizar `useEscolas` existente para listar escolas
-- Reutilizar `useUnidadesSaude` existente para listar unidades de saúde
+**Novo hook `src/hooks/useDashboardData.ts`**:
+- Consulta ao banco condicionada pelo tipo de usuario (via `useSecretariaContext` e `useAuth`)
+- Usa `@tanstack/react-query` para cache e loading states
+- Queries separadas para cada bloco de dados (servidores, metas, alertas, etc.)
 
-### Arquivos afetados
-- Migração SQL (colunas escola_id, unidade_saude_id)
-- `src/hooks/useVinculosFuncionais.ts` (corrigir query)
-- `src/components/shared/EquipeSecretaria.tsx` (seletor de local + coluna local)
+**Reescrita de `src/pages/Dashboard.tsx`**:
+- Importa `useSecretariaContext` para `isAdmin`, `isPrefeito`, `isGestorRH`, `municipio`
+- Importa `useAuth` para `userProfile`
+- Exibe saudacao personalizada com nome do municipio
+- Renderiza cards e graficos diferentes conforme o papel:
+  - `isPrefeito || isAdmin`: painel executivo com KPIs consolidados, alertas criticos, progresso de metas de governo, e atalhos rapidos para modulos
+  - `isGestorRH`: painel focado em RH com servidores, folha de pagamento
+  - Demais: painel da secretaria ativa com resumo setorial
+- Reutiliza o componente `DashboardCard` existente e `DashboardSecretaria` para graficos
+- Secao de "Acoes Rapidas" com links para os modulos mais usados pelo tipo de usuario
+- Secao de atividade recente baseada em `notifications` reais
+
+**Sem alteracoes no banco de dados** - todas as tabelas necessarias ja existem.
+
+### Componentes Afetados
+- `src/pages/Dashboard.tsx` - reescrita completa
+- `src/hooks/useDashboardData.ts` - novo arquivo
+- `src/components/dashboard/DashboardCard.tsx` - sem alteracao (reutilizado)
 

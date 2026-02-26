@@ -20,7 +20,7 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2, Users } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -32,7 +32,6 @@ import { ExamesSaudeModule } from "@/components/saude/ExamesSaudeModule";
 import { InternacoesModule } from "@/components/saude/InternacoesModule";
 import { ProgramasFederaisModule } from "@/components/saude/ProgramasFederaisModule";
 import { LGPDSaudeModule } from "@/components/saude/LGPDSaudeModule";
-import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -157,7 +156,6 @@ export default function GestaoSaudePublica() {
             <TabsTrigger value="indicadores" className="text-sm p-3">Indicadores</TabsTrigger>
             <TabsTrigger value="metas" className="text-sm p-3">Metas</TabsTrigger>
             <TabsTrigger value="lgpd" className="text-sm p-3 flex items-center gap-1"><Shield className="h-3 w-3" />LGPD</TabsTrigger>
-            <TabsTrigger value="equipe" className="text-sm p-3 flex items-center gap-1"><Users className="h-3 w-3" />Equipe</TabsTrigger>
           </TabsList>
 
           <TabsContent value="pacientes" className="mt-6">
@@ -340,10 +338,6 @@ export default function GestaoSaudePublica() {
               <CardHeader><CardTitle className="flex items-center gap-2"><Shield className="h-5 w-5" />Segurança e LGPD</CardTitle></CardHeader>
               <CardContent><LGPDSaudeModule /></CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="equipe" className="mt-6">
-            <EquipeSecretaria titulo="Equipe de Apoio da Saúde" descricao="Funcionários de apoio (limpeza, recepção, administrativo). Profissionais técnicos são cadastrados na aba Profissionais." />
           </TabsContent>
         </Tabs>
 

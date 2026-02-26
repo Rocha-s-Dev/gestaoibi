@@ -1,37 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { Database } from "@/integrations/supabase/types";
 
-export interface VinculoFuncionalView {
-  id: string;
-  user_id: string;
-  secretaria_id: string | null;
-  cargo_id: string | null;
-  funcao_id: string | null;
-  unidade_id: string | null;
-  cargo_secretaria_id: string | null;
-  escola_id: string | null;
-  unidade_saude_id: string | null;
-  matricula: string | null;
-  situacao: string | null;
-  is_primary: boolean | null;
-  data_admissao: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-  // Joined fields from the view
-  profile_nome: string | null;
-  profile_email: string | null;
-  cargo_publico_nome: string | null;
-  cargo_publico_codigo: string | null;
-  funcao_nome: string | null;
-  funcao_codigo: string | null;
-  secretaria_nome: string | null;
-  unidade_nome: string | null;
-  cargo_secretaria_nome: string | null;
-  cargo_secretaria_nivel: string | null;
-  escola_nome: string | null;
-  unidade_saude_nome: string | null;
-}
+type VinculoFuncional = Database["public"]["Tables"]["vinculos_funcionais"]["Row"];
+type VinculoFuncionalInsert = Database["public"]["Tables"]["vinculos_funcionais"]["Insert"];
+type VinculoFuncionalUpdate = Database["public"]["Tables"]["vinculos_funcionais"]["Update"];
 
 export function useVinculosFuncionais(secretariaId?: string) {
   const queryClient = useQueryClient();
@@ -40,8 +14,15 @@ export function useVinculosFuncionais(secretariaId?: string) {
     queryKey: ["vinculos_funcionais", secretariaId],
     queryFn: async () => {
       let query = supabase
-        .from("vinculos_funcionais_view" as any)
-        .select("*")
+        .from("vinculos_funcionais")
+        .select(`
+          *,
+          profiles:user_id(id, first_name, last_name, email),
+          cargos_publicos:cargo_id(id, nome, codigo),
+          funcoes_administrativas:funcao_id(id, nome, codigo),
+          secretarias:secretaria_id(id, nome),
+          unidades_administrativas:unidade_id(id, nome)
+        `)
         .order("created_at", { ascending: false });
 
       if (secretariaId) {
@@ -50,15 +31,15 @@ export function useVinculosFuncionais(secretariaId?: string) {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as unknown as VinculoFuncionalView[];
+      return data;
     },
   });
 
   const createVinculo = useMutation({
-    mutationFn: async (vinculo: Record<string, any>) => {
+    mutationFn: async (vinculo: VinculoFuncionalInsert) => {
       const { data, error } = await supabase
         .from("vinculos_funcionais")
-        .insert(vinculo as any)
+        .insert(vinculo)
         .select()
         .single();
       if (error) throw error;
@@ -75,10 +56,10 @@ export function useVinculosFuncionais(secretariaId?: string) {
   });
 
   const updateVinculo = useMutation({
-    mutationFn: async ({ id, ...vinculo }: Record<string, any> & { id: string }) => {
+    mutationFn: async ({ id, ...vinculo }: VinculoFuncionalUpdate & { id: string }) => {
       const { data, error } = await supabase
         .from("vinculos_funcionais")
-        .update(vinculo as any)
+        .update(vinculo)
         .eq("id", id)
         .select()
         .single();
