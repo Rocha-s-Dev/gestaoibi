@@ -20,7 +20,7 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2 } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2, Users } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -32,6 +32,7 @@ import { ExamesSaudeModule } from "@/components/saude/ExamesSaudeModule";
 import { InternacoesModule } from "@/components/saude/InternacoesModule";
 import { ProgramasFederaisModule } from "@/components/saude/ProgramasFederaisModule";
 import { LGPDSaudeModule } from "@/components/saude/LGPDSaudeModule";
+import { EquipeSaude } from "@/components/saude/EquipeSaude";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -145,6 +146,7 @@ export default function GestaoSaudePublica() {
           <TabsList className="flex flex-wrap w-full h-auto gap-1">
             <TabsTrigger value="pacientes" className="text-sm p-3">Pacientes</TabsTrigger>
             <TabsTrigger value="unidades" className="text-sm p-3">Unidades de Saúde</TabsTrigger>
+            <TabsTrigger value="equipe" className="text-sm p-3 flex items-center gap-1"><Users className="h-3 w-3" />Equipe</TabsTrigger>
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
             <TabsTrigger value="estoque" className="text-sm p-3 flex items-center gap-1"><Pill className="h-3 w-3" />Estoque</TabsTrigger>
             <TabsTrigger value="vacinacao" className="text-sm p-3 flex items-center gap-1"><Syringe className="h-3 w-3" />Vacinação</TabsTrigger>
@@ -169,6 +171,18 @@ export default function GestaoSaudePublica() {
             <Card>
               <CardHeader><CardTitle>Registro de Unidades e Serviços de Saúde</CardTitle></CardHeader>
               <CardContent><CadastroUnidadesSaude /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="equipe" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Equipe da Secretaria de Saúde
+                </CardTitle>
+              </CardHeader>
+              <CardContent><EquipeSaude /></CardContent>
             </Card>
           </TabsContent>
 
