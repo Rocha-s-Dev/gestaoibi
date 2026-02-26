@@ -70,16 +70,16 @@ export function EquipeSaude() {
   const podeGerenciar = isAdmin || isPrefeito;
   const somenteVisualiza = isGestorRH && !isAdmin && !isPrefeito;
 
-  // Fetch cargos da SMS
+  // Fetch cargos de APOIO da SMS (técnicos ficam na aba Profissionais)
   const { data: cargos = [] } = useQuery({
-    queryKey: ["cargos_secretaria_sms"],
+    queryKey: ["cargos_secretaria_sms_apoio"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cargos_secretaria")
         .select("id, nome, nivel, ativo")
         .eq("secretaria_id", SMS_ID)
         .eq("ativo", true)
-        .order("nivel")
+        .eq("nivel", "apoio")
         .order("nome");
       if (error) throw error;
       return data as CargoSecretaria[];
