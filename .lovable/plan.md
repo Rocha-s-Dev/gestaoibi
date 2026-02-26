@@ -1,57 +1,57 @@
 
 
-## Dashboard Principal Dinamico
+## Cargos por Secretaria e Padronizacao da Equipe
 
-### Problema Atual
-A pagina `/dashboard` (Dashboard.tsx) exibe dados estaticos e ficticios (12 projetos, 148 funcionarios, etc.) sem conexao com o banco de dados e sem considerar o tipo de usuario logado.
+### Resumo
+Criar tabela `cargos_secretaria` com cargos descritivos por secretaria (nao sao roles), seed com todos os cargos listados, atualizar o componente `EquipeSecretaria` para permitir selecao de cargo ao vincular, e adicionar aba Equipe nas secretarias que ainda nao tem (Transportes, Saude, Educacao).
 
-### Abordagem
-Transformar o Dashboard para ser contextual, exibindo informacoes reais do banco de dados e adaptando o conteudo ao perfil do usuario:
+### 1. Migracao SQL
 
-**1. Prefeito / Admin Municipal** - Visao executiva consolidada:
-- Total de servidores ativos (tabela `profiles`)
-- Total de secretarias ativas (tabela `secretarias`)
-- Metas do plano de governo com progresso (tabela `metas_plano_governo`)
-- Obras prioritarias em andamento (tabela `obras_prioritarias`)
-- Alertas criticos pendentes (tabela `alertas_executivos`)
-- Notificacoes recentes (tabela `notifications`)
-- Mensagens nao lidas (tabelas `conversations`/`messages`)
-- Graficos: metas por status, distribuicao por secretaria
+**Tabela `cargos_secretaria`:**
+- `id` uuid PK
+- `nome` text NOT NULL
+- `secretaria_id` uuid FK -> secretarias NOT NULL
+- `nivel` text (estrategico, gerencial, operacional, apoio)
+- `ativo` boolean default true
+- `created_at` timestamp
+- UNIQUE(nome, secretaria_id)
+- RLS: authenticated pode SELECT; admin/secretario pode INSERT/UPDATE/DELETE
 
-**2. Gestor RH** - Visao de recursos humanos:
-- Total de servidores ativos
-- Servidores pendentes de regularizacao
-- Folhas de pagamento do mes (tabela `folha_pagamento`)
-- Notificacoes recentes
+**Seed com INSERT:** ~130 registros cobrindo:
+- 12 cargos de apoio padrao em TODAS as 10 secretarias (120 registros)
+- Cargos especificos por secretaria conforme listado pelo usuario
+- Saude: apenas cargos de apoio (tecnicos ja existem em `profissionais_saude`)
 
-**3. Servidor / Secretario** - Visao setorial:
-- Dados resumidos da secretaria ativa (usando o `SecretariaContext`)
-- Metas da secretaria
-- Notificacoes e mensagens recentes
+**Adicionar coluna `cargo_secretaria_id` em `vinculos_funcionais`:**
+- FK para `cargos_secretaria(id)`, nullable
+- Permite vincular um cargo descritivo ao vinculo funcional
 
-### Detalhes Tecnicos
+### 2. Hook `useCargosSecretaria`
+- Query cargos filtrados por `secretaria_id` e `ativo = true`
+- Ordenado por nivel e nome
 
-**Novo hook `src/hooks/useDashboardData.ts`**:
-- Consulta ao banco condicionada pelo tipo de usuario (via `useSecretariaContext` e `useAuth`)
-- Usa `@tanstack/react-query` para cache e loading states
-- Queries separadas para cada bloco de dados (servidores, metas, alertas, etc.)
+### 3. Atualizar `EquipeSecretaria`
+- Ao vincular funcionario, apos selecionar usuario do RH, exibir dialog intermediario para escolher cargo da lista `cargos_secretaria` filtrada pela secretaria
+- Salvar `cargo_secretaria_id` no `vinculos_funcionais`
+- Exibir nome do cargo na coluna "Cargo" da tabela (em vez do `cargos_publicos`)
 
-**Reescrita de `src/pages/Dashboard.tsx`**:
-- Importa `useSecretariaContext` para `isAdmin`, `isPrefeito`, `isGestorRH`, `municipio`
-- Importa `useAuth` para `userProfile`
-- Exibe saudacao personalizada com nome do municipio
-- Renderiza cards e graficos diferentes conforme o papel:
-  - `isPrefeito || isAdmin`: painel executivo com KPIs consolidados, alertas criticos, progresso de metas de governo, e atalhos rapidos para modulos
-  - `isGestorRH`: painel focado em RH com servidores, folha de pagamento
-  - Demais: painel da secretaria ativa com resumo setorial
-- Reutiliza o componente `DashboardCard` existente e `DashboardSecretaria` para graficos
-- Secao de "Acoes Rapidas" com links para os modulos mais usados pelo tipo de usuario
-- Secao de atividade recente baseada em `notifications` reais
+### 4. Adicionar aba Equipe nas paginas faltantes
 
-**Sem alteracoes no banco de dados** - todas as tabelas necessarias ja existem.
+**GestaoTransportes.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>`
+**GestaoSaudePublica.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>` (separado dos Profissionais tecnicos)
+**GestaoEducacao.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>` (separado do cadastro de Professores)
 
-### Componentes Afetados
-- `src/pages/Dashboard.tsx` - reescrita completa
-- `src/hooks/useDashboardData.ts` - novo arquivo
-- `src/components/dashboard/DashboardCard.tsx` - sem alteracao (reutilizado)
+### Arquivos afetados
+- Migracao SQL (tabela + seed + coluna)
+- `src/hooks/useCargosSecretaria.ts` (novo)
+- `src/components/shared/EquipeSecretaria.tsx` (atualizar com selecao de cargo)
+- `src/pages/GestaoTransportes.tsx` (adicionar aba Equipe)
+- `src/pages/GestaoSaudePublica.tsx` (adicionar aba Equipe)
+- `src/pages/GestaoEducacao.tsx` (adicionar aba Equipe)
+
+### Regras mantidas
+- Roles NAO sao alteradas
+- Cargos sao apenas descritivos (organizacao, relatorios, organograma)
+- Permissoes continuam baseadas exclusivamente nas roles existentes
+- Fluxo: RH cria usuario -> Secretario vincula na aba Equipe -> Escolhe cargo da lista
 
