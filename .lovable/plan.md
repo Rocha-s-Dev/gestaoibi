@@ -1,57 +1,37 @@
 
 
-## Cargos por Secretaria e Padronizacao da Equipe
+## Correção do Erro de Vínculo Funcional + Seleção de Local (Educação/Saúde)
 
-### Resumo
-Criar tabela `cargos_secretaria` com cargos descritivos por secretaria (nao sao roles), seed com todos os cargos listados, atualizar o componente `EquipeSecretaria` para permitir selecao de cargo ao vincular, e adicionar aba Equipe nas secretarias que ainda nao tem (Transportes, Saude, Educacao).
+### Problema Principal
+A query do hook `useVinculosFuncionais` tenta fazer join `profiles:user_id(...)`, mas a FK de `vinculos_funcionais.user_id` aponta para `auth.users`, não para `profiles`. O PostgREST não consegue resolver esse join, retornando erro 400.
 
-### 1. Migracao SQL
+### Problema Secundário
+Educação e Saúde precisam de seleção de local de trabalho (escola ou unidade de saúde) ao vincular funcionário.
 
-**Tabela `cargos_secretaria`:**
-- `id` uuid PK
-- `nome` text NOT NULL
-- `secretaria_id` uuid FK -> secretarias NOT NULL
-- `nivel` text (estrategico, gerencial, operacional, apoio)
-- `ativo` boolean default true
-- `created_at` timestamp
-- UNIQUE(nome, secretaria_id)
-- RLS: authenticated pode SELECT; admin/secretario pode INSERT/UPDATE/DELETE
+---
 
-**Seed com INSERT:** ~130 registros cobrindo:
-- 12 cargos de apoio padrao em TODAS as 10 secretarias (120 registros)
-- Cargos especificos por secretaria conforme listado pelo usuario
-- Saude: apenas cargos de apoio (tecnicos ja existem em `profissionais_saude`)
+### 1. Migração SQL
+- Adicionar colunas `escola_id` (FK → escolas) e `unidade_saude_id` (FK → unidades_saude) em `vinculos_funcionais`, ambas nullable
+- Criar uma view `vinculos_funcionais_view` que faz o join com profiles internamente (contornando a limitação de FK para auth.users), ou criar uma function RPC que retorna os dados com perfil incluído
 
-**Adicionar coluna `cargo_secretaria_id` em `vinculos_funcionais`:**
-- FK para `cargos_secretaria(id)`, nullable
-- Permite vincular um cargo descritivo ao vinculo funcional
+### 2. Corrigir `useVinculosFuncionais.ts`
+- Remover o join `profiles:user_id(...)` da query PostgREST (causa do erro 400)
+- Buscar dados de perfil separadamente usando a tabela `profiles` com os `user_id`s retornados, ou usar um RPC que já faça o join server-side
+- Manter os demais joins (cargos_publicos, funcoes_administrativas, secretarias, unidades_administrativas)
 
-### 2. Hook `useCargosSecretaria`
-- Query cargos filtrados por `secretaria_id` e `ativo = true`
-- Ordenado por nivel e nome
+### 3. Atualizar `EquipeSecretaria.tsx`
+- No dialog de vinculação, detectar se a secretaria é SME (Educação) ou SMS (Saúde) usando o `secretariaId`
+- Se for SME: exibir select de "Local de Trabalho" com opções: "Secretaria (sede)" + lista de escolas cadastradas
+- Se for SMS: exibir select de "Local de Trabalho" com opções: "Secretaria (sede)" + lista de unidades de saúde cadastradas
+- Salvar o `escola_id` ou `unidade_saude_id` correspondente no vínculo
+- Exibir coluna "Local" na tabela de equipe
 
-### 3. Atualizar `EquipeSecretaria`
-- Ao vincular funcionario, apos selecionar usuario do RH, exibir dialog intermediario para escolher cargo da lista `cargos_secretaria` filtrada pela secretaria
-- Salvar `cargo_secretaria_id` no `vinculos_funcionais`
-- Exibir nome do cargo na coluna "Cargo" da tabela (em vez do `cargos_publicos`)
-
-### 4. Adicionar aba Equipe nas paginas faltantes
-
-**GestaoTransportes.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>`
-**GestaoSaudePublica.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>` (separado dos Profissionais tecnicos)
-**GestaoEducacao.tsx:** Adicionar tab "Equipe" com `<EquipeSecretaria>` (separado do cadastro de Professores)
+### 4. Criar hooks auxiliares (se necessário)
+- Reutilizar `useEscolas` existente para listar escolas
+- Reutilizar `useUnidadesSaude` existente para listar unidades de saúde
 
 ### Arquivos afetados
-- Migracao SQL (tabela + seed + coluna)
-- `src/hooks/useCargosSecretaria.ts` (novo)
-- `src/components/shared/EquipeSecretaria.tsx` (atualizar com selecao de cargo)
-- `src/pages/GestaoTransportes.tsx` (adicionar aba Equipe)
-- `src/pages/GestaoSaudePublica.tsx` (adicionar aba Equipe)
-- `src/pages/GestaoEducacao.tsx` (adicionar aba Equipe)
-
-### Regras mantidas
-- Roles NAO sao alteradas
-- Cargos sao apenas descritivos (organizacao, relatorios, organograma)
-- Permissoes continuam baseadas exclusivamente nas roles existentes
-- Fluxo: RH cria usuario -> Secretario vincula na aba Equipe -> Escolhe cargo da lista
+- Migração SQL (colunas escola_id, unidade_saude_id)
+- `src/hooks/useVinculosFuncionais.ts` (corrigir query)
+- `src/components/shared/EquipeSecretaria.tsx` (seletor de local + coluna local)
 
