@@ -3,9 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { UserPlus, Users, Loader2, Trash2 } from "lucide-react";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import { useVinculosFuncionais } from "@/hooks/useVinculosFuncionais";
+import { useCargosSecretaria } from "@/hooks/useCargosSecretaria";
 import { useSecretariaContext } from "@/contexts/SecretariaContext";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { toast } from "sonner";
@@ -30,8 +34,14 @@ export function EquipeSecretaria({ secretariaId, titulo, descricao }: EquipeSecr
   const { secretariaAtiva } = useSecretariaContext();
   const effectiveSecretariaId = secretariaId || secretariaAtiva?.id;
   const { vinculos, isLoading, createVinculo, deleteVinculo } = useVinculosFuncionais(effectiveSecretariaId);
+  const { cargos, isLoading: cargosLoading } = useCargosSecretaria(effectiveSecretariaId);
   const [showVincular, setShowVincular] = useState(false);
   const [vinculoToDelete, setVinculoToDelete] = useState<string | null>(null);
+
+  // Cargo selection dialog state
+  const [cargoDialogOpen, setCargoDialogOpen] = useState(false);
+  const [selectedUsuario, setSelectedUsuario] = useState<UsuarioRH | null>(null);
+  const [selectedCargoId, setSelectedCargoId] = useState<string>("");
 
   const handleUsuarioSelecionado = (usuario: UsuarioRH) => {
     if (!effectiveSecretariaId) {
@@ -39,20 +49,33 @@ export function EquipeSecretaria({ secretariaId, titulo, descricao }: EquipeSecr
       return;
     }
 
-    // Check if already linked
     const jaVinculado = vinculos?.some((v: any) => v.user_id === usuario.user_id);
     if (jaVinculado) {
       toast.warning("Este servidor já está vinculado a esta secretaria.");
       return;
     }
 
+    setSelectedUsuario(usuario);
+    setSelectedCargoId("");
+    setShowVincular(false);
+    setCargoDialogOpen(true);
+  };
+
+  const handleConfirmVinculo = () => {
+    if (!selectedUsuario || !effectiveSecretariaId) return;
+
     createVinculo.mutate({
-      user_id: usuario.user_id,
+      user_id: selectedUsuario.user_id,
       secretaria_id: effectiveSecretariaId,
       situacao: "ativo",
       is_primary: false,
       data_admissao: new Date().toISOString().split("T")[0],
-    });
+      ...(selectedCargoId ? { cargo_secretaria_id: selectedCargoId } : {}),
+    } as any);
+
+    setCargoDialogOpen(false);
+    setSelectedUsuario(null);
+    setSelectedCargoId("");
   };
 
   const handleDelete = () => {
@@ -60,6 +83,23 @@ export function EquipeSecretaria({ secretariaId, titulo, descricao }: EquipeSecr
       deleteVinculo.mutate(vinculoToDelete);
       setVinculoToDelete(null);
     }
+  };
+
+  // Group cargos by nivel for better display
+  const nivelLabels: Record<string, string> = {
+    estrategico: "Estratégico",
+    gerencial: "Gerencial",
+    operacional: "Operacional",
+    apoio: "Apoio",
+  };
+
+  // Find cargo name from cargos list or from vinculo
+  const getCargoNome = (vinculo: any) => {
+    if (vinculo.cargo_secretaria_id) {
+      const cargo = cargos.find((c) => c.id === vinculo.cargo_secretaria_id);
+      if (cargo) return cargo.nome;
+    }
+    return vinculo.cargos_publicos?.nome || "—";
   };
 
   return (
@@ -113,7 +153,7 @@ export function EquipeSecretaria({ secretariaId, titulo, descricao }: EquipeSecr
                         <p className="text-xs text-muted-foreground">{v.profiles?.email}</p>
                       </div>
                     </TableCell>
-                    <TableCell>{v.cargos_publicos?.nome || "—"}</TableCell>
+                    <TableCell>{getCargoNome(v)}</TableCell>
                     <TableCell>{v.funcoes_administrativas?.nome || "—"}</TableCell>
                     <TableCell>{v.matricula || "—"}</TableCell>
                     <TableCell>
@@ -145,6 +185,41 @@ export function EquipeSecretaria({ secretariaId, titulo, descricao }: EquipeSecr
         titulo="Vincular Servidor à Secretaria"
         descricao="Busque e selecione um servidor cadastrado pelo RH para vincular a esta secretaria."
       />
+
+      {/* Cargo selection dialog */}
+      <Dialog open={cargoDialogOpen} onOpenChange={(open) => { if (!open) { setCargoDialogOpen(false); setSelectedUsuario(null); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Selecionar Cargo</DialogTitle>
+            <DialogDescription>
+              Servidor: <strong>{selectedUsuario?.nome}</strong> — Escolha o cargo para vinculação.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label>Cargo na Secretaria <span className="text-destructive">*</span></Label>
+            <Select value={selectedCargoId} onValueChange={setSelectedCargoId}>
+              <SelectTrigger>
+                <SelectValue placeholder={cargosLoading ? "Carregando..." : "Selecione o cargo"} />
+              </SelectTrigger>
+              <SelectContent>
+                {cargos.map((cargo) => (
+                  <SelectItem key={cargo.id} value={cargo.id}>
+                    {cargo.nome} ({nivelLabels[cargo.nivel] || cargo.nivel})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setCargoDialogOpen(false); setSelectedUsuario(null); }}>
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmVinculo} disabled={!selectedCargoId}>
+              Confirmar Vinculação
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={!!vinculoToDelete} onOpenChange={(open) => !open && setVinculoToDelete(null)}>
         <AlertDialogContent>

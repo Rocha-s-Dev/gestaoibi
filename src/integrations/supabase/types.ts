@@ -2191,6 +2191,48 @@ export type Database = {
           },
         ]
       }
+      cargos_secretaria: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          id: string
+          nivel: string
+          nome: string
+          secretaria_id: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nivel?: string
+          nome: string
+          secretaria_id: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          id?: string
+          nivel?: string
+          nome?: string
+          secretaria_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cargos_secretaria_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cargos_secretaria_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       carnes_iptu: {
         Row: {
           arquivo_pdf: string | null
@@ -18185,6 +18227,7 @@ export type Database = {
       vinculos_funcionais: {
         Row: {
           cargo_id: string | null
+          cargo_secretaria_id: string | null
           classe_atual: string | null
           created_at: string
           data_admissao: string
@@ -18214,6 +18257,7 @@ export type Database = {
         }
         Insert: {
           cargo_id?: string | null
+          cargo_secretaria_id?: string | null
           classe_atual?: string | null
           created_at?: string
           data_admissao: string
@@ -18243,6 +18287,7 @@ export type Database = {
         }
         Update: {
           cargo_id?: string | null
+          cargo_secretaria_id?: string | null
           classe_atual?: string | null
           created_at?: string
           data_admissao?: string
@@ -18284,6 +18329,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["cargo_id"]
+          },
+          {
+            foreignKeyName: "vinculos_funcionais_cargo_secretaria_id_fkey"
+            columns: ["cargo_secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "cargos_secretaria"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "vinculos_funcionais_funcao_id_fkey"
