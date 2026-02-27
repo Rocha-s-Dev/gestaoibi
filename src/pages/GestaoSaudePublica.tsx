@@ -20,7 +20,7 @@ import { CARGOS_SAUDE_LABELS, type CargoSaude } from "@/hooks/useCargoSaude";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2, Users } from "lucide-react";
+import { UserPlus, Search, Stethoscope, Ambulance, Edit, Pill, Syringe, ArrowRightLeft, FileText, Bed, Building2, Shield, Trash2, Users, CalendarCheck, ClipboardList, HeartPulse, SmilePlus } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -33,6 +33,10 @@ import { InternacoesModule } from "@/components/saude/InternacoesModule";
 import { ProgramasFederaisModule } from "@/components/saude/ProgramasFederaisModule";
 import { LGPDSaudeModule } from "@/components/saude/LGPDSaudeModule";
 import { EquipeSaude } from "@/components/saude/EquipeSaude";
+import { AgendamentoConsultas } from "@/components/saude/AgendamentoConsultas";
+import { ProntuarioEletronico } from "@/components/saude/ProntuarioEletronico";
+import { AcompanhamentoTratamentos } from "@/components/saude/AcompanhamentoTratamentos";
+import { SatisfacaoPaciente } from "@/components/saude/SatisfacaoPaciente";
 
 export default function GestaoSaudePublica() {
   const [vincularOpen, setVincularOpen] = useState(false);
@@ -145,6 +149,10 @@ export default function GestaoSaudePublica() {
         <Tabs defaultValue="pacientes">
           <TabsList className="flex flex-wrap w-full h-auto gap-1">
             <TabsTrigger value="pacientes" className="text-sm p-3">Pacientes</TabsTrigger>
+            <TabsTrigger value="agendamentos" className="text-sm p-3 flex items-center gap-1"><CalendarCheck className="h-3 w-3" />Agendamentos</TabsTrigger>
+            <TabsTrigger value="prontuarios" className="text-sm p-3 flex items-center gap-1"><ClipboardList className="h-3 w-3" />Prontuários</TabsTrigger>
+            <TabsTrigger value="tratamentos" className="text-sm p-3 flex items-center gap-1"><HeartPulse className="h-3 w-3" />Tratamentos</TabsTrigger>
+            <TabsTrigger value="satisfacao" className="text-sm p-3 flex items-center gap-1"><SmilePlus className="h-3 w-3" />Satisfação</TabsTrigger>
             <TabsTrigger value="unidades" className="text-sm p-3">Unidades de Saúde</TabsTrigger>
             <TabsTrigger value="equipe" className="text-sm p-3 flex items-center gap-1"><Users className="h-3 w-3" />Equipe</TabsTrigger>
             <TabsTrigger value="profissionais" className="text-sm p-3">Profissionais</TabsTrigger>
@@ -166,6 +174,35 @@ export default function GestaoSaudePublica() {
               <CardContent><CadastroPacientes /></CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="agendamentos" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><CalendarCheck className="h-5 w-5" />Agendamento de Consultas</CardTitle></CardHeader>
+              <CardContent><AgendamentoConsultas /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="prontuarios" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardList className="h-5 w-5" />Prontuário Eletrônico</CardTitle></CardHeader>
+              <CardContent><ProntuarioEletronico /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tratamentos" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><HeartPulse className="h-5 w-5" />Acompanhamento de Tratamentos</CardTitle></CardHeader>
+              <CardContent><AcompanhamentoTratamentos /></CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="satisfacao" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><SmilePlus className="h-5 w-5" />Satisfação do Paciente</CardTitle></CardHeader>
+              <CardContent><SatisfacaoPaciente /></CardContent>
+            </Card>
+          </TabsContent>
+
 
           <TabsContent value="unidades" className="mt-6">
             <Card>
