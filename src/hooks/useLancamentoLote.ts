@@ -6,7 +6,7 @@ interface NotaLote {
   aluno_id: string;
   disciplina_id: string;
   turma_id: string;
-  bimestre: number;
+  trimestre: number;
   ano_letivo: number;
   nota: number | null;
   observacoes?: string;
@@ -43,7 +43,7 @@ export function useLancamentoLote() {
           .eq('aluno_id', nota.aluno_id)
           .eq('disciplina_id', nota.disciplina_id)
           .eq('turma_id', nota.turma_id)
-          .eq('bimestre', nota.bimestre)
+          .eq('trimestre', nota.trimestre)
           .eq('ano_letivo', nota.ano_letivo)
           .maybeSingle() as any);
 
@@ -58,17 +58,17 @@ export function useLancamentoLote() {
 
           if (error) throw error;
         } else {
-          const { error } = await supabase
+          const { error } = await (supabase
             .from('notas')
             .insert({
               aluno_id: nota.aluno_id,
               disciplina_id: nota.disciplina_id,
               turma_id: nota.turma_id,
-              bimestre: nota.bimestre,
+              trimestre: nota.trimestre,
               ano_letivo: nota.ano_letivo,
               nota: nota.nota,
               observacoes: nota.observacoes
-            });
+            } as any) as any);
 
           if (error) throw error;
         }
@@ -99,7 +99,6 @@ export function useLancamentoLote() {
 
     setLoading(true);
     try {
-      // Registrar apenas as faltas (ausências)
       const faltas = presencas
         .filter(p => !p.presente)
         .map(p => ({
@@ -110,14 +109,12 @@ export function useLancamentoLote() {
         }));
 
       if (faltas.length > 0) {
-        // Remover faltas existentes para essa data
         await supabase
           .from('faltas')
           .delete()
           .eq('data', dataAula)
           .in('aluno_id', faltas.map(f => f.aluno_id));
 
-        // Inserir novas faltas
         const { error } = await supabase
           .from('faltas')
           .insert(faltas);
@@ -142,7 +139,7 @@ export function useLancamentoLote() {
   const buscarNotasTurma = async (
     turma_id: string,
     disciplina_id: string,
-    bimestre: number,
+    trimestre: number,
     ano_letivo: number
   ) => {
     try {
@@ -151,7 +148,7 @@ export function useLancamentoLote() {
         .select('aluno_id, nota')
         .eq('turma_id', turma_id)
         .eq('disciplina_id', disciplina_id)
-        .eq('bimestre', bimestre)
+        .eq('trimestre', trimestre)
         .eq('ano_letivo', ano_letivo);
 
       if (error) throw error;

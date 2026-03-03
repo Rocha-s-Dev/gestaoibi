@@ -47,7 +47,7 @@ export function BoletimEscolar() {
       const aluno = alunos.find(a => a.id === alunoSelecionado);
       const turma = aluno?.turma_id ? turmas.find(t => t.id === aluno.turma_id) : null;
 
-      // Organizar notas por disciplina e bimestre
+      // Organizar notas por disciplina e trimestre
       const notasPorDisciplina: Record<string, any> = {};
       
       notas.forEach(nota => {
@@ -55,26 +55,25 @@ export function BoletimEscolar() {
         if (!notasPorDisciplina[disciplina]) {
           notasPorDisciplina[disciplina] = {
             disciplina,
-            bimestre1: null,
-            bimestre2: null,
-            bimestre3: null,
-            bimestre4: null,
+            trimestre1: null,
+            trimestre2: null,
+            trimestre3: null,
             media: 0,
             situacao: 'Em andamento'
           };
         }
         
-        notasPorDisciplina[disciplina][`bimestre${nota.bimestre}`] = nota.nota;
+        notasPorDisciplina[disciplina][`trimestre${nota.trimestre}`] = nota.nota;
       });
 
       // Calcular médias e situação
       Object.keys(notasPorDisciplina).forEach(disciplina => {
         const disc = notasPorDisciplina[disciplina];
-        const notas = [disc.bimestre1, disc.bimestre2, disc.bimestre3, disc.bimestre4]
+        const notasArr = [disc.trimestre1, disc.trimestre2, disc.trimestre3]
           .filter(n => n !== null);
         
-        if (notas.length > 0) {
-          disc.media = notas.reduce((sum: number, nota: number) => sum + nota, 0) / notas.length;
+        if (notasArr.length > 0) {
+          disc.media = notasArr.reduce((sum: number, nota: number) => sum + nota, 0) / notasArr.length;
           disc.situacao = disc.media >= 7 ? 'Aprovado' : 
                           disc.media >= 5 ? 'Recuperação' : 'Reprovado';
         }
@@ -113,13 +112,8 @@ export function BoletimEscolar() {
     return "text-red-600";
   };
 
-  const imprimirBoletim = () => {
-    window.print();
-  };
-
   return (
     <div className="space-y-6">
-      {/* Seleção de Aluno */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -166,9 +160,9 @@ export function BoletimEscolar() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="2026">2026</SelectItem>
+                  <SelectItem value="2025">2025</SelectItem>
                   <SelectItem value="2024">2024</SelectItem>
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2022">2022</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -183,7 +177,6 @@ export function BoletimEscolar() {
         </CardContent>
       </Card>
 
-      {/* Boletim Gerado */}
       {boletimData && (
         <Card className="print:shadow-none">
           <CardHeader className="print:pb-2">
@@ -192,14 +185,13 @@ export function BoletimEscolar() {
                 <CardTitle className="text-xl">Boletim Escolar</CardTitle>
                 <p className="text-muted-foreground">Ano Letivo: {boletimData.anoLetivo}</p>
               </div>
-              <Button onClick={imprimirBoletim} variant="outline" className="print:hidden">
+              <Button onClick={() => window.print()} variant="outline" className="print:hidden">
                 <Download className="h-4 w-4 mr-2" />
                 Imprimir
               </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Dados do Aluno */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="font-semibold mb-2">Dados do Aluno</h3>
@@ -224,7 +216,6 @@ export function BoletimEscolar() {
 
             <Separator />
 
-            {/* Notas por Disciplina */}
             <div>
               <h3 className="font-semibold mb-4">Notas por Disciplina</h3>
               <div className="overflow-x-auto">
@@ -232,10 +223,9 @@ export function BoletimEscolar() {
                   <thead>
                     <tr className="bg-muted">
                       <th className="border border-gray-300 p-2 text-left">Disciplina</th>
-                      <th className="border border-gray-300 p-2 text-center">1º Bim</th>
-                      <th className="border border-gray-300 p-2 text-center">2º Bim</th>
-                      <th className="border border-gray-300 p-2 text-center">3º Bim</th>
-                      <th className="border border-gray-300 p-2 text-center">4º Bim</th>
+                      <th className="border border-gray-300 p-2 text-center">1º Trim</th>
+                      <th className="border border-gray-300 p-2 text-center">2º Trim</th>
+                      <th className="border border-gray-300 p-2 text-center">3º Trim</th>
                       <th className="border border-gray-300 p-2 text-center">Média</th>
                       <th className="border border-gray-300 p-2 text-center">Situação</th>
                     </tr>
@@ -247,23 +237,18 @@ export function BoletimEscolar() {
                           {disciplina.disciplina}
                         </td>
                         <td className="border border-gray-300 p-2 text-center">
-                          <span className={getNotaColor(disciplina.bimestre1)}>
-                            {disciplina.bimestre1?.toFixed(1) || '-'}
+                          <span className={getNotaColor(disciplina.trimestre1)}>
+                            {disciplina.trimestre1?.toFixed(1) || '-'}
                           </span>
                         </td>
                         <td className="border border-gray-300 p-2 text-center">
-                          <span className={getNotaColor(disciplina.bimestre2)}>
-                            {disciplina.bimestre2?.toFixed(1) || '-'}
+                          <span className={getNotaColor(disciplina.trimestre2)}>
+                            {disciplina.trimestre2?.toFixed(1) || '-'}
                           </span>
                         </td>
                         <td className="border border-gray-300 p-2 text-center">
-                          <span className={getNotaColor(disciplina.bimestre3)}>
-                            {disciplina.bimestre3?.toFixed(1) || '-'}
-                          </span>
-                        </td>
-                        <td className="border border-gray-300 p-2 text-center">
-                          <span className={getNotaColor(disciplina.bimestre4)}>
-                            {disciplina.bimestre4?.toFixed(1) || '-'}
+                          <span className={getNotaColor(disciplina.trimestre3)}>
+                            {disciplina.trimestre3?.toFixed(1) || '-'}
                           </span>
                         </td>
                         <td className="border border-gray-300 p-2 text-center">
@@ -288,7 +273,6 @@ export function BoletimEscolar() {
 
             <Separator />
 
-            {/* Resumo de Faltas */}
             <div>
               <h3 className="font-semibold mb-4">Resumo de Faltas</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -313,7 +297,6 @@ export function BoletimEscolar() {
 
             <Separator />
 
-            {/* Rodapé */}
             <div className="text-sm text-muted-foreground text-center">
               <p>Boletim gerado em {boletimData.dataGeracao}</p>
               <p>Sistema de Gestão Educacional</p>

@@ -12,6 +12,7 @@ export type Escola = {
   diretor_id?: string | null;
   vice_diretor_id?: string | null;
   tipo?: string | null;
+  modalidade?: string | null;
   capacidade?: number | null;
   created_at?: string;
   updated_at?: string;
