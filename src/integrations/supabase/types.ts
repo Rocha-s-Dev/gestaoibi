@@ -5486,6 +5486,7 @@ export type Database = {
           email: string | null
           endereco: string | null
           id: string
+          modalidade: string | null
           nome: string
           telefone: string | null
           tipo: string | null
@@ -5500,6 +5501,7 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           id?: string
+          modalidade?: string | null
           nome: string
           telefone?: string | null
           tipo?: string | null
@@ -5514,6 +5516,7 @@ export type Database = {
           email?: string | null
           endereco?: string | null
           id?: string
+          modalidade?: string | null
           nome?: string
           telefone?: string | null
           tipo?: string | null
@@ -11911,39 +11914,39 @@ export type Database = {
         Row: {
           aluno_id: string
           ano_letivo: number | null
-          bimestre: number
           created_at: string
           disciplina_id: string
           fechada: boolean | null
           id: string
           nota: number | null
           observacoes: string | null
+          trimestre: number
           turma_id: string | null
           updated_at: string
         }
         Insert: {
           aluno_id: string
           ano_letivo?: number | null
-          bimestre: number
           created_at?: string
           disciplina_id: string
           fechada?: boolean | null
           id?: string
           nota?: number | null
           observacoes?: string | null
+          trimestre: number
           turma_id?: string | null
           updated_at?: string
         }
         Update: {
           aluno_id?: string
           ano_letivo?: number | null
-          bimestre?: number
           created_at?: string
           disciplina_id?: string
           fechada?: boolean | null
           id?: string
           nota?: number | null
           observacoes?: string | null
+          trimestre?: number
           turma_id?: string | null
           updated_at?: string
         }
@@ -14826,6 +14829,42 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      professor_disciplinas: {
+        Row: {
+          created_at: string
+          disciplina_id: string
+          id: string
+          professor_id: string
+        }
+        Insert: {
+          created_at?: string
+          disciplina_id: string
+          id?: string
+          professor_id: string
+        }
+        Update: {
+          created_at?: string
+          disciplina_id?: string
+          id?: string
+          professor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professor_disciplinas_disciplina_id_fkey"
+            columns: ["disciplina_id"]
+            isOneToOne: false
+            referencedRelation: "disciplinas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professor_disciplinas_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
+            referencedColumns: ["id"]
           },
         ]
       }

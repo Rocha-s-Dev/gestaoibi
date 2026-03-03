@@ -26,7 +26,7 @@ export function LancamentoNotasLote() {
   const [turmaId, setTurmaId] = useState<string>("");
   const [disciplinaId, setDisciplinaId] = useState<string>("");
   const [professorId, setProfessorId] = useState<string>("");
-  const [bimestre, setBimestre] = useState<string>("1");
+  const [trimestre, setTrimestre] = useState<string>("1");
   const [tipoAvaliacao, setTipoAvaliacao] = useState<string>("prova");
   const [dataAvaliacao, setDataAvaliacao] = useState<string>(new Date().toISOString().split("T")[0]);
   const [notas, setNotas] = useState<NotaAluno[]>([]);
@@ -87,12 +87,9 @@ export function LancamentoNotasLote() {
         aluno_id: n.aluno_id,
         turma_id: turmaId,
         disciplina_id: disciplinaId,
-        professor_id: professorId,
-        bimestre: parseInt(bimestre),
+        trimestre: parseInt(trimestre),
         ano_letivo: anoLetivo,
         nota: n.nota!,
-        tipo_avaliacao: tipoAvaliacao,
-        data_avaliacao: dataAvaliacao,
         observacoes: n.observacoes || undefined,
       }));
 
@@ -164,14 +161,13 @@ export function LancamentoNotasLote() {
           </div>
 
           <div className="space-y-2">
-            <Label>Bimestre</Label>
-            <Select value={bimestre} onValueChange={setBimestre}>
+            <Label>Trimestre</Label>
+            <Select value={trimestre} onValueChange={setTrimestre}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1º Bimestre</SelectItem>
-                <SelectItem value="2">2º Bimestre</SelectItem>
-                <SelectItem value="3">3º Bimestre</SelectItem>
-                <SelectItem value="4">4º Bimestre</SelectItem>
+                <SelectItem value="1">1º Trimestre</SelectItem>
+                <SelectItem value="2">2º Trimestre</SelectItem>
+                <SelectItem value="3">3º Trimestre</SelectItem>
               </SelectContent>
             </Select>
           </div>

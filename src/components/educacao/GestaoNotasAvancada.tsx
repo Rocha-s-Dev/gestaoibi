@@ -8,15 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { 
-  BookOpen, 
-  Calculator, 
-  Lock, 
-  Unlock, 
-  RefreshCw, 
-  AlertTriangle,
-  TrendingUp,
-  Settings,
-  Save
+  BookOpen, Calculator, Lock, Unlock, RefreshCw, AlertTriangle, TrendingUp, Settings, Save
 } from "lucide-react";
 import { GestaoNotas } from "./GestaoNotas";
 import { LancamentoNotasLote } from "./LancamentoNotasLote";
@@ -30,7 +22,7 @@ interface ConfiguracaoNotas {
   mediaAprovacao: number;
   mediaRecuperacao: number;
   pesoRecuperacao: number;
-  bimestresBloqueados: number[];
+  trimestresBloqueados: number[];
 }
 
 export function GestaoNotasAvancada() {
@@ -38,11 +30,10 @@ export function GestaoNotasAvancada() {
     mediaAprovacao: 7,
     mediaRecuperacao: 5,
     pesoRecuperacao: 0.4,
-    bimestresBloqueados: [],
+    trimestresBloqueados: [],
   });
   
   const [turmaRecuperacao, setTurmaRecuperacao] = useState("");
-  const [bimestreRecuperacao, setBimestreRecuperacao] = useState("");
   const [processandoRecuperacao, setProcessandoRecuperacao] = useState(false);
 
   const { notas, refreshNotas } = useNotas();
@@ -50,19 +41,18 @@ export function GestaoNotasAvancada() {
   const { disciplinas } = useDisciplinas();
   const { alunos } = useAlunos();
 
-  const toggleBloqueioBimestre = (bimestre: number) => {
+  const toggleBloqueioTrimestre = (trimestre: number) => {
     setConfiguracao(prev => ({
       ...prev,
-      bimestresBloqueados: prev.bimestresBloqueados.includes(bimestre)
-        ? prev.bimestresBloqueados.filter(b => b !== bimestre)
-        : [...prev.bimestresBloqueados, bimestre]
+      trimestresBloqueados: prev.trimestresBloqueados.includes(trimestre)
+        ? prev.trimestresBloqueados.filter(b => b !== trimestre)
+        : [...prev.trimestresBloqueados, trimestre]
     }));
     
-    const bloqueado = configuracao.bimestresBloqueados.includes(bimestre);
-    toast.success(`${bimestre}º Bimestre ${bloqueado ? 'desbloqueado' : 'bloqueado'}!`);
+    const bloqueado = configuracao.trimestresBloqueados.includes(trimestre);
+    toast.success(`${trimestre}º Trimestre ${bloqueado ? 'desbloqueado' : 'bloqueado'}!`);
   };
 
-  // Calcular alunos em recuperação
   const calcularAlunosRecuperacao = () => {
     if (!turmaRecuperacao) return [];
 
@@ -73,13 +63,11 @@ export function GestaoNotasAvancada() {
       aluno: typeof alunos[0]; 
       disciplina: string; 
       media: number;
-      bimestres: Record<number, number | null>;
+      trimestres: Record<number, number | null>;
     }[] = [];
 
     alunosTurma.forEach(aluno => {
       const notasAluno = notasTurma.filter(n => n.aluno_id === aluno.id);
-      
-      // Agrupar por disciplina
       const notasPorDisciplina: Record<string, { notas: (number | null)[]; disciplinaNome: string }> = {};
       
       notasAluno.forEach(n => {
@@ -87,15 +75,14 @@ export function GestaoNotasAvancada() {
         const discNome = n.disciplina?.nome || 'Sem disciplina';
         
         if (!notasPorDisciplina[discId]) {
-          notasPorDisciplina[discId] = { notas: [null, null, null, null], disciplinaNome: discNome };
+          notasPorDisciplina[discId] = { notas: [null, null, null], disciplinaNome: discNome };
         }
         
-        if (n.bimestre >= 1 && n.bimestre <= 4) {
-          notasPorDisciplina[discId].notas[n.bimestre - 1] = n.nota;
+        if (n.trimestre >= 1 && n.trimestre <= 3) {
+          notasPorDisciplina[discId].notas[n.trimestre - 1] = n.nota;
         }
       });
 
-      // Verificar quem está em recuperação
       Object.entries(notasPorDisciplina).forEach(([discId, data]) => {
         const notasValidas = data.notas.filter((n): n is number => n !== null);
         if (notasValidas.length === 0) return;
@@ -107,11 +94,10 @@ export function GestaoNotasAvancada() {
             aluno,
             disciplina: data.disciplinaNome,
             media,
-            bimestres: {
+            trimestres: {
               1: data.notas[0],
               2: data.notas[1],
               3: data.notas[2],
-              4: data.notas[3],
             }
           });
         }
@@ -123,7 +109,6 @@ export function GestaoNotasAvancada() {
 
   const alunosRecuperacao = calcularAlunosRecuperacao();
 
-  // Estatísticas gerais
   const estatisticas = {
     totalNotas: notas.length,
     mediasAcima7: notas.filter(n => n.nota !== null && n.nota >= 7).length,
@@ -153,17 +138,14 @@ export function GestaoNotasAvancada() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Aba de Notas Normal */}
         <TabsContent value="lancamento">
           <GestaoNotas />
         </TabsContent>
 
-        {/* Lançamento em Lote */}
         <TabsContent value="lote">
           <LancamentoNotasLote />
         </TabsContent>
 
-        {/* Recuperação Paralela */}
         <TabsContent value="recuperacao">
           <div className="space-y-6">
             <Card>
@@ -217,10 +199,9 @@ export function GestaoNotasAvancada() {
                               <tr className="border-b">
                                 <th className="text-left p-3">Aluno</th>
                                 <th className="text-left p-3">Disciplina</th>
-                                <th className="text-center p-3">1º Bim</th>
-                                <th className="text-center p-3">2º Bim</th>
-                                <th className="text-center p-3">3º Bim</th>
-                                <th className="text-center p-3">4º Bim</th>
+                                <th className="text-center p-3">1º Trim</th>
+                                <th className="text-center p-3">2º Trim</th>
+                                <th className="text-center p-3">3º Trim</th>
                                 <th className="text-center p-3">Média Atual</th>
                                 <th className="text-center p-3">Nota Necessária</th>
                               </tr>
@@ -240,16 +221,13 @@ export function GestaoNotasAvancada() {
                                     </td>
                                     <td className="p-3">{item.disciplina}</td>
                                     <td className="p-3 text-center">
-                                      {item.bimestres[1]?.toFixed(1) || '-'}
+                                      {item.trimestres[1]?.toFixed(1) || '-'}
                                     </td>
                                     <td className="p-3 text-center">
-                                      {item.bimestres[2]?.toFixed(1) || '-'}
+                                      {item.trimestres[2]?.toFixed(1) || '-'}
                                     </td>
                                     <td className="p-3 text-center">
-                                      {item.bimestres[3]?.toFixed(1) || '-'}
-                                    </td>
-                                    <td className="p-3 text-center">
-                                      {item.bimestres[4]?.toFixed(1) || '-'}
+                                      {item.trimestres[3]?.toFixed(1) || '-'}
                                     </td>
                                     <td className="p-3 text-center">
                                       <Badge variant="secondary" className="text-yellow-600">
@@ -276,10 +254,8 @@ export function GestaoNotasAvancada() {
           </div>
         </TabsContent>
 
-        {/* Configuração */}
         <TabsContent value="configuracao">
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Configuração de Médias */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -291,28 +267,20 @@ export function GestaoNotasAvancada() {
                 <div>
                   <Label>Média para Aprovação</Label>
                   <Input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.5"
+                    type="number" min="0" max="10" step="0.5"
                     value={configuracao.mediaAprovacao}
                     onChange={(e) => setConfiguracao(prev => ({
-                      ...prev,
-                      mediaAprovacao: parseFloat(e.target.value) || 7
+                      ...prev, mediaAprovacao: parseFloat(e.target.value) || 7
                     }))}
                   />
                 </div>
                 <div>
                   <Label>Média Mínima para Recuperação</Label>
                   <Input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.5"
+                    type="number" min="0" max="10" step="0.5"
                     value={configuracao.mediaRecuperacao}
                     onChange={(e) => setConfiguracao(prev => ({
-                      ...prev,
-                      mediaRecuperacao: parseFloat(e.target.value) || 5
+                      ...prev, mediaRecuperacao: parseFloat(e.target.value) || 5
                     }))}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
@@ -322,14 +290,10 @@ export function GestaoNotasAvancada() {
                 <div>
                   <Label>Peso da Nota de Recuperação (%)</Label>
                   <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="10"
+                    type="number" min="0" max="100" step="10"
                     value={configuracao.pesoRecuperacao * 100}
                     onChange={(e) => setConfiguracao(prev => ({
-                      ...prev,
-                      pesoRecuperacao: (parseFloat(e.target.value) || 40) / 100
+                      ...prev, pesoRecuperacao: (parseFloat(e.target.value) || 40) / 100
                     }))}
                   />
                 </div>
@@ -340,29 +304,28 @@ export function GestaoNotasAvancada() {
               </CardContent>
             </Card>
 
-            {/* Bloqueio de Bimestres */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Lock className="h-5 w-5" />
-                  Fechamento de Bimestre
+                  Fechamento de Trimestre
                 </CardTitle>
                 <CardDescription>
-                  Bloquear bimestres impede novas alterações de notas
+                  Bloquear trimestres impede novas alterações de notas
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {[1, 2, 3, 4].map((bimestre) => {
-                  const bloqueado = configuracao.bimestresBloqueados.includes(bimestre);
+                {[1, 2, 3].map((trimestre) => {
+                  const bloqueado = configuracao.trimestresBloqueados.includes(trimestre);
                   return (
-                    <div key={bimestre} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={trimestre} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
                         {bloqueado ? (
                           <Lock className="h-5 w-5 text-red-500" />
                         ) : (
                           <Unlock className="h-5 w-5 text-green-500" />
                         )}
-                        <span className="font-medium">{bimestre}º Bimestre</span>
+                        <span className="font-medium">{trimestre}º Trimestre</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant={bloqueado ? "destructive" : "secondary"}>
@@ -370,7 +333,7 @@ export function GestaoNotasAvancada() {
                         </Badge>
                         <Switch
                           checked={bloqueado}
-                          onCheckedChange={() => toggleBloqueioBimestre(bimestre)}
+                          onCheckedChange={() => toggleBloqueioTrimestre(trimestre)}
                         />
                       </div>
                     </div>
@@ -379,7 +342,6 @@ export function GestaoNotasAvancada() {
               </CardContent>
             </Card>
 
-            {/* Estatísticas */}
             <Card className="md:col-span-2">
               <CardHeader>
                 <CardTitle>Estatísticas Gerais</CardTitle>

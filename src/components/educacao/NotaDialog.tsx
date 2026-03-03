@@ -24,7 +24,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
     aluno_id: "",
     disciplina_id: "",
     turma_id: "",
-    bimestre: 1,
+    trimestre: 1,
     ano_letivo: new Date().getFullYear(),
     nota: 0,
     observacoes: "",
@@ -42,7 +42,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
         aluno_id: nota.aluno_id,
         disciplina_id: nota.disciplina_id,
         turma_id: nota.turma_id || "",
-        bimestre: nota.bimestre,
+        trimestre: nota.trimestre,
         ano_letivo: nota.ano_letivo || new Date().getFullYear(),
         nota: nota.nota || 0,
         observacoes: nota.observacoes || "",
@@ -53,7 +53,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
         aluno_id: "",
         disciplina_id: "",
         turma_id: "",
-        bimestre: 1,
+        trimestre: 1,
         ano_letivo: new Date().getFullYear(),
         nota: 0,
         observacoes: "",
@@ -70,7 +70,7 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
         aluno_id: formData.aluno_id,
         disciplina_id: formData.disciplina_id,
         turma_id: formData.turma_id || null,
-        bimestre: formData.bimestre,
+        trimestre: formData.trimestre,
         ano_letivo: formData.ano_letivo,
         nota: formData.nota,
         observacoes: formData.observacoes || null,
@@ -91,7 +91,6 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
     }
   };
 
-  // Filtrar alunos pela turma selecionada
   const alunosFiltrados = alunos.filter(aluno => 
     !formData.turma_id || aluno.turma_id === formData.turma_id
   );
@@ -165,19 +164,18 @@ export function NotaDialog({ open, onOpenChange, nota, onClose }: NotaDialogProp
             </div>
 
             <div>
-              <Label htmlFor="bimestre">Bimestre *</Label>
+              <Label htmlFor="trimestre">Trimestre *</Label>
               <Select 
-                value={formData.bimestre.toString()} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, bimestre: parseInt(value) }))}
+                value={formData.trimestre.toString()} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, trimestre: parseInt(value) }))}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">1º Bimestre</SelectItem>
-                  <SelectItem value="2">2º Bimestre</SelectItem>
-                  <SelectItem value="3">3º Bimestre</SelectItem>
-                  <SelectItem value="4">4º Bimestre</SelectItem>
+                  <SelectItem value="1">1º Trimestre</SelectItem>
+                  <SelectItem value="2">2º Trimestre</SelectItem>
+                  <SelectItem value="3">3º Trimestre</SelectItem>
                 </SelectContent>
               </Select>
             </div>

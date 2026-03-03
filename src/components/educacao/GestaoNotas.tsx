@@ -17,7 +17,7 @@ export function GestaoNotas() {
   const [selectedNota, setSelectedNota] = useState(null);
   const [filtroTurma, setFiltroTurma] = useState("");
   const [filtroDisciplina, setFiltroDisciplina] = useState("");
-  const [filtroBimestre, setFiltroBimestre] = useState("");
+  const [filtroTrimestre, setFiltroTrimestre] = useState("");
   const [pesquisaAluno, setPesquisaAluno] = useState("");
 
   const { notas, loading, deleteNota } = useNotas();
@@ -27,12 +27,12 @@ export function GestaoNotas() {
   const notasFiltradas = notas.filter(nota => {
     const matchTurma = !filtroTurma || nota.turma_id === filtroTurma;
     const matchDisciplina = !filtroDisciplina || nota.disciplina_id === filtroDisciplina;
-    const matchBimestre = !filtroBimestre || nota.bimestre.toString() === filtroBimestre;
+    const matchTrimestre = !filtroTrimestre || nota.trimestre.toString() === filtroTrimestre;
     const matchAluno = !pesquisaAluno || 
       nota.aluno?.nome.toLowerCase().includes(pesquisaAluno.toLowerCase()) ||
       nota.aluno?.numero_matricula.includes(pesquisaAluno);
     
-    return matchTurma && matchDisciplina && matchBimestre && matchAluno;
+    return matchTurma && matchDisciplina && matchTrimestre && matchAluno;
   });
 
   const handleDeleteNota = async (id: string) => {
@@ -55,7 +55,6 @@ export function GestaoNotas() {
 
   return (
     <div className="space-y-6">
-      {/* Filtros */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -100,17 +99,16 @@ export function GestaoNotas() {
             </div>
 
             <div>
-              <Label htmlFor="bimestre">Bimestre</Label>
-              <Select value={filtroBimestre || "all"} onValueChange={(v) => setFiltroBimestre(v === "all" ? "" : v)}>
+              <Label htmlFor="trimestre">Trimestre</Label>
+              <Select value={filtroTrimestre || "all"} onValueChange={(v) => setFiltroTrimestre(v === "all" ? "" : v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Todos os bimestres" />
+                  <SelectValue placeholder="Todos os trimestres" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos os bimestres</SelectItem>
-                  <SelectItem value="1">1º Bimestre</SelectItem>
-                  <SelectItem value="2">2º Bimestre</SelectItem>
-                  <SelectItem value="3">3º Bimestre</SelectItem>
-                  <SelectItem value="4">4º Bimestre</SelectItem>
+                  <SelectItem value="all">Todos os trimestres</SelectItem>
+                  <SelectItem value="1">1º Trimestre</SelectItem>
+                  <SelectItem value="2">2º Trimestre</SelectItem>
+                  <SelectItem value="3">3º Trimestre</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -139,7 +137,6 @@ export function GestaoNotas() {
         </CardContent>
       </Card>
 
-      {/* Lista de Notas */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
@@ -166,7 +163,7 @@ export function GestaoNotas() {
                     <th className="text-left p-3">Aluno</th>
                     <th className="text-left p-3">Turma</th>
                     <th className="text-left p-3">Disciplina</th>
-                    <th className="text-left p-3">Bimestre</th>
+                    <th className="text-left p-3">Trimestre</th>
                     <th className="text-left p-3">Nota</th>
                     <th className="text-left p-3">Status</th>
                     <th className="text-left p-3">Ações</th>
@@ -187,7 +184,7 @@ export function GestaoNotas() {
                       <td className="p-3">{nota.disciplina?.nome}</td>
                       <td className="p-3">
                         <Badge variant="outline">
-                          {nota.bimestre}º Bim
+                          {nota.trimestre}º Trim
                         </Badge>
                       </td>
                       <td className="p-3">

@@ -6,7 +6,7 @@ export type Nota = {
   aluno_id: string;
   disciplina_id: string;
   turma_id: string | null;
-  bimestre: number;
+  trimestre: number;
   ano_letivo: number | null;
   nota: number | null;
   fechada: boolean | null;
@@ -47,7 +47,7 @@ export function useNotas() {
     }
   };
 
-  const createNota = async (notaData: Omit<Nota, 'id' | 'created_at' | 'updated_at'>) => {
+  const createNota = async (notaData: Omit<Nota, 'id' | 'created_at' | 'updated_at' | 'aluno' | 'disciplina' | 'turma'>) => {
     try {
       const { data, error } = await supabase
         .from('notas')
@@ -55,12 +55,12 @@ export function useNotas() {
           aluno_id: notaData.aluno_id,
           disciplina_id: notaData.disciplina_id,
           turma_id: notaData.turma_id,
-          bimestre: notaData.bimestre,
+          trimestre: notaData.trimestre,
           ano_letivo: notaData.ano_letivo,
           nota: notaData.nota,
           observacoes: notaData.observacoes,
           fechada: notaData.fechada || false
-        }])
+        }] as any)
         .select()
         .single();
 
@@ -113,7 +113,7 @@ export function useNotas() {
     }
   };
 
-  const getNotasByTurma = async (turmaId: string, bimestre?: number) => {
+  const getNotasByTurma = async (turmaId: string, trimestre?: number) => {
     try {
       let query = supabase
         .from('notas')
@@ -124,8 +124,8 @@ export function useNotas() {
         `)
         .eq('turma_id', turmaId);
 
-      if (bimestre) {
-        query = query.eq('bimestre', bimestre);
+      if (trimestre) {
+        query = query.eq('trimestre', trimestre);
       }
 
       const { data, error } = await query;
@@ -153,7 +153,7 @@ export function useNotas() {
         query = query.eq('ano_letivo', anoLetivo);
       }
 
-      const { data, error } = await query.order('bimestre');
+      const { data, error } = await (query.order('trimestre') as any);
       if (error) throw error;
       
       return (data as unknown as Nota[]) || [];
