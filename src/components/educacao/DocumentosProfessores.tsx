@@ -167,14 +167,13 @@ export function DocumentosProfessores() {
           </Select>
           <Select value={filtroBimestre} onValueChange={setFiltroBimestre}>
             <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Bimestre" />
+              <SelectValue placeholder="Trimestre" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos</SelectItem>
-              <SelectItem value="1">1º Bimestre</SelectItem>
-              <SelectItem value="2">2º Bimestre</SelectItem>
-              <SelectItem value="3">3º Bimestre</SelectItem>
-              <SelectItem value="4">4º Bimestre</SelectItem>
+              <SelectItem value="1">1º Trimestre</SelectItem>
+              <SelectItem value="2">2º Trimestre</SelectItem>
+              <SelectItem value="3">3º Trimestre</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -205,14 +204,13 @@ export function DocumentosProfessores() {
                   </Select>
                 </div>
                 <div>
-                  <Label>Bimestre</Label>
+                  <Label>Trimestre</Label>
                   <Select value={form.bimestre} onValueChange={(v) => setForm({ ...form, bimestre: v })}>
                     <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">1º Bimestre</SelectItem>
-                      <SelectItem value="2">2º Bimestre</SelectItem>
-                      <SelectItem value="3">3º Bimestre</SelectItem>
-                      <SelectItem value="4">4º Bimestre</SelectItem>
+                      <SelectItem value="1">1º Trimestre</SelectItem>
+                      <SelectItem value="2">2º Trimestre</SelectItem>
+                      <SelectItem value="3">3º Trimestre</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

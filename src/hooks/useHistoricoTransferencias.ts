@@ -84,7 +84,7 @@ export function useHistoricoEscolar() {
           .from('notas')
           .select(`
             nota,
-            bimestre,
+            trimestre,
             ano_letivo,
             disciplina:disciplinas(nome)
           `)

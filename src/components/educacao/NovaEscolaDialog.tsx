@@ -31,6 +31,7 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
     diretor_id: "",
     vice_diretor_id: "",
     tipo: "municipal",
+    modalidade: "fundamental_i",
     capacidade: 0
   });
 
@@ -79,6 +80,7 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
         diretor_id: escola.diretor_id || "",
         vice_diretor_id: escola.vice_diretor_id || "",
         tipo: escola.tipo || "municipal",
+        modalidade: escola.modalidade || "fundamental_i",
         capacidade: escola.capacidade || 0
       });
     } else {
@@ -90,6 +92,7 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
         diretor_id: "",
         vice_diretor_id: "",
         tipo: "municipal",
+        modalidade: "fundamental_i",
         capacidade: 0
       });
     }
@@ -106,6 +109,7 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
       diretor_id: formData.diretor_id || null,
       vice_diretor_id: formData.vice_diretor_id || null,
       tipo: formData.tipo,
+      modalidade: formData.modalidade,
       capacidade: formData.capacidade || null,
       // Keep legacy diretor field populated with the name for backwards compat
       diretor: diretores.find(d => d.user_id === formData.diretor_id)?.nome || null,
@@ -156,6 +160,26 @@ export function NovaEscolaDialog({ open, onOpenChange, onSubmit, escola }: NovaE
                   <SelectItem value="estadual">Estadual</SelectItem>
                   <SelectItem value="federal">Federal</SelectItem>
                   <SelectItem value="privada">Privada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="modalidade">Modalidade *</Label>
+              <Select
+                value={formData.modalidade}
+                onValueChange={(value) =>
+                  setFormData(prev => ({ ...prev, modalidade: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="creche">Creche</SelectItem>
+                  <SelectItem value="anos_iniciais">Anos Iniciais</SelectItem>
+                  <SelectItem value="fundamental_i">Fundamental I</SelectItem>
+                  <SelectItem value="fundamental_ii">Fundamental II</SelectItem>
                 </SelectContent>
               </Select>
             </div>

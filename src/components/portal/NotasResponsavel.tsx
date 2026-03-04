@@ -19,7 +19,7 @@ interface NotasResponsavelProps {
 
 interface DisciplinaNotas {
   disciplina: string;
-  bimestres: Record<number, number | null>;
+  trimestres: Record<number, number | null>;
 }
 
 export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) {
@@ -48,10 +48,10 @@ export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) 
     if (!acc[disciplinaId]) {
       acc[disciplinaId] = {
         disciplina: nota.disciplina?.nome || "Sem disciplina",
-        bimestres: {},
+        trimestres: {},
       };
     }
-    acc[disciplinaId].bimestres[nota.bimestre] = nota.nota;
+    acc[disciplinaId].trimestres[nota.trimestre] = nota.nota;
     return acc;
   }, {} as Record<string, DisciplinaNotas>);
 
@@ -70,8 +70,8 @@ export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) 
     return <Badge className="bg-red-500 hover:bg-red-600">{nota.toFixed(1)}</Badge>;
   };
 
-  const calcularMedia = (bimestres: Record<number, number | null>) => {
-    const notasValidas = Object.values(bimestres).filter((n): n is number => n !== null);
+  const calcularMedia = (trimestres: Record<number, number | null>) => {
+    const notasValidas = Object.values(trimestres).filter((n): n is number => n !== null);
     if (notasValidas.length === 0) return null;
     return notasValidas.reduce((a, b) => a + b, 0) / notasValidas.length;
   };
@@ -95,31 +95,27 @@ export function NotasResponsavel({ alunoId, alunoNome }: NotasResponsavelProps) 
               <TableHeader>
                 <TableRow>
                   <TableHead>Disciplina</TableHead>
-                  <TableHead className="text-center">1º Bim</TableHead>
-                  <TableHead className="text-center">2º Bim</TableHead>
-                  <TableHead className="text-center">3º Bim</TableHead>
-                  <TableHead className="text-center">4º Bim</TableHead>
+                  <TableHead className="text-center">1º Trim</TableHead>
+                  <TableHead className="text-center">2º Trim</TableHead>
+                  <TableHead className="text-center">3º Trim</TableHead>
                   <TableHead className="text-center">Média</TableHead>
                   <TableHead className="text-center">Situação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {disciplinas.map((item, index) => {
-                  const media = calcularMedia(item.bimestres);
+                  const media = calcularMedia(item.trimestres);
                   return (
                     <TableRow key={index}>
                       <TableCell className="font-medium">{item.disciplina}</TableCell>
                       <TableCell className="text-center">
-                        {getNotaBadge(item.bimestres[1])}
+                        {getNotaBadge(item.trimestres[1])}
                       </TableCell>
                       <TableCell className="text-center">
-                        {getNotaBadge(item.bimestres[2])}
+                        {getNotaBadge(item.trimestres[2])}
                       </TableCell>
                       <TableCell className="text-center">
-                        {getNotaBadge(item.bimestres[3])}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {getNotaBadge(item.bimestres[4])}
+                        {getNotaBadge(item.trimestres[3])}
                       </TableCell>
                       <TableCell className="text-center">
                         {media !== null ? (

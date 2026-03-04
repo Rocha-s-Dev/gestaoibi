@@ -23,7 +23,7 @@ export interface FilhoData {
 export interface NotaFilho {
   id: string;
   nota: number | null;
-  bimestre: number;
+  trimestre: number;
   ano_letivo: number | null;
   observacoes: string | null;
   disciplina: {
@@ -89,14 +89,14 @@ export function useNotasFilho(alunoId: string | undefined) {
         .select(`
           id,
           nota,
-          bimestre,
+          trimestre,
           ano_letivo,
           observacoes,
           disciplina:disciplinas(id, nome)
         `)
         .eq("aluno_id", alunoId)
         .order("ano_letivo", { ascending: false })
-        .order("bimestre", { ascending: true });
+        .order("trimestre", { ascending: true });
 
       if (error) {
         console.error("Erro ao buscar notas:", error);

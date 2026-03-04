@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, Users, GraduationCap, School, BookOpen, Link2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Users, GraduationCap, School, BookOpen, Link2, BookMarked } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -9,10 +9,18 @@ import { NovaEscolaDialog } from "./NovaEscolaDialog";
 import { ProfessorDialog } from "./ProfessorDialog";
 import { TurmaDialog } from "./TurmaDialog";
 import { AlunoDialog } from "./AlunoDialog";
+import { MateriasManagement } from "./MateriasManagement";
 import { useEscolas } from "@/hooks/useEscolas";
 import { useProfessores } from "@/hooks/useProfessores";
 import { useTurmas } from "@/hooks/useTurmas";
 import { useAlunos } from "@/hooks/useAlunos";
+
+const modalidadeLabels: Record<string, string> = {
+  creche: "Creche",
+  anos_iniciais: "Anos Iniciais",
+  fundamental_i: "Fundamental I",
+  fundamental_ii: "Fundamental II",
+};
 
 export function CadastroEducacao() {
   const [escolaDialogOpen, setEscolaDialogOpen] = useState(false);
@@ -149,11 +157,11 @@ export function CadastroEducacao() {
     <div className="container mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Cadastro Educação</h1>
-        <p className="text-muted-foreground">Gerencie escolas, professores, turmas e alunos</p>
+        <p className="text-muted-foreground">Gerencie escolas, professores, turmas, alunos e matérias</p>
       </div>
 
       <Tabs defaultValue="escolas" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="escolas" className="flex items-center gap-2">
             <School className="h-4 w-4" />
             Escolas
@@ -169,6 +177,10 @@ export function CadastroEducacao() {
           <TabsTrigger value="alunos" className="flex items-center gap-2">
             <GraduationCap className="h-4 w-4" />
             Alunos
+          </TabsTrigger>
+          <TabsTrigger value="materias" className="flex items-center gap-2">
+            <BookMarked className="h-4 w-4" />
+            Matérias
           </TabsTrigger>
         </TabsList>
 
@@ -194,18 +206,23 @@ export function CadastroEducacao() {
                   <CardContent>
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">{escola.endereco}</p>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant={escola.tipo === "municipal" ? "default" : "secondary"}>
                           {escola.tipo || "municipal"}
                         </Badge>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" onClick={() => { setSelectedEscola(escola); setEscolaDialogOpen(true); }}>
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="destructive" onClick={() => handleDeleteEscola(escola.id)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        {escola.modalidade && (
+                          <Badge variant="outline">
+                            {modalidadeLabels[escola.modalidade] || escola.modalidade}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex justify-end space-x-2">
+                        <Button size="sm" variant="outline" onClick={() => { setSelectedEscola(escola); setEscolaDialogOpen(true); }}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleDeleteEscola(escola.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -215,7 +232,7 @@ export function CadastroEducacao() {
           )}
         </TabsContent>
 
-        {/* Professores - agora vinculados do RH */}
+        {/* Professores */}
         <TabsContent value="professores" className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
@@ -402,6 +419,11 @@ export function CadastroEducacao() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        {/* Matérias */}
+        <TabsContent value="materias" className="space-y-6">
+          <MateriasManagement />
         </TabsContent>
 
       </Tabs>
