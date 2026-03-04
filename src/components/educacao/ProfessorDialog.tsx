@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus, User } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { UserPlus, User, BookMarked } from "lucide-react";
 import { useEscolas } from "@/hooks/useEscolas";
+import { useDisciplinas } from "@/hooks/useDisciplinas";
+import { useProfessorDisciplinas } from "@/hooks/useProfessorDisciplinas";
 import { VincularUsuarioRH } from "@/components/shared/VincularUsuarioRH";
 import { UsuarioRH } from "@/hooks/useUsuariosRH";
 import { Professor } from "@/hooks/useProfessores";
+import { toast } from "sonner";
 
 type ProfessorDialogProps = {
   open: boolean;
@@ -20,17 +24,45 @@ type ProfessorDialogProps = {
 
 export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: ProfessorDialogProps) {
   const { escolas } = useEscolas();
+  const { disciplinas } = useDisciplinas();
+  const { disciplinaIds, saveDisciplinas, fetchDisciplinas } = useProfessorDisciplinas(professor?.id);
   const [vinculoDialogOpen, setVinculoDialogOpen] = useState(false);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioRH | null>(null);
   const [especialidade, setEspecialidade] = useState(professor?.especialidade || "");
   const [escolaId, setEscolaId] = useState(professor?.escola_id || "");
   const [funcaoEducacional, setFuncaoEducacional] = useState(professor?.funcao_educacional || "professor");
+  const [selectedDisciplinaIds, setSelectedDisciplinaIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (professor?.id) {
+      setSelectedDisciplinaIds(disciplinaIds);
+    }
+  }, [disciplinaIds, professor?.id]);
+
+  useEffect(() => {
+    if (professor) {
+      setEspecialidade(professor.especialidade || "");
+      setEscolaId(professor.escola_id || "");
+      setFuncaoEducacional(professor.funcao_educacional || "professor");
+    } else {
+      setEspecialidade("");
+      setEscolaId("");
+      setFuncaoEducacional("professor");
+      setSelectedDisciplinaIds([]);
+    }
+  }, [professor]);
 
   const handleUsuarioSelecionado = (usuario: UsuarioRH) => {
     setUsuarioSelecionado(usuario);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const toggleDisciplina = (id: string) => {
+    setSelectedDisciplinaIds(prev =>
+      prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = professor ? professor.user_id : usuarioSelecionado?.user_id;
     if (!userId) return;
@@ -41,11 +73,21 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
       escola_id: escolaId || undefined,
       funcao_educacional: funcaoEducacional,
     });
+
+    // Save disciplinas after professor is created/updated
+    if (professor?.id) {
+      try {
+        await saveDisciplinas(professor.id, selectedDisciplinaIds);
+      } catch {
+        toast.error("Erro ao salvar matérias do professor.");
+      }
+    }
     
     setUsuarioSelecionado(null);
     setEspecialidade("");
     setEscolaId("");
     setFuncaoEducacional("professor");
+    setSelectedDisciplinaIds([]);
     onOpenChange(false);
   };
 
@@ -148,6 +190,49 @@ export function ProfessorDialog({ open, onOpenChange, onSubmit, professor }: Pro
                   <p className="text-xs text-destructive">Escola é obrigatória para Professor/Coordenador.</p>
                 )}
               </div>
+            </div>
+
+            {/* Seleção de Matérias */}
+            <div className="space-y-3">
+              <Label className="flex items-center gap-2">
+                <BookMarked className="h-4 w-4" />
+                Matérias que leciona
+              </Label>
+              {disciplinas.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  Nenhuma matéria cadastrada. Cadastre matérias na aba "Matérias" primeiro.
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border rounded-md p-3">
+                  {disciplinas.map((disc) => (
+                    <div key={disc.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`disc-${disc.id}`}
+                        checked={selectedDisciplinaIds.includes(disc.id)}
+                        onCheckedChange={() => toggleDisciplina(disc.id)}
+                      />
+                      <label
+                        htmlFor={`disc-${disc.id}`}
+                        className="text-sm cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {disc.nome}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedDisciplinaIds.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {selectedDisciplinaIds.map(id => {
+                    const disc = disciplinas.find(d => d.id === id);
+                    return disc ? (
+                      <Badge key={id} variant="secondary" className="text-xs">
+                        {disc.nome}
+                      </Badge>
+                    ) : null;
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end space-x-2">

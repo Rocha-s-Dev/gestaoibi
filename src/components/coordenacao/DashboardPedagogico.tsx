@@ -16,16 +16,16 @@ interface Props {
 
 export function DashboardPedagogico({ alunos, notas, faltas, turmas, disciplinas, escolas, escolaId }: Props) {
   const [filtroTurma, setFiltroTurma] = useState<string>("all");
-  const [filtroBimestre, setFiltroBimestre] = useState<string>("all");
+  const [filtroTrimestre, setFiltroTrimestre] = useState<string>("all");
   const [filtroDisciplina, setFiltroDisciplina] = useState<string>("all");
 
   const notasFiltradas = useMemo(() => {
     let filtered = notas;
     if (filtroTurma !== "all") filtered = filtered.filter((n: any) => n.aluno?.turma_id === filtroTurma);
-    if (filtroBimestre !== "all") filtered = filtered.filter((n: any) => n.bimestre?.toString() === filtroBimestre);
+    if (filtroTrimestre !== "all") filtered = filtered.filter((n: any) => n.trimestre?.toString() === filtroTrimestre);
     if (filtroDisciplina !== "all") filtered = filtered.filter((n: any) => n.disciplina_id === filtroDisciplina);
     return filtered;
-  }, [notas, filtroTurma, filtroBimestre, filtroDisciplina]);
+  }, [notas, filtroTurma, filtroTrimestre, filtroDisciplina]);
 
   const mediaGeral = useMemo(() => {
     if (notasFiltradas.length === 0) return 0;
@@ -50,7 +50,6 @@ export function DashboardPedagogico({ alunos, notas, faltas, turmas, disciplinas
   const frequenciaMedia = useMemo(() => {
     if (alunos.length === 0) return 100;
     const totalFaltas = faltas.length;
-    // Approximation: assume 200 school days
     const freq = Math.max(0, 100 - (totalFaltas / Math.max(alunos.length, 1)) * 100 / 200 * 100);
     return freq.toFixed(1);
   }, [alunos, faltas]);
@@ -107,18 +106,18 @@ export function DashboardPedagogico({ alunos, notas, faltas, turmas, disciplinas
     return Object.values(discMap).map((d) => ({ disciplina: d.nome, media: +(d.somaNotas / d.count).toFixed(1) }));
   }, [notasFiltradas, disciplinas]);
 
-  // Chart: evolução por bimestre
-  const evolucaoPorBimestre = useMemo(() => {
-    const bimMap: Record<number, { soma: number; count: number }> = {};
+  // Chart: evolução por trimestre
+  const evolucaoPorTrimestre = useMemo(() => {
+    const trimMap: Record<number, { soma: number; count: number }> = {};
     notas.forEach((n: any) => {
-      const b = n.bimestre || 1;
-      if (!bimMap[b]) bimMap[b] = { soma: 0, count: 0 };
-      bimMap[b].soma += n.nota || 0;
-      bimMap[b].count++;
+      const t = n.trimestre || 1;
+      if (!trimMap[t]) trimMap[t] = { soma: 0, count: 0 };
+      trimMap[t].soma += n.nota || 0;
+      trimMap[t].count++;
     });
-    return [1, 2, 3, 4].map((b) => ({
-      bimestre: `${b}º Bim`,
-      media: bimMap[b] ? +(bimMap[b].soma / bimMap[b].count).toFixed(1) : 0,
+    return [1, 2, 3].map((t) => ({
+      trimestre: `${t}º Trim`,
+      media: trimMap[t] ? +(trimMap[t].soma / trimMap[t].count).toFixed(1) : 0,
     }));
   }, [notas]);
 
@@ -135,14 +134,13 @@ export function DashboardPedagogico({ alunos, notas, faltas, turmas, disciplinas
             ))}
           </SelectContent>
         </Select>
-        <Select value={filtroBimestre} onValueChange={setFiltroBimestre}>
-          <SelectTrigger className="w-[160px]"><SelectValue placeholder="Bimestre" /></SelectTrigger>
+        <Select value={filtroTrimestre} onValueChange={setFiltroTrimestre}>
+          <SelectTrigger className="w-[160px]"><SelectValue placeholder="Trimestre" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="1">1º Bimestre</SelectItem>
-            <SelectItem value="2">2º Bimestre</SelectItem>
-            <SelectItem value="3">3º Bimestre</SelectItem>
-            <SelectItem value="4">4º Bimestre</SelectItem>
+            <SelectItem value="1">1º Trimestre</SelectItem>
+            <SelectItem value="2">2º Trimestre</SelectItem>
+            <SelectItem value="3">3º Trimestre</SelectItem>
           </SelectContent>
         </Select>
         <Select value={filtroDisciplina} onValueChange={setFiltroDisciplina}>
@@ -236,12 +234,12 @@ export function DashboardPedagogico({ alunos, notas, faltas, turmas, disciplinas
         </Card>
       </div>
       <Card>
-        <CardHeader><CardTitle className="text-base">Evolução por Bimestre</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-base">Evolução por Trimestre</CardTitle></CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={evolucaoPorBimestre}>
+            <LineChart data={evolucaoPorTrimestre}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="bimestre" />
+              <XAxis dataKey="trimestre" />
               <YAxis domain={[0, 10]} />
               <Tooltip />
               <Legend />

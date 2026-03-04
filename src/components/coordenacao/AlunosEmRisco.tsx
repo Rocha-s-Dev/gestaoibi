@@ -23,7 +23,7 @@ export function AlunosEmRisco({ alunos, notas, faltas, turmas, onRegistrarInterv
       if (!alunoNotasMap[n.aluno_id]) alunoNotasMap[n.aluno_id] = [];
       alunoNotasMap[n.aluno_id].push(n.nota || 0);
       if (!alunoNotasBimMap[n.aluno_id]) alunoNotasBimMap[n.aluno_id] = {};
-      const b = n.bimestre || 1;
+      const b = n.trimestre || 1;
       if (!alunoNotasBimMap[n.aluno_id][b]) alunoNotasBimMap[n.aluno_id][b] = [];
       alunoNotasBimMap[n.aluno_id][b].push(n.nota || 0);
     });
