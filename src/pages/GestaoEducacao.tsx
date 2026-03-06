@@ -15,6 +15,7 @@ import { GestaoNotasAvancada } from "@/components/educacao/GestaoNotasAvancada";
 import { GestaoFaltas } from "@/components/educacao/GestaoFaltas";
 import { IndicadoresEducacionais } from "@/components/educacao/IndicadoresEducacionais";
 import { AdminPapeisEducacionais } from "@/components/educacao/AdminPapeisEducacionais";
+import { EquipeEducacao } from "@/components/educacao/EquipeEducacao";
 
 export default function GestaoEducacao() {
   return (
@@ -41,6 +42,7 @@ export default function GestaoEducacao() {
             <TabsTrigger value="merenda" className="text-xs md:text-sm p-2">Merenda</TabsTrigger>
             <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2">Relatórios</TabsTrigger>
             <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2">Planejamento</TabsTrigger>
+            <TabsTrigger value="equipe" className="text-xs md:text-sm p-2">Equipe</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-xs md:text-sm p-2">Indicadores</TabsTrigger>
             <TabsTrigger value="papeis" className="text-xs md:text-sm p-2">Papéis</TabsTrigger>
           </TabsList>
@@ -143,6 +145,10 @@ export default function GestaoEducacao() {
                 <PlanejamentoEducacao />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="equipe" className="mt-6">
+            <EquipeEducacao />
           </TabsContent>
 
           <TabsContent value="indicadores" className="mt-6">
