@@ -42,6 +42,7 @@ export default function GestaoEducacao() {
             <TabsTrigger value="merenda" className="text-xs md:text-sm p-2">Merenda</TabsTrigger>
             <TabsTrigger value="relatorios" className="text-xs md:text-sm p-2">Relatórios</TabsTrigger>
             <TabsTrigger value="planejamento" className="text-xs md:text-sm p-2">Planejamento</TabsTrigger>
+            <TabsTrigger value="equipe" className="text-xs md:text-sm p-2">Equipe</TabsTrigger>
             <TabsTrigger value="indicadores" className="text-xs md:text-sm p-2">Indicadores</TabsTrigger>
             <TabsTrigger value="papeis" className="text-xs md:text-sm p-2">Papéis</TabsTrigger>
           </TabsList>
