@@ -147,6 +147,10 @@ export default function GestaoEducacao() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="equipe" className="mt-6">
+            <EquipeEducacao />
+          </TabsContent>
+
           <TabsContent value="indicadores" className="mt-6">
             <IndicadoresEducacionais />
           </TabsContent>
