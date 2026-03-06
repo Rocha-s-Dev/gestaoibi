@@ -15,6 +15,7 @@ import { GestaoNotasAvancada } from "@/components/educacao/GestaoNotasAvancada";
 import { GestaoFaltas } from "@/components/educacao/GestaoFaltas";
 import { IndicadoresEducacionais } from "@/components/educacao/IndicadoresEducacionais";
 import { AdminPapeisEducacionais } from "@/components/educacao/AdminPapeisEducacionais";
+import { EquipeEducacao } from "@/components/educacao/EquipeEducacao";
 
 export default function GestaoEducacao() {
   return (
