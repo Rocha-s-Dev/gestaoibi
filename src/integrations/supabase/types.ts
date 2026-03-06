@@ -5029,6 +5029,64 @@ export type Database = {
           },
         ]
       }
+      educacao_equipe: {
+        Row: {
+          cargo: string
+          created_at: string
+          data_inicio: string
+          escola_id: string | null
+          id: string
+          status: string
+          turno: string
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          cargo: string
+          created_at?: string
+          data_inicio?: string
+          escola_id?: string | null
+          id?: string
+          status?: string
+          turno?: string
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          cargo?: string
+          created_at?: string
+          data_inicio?: string
+          escola_id?: string | null
+          id?: string
+          status?: string
+          turno?: string
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educacao_equipe_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educacao_equipe_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educacao_equipe_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       empenhos: {
         Row: {
           contrato_id: string | null
