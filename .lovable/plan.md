@@ -1,130 +1,57 @@
 
 
-# Plano: Melhorar Cadastro de Professores e Auxiliares
+## Dashboard Principal Dinamico
 
-## Resumo
+### Problema Atual
+A pagina `/dashboard` (Dashboard.tsx) exibe dados estaticos e ficticios (12 projetos, 148 funcionarios, etc.) sem conexao com o banco de dados e sem considerar o tipo de usuario logado.
 
-Adicionar campos de tipo de professor, status e data de início na tabela `professores`. Criar tabela de vínculo professor-turma e sistema completo de auxiliares de classe com vínculo a turmas/alunos.
+### Abordagem
+Transformar o Dashboard para ser contextual, exibindo informacoes reais do banco de dados e adaptando o conteudo ao perfil do usuario:
 
----
+**1. Prefeito / Admin Municipal** - Visao executiva consolidada:
+- Total de servidores ativos (tabela `profiles`)
+- Total de secretarias ativas (tabela `secretarias`)
+- Metas do plano de governo com progresso (tabela `metas_plano_governo`)
+- Obras prioritarias em andamento (tabela `obras_prioritarias`)
+- Alertas criticos pendentes (tabela `alertas_executivos`)
+- Notificacoes recentes (tabela `notifications`)
+- Mensagens nao lidas (tabelas `conversations`/`messages`)
+- Graficos: metas por status, distribuicao por secretaria
 
-## 1. Migração de Banco de Dados
+**2. Gestor RH** - Visao de recursos humanos:
+- Total de servidores ativos
+- Servidores pendentes de regularizacao
+- Folhas de pagamento do mes (tabela `folha_pagamento`)
+- Notificacoes recentes
 
-### Alterações na tabela `professores`
-```sql
-ALTER TABLE public.professores 
-  ADD COLUMN tipo_professor text DEFAULT 'professor_regente',
-  ADD COLUMN status text DEFAULT 'ativo',
-  ADD COLUMN data_inicio date DEFAULT CURRENT_DATE;
-```
+**3. Servidor / Secretario** - Visao setorial:
+- Dados resumidos da secretaria ativa (usando o `SecretariaContext`)
+- Metas da secretaria
+- Notificacoes e mensagens recentes
 
-### Nova tabela `professor_turma`
-```sql
-CREATE TABLE public.professor_turma (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  professor_id uuid REFERENCES public.professores(id) ON DELETE CASCADE NOT NULL,
-  turma_id uuid REFERENCES public.turmas(id) ON DELETE CASCADE NOT NULL,
-  disciplina_id uuid REFERENCES public.disciplinas(id) ON DELETE SET NULL,
-  turno text,
-  ano_letivo integer DEFAULT EXTRACT(YEAR FROM CURRENT_DATE)::integer,
-  created_at timestamptz DEFAULT now()
-);
-```
+### Detalhes Tecnicos
 
-### Nova tabela `auxiliares_classe`
-```sql
-CREATE TABLE public.auxiliares_classe (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,  -- referência ao profiles via user_id do RH
-  tipo_profissional text DEFAULT 'auxiliar_turma',
-  escola_id uuid REFERENCES public.escolas(id) ON DELETE SET NULL,
-  status text DEFAULT 'ativo',
-  data_inicio date DEFAULT CURRENT_DATE,
-  created_at timestamptz DEFAULT now()
-);
-```
+**Novo hook `src/hooks/useDashboardData.ts`**:
+- Consulta ao banco condicionada pelo tipo de usuario (via `useSecretariaContext` e `useAuth`)
+- Usa `@tanstack/react-query` para cache e loading states
+- Queries separadas para cada bloco de dados (servidores, metas, alertas, etc.)
 
-### Nova tabela `auxiliar_turma`
-```sql
-CREATE TABLE public.auxiliar_turma (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  auxiliar_id uuid REFERENCES public.auxiliares_classe(id) ON DELETE CASCADE NOT NULL,
-  turma_id uuid REFERENCES public.turmas(id) ON DELETE CASCADE NOT NULL,
-  tipo_auxiliar text NOT NULL, -- 'auxiliar_turma' ou 'auxiliar_aluno_especial'
-  aluno_id uuid REFERENCES public.alunos(id) ON DELETE SET NULL,
-  turno text,
-  ano_letivo integer DEFAULT EXTRACT(YEAR FROM CURRENT_DATE)::integer,
-  created_at timestamptz DEFAULT now()
-);
-```
+**Reescrita de `src/pages/Dashboard.tsx`**:
+- Importa `useSecretariaContext` para `isAdmin`, `isPrefeito`, `isGestorRH`, `municipio`
+- Importa `useAuth` para `userProfile`
+- Exibe saudacao personalizada com nome do municipio
+- Renderiza cards e graficos diferentes conforme o papel:
+  - `isPrefeito || isAdmin`: painel executivo com KPIs consolidados, alertas criticos, progresso de metas de governo, e atalhos rapidos para modulos
+  - `isGestorRH`: painel focado em RH com servidores, folha de pagamento
+  - Demais: painel da secretaria ativa com resumo setorial
+- Reutiliza o componente `DashboardCard` existente e `DashboardSecretaria` para graficos
+- Secao de "Acoes Rapidas" com links para os modulos mais usados pelo tipo de usuario
+- Secao de atividade recente baseada em `notifications` reais
 
-RLS: Policies de acesso para authenticated em todas as novas tabelas.
+**Sem alteracoes no banco de dados** - todas as tabelas necessarias ja existem.
 
----
-
-## 2. Hooks (novos e alterados)
-
-| Hook | Ação |
-|------|------|
-| `useProfessores.ts` | Atualizar tipo Professor para incluir `tipo_professor`, `status`, `data_inicio`. Atualizar insert/update. |
-| `useProfessorTurmas.ts` | **Novo** - CRUD para vínculos professor-turma (buscar por professor_id, salvar lista). |
-| `useAuxiliaresClasse.ts` | **Novo** - CRUD para auxiliares (vincular do RH, listar, editar, remover). |
-| `useAuxiliarTurmas.ts` | **Novo** - CRUD para vínculos auxiliar-turma com suporte a aluno_id opcional. |
-
----
-
-## 3. Componentes UI (novos e alterados)
-
-### `ProfessorDialog.tsx` - Atualizar
-- Adicionar campos: **Tipo de Professor** (select com 8 opções), **Status**, **Data de Início**
-- Adicionar seção **"Turmas que leciona"** para vincular professor a turma+disciplina+turno
-- Manter seleção de matérias existente intacta
-
-### `AuxiliarDialog.tsx` - Novo
-- Seleção de servidor via `VincularUsuarioRH`
-- Campos: tipo (Auxiliar de Turma / Auxiliar de Aluno Especial), escola, status, data_inicio
-- Seção de vínculo a turmas com campo condicional de aluno (se tipo = auxiliar_aluno_especial)
-
-### `CadastroEducacao.tsx` - Atualizar
-- Renomear aba "Professores" → "Professores e Auxiliares"
-- Exibir professores e auxiliares em seções separadas dentro da mesma aba
-- Cards de professor mostram tipo_professor, status, data_inicio
-- Cards de auxiliar mostram tipo, escola, turma vinculada
-
-### Visualização da Turma (dentro da aba Turmas)
-- Adicionar seção expandida ou dialog de detalhes da turma mostrando:
-  - **Professores**: nome, disciplina, turno
-  - **Auxiliares**: nome, tipo, aluno vinculado (se houver)
-
----
-
-## 4. Tipos de Professor (constantes)
-
-```text
-professor_regente, professor_ed_fisica, professor_arte, 
-professor_ingles, professor_aee, professor_reforco, 
-professor_substituto, professor_temporario
-```
-
-## 5. Tipos de Auxiliar (constantes)
-
-```text
-auxiliar_turma, auxiliar_aluno_especial
-```
-
----
-
-## 6. Arquivos impactados
-
-| Arquivo | Tipo |
-|---------|------|
-| `supabase/migrations/new.sql` | Novo |
-| `src/hooks/useProfessores.ts` | Editar |
-| `src/hooks/useProfessorTurmas.ts` | Novo |
-| `src/hooks/useAuxiliaresClasse.ts` | Novo |
-| `src/hooks/useAuxiliarTurmas.ts` | Novo |
-| `src/components/educacao/ProfessorDialog.tsx` | Editar |
-| `src/components/educacao/AuxiliarDialog.tsx` | Novo |
-| `src/components/educacao/TurmaDetalhesDialog.tsx` | Novo |
-| `src/components/educacao/CadastroEducacao.tsx` | Editar |
+### Componentes Afetados
+- `src/pages/Dashboard.tsx` - reescrita completa
+- `src/hooks/useDashboardData.ts` - novo arquivo
+- `src/components/dashboard/DashboardCard.tsx` - sem alteracao (reutilizado)
 

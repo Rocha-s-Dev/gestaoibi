@@ -1548,6 +1548,99 @@ export type Database = {
           },
         ]
       }
+      auxiliar_turma: {
+        Row: {
+          aluno_id: string | null
+          ano_letivo: number | null
+          auxiliar_id: string
+          created_at: string | null
+          id: string
+          tipo_auxiliar: string
+          turma_id: string
+          turno: string | null
+        }
+        Insert: {
+          aluno_id?: string | null
+          ano_letivo?: number | null
+          auxiliar_id: string
+          created_at?: string | null
+          id?: string
+          tipo_auxiliar: string
+          turma_id: string
+          turno?: string | null
+        }
+        Update: {
+          aluno_id?: string | null
+          ano_letivo?: number | null
+          auxiliar_id?: string
+          created_at?: string | null
+          id?: string
+          tipo_auxiliar?: string
+          turma_id?: string
+          turno?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auxiliar_turma_aluno_id_fkey"
+            columns: ["aluno_id"]
+            isOneToOne: false
+            referencedRelation: "alunos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auxiliar_turma_auxiliar_id_fkey"
+            columns: ["auxiliar_id"]
+            isOneToOne: false
+            referencedRelation: "auxiliares_classe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auxiliar_turma_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auxiliares_classe: {
+        Row: {
+          created_at: string | null
+          data_inicio: string | null
+          escola_id: string | null
+          id: string
+          status: string | null
+          tipo_profissional: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_inicio?: string | null
+          escola_id?: string | null
+          id?: string
+          status?: string | null
+          tipo_profissional?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data_inicio?: string | null
+          escola_id?: string | null
+          id?: string
+          status?: string | null
+          tipo_profissional?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auxiliares_classe_escola_id_fkey"
+            columns: ["escola_id"]
+            isOneToOne: false
+            referencedRelation: "escolas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       baixas_manuais_iptu: {
         Row: {
           autorizado_por: string | null
@@ -14926,43 +15019,104 @@ export type Database = {
           },
         ]
       }
+      professor_turma: {
+        Row: {
+          ano_letivo: number | null
+          created_at: string | null
+          disciplina_id: string | null
+          id: string
+          professor_id: string
+          turma_id: string
+          turno: string | null
+        }
+        Insert: {
+          ano_letivo?: number | null
+          created_at?: string | null
+          disciplina_id?: string | null
+          id?: string
+          professor_id: string
+          turma_id: string
+          turno?: string | null
+        }
+        Update: {
+          ano_letivo?: number | null
+          created_at?: string | null
+          disciplina_id?: string | null
+          id?: string
+          professor_id?: string
+          turma_id?: string
+          turno?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professor_turma_disciplina_id_fkey"
+            columns: ["disciplina_id"]
+            isOneToOne: false
+            referencedRelation: "disciplinas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professor_turma_professor_id_fkey"
+            columns: ["professor_id"]
+            isOneToOne: false
+            referencedRelation: "professores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professor_turma_turma_id_fkey"
+            columns: ["turma_id"]
+            isOneToOne: false
+            referencedRelation: "turmas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professores: {
         Row: {
           cpf: string | null
           created_at: string
+          data_inicio: string | null
           email: string | null
           escola_id: string | null
           especialidade: string | null
           funcao_educacional: string
           id: string
           nome: string
+          status: string | null
           telefone: string | null
+          tipo_professor: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
           cpf?: string | null
           created_at?: string
+          data_inicio?: string | null
           email?: string | null
           escola_id?: string | null
           especialidade?: string | null
           funcao_educacional?: string
           id?: string
           nome: string
+          status?: string | null
           telefone?: string | null
+          tipo_professor?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
           cpf?: string | null
           created_at?: string
+          data_inicio?: string | null
           email?: string | null
           escola_id?: string | null
           especialidade?: string | null
           funcao_educacional?: string
           id?: string
           nome?: string
+          status?: string | null
           telefone?: string | null
+          tipo_professor?: string | null
           updated_at?: string
           user_id?: string | null
         }
