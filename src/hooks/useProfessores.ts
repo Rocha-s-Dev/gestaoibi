@@ -90,7 +90,7 @@ export function useProfessores() {
     }
   };
 
-  const updateProfessor = async (id: string, data: Partial<{ especialidade: string; escola_id: string; secretaria_id: string; funcao_educacional: string }>) => {
+  const updateProfessor = async (id: string, data: Partial<{ especialidade: string; escola_id: string; secretaria_id: string; funcao_educacional: string; tipo_professor: string; status: string; data_inicio: string }>) => {
     try {
       const { data: result, error } = await supabase
         .from("professores")
