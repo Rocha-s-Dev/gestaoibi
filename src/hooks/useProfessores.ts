@@ -8,6 +8,9 @@ export type Professor = {
   escola_id?: string | null;
   secretaria_id?: string | null;
   funcao_educacional?: string | null;
+  tipo_professor?: string | null;
+  status?: string | null;
+  data_inicio?: string | null;
   created_at?: string;
   updated_at?: string;
   // Joined from profiles
