@@ -19244,6 +19244,11 @@ export type Database = {
         | "professor"
         | "responsavel"
         | "coordenador"
+        | "secretario_escolar"
+        | "assistente_admin_escolar"
+        | "auxiliar_secretaria_escolar"
+        | "coordenador_admin_escolar"
+        | "tecnico_admin_educacional"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
       fase_processual:
         | "inicial"
@@ -19709,6 +19714,11 @@ export const Constants = {
         "professor",
         "responsavel",
         "coordenador",
+        "secretario_escolar",
+        "assistente_admin_escolar",
+        "auxiliar_secretaria_escolar",
+        "coordenador_admin_escolar",
+        "tecnico_admin_educacional",
       ],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
       fase_processual: [
