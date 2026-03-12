@@ -2,48 +2,48 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-function useCrudAmbiental<T extends { id: string }>(table: string) {
-  const [data, setData] = useState<T[]>([]);
+function useCrudAmbiental(table: string) {
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     setLoading(true);
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await (supabase as any)
       .from(table)
       .select("*")
       .order("created_at", { ascending: false });
     if (error) toast.error(`Erro ao carregar ${table}: ${error.message}`);
-    else setData((rows as T[]) || []);
+    else setData(rows || []);
     setLoading(false);
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
   const add = async (item: any) => {
-    const { error } = await supabase.from(table).insert(item);
+    const { error } = await (supabase as any).from(table).insert(item);
     if (error) { toast.error(`Erro ao adicionar: ${error.message}`); return false; }
     toast.success("Registro cadastrado com sucesso!");
-    fetch();
+    fetchData();
     return true;
   };
 
   const update = async (id: string, item: any) => {
-    const { error } = await supabase.from(table).update(item).eq("id", id);
+    const { error } = await (supabase as any).from(table).update(item).eq("id", id);
     if (error) { toast.error(`Erro ao atualizar: ${error.message}`); return false; }
     toast.success("Registro atualizado com sucesso!");
-    fetch();
+    fetchData();
     return true;
   };
 
   const remove = async (id: string) => {
-    const { error } = await supabase.from(table).delete().eq("id", id);
+    const { error } = await (supabase as any).from(table).delete().eq("id", id);
     if (error) { toast.error(`Erro ao excluir: ${error.message}`); return false; }
     toast.success("Registro excluído com sucesso!");
-    fetch();
+    fetchData();
     return true;
   };
 
-  return { data, loading, fetch, add, update, remove };
+  return { data, loading, fetch: fetchData, add, update, remove };
 }
 
 export function useFiscalizacoesAmbientais() {
