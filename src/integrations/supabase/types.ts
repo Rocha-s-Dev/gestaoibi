@@ -1112,6 +1112,96 @@ export type Database = {
           },
         ]
       }
+      areas_protegidas: {
+        Row: {
+          area_hectares: number | null
+          created_at: string | null
+          created_by: string | null
+          descricao_local: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          nome: string
+          orgao_responsavel: string | null
+          status_conservacao: string | null
+          tipo: string
+          updated_at: string | null
+        }
+        Insert: {
+          area_hectares?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          descricao_local?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          nome: string
+          orgao_responsavel?: string | null
+          status_conservacao?: string | null
+          tipo: string
+          updated_at?: string | null
+        }
+        Update: {
+          area_hectares?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          descricao_local?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          nome?: string
+          orgao_responsavel?: string | null
+          status_conservacao?: string | null
+          tipo?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      arvores_urbanas: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_plantio: string | null
+          descricao_local: string | null
+          especie: string
+          estado_atual: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          necessita_poda: boolean | null
+          observacoes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_plantio?: string | null
+          descricao_local?: string | null
+          especie: string
+          estado_atual?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          necessita_poda?: boolean | null
+          observacoes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_plantio?: string | null
+          descricao_local?: string | null
+          especie?: string
+          estado_atual?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          necessita_poda?: boolean | null
+          observacoes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       atendimentos_sociais: {
         Row: {
           created_at: string
@@ -1431,6 +1521,59 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      autos_infracao_ambiental: {
+        Row: {
+          cpf_cnpj: string | null
+          created_at: string | null
+          created_by: string | null
+          data_emissao: string
+          descricao: string
+          fiscalizacao_id: string | null
+          id: string
+          nome_infrator: string
+          numero_auto: string
+          status: string
+          updated_at: string | null
+          valor_multa: number | null
+        }
+        Insert: {
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_emissao?: string
+          descricao: string
+          fiscalizacao_id?: string | null
+          id?: string
+          nome_infrator: string
+          numero_auto: string
+          status?: string
+          updated_at?: string | null
+          valor_multa?: number | null
+        }
+        Update: {
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_emissao?: string
+          descricao?: string
+          fiscalizacao_id?: string | null
+          id?: string
+          nome_infrator?: string
+          numero_auto?: string
+          status?: string
+          updated_at?: string | null
+          valor_multa?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "autos_infracao_ambiental_fiscalizacao_id_fkey"
+            columns: ["fiscalizacao_id"]
+            isOneToOne: false
+            referencedRelation: "fiscalizacoes_ambientais"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -5341,6 +5484,62 @@ export type Database = {
           },
         ]
       }
+      empreendimentos_ambientais: {
+        Row: {
+          atividade: string
+          cpf_cnpj: string | null
+          created_at: string | null
+          created_by: string | null
+          endereco: string | null
+          id: string
+          latitude: number | null
+          licenca_id: string | null
+          longitude: number | null
+          nivel_impacto: string
+          nome: string
+          responsavel_tecnico: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          atividade: string
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          licenca_id?: string | null
+          longitude?: number | null
+          nivel_impacto?: string
+          nome: string
+          responsavel_tecnico?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          atividade?: string
+          cpf_cnpj?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          endereco?: string | null
+          id?: string
+          latitude?: number | null
+          licenca_id?: string | null
+          longitude?: number | null
+          nivel_impacto?: string
+          nome?: string
+          responsavel_tecnico?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empreendimentos_ambientais_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licenciamentos_ambientais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       encaminhamentos_saude: {
         Row: {
           created_at: string
@@ -5728,6 +5927,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      eventos_educacao_ambiental: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_evento: string
+          descricao: string | null
+          id: string
+          local: string | null
+          nome_evento: string
+          numero_participantes: number | null
+          publico_alvo: string | null
+          responsavel: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_evento?: string
+          descricao?: string | null
+          id?: string
+          local?: string | null
+          nome_evento: string
+          numero_participantes?: number | null
+          publico_alvo?: string | null
+          responsavel?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_evento?: string
+          descricao?: string | null
+          id?: string
+          local?: string | null
+          nome_evento?: string
+          numero_participantes?: number | null
+          publico_alvo?: string | null
+          responsavel?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       eventos_folha: {
         Row: {
@@ -7149,6 +7390,75 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      fiscalizacoes_ambientais: {
+        Row: {
+          acoes_tomadas: string | null
+          created_at: string | null
+          created_by: string | null
+          data_fiscalizacao: string
+          denuncia_id: string | null
+          fiscal_id: string | null
+          id: string
+          irregularidades_encontradas: string | null
+          latitude: number | null
+          licenca_id: string | null
+          local: string
+          longitude: number | null
+          status: string
+          tipo_fiscalizacao: string
+          updated_at: string | null
+        }
+        Insert: {
+          acoes_tomadas?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fiscalizacao?: string
+          denuncia_id?: string | null
+          fiscal_id?: string | null
+          id?: string
+          irregularidades_encontradas?: string | null
+          latitude?: number | null
+          licenca_id?: string | null
+          local: string
+          longitude?: number | null
+          status?: string
+          tipo_fiscalizacao?: string
+          updated_at?: string | null
+        }
+        Update: {
+          acoes_tomadas?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          data_fiscalizacao?: string
+          denuncia_id?: string | null
+          fiscal_id?: string | null
+          id?: string
+          irregularidades_encontradas?: string | null
+          latitude?: number | null
+          licenca_id?: string | null
+          local?: string
+          longitude?: number | null
+          status?: string
+          tipo_fiscalizacao?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscalizacoes_ambientais_denuncia_id_fkey"
+            columns: ["denuncia_id"]
+            isOneToOne: false
+            referencedRelation: "denuncias_ambientais"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscalizacoes_ambientais_licenca_id_fkey"
+            columns: ["licenca_id"]
+            isOneToOne: false
+            referencedRelation: "licenciamentos_ambientais"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -8781,6 +9091,45 @@ export type Database = {
             referencedColumns: ["secretaria_id"]
           },
         ]
+      }
+      indicadores_ambientais: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_medicao: string
+          id: string
+          local: string | null
+          nome_indicador: string
+          observacoes: string | null
+          unidade: string | null
+          updated_at: string | null
+          valor: number
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_medicao?: string
+          id?: string
+          local?: string | null
+          nome_indicador: string
+          observacoes?: string | null
+          unidade?: string | null
+          updated_at?: string | null
+          valor: number
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_medicao?: string
+          id?: string
+          local?: string | null
+          nome_indicador?: string
+          observacoes?: string | null
+          unidade?: string | null
+          updated_at?: string | null
+          valor?: number
+        }
+        Relationships: []
       }
       indicadores_programas_saude: {
         Row: {
@@ -12273,6 +12622,51 @@ export type Database = {
             referencedColumns: ["secretaria_id"]
           },
         ]
+      }
+      ocorrencias_queimadas: {
+        Row: {
+          acoes_realizadas: string | null
+          area_afetada_hectares: number | null
+          created_at: string | null
+          created_by: string | null
+          data_ocorrencia: string
+          id: string
+          latitude: number | null
+          local: string
+          longitude: number | null
+          possivel_responsavel: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          acoes_realizadas?: string | null
+          area_afetada_hectares?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          data_ocorrencia?: string
+          id?: string
+          latitude?: number | null
+          local: string
+          longitude?: number | null
+          possivel_responsavel?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          acoes_realizadas?: string | null
+          area_afetada_hectares?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          data_ocorrencia?: string
+          id?: string
+          latitude?: number | null
+          local?: string
+          longitude?: number | null
+          possivel_responsavel?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       ocorrencias_transito: {
         Row: {
@@ -16111,6 +16505,45 @@ export type Database = {
           },
         ]
       }
+      residuos_solidos: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          data_coleta: string
+          destino: string | null
+          id: string
+          operador_responsavel: string | null
+          origem: string | null
+          quantidade: number | null
+          tipo_residuo: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          data_coleta?: string
+          destino?: string | null
+          id?: string
+          operador_responsavel?: string | null
+          origem?: string | null
+          quantidade?: number | null
+          tipo_residuo: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          data_coleta?: string
+          destino?: string | null
+          id?: string
+          operador_responsavel?: string | null
+          origem?: string | null
+          quantidade?: number | null
+          tipo_residuo?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       responsaveis_alunos: {
         Row: {
           aluno_id: string
@@ -19050,6 +19483,7 @@ export type Database = {
       }
       gerar_hash_auditoria: { Args: { dados: Json }; Returns: string }
       gerar_numero_auto_infracao: { Args: never; Returns: string }
+      gerar_numero_auto_infracao_ambiental: { Args: never; Returns: string }
       gerar_numero_declaracao_iss: {
         Args: { p_competencia: string; p_contribuinte_id: string }
         Returns: string
