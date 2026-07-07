@@ -76,6 +76,13 @@ export default function GestaoDeProgramasSociais() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="beneficios" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Benefícios Eventuais</CardTitle></CardHeader>
+              <CardContent><BeneficiosEventuais /></CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="beneficiarios" className="mt-6">
             <Card>
               <CardHeader><CardTitle>Cadastro de Beneficiários</CardTitle></CardHeader>
@@ -100,7 +107,7 @@ export default function GestaoDeProgramasSociais() {
           </TabsContent>
 
           <TabsContent value="equipe" className="mt-6">
-            <EquipeSecretaria titulo="Equipe - Desenvolvimento Social" descricao="Assistentes sociais, psicólogos e técnicos da secretaria" />
+            <EquipeSocial />
           </TabsContent>
         </Tabs>
       </div>
