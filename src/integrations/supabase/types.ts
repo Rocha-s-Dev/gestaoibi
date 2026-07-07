@@ -1952,6 +1952,150 @@ export type Database = {
           },
         ]
       }
+      beneficios_eventuais: {
+        Row: {
+          aprovado_por: string | null
+          created_at: string
+          created_by: string | null
+          data_aprovacao: string | null
+          data_concessao: string | null
+          data_solicitacao: string
+          data_validade: string | null
+          descricao: string | null
+          documentos_anexos: Json | null
+          familia_id: string | null
+          id: string
+          justificativa: string
+          membro_id: string | null
+          observacoes: string | null
+          parcela_atual: number | null
+          parecer_tecnico: string | null
+          quantidade: number | null
+          secretaria_id: string | null
+          status: string
+          tecnico_responsavel_id: string | null
+          tipo_beneficio: Database["public"]["Enums"]["tipo_beneficio_eventual"]
+          total_parcelas: number | null
+          unidade_id: string | null
+          updated_at: string
+          valor: number | null
+        }
+        Insert: {
+          aprovado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_concessao?: string | null
+          data_solicitacao?: string
+          data_validade?: string | null
+          descricao?: string | null
+          documentos_anexos?: Json | null
+          familia_id?: string | null
+          id?: string
+          justificativa: string
+          membro_id?: string | null
+          observacoes?: string | null
+          parcela_atual?: number | null
+          parecer_tecnico?: string | null
+          quantidade?: number | null
+          secretaria_id?: string | null
+          status?: string
+          tecnico_responsavel_id?: string | null
+          tipo_beneficio: Database["public"]["Enums"]["tipo_beneficio_eventual"]
+          total_parcelas?: number | null
+          unidade_id?: string | null
+          updated_at?: string
+          valor?: number | null
+        }
+        Update: {
+          aprovado_por?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_aprovacao?: string | null
+          data_concessao?: string | null
+          data_solicitacao?: string
+          data_validade?: string | null
+          descricao?: string | null
+          documentos_anexos?: Json | null
+          familia_id?: string | null
+          id?: string
+          justificativa?: string
+          membro_id?: string | null
+          observacoes?: string | null
+          parcela_atual?: number | null
+          parecer_tecnico?: string | null
+          quantidade?: number | null
+          secretaria_id?: string | null
+          status?: string
+          tecnico_responsavel_id?: string | null
+          tipo_beneficio?: Database["public"]["Enums"]["tipo_beneficio_eventual"]
+          total_parcelas?: number | null
+          unidade_id?: string | null
+          updated_at?: string
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficios_eventuais_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_eventuais_membro_id_fkey"
+            columns: ["membro_id"]
+            isOneToOne: false
+            referencedRelation: "membros_familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_eventuais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      beneficios_eventuais_historico: {
+        Row: {
+          autor_id: string | null
+          beneficio_id: string
+          created_at: string
+          id: string
+          observacao: string | null
+          status_anterior: string | null
+          status_novo: string
+        }
+        Insert: {
+          autor_id?: string | null
+          beneficio_id: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          status_anterior?: string | null
+          status_novo: string
+        }
+        Update: {
+          autor_id?: string | null
+          beneficio_id?: string
+          created_at?: string
+          id?: string
+          observacao?: string | null
+          status_anterior?: string | null
+          status_novo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficios_eventuais_historico_beneficio_id_fkey"
+            columns: ["beneficio_id"]
+            isOneToOne: false
+            referencedRelation: "beneficios_eventuais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       beneficios_rurais: {
         Row: {
           aprovador_id: string | null
@@ -18549,6 +18693,44 @@ export type Database = {
           },
         ]
       }
+      user_social_roles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["social_role"]
+          secretaria_id: string | null
+          unidade_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["social_role"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["social_role"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_social_roles_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vacinas: {
         Row: {
           ativo: boolean
@@ -19558,6 +19740,7 @@ export type Database = {
           vinculo_id: string
         }[]
       }
+      has_any_social_role: { Args: { _user_id: string }; Returns: boolean }
       has_cargo_saude: {
         Args: {
           _cargo: Database["public"]["Enums"]["cargo_saude"]
@@ -19630,6 +19813,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_social_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["social_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_vinculo_funcional_ativo: {
         Args: { _user_id: string }
         Returns: boolean
@@ -19642,6 +19832,10 @@ export type Database = {
       }
       is_secretaria: { Args: { _user_id: string }; Returns: boolean }
       is_secretaria_saude: { Args: { _user_id: string }; Returns: boolean }
+      is_secretario_assistencia_social: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       is_secretario_meio_ambiente: {
         Args: { _user_id: string }
         Returns: boolean
@@ -19817,6 +20011,15 @@ export type Database = {
         | "baixado"
         | "cedido"
         | "alienado"
+      social_role:
+        | "secretario_assistencia_social"
+        | "coordenador_cras"
+        | "coordenador_creas"
+        | "assistente_social"
+        | "psicologo_social"
+        | "tecnico_nivel_medio"
+        | "agente_social"
+        | "gestor_beneficios"
       status_convenio: "vigente" | "encerrado" | "rescindido" | "em_prestacao"
       status_debito:
         | "em_aberto"
@@ -19929,6 +20132,14 @@ export type Database = {
         | "subfaturamento"
         | "atividade_irregular"
         | "descumprimento_obrigacao_acessoria"
+        | "outros"
+      tipo_beneficio_eventual:
+        | "auxilio_funeral"
+        | "auxilio_natalidade"
+        | "cesta_basica"
+        | "aluguel_social"
+        | "passagem"
+        | "documentacao"
         | "outros"
       tipo_cargo: "efetivo" | "comissionado" | "temporario" | "emprego_publico"
       tipo_contribuinte: "pessoa_fisica" | "pessoa_juridica"
@@ -20306,6 +20517,16 @@ export const Constants = {
         "cedido",
         "alienado",
       ],
+      social_role: [
+        "secretario_assistencia_social",
+        "coordenador_cras",
+        "coordenador_creas",
+        "assistente_social",
+        "psicologo_social",
+        "tecnico_nivel_medio",
+        "agente_social",
+        "gestor_beneficios",
+      ],
       status_convenio: ["vigente", "encerrado", "rescindido", "em_prestacao"],
       status_debito: [
         "em_aberto",
@@ -20426,6 +20647,15 @@ export const Constants = {
         "subfaturamento",
         "atividade_irregular",
         "descumprimento_obrigacao_acessoria",
+        "outros",
+      ],
+      tipo_beneficio_eventual: [
+        "auxilio_funeral",
+        "auxilio_natalidade",
+        "cesta_basica",
+        "aluguel_social",
+        "passagem",
+        "documentacao",
         "outros",
       ],
       tipo_cargo: ["efetivo", "comissionado", "temporario", "emprego_publico"],
