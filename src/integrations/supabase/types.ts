@@ -18427,6 +18427,45 @@ export type Database = {
           },
         ]
       }
+      user_environment_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["environment_role"]
+          secretaria_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["environment_role"]
+          secretaria_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["environment_role"]
+          secretaria_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_environment_roles_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_environment_roles_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       user_health_roles: {
         Row: {
           created_at: string
@@ -19541,6 +19580,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_environment_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["environment_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_full_system_access: { Args: { _user_id: string }; Returns: boolean }
       has_gabinete_access: { Args: { _user_id: string }; Returns: boolean }
       has_health_role: {
@@ -19596,6 +19642,10 @@ export type Database = {
       }
       is_secretaria: { Args: { _user_id: string }; Returns: boolean }
       is_secretaria_saude: { Args: { _user_id: string }; Returns: boolean }
+      is_secretario_meio_ambiente: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       is_secretario_of: {
         Args: { _secretaria_id: string; _user_id: string }
         Returns: boolean
@@ -19683,6 +19733,13 @@ export type Database = {
         | "auxiliar_secretaria_escolar"
         | "coordenador_admin_escolar"
         | "tecnico_admin_educacional"
+      environment_role:
+        | "secretario_meio_ambiente"
+        | "coordenador_ambiental"
+        | "fiscal_ambiental"
+        | "analista_ambiental"
+        | "agente_ambiental"
+        | "gestor_programas_ambientais"
       exercicio_status: "aberto" | "bloqueado" | "encerrado"
       fase_processual:
         | "inicial"
@@ -20153,6 +20210,14 @@ export const Constants = {
         "auxiliar_secretaria_escolar",
         "coordenador_admin_escolar",
         "tecnico_admin_educacional",
+      ],
+      environment_role: [
+        "secretario_meio_ambiente",
+        "coordenador_ambiental",
+        "fiscal_ambiental",
+        "analista_ambiental",
+        "agente_ambiental",
+        "gestor_programas_ambientais",
       ],
       exercicio_status: ["aberto", "bloqueado", "encerrado"],
       fase_processual: [
