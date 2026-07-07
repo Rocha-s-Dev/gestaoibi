@@ -139,7 +139,7 @@ export default function GestaoAmbiental() {
           </TabsContent>
 
           <TabsContent value="equipe" className="mt-6">
-            <EquipeSecretaria titulo="Equipe - Meio Ambiente" descricao="Fiscais ambientais, biólogos e técnicos da secretaria" />
+            <EquipeAmbiental />
           </TabsContent>
         </Tabs>
       </div>
