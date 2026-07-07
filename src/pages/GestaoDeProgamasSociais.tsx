@@ -10,7 +10,8 @@ import { UnidadesCRAS } from "@/components/social/UnidadesCRAS";
 import { CadUnicoFamilias } from "@/components/social/CadUnicoFamilias";
 import { AtendimentoSocialComponent } from "@/components/social/AtendimentoSocial";
 import { VisitasDomiciliares } from "@/components/social/VisitasDomiciliares";
-import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
+import { BeneficiosEventuais } from "@/components/social/BeneficiosEventuais";
+import { EquipeSocial } from "@/components/social/EquipeSocial";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
