@@ -10,7 +10,8 @@ import { UnidadesCRAS } from "@/components/social/UnidadesCRAS";
 import { CadUnicoFamilias } from "@/components/social/CadUnicoFamilias";
 import { AtendimentoSocialComponent } from "@/components/social/AtendimentoSocial";
 import { VisitasDomiciliares } from "@/components/social/VisitasDomiciliares";
-import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
+import { BeneficiosEventuais } from "@/components/social/BeneficiosEventuais";
+import { EquipeSocial } from "@/components/social/EquipeSocial";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -36,6 +37,7 @@ export default function GestaoDeProgramasSociais() {
             <TabsTrigger value="cadunico">CadÚnico</TabsTrigger>
             <TabsTrigger value="atendimentos">Atendimentos</TabsTrigger>
             <TabsTrigger value="visitas">Visitas</TabsTrigger>
+            <TabsTrigger value="beneficios">Benefícios</TabsTrigger>
             <TabsTrigger value="beneficiarios">Beneficiários</TabsTrigger>
             <TabsTrigger value="acompanhamento">Programas</TabsTrigger>
             <TabsTrigger value="metas">Metas</TabsTrigger>
@@ -74,6 +76,13 @@ export default function GestaoDeProgramasSociais() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="beneficios" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle>Benefícios Eventuais</CardTitle></CardHeader>
+              <CardContent><BeneficiosEventuais /></CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="beneficiarios" className="mt-6">
             <Card>
               <CardHeader><CardTitle>Cadastro de Beneficiários</CardTitle></CardHeader>
@@ -98,7 +107,7 @@ export default function GestaoDeProgramasSociais() {
           </TabsContent>
 
           <TabsContent value="equipe" className="mt-6">
-            <EquipeSecretaria titulo="Equipe - Desenvolvimento Social" descricao="Assistentes sociais, psicólogos e técnicos da secretaria" />
+            <EquipeSocial />
           </TabsContent>
         </Tabs>
       </div>

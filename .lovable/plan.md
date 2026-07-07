@@ -1,57 +1,93 @@
+# Plano: Expandir Secretaria de Desenvolvimento Social
 
+Como você pediu para eu decidir, vou seguir o padrão já usado em Saúde, Educação e Meio Ambiente (papéis administrativos por secretaria) e adicionar o módulo mais crítico que falta hoje: **Benefícios Eventuais**. Nada existente será alterado ou removido.
 
-## Dashboard Principal Dinamico
+---
 
-### Problema Atual
-A pagina `/dashboard` (Dashboard.tsx) exibe dados estaticos e ficticios (12 projetos, 148 funcionarios, etc.) sem conexao com o banco de dados e sem considerar o tipo de usuario logado.
+## 1. Papéis Administrativos (novo)
 
-### Abordagem
-Transformar o Dashboard para ser contextual, exibindo informacoes reais do banco de dados e adaptando o conteudo ao perfil do usuario:
+### Banco de dados
+Enum `social_role`:
+- `secretario_assistencia_social`
+- `coordenador_cras`
+- `coordenador_creas`
+- `assistente_social`
+- `psicologo_social`
+- `tecnico_nivel_medio`
+- `agente_social`
+- `gestor_beneficios`
 
-**1. Prefeito / Admin Municipal** - Visao executiva consolidada:
-- Total de servidores ativos (tabela `profiles`)
-- Total de secretarias ativas (tabela `secretarias`)
-- Metas do plano de governo com progresso (tabela `metas_plano_governo`)
-- Obras prioritarias em andamento (tabela `obras_prioritarias`)
-- Alertas criticos pendentes (tabela `alertas_executivos`)
-- Notificacoes recentes (tabela `notifications`)
-- Mensagens nao lidas (tabelas `conversations`/`messages`)
-- Graficos: metas por status, distribuicao por secretaria
+Tabela `user_social_roles`:
+- `user_id` (FK profiles), `role` (enum), `unidade_id` (FK unidades_socioassistenciais, opcional), `secretaria_id`
+- UNIQUE (user_id, role, unidade_id)
+- Funções `has_social_role(uuid, social_role)` e `is_secretario_assistencia_social(uuid)` (SECURITY DEFINER)
 
-**2. Gestor RH** - Visao de recursos humanos:
-- Total de servidores ativos
-- Servidores pendentes de regularizacao
-- Folhas de pagamento do mes (tabela `folha_pagamento`)
-- Notificacoes recentes
+### RLS — regras
+- Secretário e admin_municipal: acesso total à secretaria
+- Coordenador CRAS/CREAS: acesso completo dentro da(s) unidade(s) vinculada(s)
+- Assistente social / psicólogo: acesso a famílias, atendimentos e visitas da sua unidade
+- Técnico / agente social: leitura + criação de atendimentos/visitas na sua unidade
+- Gestor de benefícios: acesso exclusivo ao módulo de benefícios eventuais
 
-**3. Servidor / Secretario** - Visao setorial:
-- Dados resumidos da secretaria ativa (usando o `SecretariaContext`)
-- Metas da secretaria
-- Notificacoes e mensagens recentes
+Aplicar/ajustar policies em: `familias_cadunico`, `membros_familia`, `atendimentos_sociais`, `visitas_domiciliares`, `unidades_socioassistenciais` (mantendo policies existentes; adicionando novas — nada removido).
 
-### Detalhes Tecnicos
+### UI
+- Novo componente `src/components/social/EquipeSocial.tsx` (espelho de `EquipeAmbiental`) com:
+  - Lista de membros com nome, cargo RH, papel social, unidade, data de vínculo
+  - Filtros por papel, unidade e status
+  - Dialog de atribuição/edição de papel usando `VincularUsuarioRH` (RH central — sem criar usuários)
+  - Remoção de vínculo
+- `src/hooks/useEquipeSocial.ts` — CRUD de vínculos
+- Em `GestaoDeProgamasSociais.tsx`: substituir `EquipeSecretaria` pela nova `EquipeSocial` na aba "Equipe"
 
-**Novo hook `src/hooks/useDashboardData.ts`**:
-- Consulta ao banco condicionada pelo tipo de usuario (via `useSecretariaContext` e `useAuth`)
-- Usa `@tanstack/react-query` para cache e loading states
-- Queries separadas para cada bloco de dados (servidores, metas, alertas, etc.)
+---
 
-**Reescrita de `src/pages/Dashboard.tsx`**:
-- Importa `useSecretariaContext` para `isAdmin`, `isPrefeito`, `isGestorRH`, `municipio`
-- Importa `useAuth` para `userProfile`
-- Exibe saudacao personalizada com nome do municipio
-- Renderiza cards e graficos diferentes conforme o papel:
-  - `isPrefeito || isAdmin`: painel executivo com KPIs consolidados, alertas criticos, progresso de metas de governo, e atalhos rapidos para modulos
-  - `isGestorRH`: painel focado em RH com servidores, folha de pagamento
-  - Demais: painel da secretaria ativa com resumo setorial
-- Reutiliza o componente `DashboardCard` existente e `DashboardSecretaria` para graficos
-- Secao de "Acoes Rapidas" com links para os modulos mais usados pelo tipo de usuario
-- Secao de atividade recente baseada em `notifications` reais
+## 2. Benefícios Eventuais (novo módulo)
 
-**Sem alteracoes no banco de dados** - todas as tabelas necessarias ja existem.
+### Banco
+Tabela `beneficios_eventuais`:
+- `familia_id` (FK), `membro_id` (FK opcional), `tipo_beneficio` (enum: `auxilio_funeral`, `auxilio_natalidade`, `cesta_basica`, `aluguel_social`, `passagem`, `documentacao`, `outros`)
+- `valor`, `quantidade`, `data_concessao`, `data_validade`, `parcela_atual`, `total_parcelas`
+- `justificativa`, `parecer_tecnico`, `documentos_anexos` (jsonb)
+- `status` (`solicitado`, `em_analise`, `aprovado`, `concedido`, `indeferido`, `cancelado`)
+- `tecnico_responsavel_id`, `aprovado_por`, `unidade_id`, `secretaria_id`
 
-### Componentes Afetados
-- `src/pages/Dashboard.tsx` - reescrita completa
-- `src/hooks/useDashboardData.ts` - novo arquivo
-- `src/components/dashboard/DashboardCard.tsx` - sem alteracao (reutilizado)
+Tabela `beneficios_eventuais_historico` (log de mudanças de status).
 
+RLS: secretário/coordenador aprovam; assistente social e gestor de benefícios criam/editam; auditor visualiza.
+
+### UI
+- `src/components/social/BeneficiosEventuais.tsx` — lista com filtros (tipo, status, unidade, período)
+- `src/components/social/BeneficioEventualDialog.tsx` — cadastro/edição com seleção de família e tipo
+- `src/hooks/useBeneficiosEventuais.ts` — CRUD + mudança de status com histórico
+- Nova aba **"Benefícios"** em `GestaoDeProgamasSociais.tsx` (posicionada após "Programas")
+
+### Dashboard
+Atualizar `DashboardSocial.tsx` adicionando KPIs:
+- Benefícios concedidos no mês
+- Valor total distribuído
+- Aluguéis sociais ativos
+- Distribuição por tipo (gráfico)
+
+---
+
+## 3. Detalhes técnicos
+
+| Arquivo | Ação |
+|---|---|
+| `supabase/migrations/<timestamp>_social_roles_beneficios.sql` | Novo — enum, tabelas, funções, RLS, GRANTs, triggers de updated_at |
+| `src/hooks/useEquipeSocial.ts` | Novo |
+| `src/hooks/useBeneficiosEventuais.ts` | Novo |
+| `src/components/social/EquipeSocial.tsx` | Novo |
+| `src/components/social/BeneficiosEventuais.tsx` | Novo |
+| `src/components/social/BeneficioEventualDialog.tsx` | Novo |
+| `src/components/social/DashboardSocial.tsx` | Editar (adicionar KPIs) |
+| `src/pages/GestaoDeProgamasSociais.tsx` | Editar (nova aba + trocar Equipe) |
+
+**Garantias:**
+- Nenhuma tabela ou componente existente é removida
+- Todo vínculo de pessoa continua via `VincularUsuarioRH` (RH central)
+- Padrão de auditoria SHA-256 (`auditoria_global`) mantido automaticamente pelos triggers já existentes
+- Campos-padrão (`id`, `created_at`, `updated_at`, `created_by`) em todas as novas tabelas
+
+Se preferir focar só em papéis, só em benefícios, ou incluir também PAIF/PAEFI ou SCFV, é só me dizer antes de aprovar.
