@@ -8,7 +8,7 @@ import { MetasAmbientais } from "@/components/ambiental/MetasAmbientais";
 import { LicenciamentoAmbiental } from "@/components/ambiental/LicenciamentoAmbiental";
 import { DenunciasAmbientais } from "@/components/ambiental/DenunciasAmbientais";
 import { DashboardAmbiental } from "@/components/ambiental/DashboardAmbiental";
-import { EquipeSecretaria } from "@/components/shared/EquipeSecretaria";
+import { EquipeAmbiental } from "@/components/ambiental/EquipeAmbiental";
 import { FiscalizacoesAmbientais } from "@/components/ambiental/FiscalizacoesAmbientais";
 import { AutosInfracaoAmbiental } from "@/components/ambiental/AutosInfracaoAmbiental";
 import { EmpreendimentosAmbientais } from "@/components/ambiental/EmpreendimentosAmbientais";
