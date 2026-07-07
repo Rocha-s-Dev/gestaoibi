@@ -37,6 +37,7 @@ export default function GestaoDeProgramasSociais() {
             <TabsTrigger value="cadunico">CadÚnico</TabsTrigger>
             <TabsTrigger value="atendimentos">Atendimentos</TabsTrigger>
             <TabsTrigger value="visitas">Visitas</TabsTrigger>
+            <TabsTrigger value="beneficios">Benefícios</TabsTrigger>
             <TabsTrigger value="beneficiarios">Beneficiários</TabsTrigger>
             <TabsTrigger value="acompanhamento">Programas</TabsTrigger>
             <TabsTrigger value="metas">Metas</TabsTrigger>
