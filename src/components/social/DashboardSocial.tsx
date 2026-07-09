@@ -1,7 +1,13 @@
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, Users, ClipboardList, Home } from "lucide-react";
+import { Building2, Users, ClipboardList, Home, Package, AlertTriangle, ClipboardCheck, Send } from "lucide-react";
 import { useSocial } from "@/hooks/useSocial";
+import { useBeneficiosContinuados } from "@/hooks/useBeneficiosContinuados";
+import { usePAIF } from "@/hooks/usePAIF";
+import { usePAEFI } from "@/hooks/usePAEFI";
+import { useEncaminhamentosSociais } from "@/hooks/useEncaminhamentosSociais";
+import { useAlertasSociais } from "@/hooks/useAlertasSociais";
+import { useVulnerabilidade } from "@/hooks/useVulnerabilidade";
 
 export function DashboardSocial() {
   const { unidades, fetchUnidades, familias, fetchFamilias, atendimentos, fetchAtendimentos, visitas, fetchVisitas } = useSocial();

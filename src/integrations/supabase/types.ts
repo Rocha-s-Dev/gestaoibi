@@ -744,6 +744,95 @@ export type Database = {
           },
         ]
       }
+      alertas_sociais: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          entidade_id: string | null
+          entidade_tipo: string | null
+          familia_id: string | null
+          id: string
+          observacao_resolucao: string | null
+          resolvido: boolean
+          resolvido_em: string | null
+          resolvido_por: string | null
+          secretaria_id: string | null
+          severidade: string
+          tipo: Database["public"]["Enums"]["tipo_alerta_social"]
+          titulo: string
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade_id?: string | null
+          entidade_tipo?: string | null
+          familia_id?: string | null
+          id?: string
+          observacao_resolucao?: string | null
+          resolvido?: boolean
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          secretaria_id?: string | null
+          severidade?: string
+          tipo: Database["public"]["Enums"]["tipo_alerta_social"]
+          titulo: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade_id?: string | null
+          entidade_tipo?: string | null
+          familia_id?: string | null
+          id?: string
+          observacao_resolucao?: string | null
+          resolvido?: boolean
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          secretaria_id?: string | null
+          severidade?: string
+          tipo?: Database["public"]["Enums"]["tipo_alerta_social"]
+          titulo?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alertas_sociais_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alertas_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "alertas_sociais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       alertas_vigencia_contratos: {
         Row: {
           analise_id: string | null
@@ -1948,6 +2037,102 @@ export type Database = {
             columns: ["ponto_id"]
             isOneToOne: false
             referencedRelation: "ponto_servidor"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      beneficios_continuados: {
+        Row: {
+          beneficio: string
+          created_at: string
+          created_by: string | null
+          data_fim: string | null
+          data_inicio: string
+          familia_id: string | null
+          id: string
+          membro_id: string | null
+          observacoes: string | null
+          periodicidade: Database["public"]["Enums"]["periodicidade_beneficio"]
+          programa: string
+          secretaria_id: string | null
+          situacao: Database["public"]["Enums"]["status_beneficio_continuado"]
+          tecnico_responsavel_id: string | null
+          unidade_id: string | null
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          beneficio: string
+          created_at?: string
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          familia_id?: string | null
+          id?: string
+          membro_id?: string | null
+          observacoes?: string | null
+          periodicidade?: Database["public"]["Enums"]["periodicidade_beneficio"]
+          programa: string
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_beneficio_continuado"]
+          tecnico_responsavel_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          beneficio?: string
+          created_at?: string
+          created_by?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          familia_id?: string | null
+          id?: string
+          membro_id?: string | null
+          observacoes?: string | null
+          periodicidade?: Database["public"]["Enums"]["periodicidade_beneficio"]
+          programa?: string
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_beneficio_continuado"]
+          tecnico_responsavel_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beneficios_continuados_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_continuados_membro_id_fkey"
+            columns: ["membro_id"]
+            isOneToOne: false
+            referencedRelation: "membros_familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_continuados_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "beneficios_continuados_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "beneficios_continuados_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
             referencedColumns: ["id"]
           },
         ]
@@ -5272,6 +5457,79 @@ export type Database = {
           },
         ]
       }
+      documentos_sociais: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          entidade_id: string
+          entidade_tipo: Database["public"]["Enums"]["entidade_documento_social"]
+          familia_id: string | null
+          id: string
+          mime_type: string | null
+          nome: string
+          secretaria_id: string | null
+          storage_path: string
+          tamanho_bytes: number | null
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade_id: string
+          entidade_tipo: Database["public"]["Enums"]["entidade_documento_social"]
+          familia_id?: string | null
+          id?: string
+          mime_type?: string | null
+          nome: string
+          secretaria_id?: string | null
+          storage_path: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade_id?: string
+          entidade_tipo?: Database["public"]["Enums"]["entidade_documento_social"]
+          familia_id?: string | null
+          id?: string
+          mime_type?: string | null
+          nome?: string
+          secretaria_id?: string | null
+          storage_path?: string
+          tamanho_bytes?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_sociais_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       dotacoes_orcamentarias: {
         Row: {
           acao_id: string | null
@@ -5760,6 +6018,149 @@ export type Database = {
             columns: ["unidade_origem_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encaminhamentos_sociais: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_encaminhamento: string
+          data_retorno: string | null
+          destino: Database["public"]["Enums"]["destino_encaminhamento"]
+          destino_detalhe: string | null
+          familia_id: string | null
+          id: string
+          membro_id: string | null
+          motivo: string
+          observacoes: string | null
+          protocolo: string
+          responsavel_id: string | null
+          retorno: string | null
+          secretaria_id: string | null
+          status: Database["public"]["Enums"]["status_encaminhamento"]
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_encaminhamento?: string
+          data_retorno?: string | null
+          destino: Database["public"]["Enums"]["destino_encaminhamento"]
+          destino_detalhe?: string | null
+          familia_id?: string | null
+          id?: string
+          membro_id?: string | null
+          motivo: string
+          observacoes?: string | null
+          protocolo?: string
+          responsavel_id?: string | null
+          retorno?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_encaminhamento"]
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_encaminhamento?: string
+          data_retorno?: string | null
+          destino?: Database["public"]["Enums"]["destino_encaminhamento"]
+          destino_detalhe?: string | null
+          familia_id?: string | null
+          id?: string
+          membro_id?: string | null
+          motivo?: string
+          observacoes?: string | null
+          protocolo?: string
+          responsavel_id?: string | null
+          retorno?: string | null
+          secretaria_id?: string | null
+          status?: Database["public"]["Enums"]["status_encaminhamento"]
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encaminhamentos_sociais_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_sociais_membro_id_fkey"
+            columns: ["membro_id"]
+            isOneToOne: false
+            referencedRelation: "membros_familia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_sociais_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "encaminhamentos_sociais_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encaminhamentos_sociais_historico: {
+        Row: {
+          autor_id: string | null
+          created_at: string
+          encaminhamento_id: string
+          id: string
+          observacao: string | null
+          status_anterior:
+            | Database["public"]["Enums"]["status_encaminhamento"]
+            | null
+          status_novo: Database["public"]["Enums"]["status_encaminhamento"]
+        }
+        Insert: {
+          autor_id?: string | null
+          created_at?: string
+          encaminhamento_id: string
+          id?: string
+          observacao?: string | null
+          status_anterior?:
+            | Database["public"]["Enums"]["status_encaminhamento"]
+            | null
+          status_novo: Database["public"]["Enums"]["status_encaminhamento"]
+        }
+        Update: {
+          autor_id?: string | null
+          created_at?: string
+          encaminhamento_id?: string
+          id?: string
+          observacao?: string | null
+          status_anterior?:
+            | Database["public"]["Enums"]["status_encaminhamento"]
+            | null
+          status_novo?: Database["public"]["Enums"]["status_encaminhamento"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encaminhamentos_sociais_historico_encaminhamento_id_fkey"
+            columns: ["encaminhamento_id"]
+            isOneToOne: false
+            referencedRelation: "encaminhamentos_sociais"
             referencedColumns: ["id"]
           },
         ]
@@ -13376,6 +13777,127 @@ export type Database = {
           },
         ]
       }
+      paefi_acompanhamentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_encerramento: string | null
+          data_inicio: string
+          encaminhamentos: string | null
+          familia_id: string
+          id: string
+          motivo: string
+          secretaria_id: string | null
+          situacao: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id: string | null
+          tipo_violacao: string | null
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_encerramento?: string | null
+          data_inicio?: string
+          encaminhamentos?: string | null
+          familia_id: string
+          id?: string
+          motivo: string
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id?: string | null
+          tipo_violacao?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_encerramento?: string | null
+          data_inicio?: string
+          encaminhamentos?: string | null
+          familia_id?: string
+          id?: string
+          motivo?: string
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id?: string | null
+          tipo_violacao?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paefi_acompanhamentos_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paefi_acompanhamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paefi_acompanhamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "paefi_acompanhamentos_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paefi_evolucoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          descricao: string
+          id: string
+          paefi_id: string
+          tecnico_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao: string
+          id?: string
+          paefi_id: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao?: string
+          id?: string
+          paefi_id?: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paefi_evolucoes_paefi_id_fkey"
+            columns: ["paefi_id"]
+            isOneToOne: false
+            referencedRelation: "paefi_acompanhamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pagamentos_tributarios: {
         Row: {
           arquivo_retorno: string | null
@@ -13477,6 +13999,124 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "view_usuarios_rh"
             referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      paif_acompanhamentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_encerramento: string | null
+          data_inicio: string
+          familia_id: string
+          id: string
+          motivo_encerramento: string | null
+          objetivos: string | null
+          secretaria_id: string | null
+          situacao: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id: string | null
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_encerramento?: string | null
+          data_inicio?: string
+          familia_id: string
+          id?: string
+          motivo_encerramento?: string | null
+          objetivos?: string | null
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_encerramento?: string | null
+          data_inicio?: string
+          familia_id?: string
+          id?: string
+          motivo_encerramento?: string | null
+          objetivos?: string | null
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_paif"]
+          tecnico_responsavel_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paif_acompanhamentos_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paif_acompanhamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "paif_acompanhamentos_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "paif_acompanhamentos_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paif_evolucoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          descricao: string
+          id: string
+          paif_id: string
+          tecnico_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao: string
+          id?: string
+          paif_id: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao?: string
+          id?: string
+          paif_id?: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paif_evolucoes_paif_id_fkey"
+            columns: ["paif_id"]
+            isOneToOne: false
+            referencedRelation: "paif_acompanhamentos"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -14236,6 +14876,180 @@ export type Database = {
             columns: ["unidade_id"]
             isOneToOne: false
             referencedRelation: "unidades_saude"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plano_familiar_acoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          descricao: string
+          id: string
+          meta: string | null
+          plano_id: string
+          prazo: string | null
+          responsavel_id: string | null
+          resultado: string | null
+          status: Database["public"]["Enums"]["status_acao_plano"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          descricao: string
+          id?: string
+          meta?: string | null
+          plano_id: string
+          prazo?: string | null
+          responsavel_id?: string | null
+          resultado?: string | null
+          status?: Database["public"]["Enums"]["status_acao_plano"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          descricao?: string
+          id?: string
+          meta?: string | null
+          plano_id?: string
+          prazo?: string | null
+          responsavel_id?: string | null
+          resultado?: string | null
+          status?: Database["public"]["Enums"]["status_acao_plano"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_familiar_acoes_plano_id_fkey"
+            columns: ["plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos_acompanhamento_familiar"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plano_familiar_evolucoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          descricao: string
+          id: string
+          plano_id: string
+          tecnico_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao: string
+          id?: string
+          plano_id: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          descricao?: string
+          id?: string
+          plano_id?: string
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plano_familiar_evolucoes_plano_id_fkey"
+            columns: ["plano_id"]
+            isOneToOne: false
+            referencedRelation: "planos_acompanhamento_familiar"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planos_acompanhamento_familiar: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_conclusao: string | null
+          data_inicio: string
+          data_prevista_fim: string | null
+          familia_id: string
+          id: string
+          objetivos: string | null
+          resultados: string | null
+          secretaria_id: string | null
+          situacao: Database["public"]["Enums"]["status_plano_familiar"]
+          tecnico_responsavel_id: string | null
+          titulo: string
+          unidade_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string
+          data_prevista_fim?: string | null
+          familia_id: string
+          id?: string
+          objetivos?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_plano_familiar"]
+          tecnico_responsavel_id?: string | null
+          titulo: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string
+          data_prevista_fim?: string | null
+          familia_id?: string
+          id?: string
+          objetivos?: string | null
+          resultados?: string | null
+          secretaria_id?: string | null
+          situacao?: Database["public"]["Enums"]["status_plano_familiar"]
+          tecnico_responsavel_id?: string | null
+          titulo?: string
+          unidade_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planos_acompanhamento_familiar_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planos_acompanhamento_familiar_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planos_acompanhamento_familiar_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "planos_acompanhamento_familiar_unidade_id_fkey"
+            columns: ["unidade_id"]
+            isOneToOne: false
+            referencedRelation: "unidades_socioassistenciais"
             referencedColumns: ["id"]
           },
         ]
@@ -19511,6 +20325,112 @@ export type Database = {
           },
         ]
       }
+      vulnerabilidade_avaliacoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          criterio_abandono: number
+          criterio_crianca: number
+          criterio_deficiencia: number
+          criterio_dependencia_quimica: number
+          criterio_desemprego: number
+          criterio_gestante: number
+          criterio_idoso: number
+          criterio_moradia: number
+          criterio_renda: number
+          criterio_violencia: number
+          data_avaliacao: string
+          familia_id: string
+          id: string
+          justificativa_manual: string | null
+          nivel_calculado: Database["public"]["Enums"]["nivel_vulnerabilidade"]
+          nivel_manual:
+            | Database["public"]["Enums"]["nivel_vulnerabilidade"]
+            | null
+          observacoes: string | null
+          pontuacao_total: number
+          secretaria_id: string | null
+          tecnico_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          criterio_abandono?: number
+          criterio_crianca?: number
+          criterio_deficiencia?: number
+          criterio_dependencia_quimica?: number
+          criterio_desemprego?: number
+          criterio_gestante?: number
+          criterio_idoso?: number
+          criterio_moradia?: number
+          criterio_renda?: number
+          criterio_violencia?: number
+          data_avaliacao?: string
+          familia_id: string
+          id?: string
+          justificativa_manual?: string | null
+          nivel_calculado?: Database["public"]["Enums"]["nivel_vulnerabilidade"]
+          nivel_manual?:
+            | Database["public"]["Enums"]["nivel_vulnerabilidade"]
+            | null
+          observacoes?: string | null
+          pontuacao_total?: number
+          secretaria_id?: string | null
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          criterio_abandono?: number
+          criterio_crianca?: number
+          criterio_deficiencia?: number
+          criterio_dependencia_quimica?: number
+          criterio_desemprego?: number
+          criterio_gestante?: number
+          criterio_idoso?: number
+          criterio_moradia?: number
+          criterio_renda?: number
+          criterio_violencia?: number
+          data_avaliacao?: string
+          familia_id?: string
+          id?: string
+          justificativa_manual?: string | null
+          nivel_calculado?: Database["public"]["Enums"]["nivel_vulnerabilidade"]
+          nivel_manual?:
+            | Database["public"]["Enums"]["nivel_vulnerabilidade"]
+            | null
+          observacoes?: string | null
+          pontuacao_total?: number
+          secretaria_id?: string | null
+          tecnico_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vulnerabilidade_avaliacoes_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias_cadunico"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vulnerabilidade_avaliacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vulnerabilidade_avaliacoes_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
     }
     Views: {
       view_usuarios_rh: {
@@ -19692,6 +20612,8 @@ export type Database = {
         Args: { p_veiculo_id: string }
         Returns: number
       }
+      can_manage_social: { Args: { _user_id: string }; Returns: boolean }
+      can_view_social: { Args: { _user_id: string }; Returns: boolean }
       criar_versao_entidade: {
         Args: {
           p_dados: Json
@@ -19719,6 +20641,7 @@ export type Database = {
       gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
       gerar_protocolo_denuncia_ambiental: { Args: never; Returns: string }
+      gerar_protocolo_encaminhamento_social: { Args: never; Returns: string }
       gerar_protocolo_iluminacao: { Args: never; Returns: string }
       gerar_protocolo_ouvidoria: { Args: never; Returns: string }
       gerar_protocolo_tfd: { Args: never; Returns: string }
@@ -19825,6 +20748,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin_municipal: { Args: { _user_id: string }; Returns: boolean }
+      is_auditor: { Args: { _user_id: string }; Returns: boolean }
       is_gestor_rh: { Args: { _user_id: string }; Returns: boolean }
       is_responsavel_of_student: {
         Args: { _aluno_id: string; _user_id: string }
@@ -19915,6 +20839,16 @@ export type Database = {
         | "mesma_unidade"
         | "mesma_secretaria"
         | "hierarquia_inferior"
+      destino_encaminhamento:
+        | "saude"
+        | "educacao"
+        | "cras"
+        | "creas"
+        | "conselho_tutelar"
+        | "habitacao"
+        | "emprego"
+        | "juridico"
+        | "outros"
       education_role:
         | "secretaria"
         | "diretor"
@@ -19927,6 +20861,14 @@ export type Database = {
         | "auxiliar_secretaria_escolar"
         | "coordenador_admin_escolar"
         | "tecnico_admin_educacional"
+      entidade_documento_social:
+        | "beneficio_eventual"
+        | "beneficio_continuado"
+        | "paif"
+        | "paefi"
+        | "plano_familiar"
+        | "encaminhamento"
+        | "familia"
       environment_role:
         | "secretario_meio_ambiente"
         | "coordenador_ambiental"
@@ -19964,6 +20906,7 @@ export type Database = {
         | "enfermeiro"
         | "recepcionista"
         | "agente_saude"
+      nivel_vulnerabilidade: "baixa" | "media" | "alta" | "muito_alta"
       padrao_construtivo:
         | "luxo"
         | "alto"
@@ -19984,6 +20927,13 @@ export type Database = {
         | "vice_prefeito"
         | "assessor_gabinete"
         | "gestor_rh"
+      periodicidade_beneficio:
+        | "mensal"
+        | "bimestral"
+        | "trimestral"
+        | "semestral"
+        | "anual"
+        | "unica"
       periodo_tipo: "bimestre" | "trimestre" | "quadrimestre" | "semestre"
       regime_trabalho:
         | "estatutario"
@@ -20020,6 +20970,12 @@ export type Database = {
         | "tecnico_nivel_medio"
         | "agente_social"
         | "gestor_beneficios"
+      status_acao_plano: "pendente" | "em_andamento" | "concluida" | "cancelada"
+      status_beneficio_continuado:
+        | "ativo"
+        | "suspenso"
+        | "encerrado"
+        | "cancelado"
       status_convenio: "vigente" | "encerrado" | "rescindido" | "em_prestacao"
       status_debito:
         | "em_aberto"
@@ -20049,6 +21005,13 @@ export type Database = {
         | "liquidado"
         | "pago"
         | "inscrito_rap"
+      status_encaminhamento:
+        | "aberto"
+        | "enviado"
+        | "em_atendimento"
+        | "concluido"
+        | "sem_retorno"
+        | "cancelado"
       status_evento:
         | "planejado"
         | "aprovado"
@@ -20076,12 +21039,19 @@ export type Database = {
         | "aguardando_pecas"
         | "concluida"
         | "cancelada"
+      status_paif: "ativo" | "suspenso" | "concluido"
       status_parcelamento:
         | "ativo"
         | "em_dia"
         | "atrasado"
         | "rescindido"
         | "quitado"
+      status_plano_familiar:
+        | "em_elaboracao"
+        | "ativo"
+        | "suspenso"
+        | "concluido"
+        | "cancelado"
       status_processo_fiscal:
         | "aberto"
         | "em_analise"
@@ -20127,6 +21097,14 @@ export type Database = {
         | "exportar"
         | "importar"
         | "reverter"
+      tipo_alerta_social:
+        | "familia_sem_acompanhamento"
+        | "plano_vencido"
+        | "beneficio_vencendo"
+        | "documentacao_pendente"
+        | "retorno_pendente"
+        | "alta_vulnerabilidade"
+        | "encaminhamento_sem_resposta"
       tipo_auto_infracao:
         | "omissao_declaracao"
         | "subfaturamento"
@@ -20409,6 +21387,17 @@ export const Constants = {
         "mesma_secretaria",
         "hierarquia_inferior",
       ],
+      destino_encaminhamento: [
+        "saude",
+        "educacao",
+        "cras",
+        "creas",
+        "conselho_tutelar",
+        "habitacao",
+        "emprego",
+        "juridico",
+        "outros",
+      ],
       education_role: [
         "secretaria",
         "diretor",
@@ -20421,6 +21410,15 @@ export const Constants = {
         "auxiliar_secretaria_escolar",
         "coordenador_admin_escolar",
         "tecnico_admin_educacional",
+      ],
+      entidade_documento_social: [
+        "beneficio_eventual",
+        "beneficio_continuado",
+        "paif",
+        "paefi",
+        "plano_familiar",
+        "encaminhamento",
+        "familia",
       ],
       environment_role: [
         "secretario_meio_ambiente",
@@ -20464,6 +21462,7 @@ export const Constants = {
         "recepcionista",
         "agente_saude",
       ],
+      nivel_vulnerabilidade: ["baixa", "media", "alta", "muito_alta"],
       padrao_construtivo: [
         "luxo",
         "alto",
@@ -20485,6 +21484,14 @@ export const Constants = {
         "vice_prefeito",
         "assessor_gabinete",
         "gestor_rh",
+      ],
+      periodicidade_beneficio: [
+        "mensal",
+        "bimestral",
+        "trimestral",
+        "semestral",
+        "anual",
+        "unica",
       ],
       periodo_tipo: ["bimestre", "trimestre", "quadrimestre", "semestre"],
       regime_trabalho: [
@@ -20527,6 +21534,13 @@ export const Constants = {
         "agente_social",
         "gestor_beneficios",
       ],
+      status_acao_plano: ["pendente", "em_andamento", "concluida", "cancelada"],
+      status_beneficio_continuado: [
+        "ativo",
+        "suspenso",
+        "encerrado",
+        "cancelado",
+      ],
       status_convenio: ["vigente", "encerrado", "rescindido", "em_prestacao"],
       status_debito: [
         "em_aberto",
@@ -20554,6 +21568,14 @@ export const Constants = {
         "cancelada",
       ],
       status_empenho: ["ativo", "anulado", "liquidado", "pago", "inscrito_rap"],
+      status_encaminhamento: [
+        "aberto",
+        "enviado",
+        "em_atendimento",
+        "concluido",
+        "sem_retorno",
+        "cancelado",
+      ],
       status_evento: [
         "planejado",
         "aprovado",
@@ -20585,12 +21607,20 @@ export const Constants = {
         "concluida",
         "cancelada",
       ],
+      status_paif: ["ativo", "suspenso", "concluido"],
       status_parcelamento: [
         "ativo",
         "em_dia",
         "atrasado",
         "rescindido",
         "quitado",
+      ],
+      status_plano_familiar: [
+        "em_elaboracao",
+        "ativo",
+        "suspenso",
+        "concluido",
+        "cancelado",
       ],
       status_processo_fiscal: [
         "aberto",
@@ -20641,6 +21671,15 @@ export const Constants = {
         "exportar",
         "importar",
         "reverter",
+      ],
+      tipo_alerta_social: [
+        "familia_sem_acompanhamento",
+        "plano_vencido",
+        "beneficio_vencendo",
+        "documentacao_pendente",
+        "retorno_pendente",
+        "alta_vulnerabilidade",
+        "encaminhamento_sem_resposta",
       ],
       tipo_auto_infracao: [
         "omissao_declaracao",
