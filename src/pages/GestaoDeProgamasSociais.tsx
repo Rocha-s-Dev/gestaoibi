@@ -44,7 +44,14 @@ export default function GestaoDeProgramasSociais() {
             <TabsTrigger value="cadunico">CadÚnico</TabsTrigger>
             <TabsTrigger value="atendimentos">Atendimentos</TabsTrigger>
             <TabsTrigger value="visitas">Visitas</TabsTrigger>
-            <TabsTrigger value="beneficios">Benefícios</TabsTrigger>
+            <TabsTrigger value="beneficios">Benefícios Eventuais</TabsTrigger>
+            <TabsTrigger value="continuados">Benefícios Continuados</TabsTrigger>
+            <TabsTrigger value="paif">PAIF</TabsTrigger>
+            <TabsTrigger value="paefi">PAEFI</TabsTrigger>
+            <TabsTrigger value="vulnerabilidade">Vulnerabilidade</TabsTrigger>
+            <TabsTrigger value="planos">Planos Familiares</TabsTrigger>
+            <TabsTrigger value="encaminhamentos">Encaminhamentos</TabsTrigger>
+            <TabsTrigger value="alertas">Alertas</TabsTrigger>
             <TabsTrigger value="beneficiarios">Beneficiários</TabsTrigger>
             <TabsTrigger value="acompanhamento">Programas</TabsTrigger>
             <TabsTrigger value="metas">Metas</TabsTrigger>
@@ -88,6 +95,34 @@ export default function GestaoDeProgramasSociais() {
               <CardHeader><CardTitle>Benefícios Eventuais</CardTitle></CardHeader>
               <CardContent><BeneficiosEventuais /></CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="continuados" className="mt-6">
+            <Card><CardHeader><CardTitle>Benefícios Continuados</CardTitle></CardHeader><CardContent><BeneficiosContinuados /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="paif" className="mt-6">
+            <Card><CardHeader><CardTitle>PAIF — Proteção Social Básica</CardTitle></CardHeader><CardContent><PAIFModule /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="paefi" className="mt-6">
+            <Card><CardHeader><CardTitle>PAEFI — Proteção Especial</CardTitle></CardHeader><CardContent><PAEFIModule /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="vulnerabilidade" className="mt-6">
+            <Card><CardHeader><CardTitle>Classificação de Vulnerabilidade</CardTitle></CardHeader><CardContent><VulnerabilidadeAvaliacoes /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="planos" className="mt-6">
+            <Card><CardHeader><CardTitle>Planos de Acompanhamento Familiar</CardTitle></CardHeader><CardContent><PlanosFamiliares /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="encaminhamentos" className="mt-6">
+            <Card><CardHeader><CardTitle>Encaminhamentos</CardTitle></CardHeader><CardContent><EncaminhamentosSociais /></CardContent></Card>
+          </TabsContent>
+
+          <TabsContent value="alertas" className="mt-6">
+            <Card><CardHeader><CardTitle>Alertas Sociais</CardTitle></CardHeader><CardContent><AlertasSociais /></CardContent></Card>
           </TabsContent>
 
           <TabsContent value="beneficiarios" className="mt-6">
