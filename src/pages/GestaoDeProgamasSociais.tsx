@@ -11,7 +11,14 @@ import { CadUnicoFamilias } from "@/components/social/CadUnicoFamilias";
 import { AtendimentoSocialComponent } from "@/components/social/AtendimentoSocial";
 import { VisitasDomiciliares } from "@/components/social/VisitasDomiciliares";
 import { BeneficiosEventuais } from "@/components/social/BeneficiosEventuais";
+import { BeneficiosContinuados } from "@/components/social/BeneficiosContinuados";
 import { EquipeSocial } from "@/components/social/EquipeSocial";
+import { PAIFModule } from "@/components/social/PAIFModule";
+import { PAEFIModule } from "@/components/social/PAEFIModule";
+import { VulnerabilidadeAvaliacoes } from "@/components/social/VulnerabilidadeAvaliacoes";
+import { PlanosFamiliares } from "@/components/social/PlanosFamiliares";
+import { EncaminhamentosSociais } from "@/components/social/EncaminhamentosSociais";
+import { AlertasSociais } from "@/components/social/AlertasSociais";
 
 export default function GestaoDeProgramasSociais() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
