@@ -20,7 +20,7 @@ const ROLE_ENTRIES = Object.entries(INFRASTRUCTURE_ROLE_LABELS) as [Infrastructu
 export function EquipeInfraestrutura() {
   const { secretariaAtiva } = useSecretariaContext();
   const { vinculos, isLoading, createVinculo, updateVinculo, deleteVinculo } = useEquipeInfraestrutura(secretariaAtiva?.id);
-  const { data: unidades = [] } = useUnidadesAdministrativas() as any;
+  const { unidades } = useUnidadesAdministrativas(secretariaAtiva?.id);
 
   const [showVincular, setShowVincular] = useState(false);
   const [pendingUser, setPendingUser] = useState<UsuarioRH | null>(null);
