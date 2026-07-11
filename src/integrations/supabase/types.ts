@@ -697,6 +697,63 @@ export type Database = {
           },
         ]
       }
+      alertas_infraestrutura: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_limite: string | null
+          descricao: string | null
+          entidade: string | null
+          entidade_id: string | null
+          id: string
+          metadata: Json | null
+          prioridade: string
+          resolvido_em: string | null
+          resolvido_por: string | null
+          responsavel_id: string | null
+          status: string
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_limite?: string | null
+          descricao?: string | null
+          entidade?: string | null
+          entidade_id?: string | null
+          id?: string
+          metadata?: Json | null
+          prioridade?: string
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          responsavel_id?: string | null
+          status?: string
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_limite?: string | null
+          descricao?: string | null
+          entidade?: string | null
+          entidade_id?: string | null
+          id?: string
+          metadata?: Json | null
+          prioridade?: string
+          resolvido_em?: string | null
+          resolvido_por?: string | null
+          responsavel_id?: string | null
+          status?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       alertas_saude: {
         Row: {
           ativo: boolean | null
@@ -5387,6 +5444,54 @@ export type Database = {
             referencedColumns: ["secretaria_id"]
           },
         ]
+      }
+      documentos_infraestrutura: {
+        Row: {
+          arquivo_nome: string | null
+          arquivo_path: string
+          arquivo_tamanho: number | null
+          created_at: string
+          descricao: string | null
+          entidade: string
+          entidade_id: string
+          id: string
+          mime_type: string | null
+          tipo: string | null
+          titulo: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          arquivo_nome?: string | null
+          arquivo_path: string
+          arquivo_tamanho?: number | null
+          created_at?: string
+          descricao?: string | null
+          entidade: string
+          entidade_id: string
+          id?: string
+          mime_type?: string | null
+          tipo?: string | null
+          titulo: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          arquivo_nome?: string | null
+          arquivo_path?: string
+          arquivo_tamanho?: number | null
+          created_at?: string
+          descricao?: string | null
+          entidade?: string
+          entidade_id?: string
+          id?: string
+          mime_type?: string | null
+          tipo?: string | null
+          titulo?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
       }
       documentos_professores: {
         Row: {
@@ -19448,6 +19553,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_infrastructure_roles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["infrastructure_role"]
+          secretaria_id: string | null
+          unidade_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["infrastructure_role"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["infrastructure_role"]
+          secretaria_id?: string | null
+          unidade_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_infrastructure_roles_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_infrastructure_roles_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
       user_secretaria_roles: {
         Row: {
           created_at: string
@@ -20612,7 +20765,12 @@ export type Database = {
         Args: { p_veiculo_id: string }
         Returns: number
       }
+      can_manage_infrastructure: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       can_manage_social: { Args: { _user_id: string }; Returns: boolean }
+      can_view_infrastructure: { Args: { _user_id: string }; Returns: boolean }
       can_view_social: { Args: { _user_id: string }; Returns: boolean }
       criar_versao_entidade: {
         Args: {
@@ -20663,6 +20821,10 @@ export type Database = {
           vinculo_id: string
         }[]
       }
+      has_any_infrastructure_role: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
       has_any_social_role: { Args: { _user_id: string }; Returns: boolean }
       has_cargo_saude: {
         Args: {
@@ -20710,6 +20872,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_infrastructure_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["infrastructure_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_papel_em_secretaria: {
         Args: {
           _papel: Database["public"]["Enums"]["papel_sistemico"]
@@ -20749,6 +20918,11 @@ export type Database = {
       }
       is_admin_municipal: { Args: { _user_id: string }; Returns: boolean }
       is_auditor: { Args: { _user_id: string }; Returns: boolean }
+      is_coordenador_manutencao: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      is_diretor_obras: { Args: { _user_id: string }; Returns: boolean }
       is_gestor_rh: { Args: { _user_id: string }; Returns: boolean }
       is_responsavel_of_student: {
         Args: { _aluno_id: string; _user_id: string }
@@ -20757,6 +20931,10 @@ export type Database = {
       is_secretaria: { Args: { _user_id: string }; Returns: boolean }
       is_secretaria_saude: { Args: { _user_id: string }; Returns: boolean }
       is_secretario_assistencia_social: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      is_secretario_infraestrutura: {
         Args: { _user_id: string }
         Returns: boolean
       }
@@ -20906,6 +21084,30 @@ export type Database = {
         | "enfermeiro"
         | "recepcionista"
         | "agente_saude"
+      infrastructure_role:
+        | "secretario_infraestrutura"
+        | "diretor_obras"
+        | "coordenador_obras"
+        | "engenheiro_civil"
+        | "engenheiro_eletricista"
+        | "arquiteto"
+        | "fiscal_obras"
+        | "coordenador_manutencao"
+        | "supervisor_equipe"
+        | "encarregado_servicos"
+        | "tecnico_edificacoes"
+        | "tecnico_eletrotecnico"
+        | "operador_maquinas"
+        | "eletricista"
+        | "bombeiro_hidraulico"
+        | "pedreiro"
+        | "carpinteiro"
+        | "pintor"
+        | "soldador"
+        | "mecanico"
+        | "operador_rocadeira"
+        | "jardineiro"
+        | "agente_campo"
       nivel_vulnerabilidade: "baixa" | "media" | "alta" | "muito_alta"
       padrao_construtivo:
         | "luxo"
@@ -21461,6 +21663,31 @@ export const Constants = {
         "enfermeiro",
         "recepcionista",
         "agente_saude",
+      ],
+      infrastructure_role: [
+        "secretario_infraestrutura",
+        "diretor_obras",
+        "coordenador_obras",
+        "engenheiro_civil",
+        "engenheiro_eletricista",
+        "arquiteto",
+        "fiscal_obras",
+        "coordenador_manutencao",
+        "supervisor_equipe",
+        "encarregado_servicos",
+        "tecnico_edificacoes",
+        "tecnico_eletrotecnico",
+        "operador_maquinas",
+        "eletricista",
+        "bombeiro_hidraulico",
+        "pedreiro",
+        "carpinteiro",
+        "pintor",
+        "soldador",
+        "mecanico",
+        "operador_rocadeira",
+        "jardineiro",
+        "agente_campo",
       ],
       nivel_vulnerabilidade: ["baixa", "media", "alta", "muito_alta"],
       padrao_construtivo: [
