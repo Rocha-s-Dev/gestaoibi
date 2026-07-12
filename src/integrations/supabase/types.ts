@@ -13154,6 +13154,480 @@ export type Database = {
         }
         Relationships: []
       }
+      obras: {
+        Row: {
+          art: string | null
+          bairro: string | null
+          categoria: string | null
+          cep: string | null
+          convenio: string | null
+          crea: string | null
+          created_at: string
+          created_by: string | null
+          data_conclusao: string | null
+          data_inicio: string | null
+          descricao: string | null
+          empresa_executora: string | null
+          endereco: string | null
+          engenheiro_responsavel: string | null
+          fiscal_responsavel: string | null
+          fonte_recurso: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          municipio: string | null
+          nome: string
+          numero_contrato: string | null
+          numero_obra: string | null
+          numero_processo: string | null
+          observacoes: string | null
+          percentual_financeiro: number | null
+          percentual_fisico: number | null
+          previsao_conclusao: string | null
+          programa: string | null
+          secretaria_id: string | null
+          secretaria_solicitante_id: string | null
+          situacao: string
+          tipo: string | null
+          updated_at: string
+          valor_contratado: number | null
+          valor_executado: number | null
+          valor_medido: number | null
+        }
+        Insert: {
+          art?: string | null
+          bairro?: string | null
+          categoria?: string | null
+          cep?: string | null
+          convenio?: string | null
+          crea?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          empresa_executora?: string | null
+          endereco?: string | null
+          engenheiro_responsavel?: string | null
+          fiscal_responsavel?: string | null
+          fonte_recurso?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio?: string | null
+          nome: string
+          numero_contrato?: string | null
+          numero_obra?: string | null
+          numero_processo?: string | null
+          observacoes?: string | null
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          previsao_conclusao?: string | null
+          programa?: string | null
+          secretaria_id?: string | null
+          secretaria_solicitante_id?: string | null
+          situacao?: string
+          tipo?: string | null
+          updated_at?: string
+          valor_contratado?: number | null
+          valor_executado?: number | null
+          valor_medido?: number | null
+        }
+        Update: {
+          art?: string | null
+          bairro?: string | null
+          categoria?: string | null
+          cep?: string | null
+          convenio?: string | null
+          crea?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          empresa_executora?: string | null
+          endereco?: string | null
+          engenheiro_responsavel?: string | null
+          fiscal_responsavel?: string | null
+          fonte_recurso?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          municipio?: string | null
+          nome?: string
+          numero_contrato?: string | null
+          numero_obra?: string | null
+          numero_processo?: string | null
+          observacoes?: string | null
+          percentual_financeiro?: number | null
+          percentual_fisico?: number | null
+          previsao_conclusao?: string | null
+          programa?: string | null
+          secretaria_id?: string | null
+          secretaria_solicitante_id?: string | null
+          situacao?: string
+          tipo?: string | null
+          updated_at?: string
+          valor_contratado?: number | null
+          valor_executado?: number | null
+          valor_medido?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obras_secretaria_id_fkey"
+            columns: ["secretaria_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+          {
+            foreignKeyName: "obras_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "secretarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obras_secretaria_solicitante_id_fkey"
+            columns: ["secretaria_solicitante_id"]
+            isOneToOne: false
+            referencedRelation: "view_usuarios_rh"
+            referencedColumns: ["secretaria_id"]
+          },
+        ]
+      }
+      obras_cronograma: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_conclusao: string | null
+          data_inicio: string | null
+          data_prevista: string | null
+          descricao: string | null
+          id: string
+          nome: string
+          obra_id: string
+          observacoes: string | null
+          ordem: number
+          percentual: number | null
+          responsavel: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          data_prevista?: string | null
+          descricao?: string | null
+          id?: string
+          nome: string
+          obra_id: string
+          observacoes?: string | null
+          ordem?: number
+          percentual?: number | null
+          responsavel?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_conclusao?: string | null
+          data_inicio?: string | null
+          data_prevista?: string | null
+          descricao?: string | null
+          id?: string
+          nome?: string
+          obra_id?: string
+          observacoes?: string | null
+          ordem?: number
+          percentual?: number | null
+          responsavel?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_cronograma_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      obras_diario: {
+        Row: {
+          clima: string | null
+          created_at: string
+          created_by: string | null
+          data: string
+          equipe_presente: string | null
+          fotos: Json | null
+          id: string
+          maquinas: string | null
+          materiais: string | null
+          obra_id: string
+          observacoes: string | null
+          servicos_executados: string | null
+          updated_at: string
+        }
+        Insert: {
+          clima?: string | null
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          equipe_presente?: string | null
+          fotos?: Json | null
+          id?: string
+          maquinas?: string | null
+          materiais?: string | null
+          obra_id: string
+          observacoes?: string | null
+          servicos_executados?: string | null
+          updated_at?: string
+        }
+        Update: {
+          clima?: string | null
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          equipe_presente?: string | null
+          fotos?: Json | null
+          id?: string
+          maquinas?: string | null
+          materiais?: string | null
+          obra_id?: string
+          observacoes?: string | null
+          servicos_executados?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_diario_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      obras_fiscalizacoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          documentos: Json | null
+          fiscal: string | null
+          fotos: Json | null
+          id: string
+          obra_id: string
+          parecer_tecnico: string | null
+          pendencias: string | null
+          situacao: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          documentos?: Json | null
+          fiscal?: string | null
+          fotos?: Json | null
+          id?: string
+          obra_id: string
+          parecer_tecnico?: string | null
+          pendencias?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          documentos?: Json | null
+          fiscal?: string | null
+          fotos?: Json | null
+          id?: string
+          obra_id?: string
+          parecer_tecnico?: string | null
+          pendencias?: string | null
+          situacao?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_fiscalizacoes_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      obras_fotos: {
+        Row: {
+          arquivo_nome: string | null
+          arquivo_path: string
+          categoria: string
+          created_at: string
+          created_by: string | null
+          id: string
+          latitude: number | null
+          legenda: string | null
+          longitude: number | null
+          obra_id: string
+          updated_at: string
+        }
+        Insert: {
+          arquivo_nome?: string | null
+          arquivo_path: string
+          categoria?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          latitude?: number | null
+          legenda?: string | null
+          longitude?: number | null
+          obra_id: string
+          updated_at?: string
+        }
+        Update: {
+          arquivo_nome?: string | null
+          arquivo_path?: string
+          categoria?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          latitude?: number | null
+          legenda?: string | null
+          longitude?: number | null
+          obra_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_fotos_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      obras_historico: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          metadata: Json | null
+          obra_id: string
+          tipo: string
+          titulo: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json | null
+          obra_id: string
+          tipo: string
+          titulo: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json | null
+          obra_id?: string
+          tipo?: string
+          titulo?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_historico_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      obras_medicoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          engenheiro_responsavel: string | null
+          etapa_id: string | null
+          fiscal_responsavel: string | null
+          id: string
+          numero: number
+          obra_id: string
+          observacoes: string | null
+          percentual_executado: number | null
+          updated_at: string
+          valor_medido: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          engenheiro_responsavel?: string | null
+          etapa_id?: string | null
+          fiscal_responsavel?: string | null
+          id?: string
+          numero?: number
+          obra_id: string
+          observacoes?: string | null
+          percentual_executado?: number | null
+          updated_at?: string
+          valor_medido?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          engenheiro_responsavel?: string | null
+          etapa_id?: string | null
+          fiscal_responsavel?: string | null
+          id?: string
+          numero?: number
+          obra_id?: string
+          observacoes?: string | null
+          percentual_executado?: number | null
+          updated_at?: string
+          valor_medido?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "obras_medicoes_etapa_id_fkey"
+            columns: ["etapa_id"]
+            isOneToOne: false
+            referencedRelation: "obras_cronograma"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "obras_medicoes_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       obras_prioritarias: {
         Row: {
           alerta_atraso: boolean | null
