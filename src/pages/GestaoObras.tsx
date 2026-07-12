@@ -1,13 +1,15 @@
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, Users, Bell } from "lucide-react";
+import { LayoutDashboard, Users, Bell, Building, Map } from "lucide-react";
 import { CadastroObras } from "@/components/infraestrutura/CadastroObras";
 import { AcompanhamentoObras } from "@/components/infraestrutura/AcompanhamentoObras";
 import { MetasObras } from "@/components/infraestrutura/MetasObras";
 import { DashboardInfraestrutura } from "@/components/infraestrutura/DashboardInfraestrutura";
 import { EquipeInfraestrutura } from "@/components/infraestrutura/EquipeInfraestrutura";
 import { AlertasInfraestrutura } from "@/components/infraestrutura/AlertasInfraestrutura";
+import { GestaoObrasPublicas } from "@/components/infraestrutura/GestaoObrasPublicas";
+import { MapaObras } from "@/components/infraestrutura/MapaObras";
 
 export default function GestaoObras() {
   return (
