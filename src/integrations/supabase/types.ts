@@ -18924,6 +18924,689 @@ export type Database = {
           },
         ]
       }
+      servicos_documentos: {
+        Row: {
+          arquivo_nome: string | null
+          arquivo_path: string
+          arquivo_tamanho: number | null
+          arquivo_tipo: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          entidade: string
+          entidade_id: string
+          id: string
+          tipo: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          arquivo_nome?: string | null
+          arquivo_path: string
+          arquivo_tamanho?: number | null
+          arquivo_tipo?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade: string
+          entidade_id: string
+          id?: string
+          tipo?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          arquivo_nome?: string | null
+          arquivo_path?: string
+          arquivo_tamanho?: number | null
+          arquivo_tipo?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          entidade?: string
+          entidade_id?: string
+          id?: string
+          tipo?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      servicos_equipamentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          horimetro: number | null
+          id: string
+          localizacao: string | null
+          nome: string
+          observacoes: string | null
+          patrimonio: string | null
+          patrimonio_id: string | null
+          proxima_manutencao: string | null
+          quilometragem: number | null
+          situacao: string
+          tipo: string | null
+          ultima_manutencao: string | null
+          updated_at: string
+          veiculo_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          horimetro?: number | null
+          id?: string
+          localizacao?: string | null
+          nome: string
+          observacoes?: string | null
+          patrimonio?: string | null
+          patrimonio_id?: string | null
+          proxima_manutencao?: string | null
+          quilometragem?: number | null
+          situacao?: string
+          tipo?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string
+          veiculo_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          horimetro?: number | null
+          id?: string
+          localizacao?: string | null
+          nome?: string
+          observacoes?: string | null
+          patrimonio?: string | null
+          patrimonio_id?: string | null
+          proxima_manutencao?: string | null
+          quilometragem?: number | null
+          situacao?: string
+          tipo?: string | null
+          ultima_manutencao?: string | null
+          updated_at?: string
+          veiculo_id?: string | null
+        }
+        Relationships: []
+      }
+      servicos_equipe_membros: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          equipe_id: string
+          funcao: string | null
+          id: string
+          nome: string
+          profile_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          equipe_id: string
+          funcao?: string | null
+          id?: string
+          nome: string
+          profile_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          equipe_id?: string
+          funcao?: string | null
+          id?: string
+          nome?: string
+          profile_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_equipe_membros_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_equipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_equipes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          em_campo: boolean
+          equipamentos: string | null
+          especialidade: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          status: string
+          supervisor_id: string | null
+          supervisor_nome: string | null
+          updated_at: string
+          veiculo_descricao: string | null
+          veiculo_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          em_campo?: boolean
+          equipamentos?: string | null
+          especialidade?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          status?: string
+          supervisor_id?: string | null
+          supervisor_nome?: string | null
+          updated_at?: string
+          veiculo_descricao?: string | null
+          veiculo_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          em_campo?: boolean
+          equipamentos?: string | null
+          especialidade?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          status?: string
+          supervisor_id?: string | null
+          supervisor_nome?: string | null
+          updated_at?: string
+          veiculo_descricao?: string | null
+          veiculo_id?: string | null
+        }
+        Relationships: []
+      }
+      servicos_ordens: {
+        Row: {
+          bairro: string | null
+          categoria: string | null
+          contract_id: string | null
+          created_at: string
+          created_by: string | null
+          data_abertura: string
+          data_conclusao: string | null
+          data_prevista: string | null
+          descricao: string | null
+          endereco: string | null
+          equipe_id: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          numero_os: string | null
+          obra_id: string | null
+          observacoes: string | null
+          prioridade: Database["public"]["Enums"]["servico_prioridade"]
+          quantidade_executada: number | null
+          quantidade_prevista: number | null
+          referencia: string | null
+          responsavel_id: string | null
+          secretaria_id: string | null
+          secretaria_solicitante_id: string | null
+          solicitacao_iluminacao_id: string | null
+          solicitante_contato: string | null
+          solicitante_nome: string | null
+          status: Database["public"]["Enums"]["servico_status"]
+          tipo_id: string | null
+          tipo_nome: string | null
+          updated_at: string
+          valor_estimado: number | null
+          valor_executado: number | null
+        }
+        Insert: {
+          bairro?: string | null
+          categoria?: string | null
+          contract_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_abertura?: string
+          data_conclusao?: string | null
+          data_prevista?: string | null
+          descricao?: string | null
+          endereco?: string | null
+          equipe_id?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          numero_os?: string | null
+          obra_id?: string | null
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["servico_prioridade"]
+          quantidade_executada?: number | null
+          quantidade_prevista?: number | null
+          referencia?: string | null
+          responsavel_id?: string | null
+          secretaria_id?: string | null
+          secretaria_solicitante_id?: string | null
+          solicitacao_iluminacao_id?: string | null
+          solicitante_contato?: string | null
+          solicitante_nome?: string | null
+          status?: Database["public"]["Enums"]["servico_status"]
+          tipo_id?: string | null
+          tipo_nome?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_executado?: number | null
+        }
+        Update: {
+          bairro?: string | null
+          categoria?: string | null
+          contract_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_abertura?: string
+          data_conclusao?: string | null
+          data_prevista?: string | null
+          descricao?: string | null
+          endereco?: string | null
+          equipe_id?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          numero_os?: string | null
+          obra_id?: string | null
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["servico_prioridade"]
+          quantidade_executada?: number | null
+          quantidade_prevista?: number | null
+          referencia?: string | null
+          responsavel_id?: string | null
+          secretaria_id?: string | null
+          secretaria_solicitante_id?: string | null
+          solicitacao_iluminacao_id?: string | null
+          solicitante_contato?: string | null
+          solicitante_nome?: string | null
+          status?: Database["public"]["Enums"]["servico_status"]
+          tipo_id?: string | null
+          tipo_nome?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_executado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_equipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_tipo_id_fkey"
+            columns: ["tipo_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_tipos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_designacoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_designacao: string
+          equipe_id: string | null
+          equipe_nome: string | null
+          id: string
+          observacoes: string | null
+          ordem_id: string
+          prazo: string | null
+          responsavel_nome: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_designacao?: string
+          equipe_id?: string | null
+          equipe_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem_id: string
+          prazo?: string | null
+          responsavel_nome?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_designacao?: string
+          equipe_id?: string | null
+          equipe_nome?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem_id?: string
+          prazo?: string | null
+          responsavel_nome?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_designacoes_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_equipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_designacoes_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_equipamentos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          equipamento_id: string | null
+          equipamento_nome: string | null
+          execucao_id: string | null
+          horas_utilizadas: number | null
+          id: string
+          km_utilizados: number | null
+          observacoes: string | null
+          ordem_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          equipamento_id?: string | null
+          equipamento_nome?: string | null
+          execucao_id?: string | null
+          horas_utilizadas?: number | null
+          id?: string
+          km_utilizados?: number | null
+          observacoes?: string | null
+          ordem_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          equipamento_id?: string | null
+          equipamento_nome?: string | null
+          execucao_id?: string | null
+          horas_utilizadas?: number | null
+          id?: string
+          km_utilizados?: number | null
+          observacoes?: string | null
+          ordem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_equipamentos_equipamento_id_fkey"
+            columns: ["equipamento_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_equipamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_equipamentos_execucao_id_fkey"
+            columns: ["execucao_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens_execucoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_equipamentos_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_execucoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: string
+          equipe_id: string | null
+          equipe_presente: string | null
+          hora_fim: string | null
+          hora_inicio: string | null
+          id: string
+          observacoes: string | null
+          ordem_id: string
+          quantidade_executada: number | null
+          unidade: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          equipe_id?: string | null
+          equipe_presente?: string | null
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem_id: string
+          quantidade_executada?: number | null
+          unidade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: string
+          equipe_id?: string | null
+          equipe_presente?: string | null
+          hora_fim?: string | null
+          hora_inicio?: string | null
+          id?: string
+          observacoes?: string | null
+          ordem_id?: string
+          quantidade_executada?: number | null
+          unidade?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_execucoes_equipe_id_fkey"
+            columns: ["equipe_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_equipes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_execucoes_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_fotos: {
+        Row: {
+          arquivo_nome: string | null
+          arquivo_path: string
+          categoria: string | null
+          created_at: string
+          created_by: string | null
+          execucao_id: string | null
+          id: string
+          legenda: string | null
+          ordem_id: string
+        }
+        Insert: {
+          arquivo_nome?: string | null
+          arquivo_path: string
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          execucao_id?: string | null
+          id?: string
+          legenda?: string | null
+          ordem_id: string
+        }
+        Update: {
+          arquivo_nome?: string | null
+          arquivo_path?: string
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          execucao_id?: string | null
+          id?: string
+          legenda?: string | null
+          ordem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_fotos_execucao_id_fkey"
+            columns: ["execucao_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens_execucoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_fotos_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_historico: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          ordem_id: string
+          tipo: string
+          titulo: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          ordem_id: string
+          tipo: string
+          titulo: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          ordem_id?: string
+          tipo?: string
+          titulo?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_historico_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_ordens_materiais: {
+        Row: {
+          almoxarifado_item_id: string | null
+          created_at: string
+          created_by: string | null
+          execucao_id: string | null
+          id: string
+          material: string
+          observacoes: string | null
+          ordem_id: string
+          quantidade: number
+          unidade: string | null
+          updated_at: string
+          valor_estimado: number | null
+          valor_utilizado: number | null
+        }
+        Insert: {
+          almoxarifado_item_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          execucao_id?: string | null
+          id?: string
+          material: string
+          observacoes?: string | null
+          ordem_id: string
+          quantidade?: number
+          unidade?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_utilizado?: number | null
+        }
+        Update: {
+          almoxarifado_item_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          execucao_id?: string | null
+          id?: string
+          material?: string
+          observacoes?: string | null
+          ordem_id?: string
+          quantidade?: number
+          unidade?: string | null
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_utilizado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "servicos_ordens_materiais_execucao_id_fkey"
+            columns: ["execucao_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens_execucoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "servicos_ordens_materiais_ordem_id_fkey"
+            columns: ["ordem_id"]
+            isOneToOne: false
+            referencedRelation: "servicos_ordens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      servicos_tipos: {
+        Row: {
+          ativo: boolean
+          categoria: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          nome: string
+          unidade_medida: string | null
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          nome: string
+          unidade_medida?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          categoria?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          nome?: string
+          unidade_medida?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sinalizacao_viaria: {
         Row: {
           ativo: boolean | null
@@ -21271,6 +21954,7 @@ export type Database = {
       gerar_numero_licenciamento: { Args: never; Returns: string }
       gerar_numero_ordem_servico_fiscalizacao: { Args: never; Returns: string }
       gerar_numero_ordem_servico_frota: { Args: never; Returns: string }
+      gerar_numero_os: { Args: never; Returns: string }
       gerar_numero_processo_fiscal: { Args: never; Returns: string }
       gerar_protocolo_denuncia_ambiental: { Args: never; Returns: string }
       gerar_protocolo_encaminhamento_social: { Args: never; Returns: string }
@@ -21631,6 +22315,15 @@ export type Database = {
         | "servidor"
         | "estagiario"
       secretaria_tipo: "finalistico" | "administrativo"
+      servico_prioridade: "baixa" | "media" | "alta" | "urgente" | "emergencial"
+      servico_status:
+        | "aberta"
+        | "em_analise"
+        | "aguardando_material"
+        | "em_execucao"
+        | "pausada"
+        | "concluida"
+        | "cancelada"
       situacao_veiculo:
         | "ativo"
         | "manutencao"
@@ -22218,6 +22911,16 @@ export const Constants = {
         "estagiario",
       ],
       secretaria_tipo: ["finalistico", "administrativo"],
+      servico_prioridade: ["baixa", "media", "alta", "urgente", "emergencial"],
+      servico_status: [
+        "aberta",
+        "em_analise",
+        "aguardando_material",
+        "em_execucao",
+        "pausada",
+        "concluida",
+        "cancelada",
+      ],
       situacao_veiculo: [
         "ativo",
         "manutencao",
