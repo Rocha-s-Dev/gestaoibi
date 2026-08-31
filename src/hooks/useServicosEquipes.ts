@@ -13,7 +13,7 @@ export interface ServicoEquipe {
   equipamentos: string | null;
   status: string;
   em_campo: boolean;
-  observacoes: string | null
+  observacoes: string | null;
   created_at: string;
   updated_at: string;
 }
