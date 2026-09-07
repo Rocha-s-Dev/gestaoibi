@@ -190,6 +190,15 @@ export default function App() {
           }
         />
         <Route
+          path="/patrimonio"
+          element={
+            <RequireAuth>
+              <GestaoPatrimonio />
+            </RequireAuth>
+          }
+        />
+
+        <Route
           path="/saude/gestao"
           element={
             <RequireAuth>
