@@ -145,6 +145,8 @@ const secretariaMenuConfigs: SecretariaMenuConfig[] = [
     submenu: [
       { icon: Building, label: "Gestão de Obras", path: "/infraestrutura/obras" },
       { icon: Wrench, label: "Manutenção", path: "/infraestrutura/manutencao" },
+      { icon: Boxes, label: "Patrimônio", path: "/patrimonio" },
+
     ],
   },
   {
