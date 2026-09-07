@@ -20,6 +20,8 @@ import ProgramasIncentivo from "@/pages/ProgramasIncentivo";
 import InfraestruturaCultural from "@/pages/InfraestruturaCultural";
 import GestaoObras from "@/pages/GestaoObras";
 import Manutencao from "@/pages/Manutencao";
+import GestaoPatrimonio from "@/pages/GestaoPatrimonio";
+
 import GestaoSaudePublica from "@/pages/GestaoSaudePublica";
 import AtendimentoPaciente from "@/pages/AtendimentoPaciente";
 import GestaoPoliticasPublicas from "@/pages/GestaoPoliticasPublicas";
@@ -189,6 +191,15 @@ export default function App() {
             </RequireAuth>
           }
         />
+        <Route
+          path="/patrimonio"
+          element={
+            <RequireAuth>
+              <GestaoPatrimonio />
+            </RequireAuth>
+          }
+        />
+
         <Route
           path="/saude/gestao"
           element={

@@ -42,7 +42,9 @@ import {
   Gavel,
   Crown,
   BookOpen,
-  ClipboardList
+  ClipboardList,
+  Boxes
+
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -145,6 +147,8 @@ const secretariaMenuConfigs: SecretariaMenuConfig[] = [
     submenu: [
       { icon: Building, label: "Gestão de Obras", path: "/infraestrutura/obras" },
       { icon: Wrench, label: "Manutenção", path: "/infraestrutura/manutencao" },
+      { icon: Boxes, label: "Patrimônio", path: "/patrimonio" },
+
     ],
   },
   {
