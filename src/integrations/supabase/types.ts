@@ -961,6 +961,220 @@ export type Database = {
           },
         ]
       }
+      almoxarifado_categorias: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      almoxarifado_itens: {
+        Row: {
+          ativo: boolean
+          categoria_id: string
+          codigo: string | null
+          controla_lote: boolean
+          controla_validade: boolean
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          especificacao: string | null
+          estoque_atual: number
+          estoque_maximo: number | null
+          estoque_minimo: number
+          estoque_reservado: number
+          id: string
+          localizacao_id: string | null
+          marca: string | null
+          modelo: string | null
+          municipio_id: string | null
+          nome: string
+          observacoes: string | null
+          unidade_medida_id: string
+          updated_at: string
+          updated_by: string | null
+          valor_medio: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          categoria_id: string
+          codigo?: string | null
+          controla_lote?: boolean
+          controla_validade?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          especificacao?: string | null
+          estoque_atual?: number
+          estoque_maximo?: number | null
+          estoque_minimo?: number
+          estoque_reservado?: number
+          id?: string
+          localizacao_id?: string | null
+          marca?: string | null
+          modelo?: string | null
+          municipio_id?: string | null
+          nome: string
+          observacoes?: string | null
+          unidade_medida_id: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_medio?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          categoria_id?: string
+          codigo?: string | null
+          controla_lote?: boolean
+          controla_validade?: boolean
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          especificacao?: string | null
+          estoque_atual?: number
+          estoque_maximo?: number | null
+          estoque_minimo?: number
+          estoque_reservado?: number
+          id?: string
+          localizacao_id?: string | null
+          marca?: string | null
+          modelo?: string | null
+          municipio_id?: string | null
+          nome?: string
+          observacoes?: string | null
+          unidade_medida_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          valor_medio?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almoxarifado_itens_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "almoxarifado_categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almoxarifado_itens_localizacao_id_fkey"
+            columns: ["localizacao_id"]
+            isOneToOne: false
+            referencedRelation: "almoxarifado_localizacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almoxarifado_itens_unidade_medida_id_fkey"
+            columns: ["unidade_medida_id"]
+            isOneToOne: false
+            referencedRelation: "almoxarifado_unidades_medida"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almoxarifado_localizacoes: {
+        Row: {
+          ativo: boolean
+          codigo: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          codigo?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      almoxarifado_unidades_medida: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          created_by: string | null
+          id: string
+          municipio_id: string | null
+          nome: string
+          sigla: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome: string
+          sigla: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          municipio_id?: string | null
+          nome?: string
+          sigla?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       alunos: {
         Row: {
           cpf: string | null
@@ -22517,6 +22731,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: number
+      }
+      gerar_codigo_almoxarifado_item: {
+        Args: { p_municipio_id: string }
+        Returns: string
       }
       gerar_hash_auditoria: { Args: { dados: Json }; Returns: string }
       gerar_numero_auto_infracao: { Args: never; Returns: string }
